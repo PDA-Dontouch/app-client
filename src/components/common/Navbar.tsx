@@ -1,8 +1,10 @@
 import tw, { styled } from "twin.macro";
 
-import Logo from '../../../assets/logo.svg';
-import MyPage from '../../../assets/mypage.svg';
-import Logout from '../../../assets/logout.svg';
+import Logo from '../../assets/logo.svg';
+import MyPage from '../../assets/mypage.svg';
+import Logout from '../../assets/logout.svg';
+import Close from '../../assets/close.svg';
+import Back from '../../assets/back.svg';
 
 interface NavbarProps {
   name: string;
@@ -28,11 +30,25 @@ const Text = styled.span`
 const Navbar = ({ name, type }: NavbarProps) => {
   return (
     <NavbarDiv>
-      <Img src={Logo} />
-      <Item>
-        <Img src={type === 'mypage' ? MyPage : Logout} />
-        <Text>{name}</Text>
-      </Item>
+      {type === 'main' ? 
+        <>
+          <Img src={Logo} />
+          <Item>
+            <Img src={name === '로그아웃' ? Logout : MyPage} />
+            <Text>{name}</Text>
+          </Item>
+        </>
+      : name === 'back' ? 
+        <>
+          <Img src={Back} />
+          <Item />
+        </>
+      : 
+        <>
+          <Item />
+          <Img src={Close} />
+        </>
+      }
     </NavbarDiv>
   );
 };

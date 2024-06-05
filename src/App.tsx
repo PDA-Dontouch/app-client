@@ -1,11 +1,10 @@
 import './App.css';
-import SocialLogin from './components/common/SocialLogin'
-import Kakao from './assets/kakao.svg';
+import Footer from './components/common/Footer';
 
 function App() {
   return (
     <>
-      <SocialLogin url={Kakao} name='Kakao' />
+      <Footer />
     </>
   )
 }

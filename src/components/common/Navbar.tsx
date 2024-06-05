@@ -9,7 +9,7 @@ interface NavbarProps {
   type: string;
 }
 
-const Navbar = styled.div`
+const NavbarDiv = styled.div`
   ${tw`h-[56px] flex justify-between items-center bg-white px-4 fixed left-0 right-0`}
 `
 
@@ -25,16 +25,16 @@ const Text = styled.span`
   ${tw`text-base`}
 `
 
-const NavbarMain = ({ name, type }: NavbarProps) => {
+const Navbar = ({ name, type }: NavbarProps) => {
   return (
-    <Navbar>
+    <NavbarDiv>
       <Img src={Logo} />
       <Item>
         <Img src={type === 'mypage' ? MyPage : Logout} />
         <Text>{name}</Text>
       </Item>
-    </Navbar>
+    </NavbarDiv>
   );
 };
 
-export default NavbarMain;
+export default Navbar;

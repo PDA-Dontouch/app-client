@@ -6,43 +6,43 @@ export default {
       colors: {
         // green
         green: "#1AA76E",
-        "green-dark": "#0F6643",
-        green40: "#9DD6BF",
+        'green-dark': '#0F6643',
+        green40: '#9DD6BF',
         
         // black
-        black: "#000000",
-        black30: "#ACACAC",
-        black40: "#939393",
+        black: '#000000',
+        black30: '#ACACAC',
+        black40: '#939393',
         
         // white
-        white: "#FFFFFF",
+        white: '#FFFFFF',
         
         //gray
         gray: "#DADADA",
-        "gray-light": "#F9F9F9",
-        "gray-dark": "#606060",
-        "gray-disabled": "#EAEAEA",
-        gray10: "#F2F2F2",
-        gray20: "#F0F0F0",
-        gray30: "#EDEDED",
-        gray50: "#E7E7E7",
-        gray60: "#E5E5E5",
+        'gray-light': '#F9F9F9',
+        'gray-dark': '#606060',
+        'gray-disabled': '#EAEAEA',
+        gray10: '#F2F2F2',
+        gray20: '#F0F0F0',
+        gray30: '#EDEDED',
+        gray50: '#E7E7E7',
+        gray60: '#E5E5E5',
         
         // blue
-        blue: "#5293D0",
-        "blue-light": "#90C0EC",
-        "blue-down": "#4F7CEF",
-        blue20: "rgba(82, 147, 208, 0.2)",
-        blue50: "rgba(82, 147, 208, 0.5)",
+        blue: '#5293D0',
+        'blue-light': '#90C0EC',
+        'blue-down': '#4F7CEF',
+        blue20: 'rgba(82, 147, 208, 0.2)',
+        blue50: 'rgba(82, 147, 208, 0.5)',
         
         // yellow
-        yellow: "#E6B637",
-        "yellow-light": "#F1CD6D",
-        yellow20: "rgba(230, 182, 55, 0.2)",
-        yellow50: "rgba(230, 182, 55, 0.5)",
+        yellow: '#E6B637',
+        'yellow-light': '#F1CD6D',
+        yellow20: 'rgba(230, 182, 55, 0.2)',
+        yellow50: 'rgba(230, 182, 55, 0.5)',
         
         // red
-        red: "#F24B55",
+        red: '#F24B55',
       },
       fontFamily: {
         pre: ['Pretendard'],

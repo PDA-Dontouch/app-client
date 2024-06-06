@@ -32,11 +32,12 @@ button {
   max-width: 100%;
   overflow-x: hidden;
   
-  background-color: #f1f1f1;
+  /* background-color: #f3f3f3; */
 }
 
 html, 
 body,
-button {
+button,
+input {
   font-family: Pretendard;
 }

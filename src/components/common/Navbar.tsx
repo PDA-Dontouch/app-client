@@ -27,6 +27,8 @@ const Text = styled.span`
   ${tw`text-base`}
 `
 
+// logo + something = type 'main'
+// other = type ''
 const Navbar = ({ name, type }: NavbarProps) => {
   return (
     <NavbarDiv>

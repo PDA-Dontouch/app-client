@@ -9,10 +9,10 @@ function App() {
 
   return (
     <>
-      {/* <button onClick={() => setIsOpen(true)}>모달 오픈</button>
-      {isOpen && <BottomUpModal onClose={() => setIsOpen(false)} />}
-      {isOpen && <BasicModal onClose={() => setIsOpen(false)} />} */}
-      <Button name='구매하기' status='active' onClick={() => {}} />
+      <button onClick={() => setIsOpen(true)}>모달 오픈</button>
+      {/* {isOpen && <BottomUpModal onClose={() => setIsOpen(false)} />} */}
+      {isOpen && <BasicModal onClose={() => setIsOpen(false)} />}
+      {/* <Button name='구매하기' status='active' onClick={() => {}} /> */}
     </>
   );
 }

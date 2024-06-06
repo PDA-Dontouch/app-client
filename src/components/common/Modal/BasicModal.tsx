@@ -1,6 +1,7 @@
 import tw, { styled } from "twin.macro";
 
 import Graph from '../../../assets/graph.svg';
+import Button from "../Button";
 
 const ModalWrap = styled.div`
   ${tw`w-[calc(100vw-64px)] h-[100vh] fixed left-0 top-0 px-8`}
@@ -11,7 +12,7 @@ const BackDrop = styled.div`
 `;
 
 const ModalContainer = styled.div`
-  ${tw`w-[calc(100vw - 104px)] px-5 py-10 flex flex-col gap-10 absolute bg-gray-light rounded-t-20 shadow-[4px_4px_6px_0_rgba(0,0,0,0.25)]`}
+  ${tw`w-[calc(100vw - 104px)] px-5 py-10 flex flex-col gap-10 absolute bg-gray-light rounded-20 shadow-[4px_4px_6px_0_rgba(0,0,0,0.25)]`}
 `;
 
 const ItemContainer = styled.div`
@@ -50,6 +51,7 @@ const BasicModal = ({ onClose }: ModalProps) => {
             OOOO형인 당신을 위해 어떤 추천이 기다리고 있을지 궁금하시다면 지금 바로!
           </PlainText>
         </TextContainer>
+        <Button name="내 계좌 연동하기" status="active" onClick={() => {}} />
       </ModalContainer>
     </ModalWrap>
   );

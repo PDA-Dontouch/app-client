@@ -17,14 +17,83 @@ function App() {
 
   const [isActive, setIsActive] = useState(-1);
 
-  const data = [
-    {
-      content: '만 65세 미만'
-    },
-    {
-      content: '만 65세 이상'
+  const data = {
+      combination1: {
+        diviend_income: 10000,
+        stocks: [
+          {
+            code: '005930',
+            name: "종목명",
+            price: 10000,
+            amount: 3, // 몇주
+            total_price: 30000, // 투자금액
+            growth_score: 100,
+            safe_score: 80,
+            dividend_score: 120, //점수 받아서 FE에서 추천이유
+            // 띄우는 방향으로 변경함
+            personalized_score: 286
+          },
+        ]
+      },
+      combination2: {
+        diviend_income: 10000,
+        stocks: [
+          {
+            code: '005930',
+            name: "종목명",
+            price: 10000,
+            amount: 3, // 몇주
+            total_price: 30000, // 투자금액
+            growth_score: 100,
+            safe_score: 80,
+            dividend_score: 120, //점수 받아서 FE에서 추천이유
+            // 띄우는 방향으로 변경함
+            personalized_score: 286
+          },
+        ]
+      },
+      combination3: {
+        diviend_income: 10000,
+        stocks: [
+          {
+            code: '005930',
+            name: "종목명",
+            price: 10000,
+            amount: 3, // 몇주
+            total_price: 30000, // 투자금액
+            growth_score: 100,
+            safe_score: 80,
+            dividend_score: 120, //점수 받아서 FE에서 추천이유
+            // 띄우는 방향으로 변경함
+            personalized_score: 286
+          },
+          {
+            code: '005930',
+            name: "종목명",
+            price: 10000,
+            amount: 3, // 몇주
+            total_price: 30000, // 투자금액
+            growth_score: 100,
+            safe_score: 80,
+            dividend_score: 120, //점수 받아서 FE에서 추천이유
+            // 띄우는 방향으로 변경함
+            personalized_score: 286
+          },
+          {
+            code: '005930',
+            name: "종목명",
+            price: 10000,
+            amount: 3, // 몇주
+            total_price: 30000, // 투자금액
+            growth_score: 100,
+            safe_score: 80,
+            dividend_score: 120, //점수 받아서 FE에서 추천이유
+            // 띄우는 방향으로 변경함
+            personalized_score: 286
+          },
+        ]
+      }
     }
-  ]
 
   return (
     <>
@@ -44,7 +113,7 @@ function App() {
         <SelectStock name='삼성' price='1,200' amount={100} onDelete={() => {}} />
       </Container> */}
       <Container>
-        <CombiBox />
+        <CombiBox data={data} />
       </Container>
     </>
   );

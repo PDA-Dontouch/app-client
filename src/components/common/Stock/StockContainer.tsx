@@ -1,31 +1,32 @@
 import tw, { styled } from "twin.macro";
 import StockItem from "./StockItem";
 
+export type ItemType = {
+  code: string;
+  name: string;
+  price: number;
+  amount: number;
+  total_price: number;
+  growth_score: number;
+  safe_score: number;
+  dividend_score: number;
+  personalized_score: number;
+};
+
+interface ItemProps {
+  item: ItemType[];
+}
+
 const Container = styled.div`
-  ${tw`flex flex-col gap-4`}
+  ${tw`flex flex-wrap justify-center gap-6`}
 `;
 
-const ItemContainer = styled.div`
-  ${tw`flex flex-col gap-4`}
-`;
-
-const MainText = styled.span`${tw`text-base`}`;
-
-const StockContainer = () => {
+const StockContainer = ({ item }: ItemProps) => {
   return (
     <Container>
-      <ItemContainer>
-        <MainText>1•4•7•10월</MainText>
-        <StockItem />
-      </ItemContainer>
-      <ItemContainer>
-        <MainText>2•5•8•11월</MainText>
-        <StockItem />
-      </ItemContainer>
-      <ItemContainer>
-        <MainText>3•6•9•12월</MainText>
-        <StockItem />
-      </ItemContainer>
+      {item.map((item, idx) =>
+        <StockItem name={item.name} amount={item.amount} />
+      )}
     </Container>
   );
 };

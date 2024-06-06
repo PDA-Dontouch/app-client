@@ -6,6 +6,7 @@ import Button from './components/common/Button';
 import SelectButton from './components/StockTest/SelectButton';
 import SelectStock from './components/Stock/SelectStock';
 import tw, { styled } from 'twin.macro';
+import CombiBox from './components/common/Stock/CombiBox';
 
 const Container = styled.div`
   ${tw`px-5 py-5`}
@@ -39,8 +40,11 @@ function App() {
       )} */}
       {/* <br></br>
       <SelectButton name='선택하는 버튼' status='active' onClick={() => {}} /> */}
-      <Container>
+      {/* <Container>
         <SelectStock name='삼성' price='1,200' amount={100} onDelete={() => {}} />
+      </Container> */}
+      <Container>
+        <CombiBox />
       </Container>
     </>
   );

@@ -36,7 +36,7 @@ const SubItem = styled.div`
 
 const Input = styled.input`
   ${tw`w-[50px] bg-gray-light border-0 border-solid border-b border-gray-dark focus:outline-none text-base text-end`}
-`
+`;
 
 const Img = styled.img`${tw`object-contain`}`;
 

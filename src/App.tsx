@@ -97,9 +97,9 @@ function App() {
 
   return (
     <>
-      {/* <button onClick={() => setIsOpen(true)}>모달 오픈</button> */}
+      <button onClick={() => setIsOpen(true)}>모달 오픈</button>
       {/* {isOpen && <BottomUpModal onClose={() => setIsOpen(false)} />} */}
-      {/* {isOpen && <BasicModal onClose={() => setIsOpen(false)} />} */}
+      {isOpen && <BasicModal onClose={() => setIsOpen(false)} />}
       {/* <Button name='구매하기' status='active' onClick={() => {}} /> */}
       {/* {data.map((item, idx) => 
         <>
@@ -112,9 +112,9 @@ function App() {
       {/* <Container>
         <SelectStock name='삼성' price='1,200' amount={100} onDelete={() => {}} />
       </Container> */}
-      <Container>
+      {/* <Container>
         <CombiBox data={data} />
-      </Container>
+      </Container> */}
     </>
   );
 }

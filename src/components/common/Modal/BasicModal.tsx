@@ -1,18 +1,19 @@
-import tw, { styled } from "twin.macro";
+import tw, { css, styled } from "twin.macro";
 
 import Graph from '../../../assets/graph.svg';
 import Button from "../Button";
 
-const ModalWrap = styled.div`
-  ${tw`w-[calc(100vw-64px)] h-[100vh] fixed left-0 top-0 px-8`}
-`;
-
 const BackDrop = styled.div`
-  ${tw`w-[100%] h-[100vh] bg-black40 absolute left-0 top-0`}
+  ${tw`w-[100%] h-[100%] bg-black40 fixed left-0 top-0`}
 `;
 
 const ModalContainer = styled.div`
-  ${tw`w-[calc(100vw - 104px)] px-5 py-10 flex flex-col gap-10 absolute bg-gray-light rounded-20 shadow-[4px_4px_6px_0_rgba(0,0,0,0.25)]`}
+  ${tw`w-[calc(100vw - 104px)] px-5 py-10 flex flex-col gap-10 fixed bg-gray-light rounded-20 shadow-[4px_4px_6px_0_rgba(0,0,0,0.25)]`}
+  ${css`
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  `}
 `;
 
 const ItemContainer = styled.div`
@@ -35,7 +36,7 @@ interface ModalProps {
 
 const BasicModal = ({ onClose }: ModalProps) => {
   return (
-    <ModalWrap>
+    <>
       <BackDrop />
       <ModalContainer>
         <ItemContainer>
@@ -53,7 +54,7 @@ const BasicModal = ({ onClose }: ModalProps) => {
         </TextContainer>
         <Button name="내 계좌 연동하기" status="active" onClick={() => {}} />
       </ModalContainer>
-    </ModalWrap>
+    </>
   );
 };
 

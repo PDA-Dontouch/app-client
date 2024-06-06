@@ -15,9 +15,9 @@ const Item = styled.div`
   ${tw`flex flex-col items-center gap-[2px]`}
 `;
 
-const MainText = styled.span`${tw`text-base`}`;
+const MainText = styled.span`${tw`text-sm`}`;
 
-const SubText = styled.span`${tw`text-sm`}`;
+const SubText = styled.span`${tw`text-xs`}`;
 
 const StockItem = ({ name, amount }: ItemProps) => {
   return (

@@ -31,7 +31,12 @@ button {
   height: 100%;
   max-width: 100%;
   overflow-x: hidden;
-  font-family: Pretendard;
-
+  
   background-color: #f1f1f1;
+}
+
+html, 
+body,
+button {
+  font-family: Pretendard;
 }

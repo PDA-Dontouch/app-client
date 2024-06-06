@@ -44,7 +44,7 @@ const MainText = styled.span`${tw`text-base`}`;
 
 const SubText = styled.span`${tw`text-sm`}`;
 
-const StockItem = ({ name, price, amount, onDelete }: StockProps) => {
+const SelectStock = ({ name, price, amount, onDelete }: StockProps) => {
   return (
     <Wrapper>
       <DeleteImg src={Delete} onClick={onDelete} />
@@ -67,4 +67,4 @@ const StockItem = ({ name, price, amount, onDelete }: StockProps) => {
   );
 };
 
-export default StockItem;
+export default SelectStock;

@@ -3,8 +3,8 @@ import './App.css';
 import BottomUpModal from './components/common/Modal/BottomUpModal';
 import BasicModal from './components/common/Modal/BasicModal';
 import Button from './components/common/Button';
-import SelectButton from './components/common/SelectButton';
-import SelectStock from './components/common/SelectStock';
+import SelectButton from './components/StockTest/SelectButton';
+import SelectStock from './components/Stock/SelectStock';
 import tw, { styled } from 'twin.macro';
 
 const Container = styled.div`

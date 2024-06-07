@@ -1,9 +1,9 @@
 import React from 'react';
+import tw, { styled } from 'twin.macro';
 import Navbar from '../components/common/Navbar';
 import Footer from '../components/common/Footer';
 import RecommendBar from '../components/common/Stock/RecommendBar';
 import CombiBox from '../components/common/Stock/CombiBox';
-import { ItemType } from '../components/common/Stock/StockContainer';
 
 const stockData = {
   combination1: {
@@ -28,25 +28,67 @@ const stockData = {
   }
 };
 
+const MainContainer = styled.div`
+  ${tw`flex flex-col min-h-screen overflow-y-auto`}
+`;
+
+const ContentContainer = styled.div`
+  ${tw`flex-1 p-4 `}
+  margin-top: 15%;
+`;
+
+const SectionHeader = styled.div`
+  ${tw`flex gap-4 my-4`}
+  margin-top: 7%;
+`;
+
+const HeaderText = styled.span`
+  ${tw` text-xl font-semibold`}
+`;
+
+const RelollText = styled.span`
+  ${tw`text-xl font-semibold`}
+`;
+
+const RelollTextContainer = styled.div`
+  ${tw`flex justify-end mt-4 mr-4`}
+`;
+
+const GrayText = styled(HeaderText)`
+  ${tw`text-gray60`}
+`;
+
+const CombiBoxContainer = styled.div`
+  ${tw`top-6 p-6 rounded-lg relative `}
+`;
+
+const PurchaseButton = styled.span`
+  ${tw`text-xl absolute top-0 right-4 text-sm font-semibold`}
+  margin-top: -24px;
+`;
+
 const StockPage: React.FC = () => {
   return (
-    <div className="flex flex-col min-h-screen">
+    <MainContainer>
       <Navbar name="박유진" type="main" />
-      <div className="flex-1 p-4 mt-16 sm:mt-20 md:mt-24 lg:mt-28 xl:mt-32" style={{ marginTop: '90px' }}>
+      <ContentContainer>
         <RecommendBar />
-        <div className="flex justify-between items-center my-4">
-          <h2 className="text-xl font-semibold">추천 조합</h2>
-          <span className="text-xl font-semibold text-gray-600">개별 종목</span>
-        </div>
+        <RelollTextContainer>
+          <RelollText>갱신하기</RelollText>
+        </RelollTextContainer>
+        <SectionHeader>
+          <HeaderText>추천 조합</HeaderText>
+          <GrayText>개별 종목</GrayText>
+        </SectionHeader>
         <div className="flex flex-col space-y-4">
-          <div className="bg-gray-50 p-6 rounded-lg shadow-md relative">
-            <span className="absolute top-4 right-4 text-sm font-semibold text-blue-600">바로 구매하기</span>
+          <CombiBoxContainer>
+            <PurchaseButton>바로 구매하기</PurchaseButton>
             <CombiBox data={stockData} />
-          </div>
+          </CombiBoxContainer>
         </div>
-      </div>
+      </ContentContainer>
       <Footer />
-    </div>
+    </MainContainer>
   );
 };
 

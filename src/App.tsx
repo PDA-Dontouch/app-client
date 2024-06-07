@@ -4,11 +4,13 @@ import StockPage from './pages/StockPage';
 
 function App() {
   return (
+
     <Router>
       <Routes>
         <Route path="/" element={<StockPage />} />
       </Routes>
     </Router>
+
   );
 }
 

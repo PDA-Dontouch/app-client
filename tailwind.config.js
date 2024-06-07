@@ -12,7 +12,8 @@ export default {
         // black
         black: '#000000',
         black30: '#ACACAC',
-        black40: '#939393',
+        // black40: '#939393',
+        black40: 'rgba(0, 0, 0, 0.4)',
         
         // white
         white: '#FFFFFF',

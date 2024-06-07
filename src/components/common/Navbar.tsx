@@ -1,4 +1,4 @@
-import tw, { styled } from "twin.macro";
+import tw, { css, styled } from "twin.macro";
 
 import Logo from '../../assets/logo.svg';
 import MyPage from '../../assets/mypage.svg';
@@ -12,20 +12,21 @@ interface NavbarProps {
 }
 
 const NavbarDiv = styled.div`
-  ${tw`h-[56px] flex justify-between items-center bg-white px-4 fixed left-0 right-0`}
-`
+  ${tw`h-[56px] flex justify-between items-center bg-white px-4 fixed left-0 right-0 top-0`}
+  ${css`
+    border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+  `}
+`;
 
 const Item = styled.div`
   ${tw`flex items-center gap-1`}
-`
+`;
 
 const Img = styled.img`
   ${tw`w-[30px] h-[30px]`}
-`
+`;
 
-const Text = styled.span`
-  ${tw`text-base`}
-`
+const Text = styled.span`${tw`text-base`}`;
 
 // logo + something = type 'main'
 // other = type ''

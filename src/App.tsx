@@ -7,6 +7,7 @@ import SelectButton from './components/StockTest/SelectButton';
 import SelectStock from './components/Stock/SelectStock';
 import tw, { styled } from 'twin.macro';
 import CombiBox from './components/common/Stock/CombiBox';
+import Navbar from './components/common/Navbar';
 
 const Container = styled.div`
   ${tw`px-5 py-5`}
@@ -99,6 +100,7 @@ function App() {
     <>
       <button onClick={() => setIsOpen(true)}>모달 오픈</button>
       {isOpen && <BottomUpModal onClose={() => setIsOpen(false)} content={<div></div>} />}
+      <Navbar name='로그아웃' type='main' />
       {/* {isOpen && <BasicModal onClose={() => setIsOpen(false)} />} */}
       {/* <Button name='구매하기' status='active' onClick={() => {}} /> */}
       {/* {data.map((item, idx) => 

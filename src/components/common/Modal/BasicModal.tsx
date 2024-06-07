@@ -3,6 +3,11 @@ import tw, { css, styled } from "twin.macro";
 import Graph from '../../../assets/graph.svg';
 import Button from "../Button";
 
+interface ModalProps {
+  type: string;
+  onClose: () => void;
+}
+
 const BackDrop = styled.div`
   ${tw`w-[100%] h-[100%] bg-black40 fixed left-0 top-0`}
 `;
@@ -28,13 +33,9 @@ const MainText = styled.span`${tw`text-xl`}`;
 
 const BoldText = styled.span`${tw`text-2xl font-semibold`}`;
 
-const PlainText = styled.span`${tw``}`
+const PlainText = styled.span`${tw``}`;
 
-interface ModalProps {
-  onClose: () => void;
-}
-
-const BasicModal = ({ onClose }: ModalProps) => {
+const BasicModal = ({ type, onClose }: ModalProps) => {
   return (
     <>
       <BackDrop />
@@ -44,15 +45,15 @@ const BasicModal = ({ onClose }: ModalProps) => {
         </ItemContainer>
         <TextContainer>
           <MainText>당신은</MainText>
-          <BoldText>OOOO형</BoldText>
+          <BoldText>{type}형</BoldText>
           <MainText>투자자!</MainText>
         </TextContainer>
         <TextContainer>
           <PlainText>
-            OOOO형인 당신을 위해 어떤 추천이 기다리고 있을지 궁금하시다면 지금 바로!
+            {type}형인 당신을 위해 어떤 추천이 기다리고 있을지 궁금하시다면 지금 바로!
           </PlainText>
         </TextContainer>
-        <Button name="내 계좌 연동하기" status="active" onClick={() => {}} />
+        <Button name="내 계좌 연동하기" status="active" onClick={onClose} />
       </ModalContainer>
     </>
   );

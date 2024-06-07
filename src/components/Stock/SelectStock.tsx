@@ -27,7 +27,7 @@ const ItemContainer = styled.div`
 `;
 
 const Item = styled.div`
-  ${tw`flex gap-3 items-center`}
+  ${tw`flex gap-2 items-center`}
 `;
 
 const SubItem = styled.div`

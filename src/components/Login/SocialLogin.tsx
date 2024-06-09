@@ -3,6 +3,7 @@ import tw, { styled } from "twin.macro";
 interface LoginProps {
   url: string;
   name: string;
+  onClick: () => void;
 }
 
 const Btn = styled.div`
@@ -13,9 +14,9 @@ const Font = styled.p`
   ${tw`text-xl`}
 `;
 
-const SocialLogin = ({ url, name }: LoginProps) => {
+const SocialLogin = ({ url, name, onClick }: LoginProps) => {
   return (
-    <Btn>
+    <Btn onClick={onClick}>
       <img src={url} />
       <Font>{name}</Font>
     </Btn>

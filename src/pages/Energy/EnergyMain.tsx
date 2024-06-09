@@ -6,9 +6,10 @@ import Navbar from "../../components/common/Navbar";
 import SortButton from "../../components/common/SortButton";
 import Product from "../../components/common/Product/Product";
 
-import { addLikeEnergy, delEnergyLike, delLikeEnergy, setEnergyLike } from "../../store/reducers/energy/energy";
+import { addLikeEnergy, delEnergyLike, delLikeEnergy, getEnergyDatas, setEnergyLike } from "../../store/reducers/energy/energy";
 import { AppDispatch, RootState } from "../../store/store";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Container = styled.div`
   ${tw`w-[calc(100% - 56px)] mt-14 mb-16 px-7 py-8 flex flex-col gap-5`}
@@ -34,7 +35,13 @@ const ItemContainer = styled.div`
 
 const EnergyMain = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+  const energyDatas = useSelector((state: RootState) => state.energy.datas);
   const [sortByProfit, setSortByProfit] = useState<boolean>(false);
+
+  useEffect(() => {
+    dispatch(getEnergyDatas());
+  }, [])
 
   const sortDataByProfit = () => {
     setSortByProfit(!sortByProfit);
@@ -91,6 +98,7 @@ const EnergyMain = () => {
   ]
 
   const sortedData = sortByProfit ? [...data].sort((a, b) => b.profit_rate - a.profit_rate) : data;
+  // const sortedData = sortByProfit ? [...energyDatas].sort((a, b) => b.profit_rate - a.profit_rate) : energyDatas;
 
   const likeArr = useSelector((state: RootState) => state.energy.likes);
 
@@ -136,7 +144,7 @@ const EnergyMain = () => {
         <ItemContainer>
           <SubText>모집 중</SubText>
           {sortedData.map((item, idx) => 
-            <div key={item.id}>
+            <div key={item.id} onClick={() => navigate(`/energy/${item.id}`)}>
               <Product data={item} isLike={likeArr.includes(item.id) ? true : false} setIsLike={() => setLike(item.id)} />
             </div>
           )}

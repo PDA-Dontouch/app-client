@@ -18,6 +18,7 @@ type ProductType = {
 };
 
 interface ProductProps {
+  isEstates: boolean;
   data: ProductType;
   isLike: boolean;
   setIsLike: () => void;
@@ -43,7 +44,7 @@ const SubText = styled.span`${tw`text-base`}`;
 
 const MiniText = styled.span`${tw`text-xxs`}`;
 
-const Product = ({ data, isLike, setIsLike }: ProductProps) => {
+const Product = ({ isEstates, data, isLike, setIsLike }: ProductProps) => {
   const percentage = data.recruited_cash / data.target_cash * 100;
   
   return (
@@ -62,7 +63,7 @@ const Product = ({ data, isLike, setIsLike }: ProductProps) => {
           <SubText>{data.profit_rate}%</SubText>
           <SubText>{data.period}개월</SubText>
         </SubContainer>
-        <ProgressBar percentage={percentage} />
+        <ProgressBar isEstates={isEstates} percentage={percentage} />
         <MiniText>
           {data.recruited_cash.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}원 
           / {data.target_cash.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}원</MiniText>

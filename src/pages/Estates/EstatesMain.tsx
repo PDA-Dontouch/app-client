@@ -6,10 +6,10 @@ import Navbar from "../../components/common/Navbar";
 import SortButton from "../../components/common/SortButton";
 import Product from "../../components/common/Product/Product";
 
-import { addLikeEnergy, delEnergyLike, delLikeEnergy, getEnergyDatas, setEnergyLike } from "../../store/reducers/energy/energy";
 import { AppDispatch, RootState } from "../../store/store";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { addLikeEstates, delEstatesLike, delLikeEstates, getEstatesDatas, setEstatesLike } from "../../store/reducers/estates/estates";
 
 const Container = styled.div`
   ${tw`w-[calc(100% - 56px)] mt-14 mb-16 px-7 py-8 flex flex-col gap-5`}
@@ -22,7 +22,7 @@ const BtnContainer = styled.div`
 const MainText = styled.span`
   ${tw`w-fit text-xl`}
   ${css`
-    box-shadow: inset 0 -10px 0 rgba(82, 147, 208, 0.5);
+    box-shadow: inset 0 -10px 0 rgba(230, 182, 55, 0.5);
     line-height: 26px;
   `}
 `;
@@ -33,14 +33,14 @@ const ItemContainer = styled.div`
   ${tw`flex flex-col gap-8`}
 `;
 
-const EnergyMain = () => {
+const EstatesMain = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const energyDatas = useSelector((state: RootState) => state.energy.datas);
+  const estatesDatas = useSelector((state: RootState) => state.estates.datas);
   const [sortByProfit, setSortByProfit] = useState<boolean>(false);
 
   useEffect(() => {
-    dispatch(getEnergyDatas());
+    dispatch(getEstatesDatas());
   }, [])
 
   const sortDataByProfit = () => {
@@ -98,35 +98,35 @@ const EnergyMain = () => {
   ]
 
   const sortedData = sortByProfit ? [...data].sort((a, b) => b.profit_rate - a.profit_rate) : data;
-  // const sortedData = sortByProfit ? [...energyDatas].sort((a, b) => b.profit_rate - a.profit_rate) : energyDatas;
+  // const sortedData = sortByProfit ? [...estatesDatas].sort((a, b) => b.profit_rate - a.profit_rate) : estatesDatas;
 
-  const likeArr = useSelector((state: RootState) => state.energy.likes);
+  const likeArr = useSelector((state: RootState) => state.estates.likes);
 
-  const setLike = (energy_id: number) => {
-    if (likeArr.includes(energy_id)) {
-      dispatch(delEnergyLike(energy_id));
+  const setLike = (estates_id: number) => {
+    if (likeArr.includes(estates_id)) {
+      dispatch(delEstatesLike(estates_id));
       // const data = {
       //   token: "token",
-      //   energy_id: energy_id
+      //   estates_id: estates_id
       // }
 
-      // dispatch(delLikeEnergy(data))
+      // dispatch(delLikeEstates(data))
       //   .then((res) => {
       //     if (res.payload.success === true) {
-      //       dispatch(delEnergyLike(energy_id));
+            // dispatch(delEstatesLike(estates_id));
       //     }
       //   })
     } else {
-      dispatch(setEnergyLike(energy_id));
+      dispatch(setEstatesLike(estates_id));
       // const data = {
       //   token: "token",
-      //   energy_id: energy_id
+      //   estates_id: estates_id
       // }
   
-      // dispatch(addLikeEnergy(data))
+      // dispatch(addLikeEstates(data))
       //   .then((res) => {
       //     if (res.payload.success === true) {
-      //       dispatch(setEnergyLike(energy_id));
+            // dispatch(setEstatesLike(estates_id));
       //     }
       //   })
     }
@@ -136,16 +136,16 @@ const EnergyMain = () => {
     <>
       <Navbar name="박유진" type="main" />
       <Container>
-        <MainText>신재생에너지</MainText>
+        <MainText>부동산·법인·SCF</MainText>
         <BtnContainer>
-          <SortButton isEstates={false} isSelect={!sortByProfit} title="최신순" onClick={() => setSortByProfit(false)} />
-          <SortButton isEstates={false} isSelect={sortByProfit} title="수익률순" onClick={sortDataByProfit} />
+          <SortButton isEstates={true} isSelect={!sortByProfit} title="최신순" onClick={() => setSortByProfit(false)} />
+          <SortButton isEstates={true} isSelect={sortByProfit} title="수익률순" onClick={sortDataByProfit} />
         </BtnContainer>
         <ItemContainer>
           <SubText>모집 중</SubText>
           {sortedData.map((item, idx) => 
-            <div key={item.id} onClick={() => navigate(`/energy/${item.id}`)}>
-              <Product isEstates={false} data={item} isLike={likeArr.includes(item.id) ? true : false} setIsLike={() => setLike(item.id)} />
+            <div key={item.id} onClick={() => navigate(`/estate/${item.id}`)}>
+              <Product isEstates={true} data={item} isLike={likeArr.includes(item.id) ? true : false} setIsLike={() => setLike(item.id)} />
             </div>
           )}
         </ItemContainer>
@@ -155,4 +155,4 @@ const EnergyMain = () => {
   );
 };
 
-export default EnergyMain;
+export default EstatesMain;

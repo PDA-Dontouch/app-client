@@ -1,16 +1,14 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import StockPage from './pages/StockPage';
+import { BrowserRouter } from 'react-router-dom';
+import './App.css';
+import Routers from './Routers';
 
 function App() {
   return (
-
-    <Router>
-      <Routes>
-        <Route path="/" element={<StockPage />} />
-      </Routes>
-    </Router>
-
+    <>
+      <BrowserRouter>
+        <Routers />
+      </BrowserRouter>
+    </>
   );
 }
 

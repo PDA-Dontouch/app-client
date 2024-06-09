@@ -20,7 +20,7 @@ type ProductType = {
 interface ProductProps {
   data: ProductType;
   isLike: boolean;
-  setIsLike: Dispatch<SetStateAction<boolean>>;
+  setIsLike: () => void;
 }
 
 const Container = styled.div`${tw`flex gap-4 items-center`}`;
@@ -51,9 +51,9 @@ const Product = ({ data, isLike, setIsLike }: ProductProps) => {
       <ImgContainer>
         <Img src={data.image} />
         {isLike ?
-          <Heart src={Fill} onClick={() => setIsLike(false)} />
+          <Heart src={Fill} onClick={setIsLike} />
           :
-          <Heart src={Empty} onClick={() => setIsLike(true)} />
+          <Heart src={Empty} onClick={setIsLike} />
         }
       </ImgContainer>
       <ItemContainer>

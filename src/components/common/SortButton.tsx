@@ -3,6 +3,7 @@ import tw, { styled } from "twin.macro";
 interface SortProps {
   isSelect: boolean;
   title: string;
+  onClick: () => void;
 }
 
 const Container = styled.div<{ isSelect: boolean }>`
@@ -10,9 +11,9 @@ const Container = styled.div<{ isSelect: boolean }>`
   ${({ isSelect }) => isSelect ? tw`bg-blue text-white` : tw`bg-gray-light text-black`}
 `;
 
-const SortButton = ({ isSelect, title }: SortProps) => {
+const SortButton = ({ isSelect, title, onClick }: SortProps) => {
   return (
-    <Container isSelect={isSelect}>{title}</Container>
+    <Container isSelect={isSelect} onClick={onClick}>{title}</Container>
   );
 };
 

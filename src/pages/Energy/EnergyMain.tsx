@@ -1,8 +1,13 @@
+import { useDispatch, useSelector } from "react-redux";
 import tw, { css, styled } from "twin.macro";
+
 import Footer from "../../components/common/Footer";
 import Navbar from "../../components/common/Navbar";
 import SortButton from "../../components/common/SortButton";
 import Product from "../../components/common/Product/Product";
+
+import { addLikeEnergy, delEnergyLike, delLikeEnergy, setEnergyLike } from "../../store/reducers/energy/energy";
+import { AppDispatch, RootState } from "../../store/store";
 import { useState } from "react";
 
 const Container = styled.div`
@@ -28,12 +33,18 @@ const ItemContainer = styled.div`
 `;
 
 const EnergyMain = () => {
-  const [isLike, setIsLike] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const [sortByProfit, setSortByProfit] = useState<boolean>(false);
+
+  const sortDataByProfit = () => {
+    setSortByProfit(!sortByProfit);
+  };
+
   const data = [
     {
       id: 1,
       name: "의성군 외 총 993.40kW 태양광 담보",
-      profit_rate: 14.50,
+      profit_rate: 6.50,
       period: 8,
       recruited_cash: 99000000,
       target_cash: 140000000,
@@ -43,7 +54,7 @@ const EnergyMain = () => {
     {
       id: 2,
       name: "의성군 외 총 993.40kW 태양광 담보",
-      profit_rate: 14.50,
+      profit_rate: 10.50,
       period: 8,
       recruited_cash: 99000000,
       target_cash: 140000000,
@@ -52,7 +63,7 @@ const EnergyMain = () => {
     },{
       id: 3,
       name: "의성군 외 총 993.40kW 태양광 담보",
-      profit_rate: 14.50,
+      profit_rate: 12.50,
       period: 8,
       recruited_cash: 99000000,
       target_cash: 140000000,
@@ -70,7 +81,7 @@ const EnergyMain = () => {
     },{
       id: 5,
       name: "의성군 외 총 993.40kW 태양광 담보",
-      profit_rate: 14.50,
+      profit_rate: 16.50,
       period: 8,
       recruited_cash: 99000000,
       target_cash: 140000000,
@@ -78,7 +89,40 @@ const EnergyMain = () => {
       image: "https://kr1-sec-api-storage.cloud.toast.com/v1/AUTH_f102c9c0b0c1467bb71ee822a2fa9751/solarpublic/prodImage/A000458/2024060310/20240603105542092_580.png", 
     },
   ]
-  const list = [];
+
+  const sortedData = sortByProfit ? [...data].sort((a, b) => b.profit_rate - a.profit_rate) : data;
+
+  const likeArr = useSelector((state: RootState) => state.energy.likes);
+
+  const setLike = (energy_id: number) => {
+    if (likeArr.includes(energy_id)) {
+      dispatch(delEnergyLike(energy_id));
+      // const data = {
+      //   token: "token",
+      //   energy_id: energy_id
+      // }
+
+      // dispatch(delLikeEnergy(data))
+      //   .then((res) => {
+      //     if (res.payload.success === true) {
+      //       dispatch(delEnergyLike(energy_id));
+      //     }
+      //   })
+    } else {
+      dispatch(setEnergyLike(energy_id));
+      // const data = {
+      //   token: "token",
+      //   energy_id: energy_id
+      // }
+  
+      // dispatch(addLikeEnergy(data))
+      //   .then((res) => {
+      //     if (res.payload.success === true) {
+      //       dispatch(setEnergyLike(energy_id));
+      //     }
+      //   })
+    }
+  }
 
   return (
     <>
@@ -86,14 +130,14 @@ const EnergyMain = () => {
       <Container>
         <MainText>신재생에너지</MainText>
         <BtnContainer>
-          <SortButton isSelect={true} title="최신순" />
-          <SortButton isSelect={false} title="수익률순" />
+          <SortButton isSelect={!sortByProfit} title="최신순" onClick={() => setSortByProfit(false)} />
+          <SortButton isSelect={sortByProfit} title="수익률순" onClick={sortDataByProfit} />
         </BtnContainer>
         <ItemContainer>
           <SubText>모집 중</SubText>
-          {data.map((item, idx) => 
+          {sortedData.map((item, idx) => 
             <div key={item.id}>
-              <Product data={item} isLike={isLike} setIsLike={setIsLike} />
+              <Product data={item} isLike={likeArr.includes(item.id) ? true : false} setIsLike={() => setLike(item.id)} />
             </div>
           )}
         </ItemContainer>

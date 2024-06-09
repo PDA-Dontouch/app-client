@@ -7,7 +7,7 @@ import House from '../../assets/footer/house.svg';
 import Energy from '../../assets/footer/energy.svg';
 
 const FooterDiv = styled.div`
-  ${tw`flex justify-between bg-white px-6 py-3 fixed left-0 right-0 bottom-0`}
+  ${tw`flex justify-between bg-white px-6 py-3 fixed left-0 right-0 bottom-0 border-solid border-t border-gray-light`}
 `
 
 const TabDiv = styled.div`

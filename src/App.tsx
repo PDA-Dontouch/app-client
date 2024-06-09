@@ -1,16 +1,19 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import StockPage from './pages/StockPage';
+import { BrowserRouter } from 'react-router-dom';
+import './App.css';
+import Routers from './Routers';
+import { Provider } from 'react-redux';
+import { persistor, store } from './store/store';
+import { PersistGate } from 'redux-persist/integration/react';
 
 function App() {
   return (
-
-    <Router>
-      <Routes>
-        <Route path="/" element={<StockPage />} />
-      </Routes>
-    </Router>
-
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <BrowserRouter>
+          <Routers />
+        </BrowserRouter>
+      </PersistGate>
+    </Provider>
   );
 }
 

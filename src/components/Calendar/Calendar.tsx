@@ -7,6 +7,7 @@ type CalendarProps = {
   date: number;
   day: number;
   width: number;
+  openModal: () => void;
 };
 
 type CalendarContainerProps = {
@@ -20,8 +21,13 @@ type DayProps = {
 type DateCellProps = {
   inThisMonth: boolean;
 };
+
 type DateTextProps = {
   day: number;
+};
+
+type SalaryPlanProps = {
+  type: 'stock' | 'energy' | 'estate';
 };
 
 const CalendarContainer = styled.div<CalendarContainerProps>`
@@ -47,6 +53,8 @@ const Day = styled.div<DayProps>`
 `;
 
 const DateCell = styled.div<DateCellProps>`
+  display: flex;
+  flex-direction: column;
   width: 100%;
   height: 120px;
   border-style: solid;
@@ -64,6 +72,17 @@ const DateText = styled.div<DateTextProps>`
   box-sizing: border-box;
 `;
 
+const SalaryPlan = styled.div<SalaryPlanProps>`
+  ${({ type }) =>
+    type === 'stock'
+      ? 'background-color: #E9F1D6;'
+      : type === 'estate'
+        ? 'background-color: #A4C3B2;'
+        : 'background-color: #AFDBD1;'}
+  ${tw`h-3`}
+  width: 100%;
+`;
+
 export default function Calendar({
   type,
   year,
@@ -71,6 +90,7 @@ export default function Calendar({
   date,
   day,
   width,
+  openModal,
 }: CalendarProps) {
   const days = ['일', '월', '화', '수', '목', '금', '토'];
   const startDate =
@@ -105,8 +125,12 @@ export default function Calendar({
           <DateCell
             key={idx}
             inThisMonth={date.getMonth() === month ? true : false}
+            onClick={openModal}
           >
             <DateText day={date.getDay()}>{date.getDate()}</DateText>
+            <SalaryPlan type="stock"></SalaryPlan>
+            <SalaryPlan type="energy"></SalaryPlan>
+            <SalaryPlan type="estate"></SalaryPlan>
           </DateCell>
         );
       })}

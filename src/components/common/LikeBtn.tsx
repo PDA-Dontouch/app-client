@@ -9,7 +9,7 @@ interface LikeProps {
 }
 
 const Container = styled.div`
-  ${tw`w-fit h-[59px] flex justify-center items-center px-4 bg-gray rounded-16 shadow-[2px_2px_4px_0_rgba(0,0,0,0.25)]`}
+  ${tw`w-fit h-[56px] flex justify-center items-center px-[14px] bg-gray rounded-16 shadow-[2px_2px_4px_0_rgba(0,0,0,0.25)]`}
 `;
 
 const Img = styled.img`${tw`w-7 h-7`}`;

@@ -1,11 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { AppDispatch } from "../../store/store";
+import { useDispatch } from "react-redux";
 import tw, { css, styled } from 'twin.macro';
 import Navbar from '../../components/common/Navbar';
 import Footer from '../../components/common/Footer';
 import RecommendBar from '../../components/common/Stock/RecommendBar';
 import CombiBox from '../../components/common/Stock/CombiBox';
-import StockContainer from '../../components/common/Stock/StockContainer';
+import StockCard from '../../components/common/Stock/StockCard';
 import Triangle from "../../assets/triangle.svg";
+import SearchImg from "../../assets/search.svg";
+
+import { addLikeStocks, delStocksLike, delLikeStocks, getStocksDatas, setStocksLike } from "../../store/reducers/stocks/stocks";
+
 
 const stockData = {
   combination1: {
@@ -29,6 +35,45 @@ const stockData = {
     ]
   }
 };
+
+const stockList = [
+  {
+    code: "005930",
+    name: "삼성전자",
+    market: "KSC",
+    image: "https://file.alphasquare.co.kr/media/images/stock_logo/kr/005930.png",
+    price: 63000,
+    dividend_rate: 3.64,
+  },{
+    code: "035420",
+    name: "네이버",
+    market: "KSC",
+    image: "https://file.alphasquare.co.kr/media/images/stock_logo/kr/035420.png",
+    price: 171300,
+    dividend_rate: 3.64,
+  },{
+    code: "AAPL",
+    name: "애플",
+    market: "NASDAQ",
+    image: "https://file.alphasquare.co.kr/media/images/stock_logo/us/AAPL.png",
+    price: 196.88,
+    dividend_rate: 3.64,
+  },{
+    code: "TSLA",
+    name: "애플",
+    market: "NASDAQ",
+    image: "https://file.alphasquare.co.kr/media/images/stock_logo/us/TSLA.png",
+    price: 177.42,
+    dividend_rate: 3.64,
+  },{
+    code: "035720",
+    name: "카카오",
+    market: "KSC",
+    image: "https://file.alphasquare.co.kr/media/images/stock_logo/kr/035720.png",
+    price: 43400,
+    dividend_rate: 3.64,
+  },
+]
 
 const MainContainer = styled.div`
   ${tw`flex flex-col min-h-screen overflow-y-auto`}
@@ -64,21 +109,46 @@ const CombiBoxContainer = styled.div`
   ${tw`top-1 p-6 rounded-lg relative `}
 `;
 
+const ItemContainer = styled.div`
+  ${tw`flex flex-col gap-3`}
+`;
 
 const NavImage = styled.img`
   ${tw`w-3 h-3 mt-1`}
 `;
+
+const SearchContainer = styled.div`
+  ${tw`flex justify-end mt-2 mb-2 gap-1`}
+`;
+
 const SearchImage = styled.img`
-  ${tw`w-7 h-7 mt-1`}
+  ${tw`w-6 h-6`}
 `;
 
 const StockMainPage: React.FC = () => {
+    const dispatch = useDispatch<AppDispatch>();
     const [activeTab, setActiveTab] = useState<'recommend' | 'individual'>('recommend');
-    const [stockList, setStockList] =  useState(stockData.combination1.stocks);
+    const [stockItems, setStockItems] =  useState(stockList);
+    const [likeStocks, setLikeStocks] = useState<string[]>([]);
+   
+
+    useEffect(() => {
+      dispatch(getStocksDatas());
+    }, [])
 
     const handleTabClick = (tab: 'recommend' | 'individual') => {
         setActiveTab(tab);
     };
+
+    const setLike = (stocks_id: string) => {
+      if (likeStocks.includes(stocks_id)) {
+        setLikeStocks(likeStocks.filter(id => id !== stocks_id));
+        dispatch(delStocksLike(stocks_id));
+      } else {
+        setLikeStocks([...likeStocks, stocks_id]);
+        dispatch(setStocksLike(stocks_id));
+      }
+    }
 
     return (
     <MainContainer>
@@ -89,7 +159,6 @@ const StockMainPage: React.FC = () => {
           <NextText>갱신하기</NextText>
           <NavImage src={Triangle} />
         </TextContainer>
-    
           {activeTab === 'recommend' ? (
             <div className="flex flex-col space-y-4">
             <SectionHeader>
@@ -117,10 +186,17 @@ const StockMainPage: React.FC = () => {
               <MainTab onClick={() => handleTabClick('individual')}>
                   개별 종목
               </MainTab>
-          </SectionHeader>
-          <TextContainer>
-              <SearchImage src={Triangle} />
-            </TextContainer>
+            </SectionHeader>
+            <SearchContainer>
+              <SearchImage src={SearchImg} />
+            </SearchContainer>
+            <ItemContainer>
+              {stockItems.map((item,idx)=>
+                <div key={item.code}>
+                  <StockCard data={item} isLike={likeStocks.includes(item.code) ? true : false} setIsLike={() => setLike(item.code)}/>
+                </div>
+              )}
+            </ItemContainer>
             
             </div>        
           )}

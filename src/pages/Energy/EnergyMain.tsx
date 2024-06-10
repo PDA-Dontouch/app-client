@@ -6,11 +6,11 @@ import Navbar from "../../components/common/Navbar";
 import SortButton from "../../components/common/SortButton";
 import Product from "../../components/common/Product/Product";
 
-import { addLikeEnergy, delEnergyLike, delLikeEnergy, getEnergyDatas, setEnergyLike } from "../../store/reducers/energy/energy";
 import { AppDispatch, RootState } from "../../store/store";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import BottomUpModal from "../../components/common/Modal/BottomUpModal";
+import useLike from "../../hooks/useLike";
+import { getEnergyDatas } from "../../store/reducers/energy/energy";
 
 const Container = styled.div`
   ${tw`w-[calc(100% - 56px)] mt-14 mb-16 px-7 py-8 flex flex-col gap-5`}
@@ -30,9 +30,7 @@ const MainText = styled.span`
 
 const SubText = styled.span`${tw`text-lg`}`;
 
-const ItemContainer = styled.div`
-  ${tw`flex flex-col gap-8`}
-`;
+const ItemContainer = styled.div`${tw`flex flex-col gap-8`}`;
 
 const EnergyMain = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -101,41 +99,11 @@ const EnergyMain = () => {
   const sortedData = sortByProfit ? [...data].sort((a, b) => b.profit_rate - a.profit_rate) : data;
   // const sortedData = sortByProfit ? [...energyDatas].sort((a, b) => b.profit_rate - a.profit_rate) : energyDatas;
 
-  const likeArr = useSelector((state: RootState) => state.energy.likes);
-
-  const setLike = (energy_id: number) => {
-    if (likeArr.includes(energy_id)) {
-      dispatch(delEnergyLike(energy_id));
-      // const data = {
-      //   token: "token",
-      //   energy_id: energy_id
-      // }
-
-      // dispatch(delLikeEnergy(data))
-      //   .then((res) => {
-      //     if (res.payload.success === true) {
-      //       dispatch(delEnergyLike(energy_id));
-      //     }
-      //   })
-    } else {
-      dispatch(setEnergyLike(energy_id));
-      // const data = {
-      //   token: "token",
-      //   energy_id: energy_id
-      // }
-  
-      // dispatch(addLikeEnergy(data))
-      //   .then((res) => {
-      //     if (res.payload.success === true) {
-      //       dispatch(setEnergyLike(energy_id));
-      //     }
-      //   })
-    }
-  }
+  const { likeArr, setLike } = useLike("energy");
 
   return (
     <>
-      <Navbar name="박유진" type="main" />
+      <Navbar name="박유진" type="main" onClick={() => {}} />
       <Container>
         <MainText>신재생에너지</MainText>
         <BtnContainer>

@@ -1,4 +1,4 @@
-import tw, { css, styled } from "twin.macro";
+import tw, { css, styled } from 'twin.macro';
 
 import Logo from '../../assets/logo.svg';
 import MyPage from '../../assets/mypage.svg';
@@ -17,6 +17,7 @@ const NavbarDiv = styled.div`
   ${tw`h-[56px] flex justify-between items-center bg-white px-4 fixed left-0 right-0 top-0`}
   ${css`
     border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+    z-index: 10;
   `}
 `;
 
@@ -29,10 +30,7 @@ const Img = styled.img`
 `;
 
 const Text = styled.span`
-${tw`text-base`}
- ${css`
-    color: #606060  ;
-  `}
+  ${tw`text-base`}
 `;
 
 // logo + something = type 'main'
@@ -42,7 +40,7 @@ const Navbar = ({ name, type, onClick }: NavbarProps) => {
 
   return (
     <NavbarDiv>
-      {type === 'main' ? 
+      {type === 'main' ? (
         <>
           <Img src={Logo} onClick={() => navigate('/')} />
           <Item>
@@ -50,17 +48,17 @@ const Navbar = ({ name, type, onClick }: NavbarProps) => {
             <Text>{name}</Text>
           </Item>
         </>
-      : name === 'back' ? 
+      ) : name === 'back' ? (
         <>
           <Img src={Back} onClick={onClick} />
           <Item />
         </>
-      : 
+      ) : (
         <>
           <Item />
           <Img src={Close} onClick={onClick} />
         </>
-      }
+      )}
     </NavbarDiv>
   );
 };

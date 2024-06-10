@@ -144,7 +144,7 @@ const EstatesMain = () => {
         <ItemContainer>
           <SubText>모집 중</SubText>
           {sortedData.map((item, idx) => 
-            <div key={item.id} onClick={() => navigate(`/estate/${item.id}`)}>
+            <div key={item.id}>
               <Product isEstates={true} data={item} isLike={likeArr.includes(item.id) ? true : false} setIsLike={() => setLike(item.id)} />
             </div>
           )}

@@ -5,6 +5,7 @@ import ProgressBar from "./Progressbar";
 
 import Empty from '../../../assets/empty-heart.svg';
 import Fill from '../../../assets/fill-heart.svg';
+import { useNavigate } from "react-router-dom";
 
 type ProductType = {
   id: number;
@@ -33,7 +34,7 @@ const Img = styled.img`${tw`w-[70px] h-[100px] rounded-8`}`;
 const Heart = styled.img`${tw`absolute top-1 left-1`}`;
 
 const ItemContainer = styled.div`
-  ${tw`min-w-[240px] flex flex-col gap-2`}
+  ${tw`min-w-[240px] w-full flex flex-col gap-2`}
 `;
 
 const MainText = styled.span`${tw`text-sm`}`;
@@ -45,7 +46,16 @@ const SubText = styled.span`${tw`text-base`}`;
 const MiniText = styled.span`${tw`text-xxs`}`;
 
 const Product = ({ isEstates, data, isLike, setIsLike }: ProductProps) => {
+  const navigate = useNavigate();
   const percentage = data.recruited_cash / data.target_cash * 100;
+
+  const navigateDetail = () => {
+    if (isEstates) {
+      navigate(`/estates/${data.id}`)
+    } else {
+      navigate(`/energy/${data.id}`)
+    }
+  }
   
   return (
     <Container>
@@ -57,7 +67,7 @@ const Product = ({ isEstates, data, isLike, setIsLike }: ProductProps) => {
           <Heart src={Empty} onClick={setIsLike} />
         }
       </ImgContainer>
-      <ItemContainer>
+      <ItemContainer onClick={navigateDetail}>
         <MainText>{data.name}</MainText>
         <SubContainer>
           <SubText>{data.profit_rate}%</SubText>

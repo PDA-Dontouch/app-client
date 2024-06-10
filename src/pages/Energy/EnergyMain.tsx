@@ -10,6 +10,7 @@ import { addLikeEnergy, delEnergyLike, delLikeEnergy, getEnergyDatas, setEnergyL
 import { AppDispatch, RootState } from "../../store/store";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import BottomUpModal from "../../components/common/Modal/BottomUpModal";
 
 const Container = styled.div`
   ${tw`w-[calc(100% - 56px)] mt-14 mb-16 px-7 py-8 flex flex-col gap-5`}
@@ -144,7 +145,7 @@ const EnergyMain = () => {
         <ItemContainer>
           <SubText>모집 중</SubText>
           {sortedData.map((item, idx) => 
-            <div key={item.id} onClick={() => navigate(`/energy/${item.id}`)}>
+            <div key={item.id}>
               <Product isEstates={false} data={item} isLike={likeArr.includes(item.id) ? true : false} setIsLike={() => setLike(item.id)} />
             </div>
           )}

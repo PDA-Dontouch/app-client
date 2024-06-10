@@ -26,7 +26,12 @@ const Img = styled.img`
   ${tw`w-[30px] h-[30px]`}
 `;
 
-const Text = styled.span`${tw`text-base`}`;
+const Text = styled.span`
+${tw`text-base`}
+ ${css`
+    color: #606060  ;
+  `}
+`;
 
 // logo + something = type 'main'
 // other = type ''

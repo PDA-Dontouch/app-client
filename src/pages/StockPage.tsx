@@ -1,9 +1,10 @@
 import React from 'react';
-import tw, { styled } from 'twin.macro';
+import tw, { css, styled } from 'twin.macro';
 import Navbar from '../components/common/Navbar';
 import Footer from '../components/common/Footer';
 import RecommendBar from '../components/common/Stock/RecommendBar';
 import CombiBox from '../components/common/Stock/CombiBox';
+import Triangle from "../assets/triangle.svg";
 
 const stockData = {
   combination1: {
@@ -33,38 +34,37 @@ const MainContainer = styled.div`
 `;
 
 const ContentContainer = styled.div`
-  ${tw`flex-1 p-4 `}
-  margin-top: 15%;
+  ${tw`flex-1 p-4 mt-15`}
+`;
+
+
+const TextContainer = styled.div`
+  ${tw`flex justify-end mt-3 mr-4 gap-1`}
 `;
 
 const SectionHeader = styled.div`
-  ${tw`flex gap-4 my-4`}
-  margin-top: 7%;
+  ${tw`flex gap-4 my-4 pl-2 mt-7`}
 `;
 
-const HeaderText = styled.span`
-  ${tw` text-xl font-semibold`}
+const MainTab = styled.span`
+  ${tw` text-lg`}
+`;
+const SubTab = styled(MainTab)`
+  ${css`
+    color: rgba(0, 0, 0, 0.4);
+  `}
 `;
 
-const RelollText = styled.span`
-  ${tw`text-xl font-semibold`}
-`;
-
-const RelollTextContainer = styled.div`
-  ${tw`flex justify-end mt-4 mr-4`}
-`;
-
-const GrayText = styled(HeaderText)`
-  ${tw`text-gray60`}
+const NextText = styled.span`
+  ${tw`text-base`}
 `;
 
 const CombiBoxContainer = styled.div`
-  ${tw`top-6 p-6 rounded-lg relative `}
+  ${tw`top-1 p-6 rounded-lg relative `}
 `;
 
-const PurchaseButton = styled.span`
-  ${tw`text-xl absolute top-0 right-4 text-sm font-semibold`}
-  margin-top: -24px;
+const NavImage = styled.img`
+  ${tw`w-3 h-3 mt-1`}
 `;
 
 const StockPage: React.FC = () => {
@@ -73,16 +73,20 @@ const StockPage: React.FC = () => {
       <Navbar name="박유진" type="main" />
       <ContentContainer>
         <RecommendBar />
-        <RelollTextContainer>
-          <RelollText>갱신하기</RelollText>
-        </RelollTextContainer>
+        <TextContainer>
+          <NextText>갱신하기</NextText>
+          <NavImage src={Triangle} />
+        </TextContainer>
         <SectionHeader>
-          <HeaderText>추천 조합</HeaderText>
-          <GrayText>개별 종목</GrayText>
+          <MainTab>추천 조합</MainTab>
+          <SubTab>개별 종목</SubTab>
         </SectionHeader>
         <div className="flex flex-col space-y-4">
-          <CombiBoxContainer>
-            <PurchaseButton>바로 구매하기</PurchaseButton>
+          <TextContainer>
+            <NextText>바로 구매하기</NextText>
+            <NavImage src={Triangle} />
+          </TextContainer>
+          <CombiBoxContainer>  
             <CombiBox data={stockData} />
           </CombiBoxContainer>
         </div>

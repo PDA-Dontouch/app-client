@@ -78,7 +78,7 @@ const InvestTypeTest = () => {
             <TextContainer>
               {testData[currentQuestion].answers.map((item, idx) =>
                 <div key={idx}>
-                  <SelectButton name={item.text} status={answers[currentQuestion] === idx ? 'active' : 'plain'} type="long" onClick={() => handleAnswerSelect(idx)} />
+                  <SelectButton name={item.text} status={answers[currentQuestion] === idx ? 'active' : 'plain'} onClick={() => handleAnswerSelect(idx)} />
                 </div>
               )}
             </TextContainer>

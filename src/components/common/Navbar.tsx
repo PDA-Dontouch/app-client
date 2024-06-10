@@ -5,10 +5,12 @@ import MyPage from '../../assets/mypage.svg';
 import Logout from '../../assets/logout.svg';
 import Close from '../../assets/close.svg';
 import Back from '../../assets/back.svg';
+import { useNavigate } from "react-router-dom";
 
 interface NavbarProps {
   name: string;
   type: string;
+  onClick: () => void;
 }
 
 const NavbarDiv = styled.div`
@@ -30,26 +32,28 @@ const Text = styled.span`${tw`text-base`}`;
 
 // logo + something = type 'main'
 // other = type ''
-const Navbar = ({ name, type }: NavbarProps) => {
+const Navbar = ({ name, type, onClick }: NavbarProps) => {
+  const navigate = useNavigate();
+
   return (
     <NavbarDiv>
       {type === 'main' ? 
         <>
-          <Img src={Logo} />
+          <Img src={Logo} onClick={() => navigate('/')} />
           <Item>
-            <Img src={name === '로그아웃' ? Logout : MyPage} />
+            <Img src={name === '로그아웃' ? Logout : MyPage} onClick={onClick} />
             <Text>{name}</Text>
           </Item>
         </>
       : name === 'back' ? 
         <>
-          <Img src={Back} />
+          <Img src={Back} onClick={onClick} />
           <Item />
         </>
       : 
         <>
           <Item />
-          <Img src={Close} />
+          <Img src={Close} onClick={onClick} />
         </>
       }
     </NavbarDiv>

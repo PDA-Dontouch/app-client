@@ -6,14 +6,14 @@ interface ButtonProps {
   onClick: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-type StatusType = 'plain' | 'active' | 'disabled' | 'energy' | 'estate' | 'stock_sell' | 'stock_purchase';
+export type StatusType = 'plain' | 'active' | 'disabled' | 'energy' | 'estates' | 'stock_sell' | 'stock_purchase';
 type BtnStatusType = {
   [index: string]: TwStyle;
   plain: TwStyle;
   active: TwStyle;
   disabled: TwStyle;
   energy: TwStyle;
-  estate: TwStyle;
+  estates: TwStyle;
   stock_sell: TwStyle;
   stock_purchase: TwStyle;
 };
@@ -23,7 +23,7 @@ const btnStatus: BtnStatusType = {
   active: tw`bg-green text-white`,
   disabled: tw`bg-gray-disabled text-black40`,
   energy: tw`bg-blue text-white`,
-  estate: tw`bg-yellow text-white`,
+  estates: tw`bg-yellow text-white`,
   stock_sell: tw`bg-blue-down text-white`,
   stock_purchase: tw` bg-red text-white`
 };

@@ -9,7 +9,7 @@ const Container = styled.div`
 `;
 
 const Item = styled.div`
-  ${tw`w-fit flex px-2 py-1 text-xs rounded-8`}
+  ${tw`bg-white w-fit flex px-2 py-1 text-xs rounded-8`}
   ${css`
     border: 1px solid rgba(0, 0, 0, 0.07);
   `}

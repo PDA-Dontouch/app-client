@@ -5,7 +5,8 @@ import tw, { styled } from "twin.macro";
 
 import useLike from "../../hooks/useLike";
 import { AppDispatch, RootState } from "../../store/store";
-import { getEstatesData } from "../../store/reducers/estates/estates";
+import { getEnergyData } from "../../store/reducers/energy/energy";
+
 import DetailBanner from "../../components/common/Product/DetailBanner";
 import Navbar from "../../components/common/Navbar";
 import LikeBtn from "../../components/common/LikeBtn";
@@ -13,7 +14,6 @@ import Button from "../../components/common/Button";
 import BottomUpModal from "../../components/common/Modal/BottomUpModal";
 import Purchase from "../../components/common/Product/Purchase";
 import Cancel from "../../components/common/Product/Cancel";
-import { getEnergyData } from "../../store/reducers/energy/energy";
 
 const BtnContainer = styled.div`
   ${tw`w-[100%] h-[56px] flex gap-4 px-6 fixed bottom-7 box-border`}

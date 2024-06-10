@@ -1,16 +1,16 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import tw, { css, styled } from "twin.macro";
+
+import { AppDispatch, RootState } from "../../store/store";
+import { getEstatesDatas } from "../../store/reducers/estates/estates";
+import useLike from "../../hooks/useLike";
 
 import Footer from "../../components/common/Footer";
 import Navbar from "../../components/common/Navbar";
 import SortButton from "../../components/common/SortButton";
 import Product from "../../components/common/Product/Product";
-
-import { AppDispatch, RootState } from "../../store/store";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { addLikeEstates, delEstatesLike, delLikeEstates, getEstatesDatas, setEstatesLike } from "../../store/reducers/estates/estates";
-import useLike from "../../hooks/useLike";
 
 const Container = styled.div`
   ${tw`w-[calc(100% - 56px)] mt-14 mb-16 px-7 py-8 flex flex-col gap-5`}

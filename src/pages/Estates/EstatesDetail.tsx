@@ -6,6 +6,7 @@ import tw, { styled } from "twin.macro";
 import useLike from "../../hooks/useLike";
 import { AppDispatch, RootState } from "../../store/store";
 import { getEstatesData } from "../../store/reducers/estates/estates";
+
 import DetailBanner from "../../components/common/Product/DetailBanner";
 import Navbar from "../../components/common/Navbar";
 import LikeBtn from "../../components/common/LikeBtn";

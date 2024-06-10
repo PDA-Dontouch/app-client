@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import tw, { css, styled } from 'twin.macro';
-import Navbar from '../components/common/Navbar';
-import Footer from '../components/common/Footer';
-import RecommendBar from '../components/common/Stock/RecommendBar';
-import CombiBox from '../components/common/Stock/CombiBox';
-import Triangle from "../assets/triangle.svg";
+import Navbar from '../../components/common/Navbar';
+import Footer from '../../components/common/Footer';
+import RecommendBar from '../../components/common/Stock/RecommendBar';
+import CombiBox from '../../components/common/Stock/CombiBox';
+import StockContainer from '../../components/common/Stock/StockContainer';
+import Triangle from "../../assets/triangle.svg";
 
 const stockData = {
   combination1: {
@@ -47,7 +48,7 @@ const SectionHeader = styled.div`
 `;
 
 const MainTab = styled.span`
-  ${tw` text-lg`}
+  ${tw` text-lg cursor-pointer`}
 `;
 const SubTab = styled(MainTab)`
   ${css`
@@ -63,12 +64,23 @@ const CombiBoxContainer = styled.div`
   ${tw`top-1 p-6 rounded-lg relative `}
 `;
 
+
 const NavImage = styled.img`
   ${tw`w-3 h-3 mt-1`}
 `;
+const SearchImage = styled.img`
+  ${tw`w-7 h-7 mt-1`}
+`;
 
-const StockPage: React.FC = () => {
-  return (
+const StockMainPage: React.FC = () => {
+    const [activeTab, setActiveTab] = useState<'recommend' | 'individual'>('recommend');
+    const [stockList, setStockList] =  useState(stockData.combination1.stocks);
+
+    const handleTabClick = (tab: 'recommend' | 'individual') => {
+        setActiveTab(tab);
+    };
+
+    return (
     <MainContainer>
       <Navbar name="박유진" type="main" />
       <ContentContainer>
@@ -77,23 +89,45 @@ const StockPage: React.FC = () => {
           <NextText>갱신하기</NextText>
           <NavImage src={Triangle} />
         </TextContainer>
-        <SectionHeader>
-          <MainTab>추천 조합</MainTab>
-          <SubTab>개별 종목</SubTab>
-        </SectionHeader>
-        <div className="flex flex-col space-y-4">
+    
+          {activeTab === 'recommend' ? (
+            <div className="flex flex-col space-y-4">
+            <SectionHeader>
+              <MainTab onClick={() => handleTabClick('recommend')}>
+                  추천 조합
+              </MainTab>
+              <SubTab onClick={() => handleTabClick('individual')}>
+                  개별 종목
+              </SubTab>
+          </SectionHeader>
           <TextContainer>
-            <NextText>바로 구매하기</NextText>
-            <NavImage src={Triangle} />
-          </TextContainer>
-          <CombiBoxContainer>  
-            <CombiBox data={stockData} />
-          </CombiBoxContainer>
-        </div>
+              <NextText>바로 구매하기</NextText>
+              <NavImage src={Triangle} />
+            </TextContainer>
+            <CombiBoxContainer>
+              <CombiBox data={stockData} />
+            </CombiBoxContainer>
+            </div>
+          ) : (
+            <div className="flex flex-col space-y-4">
+            <SectionHeader>
+              <SubTab onClick={() => handleTabClick('recommend')}>
+                  추천 조합
+              </SubTab>
+              <MainTab onClick={() => handleTabClick('individual')}>
+                  개별 종목
+              </MainTab>
+          </SectionHeader>
+          <TextContainer>
+              <SearchImage src={Triangle} />
+            </TextContainer>
+            
+            </div>        
+          )}
       </ContentContainer>
       <Footer />
     </MainContainer>
   );
 };
 
-export default StockPage;
+export default StockMainPage;

@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { persistor, store } from './store/store';
 import { PersistGate } from 'redux-persist/integration/react';
 import LoginPage from './pages/LoginPage';
-import StockPage from './pages/StockPage';
+import StockMainPage from './pages/Stock/StockMainPage';
 
 function App() {
   return (
@@ -12,7 +12,7 @@ function App() {
       <PersistGate loading={null} persistor={persistor}>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<StockPage />} />
+            <Route path="/stock" element={<StockMainPage />} />
             <Route path="/login" element={<LoginPage />} />
           </Routes>
         </BrowserRouter>

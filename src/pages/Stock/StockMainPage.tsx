@@ -7,8 +7,8 @@ import Footer from '../../components/common/Footer';
 import RecommendBar from '../../components/common/Stock/RecommendBar';
 import CombiBox from '../../components/common/Stock/CombiBox';
 import StockCard from '../../components/common/Stock/StockCard';
+import SearchBar from '../../components/common/Stock/SearchBar';
 import Triangle from "../../assets/triangle.svg";
-import SearchImg from "../../assets/search.svg";
 
 import { addLikeStocks, delStocksLike, delLikeStocks, getStocksDatas, setStocksLike } from "../../store/reducers/stocks/stocks";
 
@@ -72,11 +72,18 @@ const stockList = [
     image: "https://file.alphasquare.co.kr/media/images/stock_logo/kr/035720.png",
     price: 43400,
     dividend_rate: 3.64,
+  },{
+    code: "000660",
+    name: "SK하이닉스",
+    market: "KSC",
+    image: "https://file.alphasquare.co.kr/media/images/stock_logo/kr/000660.png",
+    price: 208000,
+    dividend_rate: 3.64,
   },
 ]
 
 const MainContainer = styled.div`
-  ${tw`flex flex-col min-h-screen overflow-y-auto`}
+  ${tw`flex flex-col min-h-screen`}
 `;
 
 const ContentContainer = styled.div`
@@ -106,7 +113,7 @@ const NextText = styled.span`
 `;
 
 const CombiBoxContainer = styled.div`
-  ${tw`top-1 p-6 rounded-lg relative `}
+  ${tw`top-1 p-6 rounded-lg relative overflow-y-auto`}
 `;
 
 const ItemContainer = styled.div`
@@ -117,13 +124,10 @@ const NavImage = styled.img`
   ${tw`w-3 h-3 mt-1`}
 `;
 
-const SearchContainer = styled.div`
-  ${tw`flex justify-end mt-2 mb-2 gap-1`}
+const SortType = styled.span`
+  ${tw`text-sm mt-5 mb-5 text-right block`}
 `;
 
-const SearchImage = styled.img`
-  ${tw`w-6 h-6`}
-`;
 
 const StockMainPage: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -187,9 +191,8 @@ const StockMainPage: React.FC = () => {
                   개별 종목
               </MainTab>
             </SectionHeader>
-            <SearchContainer>
-              <SearchImage src={SearchImg} />
-            </SearchContainer>
+            <SearchBar/>
+            <SortType>추천 종목순</SortType>
             <ItemContainer>
               {stockItems.map((item,idx)=>
                 <div key={item.code}>
@@ -197,7 +200,6 @@ const StockMainPage: React.FC = () => {
                 </div>
               )}
             </ItemContainer>
-            
             </div>        
           )}
       </ContentContainer>

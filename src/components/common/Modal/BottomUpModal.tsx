@@ -9,8 +9,7 @@ interface ModalProps {
 }
 
 const BackDrop = styled.div`
-  ${tw`w-[100%] h-[100%] bg-black40 fixed left-0 top-0`}
-  z-index: 100;
+  ${tw`z-[100] w-[100%] h-[100%] bg-black40 fixed left-0 top-0`}
 `;
 
 const slideUpAnimation = css`
@@ -25,11 +24,10 @@ const slideUpAnimation = css`
 `;
 
 const ModalContainer = styled.div`
-  ${tw`flex flex-col w-[100%] h-fit px-5 py-4 gap-4 bg-gray-light fixed left-0 bottom-0 rounded-t-20 shadow-[2px_2px_12px_0_rgba(0,0,0,0.2)]`}
+  ${tw`z-[100] flex flex-col w-[100%] h-fit px-5 py-4 gap-4 bg-gray-light fixed left-0 bottom-0 rounded-t-20 shadow-[2px_2px_12px_0_rgba(0,0,0,0.2)]`}
   transition: height 0.3s ease-in-out;
   box-sizing: border-box;
   animation: slideUp 0.5s ease-out forwards;
-  z-index: 100;
   ${slideUpAnimation}
 `;
 

@@ -138,7 +138,7 @@ export default function Calendar({
           >
             <DateText day={date.getDay()}>{date.getDate()}</DateText>
             {plans.map((plan, i) => {
-              return <SalaryPlan type={plan.type}></SalaryPlan>;
+              return <SalaryPlan key={i} type={plan.type}></SalaryPlan>;
             })}
           </DateCell>
         );

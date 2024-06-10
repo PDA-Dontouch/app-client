@@ -1,17 +1,12 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import storage from "redux-persist/lib/storage";
 import {
-  FLUSH,
-  PAUSE,
-  PERSIST,
-  PURGE,
-  REGISTER,
-  REHYDRATE,
   persistReducer,
   persistStore,
 } from "redux-persist";
 import logger from 'redux-logger';
 import energyReducer from './reducers/energy/energy';
+import estatesReducer from "./reducers/estates/estates";
 
 const rootPersistConfig = {
   key: "root",
@@ -23,6 +18,7 @@ const myMiddlewares = [logger];
 
 const rootReducer = combineReducers({
   energy: energyReducer,
+  estates: estatesReducer,
 });
 
 const persistedReducer = persistReducer(rootPersistConfig, rootReducer);

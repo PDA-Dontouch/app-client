@@ -9,3 +9,7 @@ export const authInstance = axios.create({
 export const energyInstance = axios.create({
   baseURL: BASE_URL + '/energy',
 })
+
+export const estatesInstance = axios.create({
+  baseURL: BASE_URL + '/estates',
+})

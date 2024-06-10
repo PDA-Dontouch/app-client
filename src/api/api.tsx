@@ -13,3 +13,7 @@ export const energyInstance = axios.create({
 export const estatesInstance = axios.create({
   baseURL: BASE_URL + '/estates',
 })
+
+export const stockInstance = axios.create({
+  baseURL: BASE_URL + '/stocks',
+})

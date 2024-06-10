@@ -6,6 +6,7 @@ import EstatesDetail from './pages/Estates/EstatesDetail';
 import LoginPage from './pages/LoginPage';
 import CalendarPage from './pages/CalendarPage';
 
+
 export default function Routers() {
   return (
     <Routes>
@@ -13,7 +14,7 @@ export default function Routers() {
       <Route path="/energy" element={<EnergyMain />} />
       <Route path="/estates" element={<EstatesMain />} />
       <Route path="/estates/:estates_id" element={<EstatesDetail />} />
-      <Route path="/stock" element={<StockPage />} />
+      <Route path="/stocks" element={<StockPage />} />
       <Route path="/calendar" element={<CalendarPage />} />
     </Routes>
   );

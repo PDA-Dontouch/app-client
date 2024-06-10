@@ -2,7 +2,7 @@ import tw, { styled } from "twin.macro";
 
 interface ItemProps {
   title: string;
-  content: string;
+  content: string | number;
   isModify: boolean;
   isStock: boolean;
 }

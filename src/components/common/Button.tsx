@@ -6,7 +6,7 @@ interface ButtonProps {
   onClick: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-type StatusType = 'plain' | 'active' | 'disabled' | 'energy' | 'estates' | 'stock_sell' | 'stock_purchase';
+export type StatusType = 'plain' | 'active' | 'disabled' | 'energy' | 'estates' | 'stock_sell' | 'stock_purchase';
 type BtnStatusType = {
   [index: string]: TwStyle;
   plain: TwStyle;

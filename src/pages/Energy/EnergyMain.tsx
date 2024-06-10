@@ -135,7 +135,7 @@ const EnergyMain = () => {
 
   return (
     <>
-      <Navbar name="박유진" type="main" />
+      <Navbar name="박유진" type="main" onClick={() => {}} />
       <Container>
         <MainText>신재생에너지</MainText>
         <BtnContainer>

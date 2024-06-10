@@ -1,55 +1,50 @@
-import React from 'react';
-import tw, { styled } from 'twin.macro';
-import SocialLogin from '../components/Login/SocialLogin';
-import googleLogo from '../assets/google.svg';
-import naverLogo from '../assets/naver.svg';
-import kakaoLogo from '../assets/kakao.svg';
-import mainLogo from '../assets/logo.svg';
+import tw, { styled } from "twin.macro";
+import { useDispatch } from "react-redux";
+import { postLogin } from "../store/reducers/auth/auth";
+import SocialLogin from "../components/Login/SocialLogin";
+
+import Logo from '../assets/logo.svg';
+import Kakao from '../assets/kakao.svg';
+import Naver from '../assets/naver.svg';
+import Google from '../assets/google.svg';
+import { AppDispatch } from "../store/store";
 
 
-
-const MainContainer = styled.div`
-  ${tw`flex flex-col items-center justify-center min-h-screen overflow-y-auto`}
-`;
-
-const LoginButtonContainer = styled.div`
-  ${tw`flex flex-col space-y-5 p-4`}
-  margin-top:10%
+const Container = styled.div`
+  ${tw`w-[calc(100% - 144px)] h-[calc(100% - 360px)] px-18 py-[180px] flex flex-col justify-between items-center`}
 `;
 
 const LogoImage = styled.img`
   ${tw`w-32 h-auto`}
 `;
 
+const ItemContainer = styled.div`
+  ${tw`w-[100%] flex flex-col gap-6`}
+`;
 
-export const API_BASE_URL = 'http://localhost:8081';
-export const OAUTH2_REDIRECT_URI = 'http://localhost:5173/';
+const LoginPage = () => {
+  //const dispatch = useDispatch<AppDispatch>();
+  const googleAuthUrl = import.meta.env.GOOGLE_AUTH_URL as string;
+  const naverAuthUrl = import.meta.env.NAVER_AUTH_URL as string;
+  const kakaoAuthUrl = import.meta.env.KAKAO_AUTH_URL as string;
 
-export const GOOGLE_AUTH_URL = API_BASE_URL + '/oauth2/authorization/google?redirect_uri=' + OAUTH2_REDIRECT_URI;
-export const NAVER_AUTH_URL = API_BASE_URL + '/oauth2/authorization/naver?redirect_uri=' + OAUTH2_REDIRECT_URI;
-export const KAKAO_AUTH_URL = API_BASE_URL + '/oauth2/authorization/kakao?redirect_uri=' + OAUTH2_REDIRECT_URI;
+  const onLogin = (e: React.MouseEvent<HTMLElement, MouseEvent>, url: string) => {
+    e.preventDefault();
+    //dispatch(postLogin(data));
+    window.location.href = url;
+  };
 
-const LoginPage: React.FC = () => {
-    const handleGoogleLogin = () => {
-        window.location.href = GOOGLE_AUTH_URL;
-    };
-    const handleNaverLogin = () => {
-        window.location.href = NAVER_AUTH_URL;
-    };
-    const handleKakaoLogin = () => {
-        window.location.href = KAKAO_AUTH_URL;
-    };
 
-    return (
-        <MainContainer>
-            <LogoImage src={mainLogo}/>
-        <LoginButtonContainer>
-            <SocialLogin name={"Kakao"} url={kakaoLogo} onClick={handleKakaoLogin}></SocialLogin>
-            <SocialLogin name={"Naver"} url={naverLogo} onClick={handleNaverLogin}></SocialLogin>
-            <SocialLogin name={"Google"} url={googleLogo} onClick={handleGoogleLogin}></SocialLogin>
-        </LoginButtonContainer>
-        </MainContainer>
-    );
+  return (
+    <Container>
+      <LogoImage src={Logo} />
+      <ItemContainer>
+        <SocialLogin url={Kakao} name="Kakao" onClick={(e: React.MouseEvent<HTMLElement, MouseEvent>) => onLogin(e, kakaoAuthUrl)} />
+        <SocialLogin url={Naver} name="Naver" onClick={(e: React.MouseEvent<HTMLElement, MouseEvent>) => onLogin(e,naverAuthUrl)} />
+        <SocialLogin url={Google} name="Google" onClick={(e: React.MouseEvent<HTMLElement, MouseEvent>) => onLogin(e,googleAuthUrl)} />
+      </ItemContainer>
+    </Container>
+  );
 };
 
 export default LoginPage;

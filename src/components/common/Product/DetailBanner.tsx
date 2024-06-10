@@ -1,16 +1,18 @@
-import tw, { styled } from "twin.macro";
+import tw, { css, styled } from "twin.macro";
 import Navbar from "../Navbar";
 import Tag from "./Tag";
 import InfoInBanner from "./InfoInBanner";
 
 interface BannerProps {
-  tags: string[],
-  date: string,
-  title: string
+  isEstates: boolean;
+  tags: string[];
+  date: string;
+  title: string;
 }
 
-const Container = styled.div`
-  ${tw`relative flex flex-col mt-14 bg-blue px-5 py-7 gap-7`}
+const Container = styled.div<{ isEstates: boolean }>`
+  ${tw`relative flex flex-col mt-14 px-5 py-7 gap-7`}
+  ${({ isEstates }) => isEstates ? css`background-image: linear-gradient(#F1CD6D, #E6B637);` : css`background-image: linear-gradient(#90C0EC, #5293D0);`}
 `;
 
 const TopItem = styled.div`
@@ -29,21 +31,18 @@ const MiniText = styled.span`
   ${tw`text-xs text-white`}
 `;
 
-const DetailBanner = ({ tags, date, title }: BannerProps) => {
+const DetailBanner = ({ isEstates, tags, date, title }: BannerProps) => {
   return (
-    <>
-      <Navbar name="back" type="" />
-      <Container>
-        <TopItem>
-          <Tag tags={tags} />
-          <MiniText>{date} 오픈</MiniText>
-        </TopItem>
-        <MidItem>
-          <MainText>{title}</MainText>
-          <InfoInBanner />
-        </MidItem>
-      </Container>
-    </>
+    <Container isEstates={isEstates}>
+      <TopItem>
+        <Tag tags={tags} />
+        <MiniText>{date} 오픈</MiniText>
+      </TopItem>
+      <MidItem>
+        <MainText>{title}</MainText>
+        <InfoInBanner />
+      </MidItem>
+    </Container>
   );
 };
 

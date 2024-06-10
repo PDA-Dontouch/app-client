@@ -134,7 +134,7 @@ const EstatesMain = () => {
 
   return (
     <>
-      <Navbar name="박유진" type="main" />
+      <Navbar name="박유진" type="main" onClick={() => {}} />
       <Container>
         <MainText>부동산·법인·SCF</MainText>
         <BtnContainer>

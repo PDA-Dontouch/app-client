@@ -26,6 +26,7 @@ const SelectedYM = styled.div`
   ${tw`bg-white border-green border-solid border-2 w-full flex flex-row items-center justify-center`}
   height: 60px;
   border-radius: 12px;
+  box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.25);
 `;
 
 const DateSection = styled.div`
@@ -91,7 +92,9 @@ const CancelConfirmContainer = styled.div`
 `;
 
 const ConfirmBtn = styled.button`
-  ${tw`text-red w-fit`}
+  ${tw`text-[red] w-fit`}
+  background-color: transparent;
+  border: none;
 `;
 
 export default function SelectYearMonth({

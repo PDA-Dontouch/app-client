@@ -1,11 +1,15 @@
+import React from 'react';
 import tw, { styled } from 'twin.macro';
+import { PlanDetailType } from './SalaryPlan';
 
 type CalendarProps = {
   type: 'week' | 'month';
   year: number;
   month: number;
   date: number;
+  setDate: React.Dispatch<React.SetStateAction<number>>;
   day: number;
+  plans: PlanDetailType[];
   width: number;
   openModal: () => void;
 };
@@ -27,7 +31,7 @@ type DateTextProps = {
 };
 
 type SalaryPlanProps = {
-  type: 'stock' | 'energy' | 'estate';
+  type: '배당' | '에너지' | '부동산';
 };
 
 const CalendarContainer = styled.div<CalendarContainerProps>`
@@ -36,7 +40,7 @@ const CalendarContainer = styled.div<CalendarContainerProps>`
   ${({ width }) => `width: ${width}px;`}
 `;
 
-const Day = styled.div<DayProps>`
+const Day = styled.div<DayProps>`W
   width: 100%;
   height: 20px;
   ${({ day }) =>
@@ -74,9 +78,9 @@ const DateText = styled.div<DateTextProps>`
 
 const SalaryPlan = styled.div<SalaryPlanProps>`
   ${({ type }) =>
-    type === 'stock'
+    type === '배당'
       ? 'background-color: #E9F1D6;'
-      : type === 'estate'
+      : type === '부동산'
         ? 'background-color: #A4C3B2;'
         : 'background-color: #AFDBD1;'}
   ${tw`h-3`}
@@ -88,7 +92,9 @@ export default function Calendar({
   year,
   month,
   date,
+  setDate,
   day,
+  plans,
   width,
   openModal,
 }: CalendarProps) {
@@ -125,12 +131,15 @@ export default function Calendar({
           <DateCell
             key={idx}
             inThisMonth={date.getMonth() === month ? true : false}
-            onClick={openModal}
+            onClick={() => {
+              openModal();
+              setDate(date.getDate());
+            }}
           >
             <DateText day={date.getDay()}>{date.getDate()}</DateText>
-            <SalaryPlan type="stock"></SalaryPlan>
-            <SalaryPlan type="energy"></SalaryPlan>
-            <SalaryPlan type="estate"></SalaryPlan>
+            {plans.map((plan, i) => {
+              return <SalaryPlan type={plan.type}></SalaryPlan>;
+            })}
           </DateCell>
         );
       })}

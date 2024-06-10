@@ -1,10 +1,11 @@
 import tw, { styled } from 'twin.macro';
 import Calendar from '../components/Calendar/Calendar';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import BottomUpModal from '../components/common/Modal/BottomUpModal';
 import SelectYearMonth from '../components/Calendar/SelectYearMonth';
 import Navbar from '../components/common/Navbar';
 import Footer from '../components/common/Footer';
+import SalaryPlan, { PlanDetailType } from '../components/Calendar/SalaryPlan';
 
 type ModalType = 'date' | 'plan';
 
@@ -22,7 +23,8 @@ const CalendarTitle = styled.div`
   flex-direction: row;
   justify-content: space-between;
   width: 100%;
-  ${tw`px-7`};
+  ${tw`px-6`};
+  box-sizing: border-box;
 `;
 
 const GreenBar = styled.div`
@@ -64,6 +66,34 @@ export default function CalendarPage() {
   const [date, setDate] = useState<number>(today.getDate());
   const [day, setDay] = useState<number>(today.getDay());
 
+  const salaryData: PlanDetailType[] = [
+    {
+      type: '배당',
+      name: '삼성전자',
+      price: 1200,
+    },
+    {
+      type: '에너지',
+      name: '삼성전자',
+      price: 21955,
+    },
+    {
+      type: '부동산',
+      name: '울산 행복아파트',
+      price: 40560,
+    },
+    {
+      type: '배당',
+      name: '삼성전자',
+      price: 1200,
+    },
+    {
+      type: '에너지',
+      name: '삼성전자',
+      price: 21955,
+    },
+  ];
+
   function onOpenModal(type: ModalType) {
     if (type == 'date') {
       setModalType('date');
@@ -80,13 +110,20 @@ export default function CalendarPage() {
         <BottomUpModal
           onClose={() => setModal(false)}
           content={
-            <SelectYearMonth
-              year={year}
-              setYear={setYear}
-              month={month}
-              setMonth={setMonth}
-              setModal={setModal}
-            />
+            modalType === 'date' ? (
+              <SelectYearMonth
+                year={year}
+                setYear={setYear}
+                month={month}
+                setMonth={setMonth}
+                setModal={setModal}
+              />
+            ) : (
+              <SalaryPlan
+                date={new Date(year, month, date)}
+                plans={salaryData}
+              />
+            )
           }
         />
       )}
@@ -111,7 +148,9 @@ export default function CalendarPage() {
           year={year}
           month={month}
           date={date}
+          setDate={setDate}
           day={day}
+          plans={salaryData}
           width={document.body.clientWidth}
           openModal={() => {
             onOpenModal('plan');

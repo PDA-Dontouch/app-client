@@ -5,7 +5,7 @@ import Button from "../Button";
 
 interface ModalProps {
   type: string;
-  onClose: () => void;
+  onClick: () => void;
 }
 
 const BackDrop = styled.div`
@@ -26,22 +26,28 @@ const ItemContainer = styled.div`
 `;
 
 const TextContainer = styled.div`
-  ${tw`w-full flex justify-center items-center gap-1`}
+  ${tw`w-full flex justify-center items-end gap-1`}
 `;
 
 const MainText = styled.span`${tw`text-xl`}`;
 
-const BoldText = styled.span`${tw`text-2xl font-semibold`}`;
+const BoldText = styled.span`
+  ${tw`text-2xl font-semibold`}
+  ${css`
+    box-shadow: inset 0 -10px 0 rgba(26, 167, 110, 0.4);
+    line-height: 26px;
+  `}
+`;
 
-const PlainText = styled.span`${tw``}`;
+const PlainText = styled.span`${tw`text-base`}`;
 
-const BasicModal = ({ type, onClose }: ModalProps) => {
+const BasicModal = ({ type, onClick }: ModalProps) => {
   return (
     <>
       <BackDrop />
       <ModalContainer>
         <ItemContainer>
-          <img src={Graph} onClick={onClose} />
+          <img src={Graph} />
         </ItemContainer>
         <TextContainer>
           <MainText>당신은</MainText>
@@ -53,7 +59,7 @@ const BasicModal = ({ type, onClose }: ModalProps) => {
             {type}형인 당신을 위해 어떤 추천이 기다리고 있을지 궁금하시다면 지금 바로!
           </PlainText>
         </TextContainer>
-        <Button name="내 계좌 연동하기" status="active" onClick={onClose} />
+        <Button name="내 계좌 연동하기" status="active" onClick={onClick} />
       </ModalContainer>
     </>
   );

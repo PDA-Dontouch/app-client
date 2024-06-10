@@ -29,13 +29,13 @@ const btnStatus: BtnStatusType = {
 };
 
 const Btn = styled.button<{ status: StatusType }>(({ status }) => [
-  tw`w-full py-[18px] rounded-12 flex justify-center items-center text-base border-none shadow-[2px_2px_4px_0_rgba(0,0,0,0.1)]`,
+  tw`w-full max-h-14 py-[18px] rounded-12 flex justify-center items-center text-base border-none shadow-[2px_2px_4px_0_rgba(0,0,0,0.1)]`,
   btnStatus[status],
 ]);
 
 const Button = ({ name, status, onClick }: ButtonProps) => {
   return (
-    <Btn status={status} onClick={onClick}>{name}</Btn>
+    <Btn disabled={status === 'disabled' ? true : false} status={status} onClick={onClick}>{name}</Btn>
   );
 };
 

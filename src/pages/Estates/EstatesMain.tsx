@@ -10,6 +10,7 @@ import { AppDispatch, RootState } from "../../store/store";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { addLikeEstates, delEstatesLike, delLikeEstates, getEstatesDatas, setEstatesLike } from "../../store/reducers/estates/estates";
+import useLike from "../../hooks/useLike";
 
 const Container = styled.div`
   ${tw`w-[calc(100% - 56px)] mt-14 mb-16 px-7 py-8 flex flex-col gap-5`}
@@ -29,9 +30,7 @@ const MainText = styled.span`
 
 const SubText = styled.span`${tw`text-lg`}`;
 
-const ItemContainer = styled.div`
-  ${tw`flex flex-col gap-8`}
-`;
+const ItemContainer = styled.div`${tw`flex flex-col gap-8`}`;
 
 const EstatesMain = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -100,37 +99,7 @@ const EstatesMain = () => {
   const sortedData = sortByProfit ? [...data].sort((a, b) => b.profit_rate - a.profit_rate) : data;
   // const sortedData = sortByProfit ? [...estatesDatas].sort((a, b) => b.profit_rate - a.profit_rate) : estatesDatas;
 
-  const likeArr = useSelector((state: RootState) => state.estates.likes);
-
-  const setLike = (estates_id: number) => {
-    if (likeArr.includes(estates_id)) {
-      dispatch(delEstatesLike(estates_id));
-      // const data = {
-      //   token: "token",
-      //   estates_id: estates_id
-      // }
-
-      // dispatch(delLikeEstates(data))
-      //   .then((res) => {
-      //     if (res.payload.success === true) {
-            // dispatch(delEstatesLike(estates_id));
-      //     }
-      //   })
-    } else {
-      dispatch(setEstatesLike(estates_id));
-      // const data = {
-      //   token: "token",
-      //   estates_id: estates_id
-      // }
-  
-      // dispatch(addLikeEstates(data))
-      //   .then((res) => {
-      //     if (res.payload.success === true) {
-            // dispatch(setEstatesLike(estates_id));
-      //     }
-      //   })
-    }
-  }
+  const { likeArr, setLike } = useLike("estates");
 
   return (
     <>

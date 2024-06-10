@@ -1,5 +1,4 @@
 import tw, { css, styled } from "twin.macro";
-import Navbar from "../Navbar";
 import Tag from "./Tag";
 import InfoInBanner from "./InfoInBanner";
 

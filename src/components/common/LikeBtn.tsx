@@ -1,4 +1,3 @@
-import { Dispatch, SetStateAction } from "react";
 import tw, { styled } from "twin.macro";
 
 import Empty from '../../assets/empty-heart.svg';
@@ -6,7 +5,7 @@ import Fill from '../../assets/fill-heart.svg';
 
 interface LikeProps {
   isLike: boolean;
-  setIsLike: Dispatch<SetStateAction<boolean>>;
+  setIsLike: () => void;
 }
 
 const Container = styled.div`
@@ -19,9 +18,9 @@ const LikeBtn = ({ isLike, setIsLike }: LikeProps) => {
   return (
     <Container>
       {isLike ?
-        <Img src={Fill} onClick={() => setIsLike(false)} />
+        <Img src={Fill} onClick={setIsLike} />
       :
-        <Img src={Empty} onClick={() => setIsLike(true)} />
+        <Img src={Empty} onClick={setIsLike} />
       }
     </Container>
   );

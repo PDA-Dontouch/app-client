@@ -12,6 +12,7 @@ import LikeBtn from "../../components/common/LikeBtn";
 import Button from "../../components/common/Button";
 import BottomUpModal from "../../components/common/Modal/BottomUpModal";
 import Purchase from "../../components/common/Product/Purchase";
+import Cancel from "../../components/common/Product/Cancel";
 
 const BtnContainer = styled.div`
   ${tw`w-[100%] h-[56px] flex gap-4 px-6 fixed bottom-7 box-border`}
@@ -39,6 +40,7 @@ const EstatesDetail = () => {
       </BtnContainer>
       {isOpen && (
         <BottomUpModal onClose={() => setIsOpen(false)} content={<Purchase period="6" profit='205,100' btnType="estates" />} />
+        // <BottomUpModal onClose={() => setIsOpen(false)} content={<Cancel amount={5000000} period={6} profit={205100} btnType="plain" />} />
       )}
     </>
   );

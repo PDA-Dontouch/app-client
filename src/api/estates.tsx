@@ -1,10 +1,11 @@
-import { estatesTypes } from "../store/reducers/estates/estates";
-import { estatesInstance } from "./api";
+import { estatesTypes } from '../store/reducers/estates/estates';
+import { estatesInstance } from './api';
+
+export const estate_url = `/api/estates`;
 
 export const estatesDatas = async () => {
-  const baseUrl = `/`;
   try {
-    const response = await estatesInstance.get(baseUrl);
+    const response = await estatesInstance.get(estate_url);
     return response;
   } catch (err) {
     console.error(err);
@@ -13,9 +14,8 @@ export const estatesDatas = async () => {
 };
 
 export const estatesData = async (estates_id: number) => {
-  const baseUrl = `/${estates_id}`;
   try {
-    const response = await estatesInstance.get(baseUrl);
+    const response = await estatesInstance.get(estate_url + `/${estates_id}`);
     return response;
   } catch (err) {
     console.error(err);
@@ -24,9 +24,8 @@ export const estatesData = async (estates_id: number) => {
 };
 
 export const estatesLike = async (data: estatesTypes) => {
-  const baseUrl = `/like`;
   try {
-    const response = await estatesInstance.post(baseUrl, data);
+    const response = await estatesInstance.post(estate_url + '/like', data);
     return response;
   } catch (err) {
     console.error(err);
@@ -35,9 +34,10 @@ export const estatesLike = async (data: estatesTypes) => {
 };
 
 export const estatesDisLike = async (data: estatesTypes) => {
-  const baseUrl = `/like`;
   try {
-    const response = await estatesInstance.delete(baseUrl, { data: data });
+    const response = await estatesInstance.delete(estate_url + '/like', {
+      data: data,
+    });
     return response;
   } catch (err) {
     console.error(err);

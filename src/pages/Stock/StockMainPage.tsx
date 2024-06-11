@@ -60,7 +60,7 @@ const stockList = [
     dividend_rate: 3.64,
   },{
     code: "TSLA",
-    name: "애플",
+    name: "테슬라",
     market: "NASDAQ",
     image: "https://file.alphasquare.co.kr/media/images/stock_logo/us/TSLA.png",
     price: 177.42,
@@ -80,6 +80,35 @@ const stockList = [
     price: 208000,
     dividend_rate: 3.64,
   },
+  {
+    code: "005930",
+    name: "삼성전자",
+    market: "KSC",
+    image: "https://file.alphasquare.co.kr/media/images/stock_logo/kr/005930.png",
+    price: 63000,
+    dividend_rate: 3.64,
+  },{
+    code: "035420",
+    name: "네이버",
+    market: "KSC",
+    image: "https://file.alphasquare.co.kr/media/images/stock_logo/kr/035420.png",
+    price: 171300,
+    dividend_rate: 3.64,
+  },{
+    code: "AAPL",
+    name: "애플",
+    market: "NASDAQ",
+    image: "https://file.alphasquare.co.kr/media/images/stock_logo/us/AAPL.png",
+    price: 196.88,
+    dividend_rate: 3.64,
+  },{
+    code: "TSLA",
+    name: "테슬라",
+    market: "NASDAQ",
+    image: "https://file.alphasquare.co.kr/media/images/stock_logo/us/TSLA.png",
+    price: 177.42,
+    dividend_rate: 3.64,
+  }
 ]
 
 const MainContainer = styled.div`

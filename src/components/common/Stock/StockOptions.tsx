@@ -3,18 +3,21 @@ import tw, { styled } from 'twin.macro';
 import SearchBar from './SearchBar';
 
 const Container = styled.div`
-  ${tw`w-full flex flex-col items-center p-3`}
+  ${tw`w-full h-[450px] flex flex-col items-center p-3`}
+`;
+const StockItems = styled.div`
+  ${tw`w-full flex-col flex flex-1 overflow-y-auto justify-between`}
 `;
 const StockInfo = styled.div`
-  ${tw`w-full flex items-center justify-between p-3`}
+  ${tw`flex items-center justify-between p-3`}
 `;
 
 const StockLogo = styled.img`
-  ${tw`w-12 h-12 rounded-full`}
+  ${tw`w-10 h-10 rounded-full`}
 `;
 
 const ItemContainer = styled.div`
-  ${tw`flex flex-row ml-1 justify-between`}
+  ${tw`flex flex-row justify-between`}
 `;
 
 const MainText = styled.span`
@@ -68,7 +71,7 @@ const stockList = [
   },
   {
     code: 'TSLA',
-    name: '애플',
+    name: '테슬라',
     market: 'NASDAQ',
     image: 'https://file.alphasquare.co.kr/media/images/stock_logo/us/TSLA.png',
     price: 177.42,
@@ -91,12 +94,46 @@ const stockList = [
       'https://file.alphasquare.co.kr/media/images/stock_logo/kr/000660.png',
     price: 208000,
     dividend_rate: 3.64,
+  },{
+    code: '005930',
+    name: '삼성전자',
+    market: 'KSC',
+    image:
+      'https://file.alphasquare.co.kr/media/images/stock_logo/kr/005930.png',
+    price: 63000,
+    dividend_rate: 3.64,
   },
+  {
+    code: '035420',
+    name: '네이버',
+    market: 'KSC',
+    image:
+      'https://file.alphasquare.co.kr/media/images/stock_logo/kr/035420.png',
+    price: 171300,
+    dividend_rate: 3.64,
+  },
+  {
+    code: 'AAPL',
+    name: '애플',
+    market: 'NASDAQ',
+    image: 'https://file.alphasquare.co.kr/media/images/stock_logo/us/AAPL.png',
+    price: 196.88,
+    dividend_rate: 3.64,
+  },
+  {
+    code: 'TSLA',
+    name: '테슬라',
+    market: 'NASDAQ',
+    image: 'https://file.alphasquare.co.kr/media/images/stock_logo/us/TSLA.png',
+    price: 177.42,
+    dividend_rate: 3.64,
+  }
 ];
 
 const StockOptions: React.FC = () => (
   <Container>
     <SearchBar modal={true}/>
+    <StockItems>
     {stockList.map((stock) => (
       <StockInfo>
         <ItemContainer>
@@ -124,6 +161,7 @@ const StockOptions: React.FC = () => (
         </PriceContainer>
       </StockInfo>
     ))}
+    </StockItems>
   </Container>
 );
 export default StockOptions;

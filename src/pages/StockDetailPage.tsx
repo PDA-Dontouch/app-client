@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import tw, { styled } from 'twin.macro';
 import SelectStock from '../components/Stock/SelectStock';
-import StockRecommend from '../components/common/Stock/StockRecommend'; 
+import StockRecommend from '../components/common/Stock/StockRecommend';
 import Button from '../components/common/Button';
 import Navbar from '../components/common/Navbar';
+import BottomUpModal from '../components/common/Modal/BottomUpModal';
 
 const Wrapper = styled.div`
   ${tw`relative flex flex-col h-full bg-white pt-20`}
@@ -14,15 +15,15 @@ const Container = styled.div`
 `;
 
 const HeaderText = styled.span`
-  ${tw`text-lg font-semibold mb-4 flex items-center justify-center [font-family: 'Inter'] [line-height: 22px]`}
+  ${tw`text-lg font-semibold mb-4 flex items-center justify-center [line-height: 22px]`}
 `;
 
 const AddStock = styled.div`
-  ${tw`flex justify-center items-center text-xs text-black mt-4 cursor-pointer [font-family: 'Inter'] [line-height: 15px]`}
+  ${tw`flex justify-center items-center text-xs text-black mt-4 cursor-pointer [line-height: 15px]`}
 `;
 
 const ExpectedDividend = styled.div`
-  ${tw`text-right text-base text-sm text-black mt-4 mb-6 [font-family: 'Inter'] [line-height: 17px]`}
+  ${tw`text-right text-base text-sm text-black mt-4 mb-6 [line-height: 17px]`}
 `;
 
 const Divider = styled.div`
@@ -30,11 +31,11 @@ const Divider = styled.div`
 `;
 
 const ReasonTitle = styled.h2`
-  ${tw`text-lg font-semibold mb-2 [font-family: 'Pretendard'] [line-height: 22px]`}
+  ${tw`text-lg font-semibold mb-2 [line-height: 22px]`}
 `;
 
 const StockContainer = styled.div`
-  ${tw`mb-2`}
+  ${tw`flex flex-col gap-2`}
 `;
 
 const AbsoluteButtonContainer = styled.div`
@@ -42,17 +43,32 @@ const AbsoluteButtonContainer = styled.div`
 `;
 
 const StockDetailPage: React.FC = () => {
+  const [isModalOpen, setModalOpen] = useState(false);
+
   const handleDelete = (name: string) => {
     alert(`${name} 삭제`);
   };
 
   const handleAddStock = () => {
-    alert('종목 추가하기');
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
   };
 
   const handleNext = () => {
     alert('다음 단계로 이동');
   };
+
+  const stockOptions = (
+    <div tw="flex flex-col gap-2 w-full">
+      <SelectStock name="삼성" price="1,200" amount={200} onDelete={() => {}} />
+      <SelectStock name="카카오" price="1,200" amount={0} onDelete={() => {}} />
+      <SelectStock name="애플" price="2,500" amount={50} onDelete={() => {}} />
+      <SelectStock name="테슬라" price="3,000" amount={30} onDelete={() => {}} />
+    </div>
+  );
 
   return (
     <Wrapper>
@@ -61,8 +77,6 @@ const StockDetailPage: React.FC = () => {
         <HeaderText>1·4·7·10월 추천 배당주</HeaderText>
         <StockContainer>
           <SelectStock name="삼성" price="1,200" amount={200} onDelete={() => handleDelete('삼성')} />
-        </StockContainer>
-        <StockContainer>
           <SelectStock name="카카오" price="1,200" amount={0} onDelete={() => handleDelete('카카오')} />
         </StockContainer>
         <AddStock onClick={handleAddStock}>+ 종목 추가하기</AddStock>
@@ -81,6 +95,7 @@ const StockDetailPage: React.FC = () => {
       <AbsoluteButtonContainer>
         <Button name="다음" status="active" onClick={handleNext} />
       </AbsoluteButtonContainer>
+      {isModalOpen && <BottomUpModal onClose={handleCloseModal} content={stockOptions} />}
     </Wrapper>
   );
 };

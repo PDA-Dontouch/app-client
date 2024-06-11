@@ -191,7 +191,7 @@ const StockMainPage: React.FC = () => {
                   개별 종목
               </MainTab>
             </SectionHeader>
-            <SearchBar/>
+            <SearchBar modal={false}/>
             <SortType>추천 종목순</SortType>
             <ItemContainer>
               {stockItems.map((item,idx)=>

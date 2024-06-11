@@ -96,7 +96,7 @@ const stockList = [
 
 const StockOptions: React.FC = () => (
   <Container>
-    <SearchBar />
+    <SearchBar modal={true}/>
     {stockList.map((stock) => (
       <StockInfo>
         <ItemContainer>

@@ -34,7 +34,7 @@ const Footer = () => {
       </TabDiv>
       <TabDiv
         onClick={() => {
-          navigate('/stock');
+          navigate('/stocks');
         }}
       >
         <img src={Stock} />

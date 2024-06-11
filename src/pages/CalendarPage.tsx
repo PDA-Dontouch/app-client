@@ -57,6 +57,34 @@ const Salary = styled.div`
   ${tw`leading-7`}
 `;
 
+export const salaryData: PlanDetailType[] = [
+  {
+    type: '배당',
+    name: '삼성전자',
+    price: 1200,
+  },
+  {
+    type: '에너지',
+    name: '삼성전자',
+    price: 21955,
+  },
+  {
+    type: '부동산',
+    name: '울산 행복아파트',
+    price: 40560,
+  },
+  {
+    type: '배당',
+    name: '삼성전자',
+    price: 1200,
+  },
+  {
+    type: '에너지',
+    name: '삼성전자',
+    price: 21955,
+  },
+];
+
 export default function CalendarPage() {
   const [modal, setModal] = useState<boolean>(false);
   const [modalType, setModalType] = useState<ModalType>('date');
@@ -64,35 +92,7 @@ export default function CalendarPage() {
   const [year, setYear] = useState<number>(today.getFullYear());
   const [month, setMonth] = useState<number>(today.getMonth());
   const [date, setDate] = useState<number>(today.getDate());
-  const [day, setDay] = useState<number>(today.getDay());
-
-  const salaryData: PlanDetailType[] = [
-    {
-      type: '배당',
-      name: '삼성전자',
-      price: 1200,
-    },
-    {
-      type: '에너지',
-      name: '삼성전자',
-      price: 21955,
-    },
-    {
-      type: '부동산',
-      name: '울산 행복아파트',
-      price: 40560,
-    },
-    {
-      type: '배당',
-      name: '삼성전자',
-      price: 1200,
-    },
-    {
-      type: '에너지',
-      name: '삼성전자',
-      price: 21955,
-    },
-  ];
+  const day = today.getDay();
 
   function onOpenModal(type: ModalType) {
     if (type == 'date') {
@@ -147,11 +147,11 @@ export default function CalendarPage() {
           type="month"
           year={year}
           month={month}
+          setMonth={setMonth}
           date={date}
           setDate={setDate}
           day={day}
           plans={salaryData}
-          width={document.body.clientWidth}
           openModal={() => {
             onOpenModal('plan');
           }}

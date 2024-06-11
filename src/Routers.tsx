@@ -1,12 +1,13 @@
-import { Route, Routes } from "react-router-dom";
-import EnergyMain from "./pages/Energy/EnergyMain";
+import { Route, Routes } from 'react-router-dom';
+import EnergyMain from './pages/Energy/EnergyMain';
 
-import EstatesMain from "./pages/Estates/EstatesMain";
-import EstatesDetail from "./pages/Estates/EstatesDetail";
-import LoginPage from "./pages/LoginPage";
-import InvestTypeTest from "./pages/InvestTypeTest";
+import EstatesMain from './pages/Estates/EstatesMain';
+import EstatesDetail from './pages/Estates/EstatesDetail';
+import LoginPage from './pages/LoginPage';
+import InvestTypeTest from './pages/InvestTypeTest';
 import CalendarPage from './pages/CalendarPage';
-import StockMainPage from "./pages/Stock/StockMainPage";
+import StockMainPage from './pages/Stock/StockMainPage';
+import MainPage from './pages/MainPage';
 
 export default function Routers() {
   return (
@@ -18,6 +19,7 @@ export default function Routers() {
       <Route path="/estates/:estates_id" element={<EstatesDetail />} />
       <Route path="/stocks" element={<StockMainPage />} />
       <Route path="/calendar" element={<CalendarPage />} />
+      <Route path="/" element={<MainPage />} />
     </Routes>
   );
 }

@@ -6,16 +6,12 @@ type CalendarProps = {
   type: 'week' | 'month';
   year: number;
   month: number;
+  setMonth: React.Dispatch<React.SetStateAction<number>> | null;
   date: number;
-  setDate: React.Dispatch<React.SetStateAction<number>>;
+  setDate: React.Dispatch<React.SetStateAction<number>> | null;
   day: number;
   plans: PlanDetailType[];
-  width: number;
   openModal: () => void;
-};
-
-type CalendarContainerProps = {
-  width: number;
 };
 
 type DayProps = {
@@ -34,10 +30,10 @@ type SalaryPlanProps = {
   type: '배당' | '에너지' | '부동산';
 };
 
-const CalendarContainer = styled.div<CalendarContainerProps>`
+const CalendarContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  ${({ width }) => `width: ${width}px;`}
+  width: 100%;
 `;
 
 const Day = styled.div<DayProps>`W
@@ -52,7 +48,7 @@ const Day = styled.div<DayProps>`W
   border-bottom-width: 0.5px;
   box-sizing: border-box;
   ${tw`border-black20`}
-  ${tw`text-sm`}
+  ${tw`text-xs`}
   line-height: 20px;
 `;
 
@@ -91,11 +87,11 @@ export default function Calendar({
   type,
   year,
   month,
+  setMonth,
   date,
   setDate,
   day,
   plans,
-  width,
   openModal,
 }: CalendarProps) {
   const days = ['일', '월', '화', '수', '목', '금', '토'];
@@ -118,7 +114,7 @@ export default function Calendar({
   }
 
   return (
-    <CalendarContainer width={width}>
+    <CalendarContainer>
       {days.map((day, idx) => {
         return (
           <Day key={idx} day={day}>
@@ -132,8 +128,10 @@ export default function Calendar({
             key={idx}
             inThisMonth={date.getMonth() === month ? true : false}
             onClick={() => {
-              openModal();
-              setDate(date.getDate());
+              if (date.getMonth() === month) {
+                openModal();
+              }
+              if (setDate) setDate(date.getDate());
             }}
           >
             <DateText day={date.getDay()}>{date.getDate()}</DateText>

@@ -7,7 +7,7 @@ import Footer from '../../components/common/Footer';
 import RecommendBar from '../../components/common/Stock/RecommendBar';
 import CombiBox from '../../components/common/Stock/CombiBox';
 import StockCard from '../../components/common/Stock/StockCard';
-import SearchBar from '../../components/common/Stock/SearchBar';
+import SearchBar from '../../components/common/Stock/SearchBar';
 import Triangle from "../../assets/triangle.svg";
 
 import { addLikeStocks, delStocksLike, delLikeStocks, getStocksDatas, setStocksLike } from "../../store/reducers/stocks/stocks";

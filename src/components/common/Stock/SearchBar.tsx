@@ -2,7 +2,7 @@ import tw, { styled } from 'twin.macro';
 import SearchIcon from "../../../assets/search.svg";
 
 const SearchContainer = styled.div`
-  ${tw`flex items-center p-2 mb-4`}
+  ${tw`w-full flex items-center p-2 mb-4`}
 `;
 
 const TextBox = styled.input`

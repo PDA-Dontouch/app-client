@@ -5,45 +5,48 @@ import StockRecommend from '../components/common/Stock/StockRecommend';
 import Button from '../components/common/Button';
 import Navbar from '../components/common/Navbar';
 import BottomUpModal from '../components/common/Modal/BottomUpModal';
-
-const Wrapper = styled.div`
-  ${tw`relative flex flex-col h-full bg-white pt-20`}
-`;
+import StockOptions from '../components/common/Stock/StockOptions'
+import { useNavigate } from "react-router-dom";
 
 const Container = styled.div`
-  ${tw`relative w-11/12 max-w-lg bg-white rounded-14 mx-auto mb-20 pb-20`}
+  ${tw`h-[calc(100% - 210px)] mt-14 mb-[88px] px-5 py-8 flex flex-col gap-3`}
+`;
+
+const Wrapper = styled.div`
+  ${tw`w-full gap-4 overflow-y-auto`}
 `;
 
 const HeaderText = styled.span`
-  ${tw`text-lg font-semibold mb-4 flex items-center justify-center [line-height: 22px]`}
+  ${tw`w-full flex text-lg mt-2 mb-2 items-center justify-center`}
 `;
 
 const AddStock = styled.div`
-  ${tw`flex justify-center items-center text-xs text-black mt-4 cursor-pointer [line-height: 15px]`}
+  ${tw`flex justify-center items-center text-xs text-black mt-2 cursor-pointer`}
 `;
 
 const ExpectedDividend = styled.div`
-  ${tw`text-right text-base text-sm text-black mt-4 mb-6 [line-height: 17px]`}
+  ${tw`text-right text-base text-sm mb-2`}
 `;
 
 const Divider = styled.div`
-  ${tw`w-full h-px bg-gray-dark my-4`}
+  ${tw`w-full h-1 bg-gray-light my-3`}
 `;
 
-const ReasonTitle = styled.h2`
-  ${tw`text-lg font-semibold mb-2 [line-height: 22px]`}
+const ReasonTitle = styled.span`
+  ${tw`text-lg mb-2`}
 `;
 
 const StockContainer = styled.div`
-  ${tw`flex flex-col gap-2`}
+  ${tw`flex flex-col gap-4`}
 `;
 
 const AbsoluteButtonContainer = styled.div`
-  ${tw`absolute w-10/12 bg-white`} bottom: 3%; left: 50%; transform: translateX(-50%); padding: 16px;
+  ${tw`bg-white px-6 h-22 fixed left-0 right-0 bottom-0`} 
 `;
 
 const StockDetailPage: React.FC = () => {
   const [isModalOpen, setModalOpen] = useState(false);
+ 
 
   const handleDelete = (name: string) => {
     alert(`${name} 삭제`);
@@ -58,45 +61,54 @@ const StockDetailPage: React.FC = () => {
   };
 
   const handleNext = () => {
-    alert('다음 단계로 이동');
+    //navigate(`/stocks/detail/2`);
   };
 
-  const stockOptions = (
-    <div tw="flex flex-col gap-2 w-full">
-      <SelectStock name="삼성" price="1,200" amount={200} onDelete={() => {}} />
-      <SelectStock name="카카오" price="1,200" amount={0} onDelete={() => {}} />
-      <SelectStock name="애플" price="2,500" amount={50} onDelete={() => {}} />
-      <SelectStock name="테슬라" price="3,000" amount={30} onDelete={() => {}} />
-    </div>
-  );
-
   return (
-    <Wrapper>
+    <>
       <Navbar name="" type="close" />
       <Container>
         <HeaderText>1·4·7·10월 추천 배당주</HeaderText>
         <StockContainer>
-          <SelectStock name="삼성" price="1,200" amount={200} onDelete={() => handleDelete('삼성')} />
-          <SelectStock name="카카오" price="1,200" amount={0} onDelete={() => handleDelete('카카오')} />
+          <SelectStock
+            name="삼성"
+            price="1,200"
+            amount={200}
+            onDelete={() => handleDelete('삼성')}
+          />
+          <SelectStock
+            name="카카오"
+            price="1,200"
+            amount={0}
+            onDelete={() => handleDelete('카카오')}
+          />
         </StockContainer>
         <AddStock onClick={handleAddStock}>+ 종목 추가하기</AddStock>
         <Divider />
         <ExpectedDividend>예상 월 배당금 360,000원</ExpectedDividend>
-        <ReasonTitle>추천 이유</ReasonTitle>
-        <StockRecommend
-          title="# 높은 안정성"
-          description="안정형 투자성향을 가진 OOO님께 어쩌구저쩌구쩌구저쩌구..."
-        />
-        <StockRecommend
-          title="# 추후 api를 통해 받아올 수 있게"
-          description="영역을 세분화 해두었습니다. 초록색 밑줄은 추천 양식이 비슷할 것 같아서 고정값으로 해뒀습니다."
-        />
+        <Wrapper>
+          <ReasonTitle>추천 이유</ReasonTitle>
+          <StockRecommend
+            title="# 높은 안정성"
+            description="안정형 투자성향을 가진 OOO님께 어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구"
+          />
+          <StockRecommend
+            title="# 높은 안정성"
+            description="안정형 투자성향을 가진 OOO님께 어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구"
+          />
+          <StockRecommend
+            title="# 추후 api를 통해 받아올 수 있게"
+            description="안정형 투자성향을 가진 OOO님께 추천을 어쩌구저쩌구저쩌구어쩌구..."
+          />
+        </Wrapper>
+        {isModalOpen && (
+          <BottomUpModal onClose={handleCloseModal} content={<StockOptions/>} />
+        )}
       </Container>
       <AbsoluteButtonContainer>
-        <Button name="다음" status="active" onClick={handleNext} />
+          <Button name="다음" status="active" onClick={handleNext} />
       </AbsoluteButtonContainer>
-      {isModalOpen && <BottomUpModal onClose={handleCloseModal} content={stockOptions} />}
-    </Wrapper>
+    </>
   );
 };
 

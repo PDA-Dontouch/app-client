@@ -7,13 +7,13 @@ import useLike from "../../hooks/useLike";
 import { AppDispatch, RootState } from "../../store/store";
 import { getEnergyData } from "../../store/reducers/energy/energy";
 
-import DetailBanner from "../../components/common/Product/DetailBanner";
+import DetailBanner from "../../components/common/Product/Detail/DetailBanner";
 import Navbar from "../../components/common/Navbar";
 import LikeBtn from "../../components/common/LikeBtn";
 import Button from "../../components/common/Button";
 import BottomUpModal from "../../components/common/Modal/BottomUpModal";
-import Purchase from "../../components/common/Product/Purchase";
-import Cancel from "../../components/common/Product/Cancel";
+import Purchase from "../../components/common/Product/Detail/Purchase";
+import Cancel from "../../components/common/Product/Detail/Cancel";
 import Dropdown from "../../components/common/Dropdown";
 
 const BtnContainer = styled.div`
@@ -48,7 +48,7 @@ const EnergyDetail = () => {
         <BottomUpModal onClose={() => setIsOpen(false)} content={<Purchase period="6" profit='205,100' btnType="energy" />} />
         // <BottomUpModal onClose={() => setIsOpen(false)} content={<Cancel amount={5000000} period={6} profit={205100} btnType="plain" />} />
       )}
-      <Dropdown />
+      <Dropdown isEstates={false} />
     </>
   );
 };

@@ -1,5 +1,5 @@
 import tw, { css, styled } from "twin.macro";
-import Tag from "./Tag";
+import Tag from "../Tag";
 import InfoInBanner from "./InfoInBanner";
 
 interface BannerProps {
@@ -10,7 +10,7 @@ interface BannerProps {
 }
 
 const Container = styled.div<{ isEstates: boolean }>`
-  ${tw`relative flex flex-col mt-14 px-5 py-7 gap-7`}
+  ${tw`relative flex flex-col px-5 py-7 gap-7`}
   ${({ isEstates }) => isEstates ? css`background-image: linear-gradient(#F1CD6D, #E6B637);` : css`background-image: linear-gradient(#90C0EC, #5293D0);`}
 `;
 

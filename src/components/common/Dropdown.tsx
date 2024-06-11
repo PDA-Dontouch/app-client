@@ -3,6 +3,10 @@ import useDetectClose from "../../hooks/useDetectClose";
 import Down from '../../assets/drop-down.svg';
 import { useState } from "react";
 
+interface DropdownProps {
+  isEstates: boolean;
+}
+
 const Container = styled.div`${tw`w-full h-fit flex gap-2 justify-center mt-6`}`;
 
 const Wrapper = styled.div`
@@ -13,8 +17,9 @@ const DropdownContainer = styled.div`
   ${tw`w-[98px] relative`}
 `;
 
-const DropdownButton = styled.div`
-  ${tw`flex px-3 py-2 justify-end items-center gap-[6px] border-solid border-[1px] border-blue rounded-4`}
+const DropdownButton = styled.div<{ isEstates: boolean }>`
+  ${tw`flex px-3 py-2 justify-end items-center gap-[6px] border-solid border-[1px] rounded-4`}
+  ${({ isEstates }) => isEstates ? tw`border-yellow` : tw`border-blue`}
 `;
 
 const Menu = styled.div<{ isOpen: boolean }>`
@@ -51,13 +56,14 @@ const Input = styled.input`
 
 const MainText = styled.span`${tw`flex items-center text-sm gap-1`}`;
 
-const SubText = styled.span`
-  ${css`
-    box-shadow: inset 0 -6px 0 rgba(26, 167, 110, 0.4);
-  `}
+const SubText = styled.span<{ isEstates: boolean }>`
+  ${({ isEstates }) =>
+    isEstates ? css`box-shadow: inset 0 -4px 0 rgba(230, 182, 55, 0.5);`
+      : css`box-shadow: inset 0 -4px 0 rgba(82, 147, 208, 0.5);`
+  }
 `
 
-const Dropdown = () => {
+const Dropdown = ({ isEstates }: DropdownProps) => {
   const [isOpen, ref, removeHandler] = useDetectClose(false);
   const [value, setValue] = useState<string>('500만원');
   const [isWrite, setIsWrite] = useState<boolean>(false);
@@ -66,7 +72,7 @@ const Dropdown = () => {
     <Container>
       <Wrapper>
         <DropdownContainer>
-          <DropdownButton onClick={removeHandler} ref={ref}>
+          <DropdownButton isEstates={isEstates} onClick={removeHandler} ref={ref}>
             {/* {!isWrite ? value : <Input />} */}
             {value}
             <img src={Down} />
@@ -82,7 +88,7 @@ const Dropdown = () => {
           </Menu>
         </DropdownContainer>
       </Wrapper>
-      <MainText>투자하면, 세후 수익<SubText>약 206,182원</SubText></MainText>
+      <MainText>투자하면, 세후 수익<SubText isEstates={isEstates}>약 206,182원</SubText></MainText>
     </Container>
   );
 };

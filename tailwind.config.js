@@ -1,25 +1,27 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ["./main.tsx", "./src/**/*.{js,ts,jsx,tsx}"],
+  content: ['./main.tsx', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       colors: {
         // green
-        green: "#1AA76E",
+        green: '#1AA76E',
         'green-dark': '#0F6643',
         green40: '#9DD6BF',
-        
+
         // black
         black: '#000000',
+        black10: 'rgba(0, 0, 0, 0.1)',
+        black20: 'rgba(0, 0, 0, 0.2)',
         black30: '#ACACAC',
         // black40: '#939393',
         black40: 'rgba(0, 0, 0, 0.4)',
-        
+
         // white
         white: '#FFFFFF',
-        
+
         //gray
-        gray: "#DADADA",
+        gray: '#DADADA',
         'gray-light': '#F9F9F9',
         'gray-dark': '#606060',
         'gray-disabled': '#EAEAEA',
@@ -28,20 +30,20 @@ export default {
         gray30: '#EDEDED',
         gray50: '#E7E7E7',
         gray60: '#E5E5E5',
-        
+
         // blue
         blue: '#5293D0',
         'blue-light': '#90C0EC',
         'blue-down': '#4F7CEF',
         blue20: 'rgba(82, 147, 208, 0.2)',
         blue50: 'rgba(82, 147, 208, 0.5)',
-        
+
         // yellow
         yellow: '#E6B637',
         'yellow-light': '#F1CD6D',
         yellow20: 'rgba(230, 182, 55, 0.2)',
         yellow50: 'rgba(230, 182, 55, 0.5)',
-        
+
         // red
         red: '#F24B55',
       },
@@ -57,7 +59,7 @@ export default {
         xl: '20px',
         '2xl': '22px',
         '3xl': '24px',
-        '4xl': '28px'
+        '4xl': '28px',
       },
       spacing: {
         1: '4px',
@@ -81,7 +83,7 @@ export default {
         19: '76px',
         20: '80px',
         21: '84px',
-        22: '88px'
+        22: '88px',
       },
       borderRadius: {
         0: '0px',

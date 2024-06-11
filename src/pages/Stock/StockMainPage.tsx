@@ -163,7 +163,7 @@ const StockMainPage: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'recommend' | 'individual'>('recommend');
     const [stockItems, setStockItems] =  useState(stockList);
     const [likeStocks, setLikeStocks] = useState<string[]>([]);
-   
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
       dispatch(getStocksDatas());
@@ -182,6 +182,15 @@ const StockMainPage: React.FC = () => {
         dispatch(setStocksLike(stocks_id));
       }
     }
+
+    const handleSearch = (term: string) => {
+      setSearchTerm(term);
+      const filteredList = stockItems.filter(stock =>
+        stock.name.toLowerCase().includes(term.toLowerCase()) || 
+        stock.code.toLowerCase().includes(term.toLowerCase())
+      );
+      setStockItems(filteredList);
+    };
 
     return (
     <MainContainer>
@@ -220,7 +229,7 @@ const StockMainPage: React.FC = () => {
                   개별 종목
               </MainTab>
             </SectionHeader>
-            <SearchBar modal={false}/>
+            <SearchBar onSearch={handleSearch} modal={false}/>
             <SortType>추천 종목순</SortType>
             <ItemContainer>
               {stockItems.map((item,idx)=>

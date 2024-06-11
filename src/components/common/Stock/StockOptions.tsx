@@ -1,15 +1,29 @@
-import React from 'react';
+import React,{useState} from 'react';
 import tw, { styled } from 'twin.macro';
 import SearchBar from './SearchBar';
+
+interface Stock {
+  code: string;
+  name: string;
+  market: string;
+  price: number;
+  dividend_rate: number;
+  image: string;
+}
+
+interface StockOptionsProps {
+  onStockSelect: (stock: Stock) => void;
+  closeModal: () => void;
+}
 
 const Container = styled.div`
   ${tw`w-full h-[450px] flex flex-col items-center p-3`}
 `;
 const StockItems = styled.div`
-  ${tw`w-full flex-col flex flex-1 overflow-y-auto justify-between`}
+  ${tw`w-full flex-col flex flex-1 overflow-y-auto gap-2`}
 `;
 const StockInfo = styled.div`
-  ${tw`flex items-center justify-between p-3`}
+  ${tw`flex h-10 items-center justify-between p-3`}
 `;
 
 const StockLogo = styled.img`
@@ -21,7 +35,7 @@ const ItemContainer = styled.div`
 `;
 
 const MainText = styled.span`
-  ${tw`text-base`}
+  ${tw`text-sm`}
 `;
 
 const InfoContainer = styled.div`
@@ -29,7 +43,7 @@ const InfoContainer = styled.div`
 `;
 
 const SubContainer = styled.div`
-  ${tw`flex flex-row text-sm`}
+  ${tw`flex flex-row text-xs`}
 `;
 const SubText = styled.span`
   ${tw`mt-1 mr-1`}
@@ -42,7 +56,7 @@ const PriceText = styled.span`
   ${tw`text-sm`}
 `;
 
-const stockList = [
+const initialStockList: Stock[]= [
   {
     code: '005930',
     name: '삼성전자',
@@ -130,38 +144,59 @@ const stockList = [
   }
 ];
 
-const StockOptions: React.FC = () => (
-  <Container>
-    <SearchBar modal={true}/>
-    <StockItems>
-    {stockList.map((stock) => (
-      <StockInfo>
-        <ItemContainer>
-          <StockLogo src={stock.image} />
-          <InfoContainer>
-            <MainText>{stock.name}</MainText>
-            <SubContainer>
-              <SubText>{stock.code}</SubText>
-              <SubText>{stock.market}</SubText>
-            </SubContainer>
-          </InfoContainer>
-        </ItemContainer>
+const StockOptions = () => {
+  const [stockList, setStockList] = useState<Stock[]>(initialStockList);
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
-        <PriceContainer>
-          <PriceText>
-            {stock.price
-              .toString()
-              .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
-            원 (
-            {stock.dividend_rate
-              .toString()
-              .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
-            %)
-          </PriceText>
-        </PriceContainer>
-      </StockInfo>
-    ))}
-    </StockItems>
-  </Container>
-);
+  // const handleSelect = (stock:Stock) => {
+  //   onStockSelect(stock);
+  // };
+
+  const handleSearch = (term: string) => {
+    setSearchTerm(term);
+    
+      const filteredList = initialStockList.filter(stock =>
+        stock.name.toLowerCase().includes(term.toLowerCase()) || 
+        stock.code.toLowerCase().includes(term.toLowerCase())
+      );
+      setStockList(filteredList);
+    
+  };
+
+  return (
+    <Container>
+      <SearchBar onSearch={handleSearch} modal={true}/>
+      <StockItems>
+        {initialStockList.map((stock) => (
+          <StockInfo key={stock.code} >
+            <ItemContainer>
+              <StockLogo src={stock.image} />
+              <InfoContainer>
+                <MainText>{stock.name}</MainText>
+                <SubContainer>
+                  <SubText>{stock.code}</SubText>
+                  <SubText>{stock.market}</SubText>
+                </SubContainer>
+              </InfoContainer>
+            </ItemContainer>
+
+            <PriceContainer>
+              <PriceText>
+                {stock.price
+                  .toString()
+                  .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
+                원 (
+                {stock.dividend_rate
+                  .toString()
+                  .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
+                %)
+              </PriceText>
+            </PriceContainer>
+          </StockInfo>
+        ))}
+      </StockItems>
+    </Container>
+  );
+};
+
 export default StockOptions;

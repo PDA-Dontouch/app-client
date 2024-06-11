@@ -8,6 +8,13 @@ import BottomUpModal from '../components/common/Modal/BottomUpModal';
 import StockOptions from '../components/common/Stock/StockOptions'
 import { useNavigate } from "react-router-dom";
 
+interface SemiStock {
+  code: string;
+  name: string;
+  price: string;
+  amount: number;
+}
+
 const Container = styled.div`
   ${tw`h-[calc(100% - 210px)] mt-14 mb-[88px] px-5 py-8 flex flex-col gap-3`}
 `;
@@ -46,10 +53,13 @@ const AbsoluteButtonContainer = styled.div`
 
 const StockDetailPage: React.FC = () => {
   const [isModalOpen, setModalOpen] = useState(false);
- 
+  const [selectedStocks, setSelectedStocks] = useState<SemiStock[]>([
+    { code:'005930', name: '삼성', price: '63000', amount: 200 },
+    { code:'035720', name: '카카오', price: '43400', amount: 1 }
+  ]);
 
   const handleDelete = (name: string) => {
-    alert(`${name} 삭제`);
+    setSelectedStocks(prevStocks => prevStocks.filter(stock => stock.name !== name));
   };
 
   const handleAddStock = () => {
@@ -64,24 +74,26 @@ const StockDetailPage: React.FC = () => {
     //navigate(`/stocks/detail/2`);
   };
 
+  // const handleStockSelect = (stock:SemiStock) => {
+  //   setSelectedStocks(prevStocks => [...prevStocks, stock]);
+  //   handleCloseModal();
+  // };
+
   return (
     <>
       <Navbar name="" type="close" />
       <Container>
         <HeaderText>1·4·7·10월 추천 배당주</HeaderText>
         <StockContainer>
-          <SelectStock
-            name="삼성"
-            price="1,200"
-            amount={200}
-            onDelete={() => handleDelete('삼성')}
-          />
-          <SelectStock
-            name="카카오"
-            price="1,200"
-            amount={0}
-            onDelete={() => handleDelete('카카오')}
-          />
+          {selectedStocks.map(stock => (
+            <SelectStock
+              key={stock.name}
+              name={stock.name}
+              price={stock.price}
+              amount={stock.amount}
+              onDelete={() => handleDelete(stock.name)}
+            />
+          ))}
         </StockContainer>
         <AddStock onClick={handleAddStock}>+ 종목 추가하기</AddStock>
         <Divider />
@@ -102,7 +114,8 @@ const StockDetailPage: React.FC = () => {
           />
         </Wrapper>
         {isModalOpen && (
-          <BottomUpModal onClose={handleCloseModal} content={<StockOptions/>} />
+          <BottomUpModal onClose={handleCloseModal} 
+            content={<StockOptions/>} />
         )}
       </Container>
       <AbsoluteButtonContainer>

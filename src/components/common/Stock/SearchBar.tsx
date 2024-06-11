@@ -1,7 +1,9 @@
+import React, { useState } from 'react';
 import tw, { styled } from 'twin.macro';
 import SearchIcon from "../../../assets/search.svg";
 
 interface SearchBarProps{
+  onSearch: (searchTerm: string) => void;
   modal: boolean;
 }
 interface TextBoxProps{
@@ -26,10 +28,18 @@ const SearchBtn = styled.img`
   ${tw`w-6 h-6 ml-2 cursor-pointer`}
 `;
 
-const SearchBar: React.FC<SearchBarProps> = ({modal}) => {
+const SearchBar: React.FC<SearchBarProps> = ({onSearch, modal}) => {
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const value = event.target.value;
+      setSearchTerm(value);
+      onSearch(value);
+    };
+
     return (
     <SearchContainer>
-        <TextBox modal={modal}></TextBox>
+        <TextBox modal={modal} value={searchTerm} onChange={handleInputChange}></TextBox>
         <SearchBtn src={SearchIcon}></SearchBtn>
     </SearchContainer>
     );

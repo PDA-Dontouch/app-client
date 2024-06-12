@@ -1,6 +1,4 @@
-import { Dispatch, SetStateAction } from 'react';
 import tw, { styled } from 'twin.macro';
-import Tag from './Tag';
 import ProgressBar from './Progressbar';
 
 import Empty from '../../../assets/empty-heart.svg';
@@ -9,7 +7,6 @@ import { useNavigate } from 'react-router-dom';
 import { Products } from '../../../store/reducers/estates/estates';
 
 interface ProductProps {
-  idx: number;
   isEstates: boolean;
   data: Products;
   isLike: boolean;
@@ -41,7 +38,7 @@ const MainText = styled.span`
 `;
 
 const SubContainer = styled.div`
-  ${tw`flex gap-3`}
+  ${tw`flex gap-2`}
 `;
 
 const SubText = styled.span`
@@ -49,19 +46,19 @@ const SubText = styled.span`
 `;
 
 const MiniText = styled.span`
-  ${tw`text-xxs`}
+  ${tw`text-xs`}
 `;
 
-const Product = ({ idx, isEstates, data, isLike, setIsLike }: ProductProps) => {
+const Product = ({ isEstates, data, isLike, setIsLike }: ProductProps) => {
   const navigate = useNavigate();
   const percentage =
     (data.sumOfInvestmentAndReservation / data.totalAmountInvestments) * 100;
 
   const navigateDetail = () => {
     if (isEstates) {
-      navigate(`/estates/${idx}`);
+      navigate(`/estates/${data.id}`);
     } else {
-      navigate(`/energy/${idx}`);
+      navigate(`/energy/${data.id}`);
     }
   };
 

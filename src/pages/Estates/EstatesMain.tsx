@@ -49,8 +49,7 @@ const EstatesMain = () => {
   const [sortByProfit, setSortByProfit] = useState<boolean>(false);
 
   useEffect(() => {
-    dispatch(getEstatesDatas()).then(() => console.log(estatesDatas));
-    console.log(estatesDatas);
+    dispatch(getEstatesDatas());
   }, []);
 
   const sortDataByProfit = () => {
@@ -85,9 +84,8 @@ const EstatesMain = () => {
         <ItemContainer>
           <SubText>모집 중</SubText>
           {sortedData.map((item, idx) => (
-            <div key={idx}>
+            <div key={item.id}>
               <Product
-                idx={idx}
                 isEstates={true}
                 data={item}
                 isLike={likeArr.includes(idx) ? true : false}

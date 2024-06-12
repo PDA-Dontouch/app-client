@@ -5,8 +5,10 @@ import {
   estatesDisLike,
   estatesLike,
 } from '../../../api/estates';
+import { initialDetail, productDetail } from '../../../types/product';
 
 export interface Products {
+  id: number;
   earningRate: number;
   length: number;
   loanAmountBaseLtv: number;
@@ -19,21 +21,13 @@ export interface Products {
 interface EstatesState {
   likes: number[];
   datas: Products[];
-  detail: Products;
+  detail: productDetail;
 }
 
 const initialState: EstatesState = {
   likes: [-1],
   datas: [],
-  detail: {
-    earningRate: 0,
-    length: 0,
-    loanAmountBaseLtv: 0,
-    sumOfInvestmentAndReservation: 0,
-    title: '',
-    titleMainImageUrl: '',
-    totalAmountInvestments: 0,
-  },
+  detail: initialDetail,
 };
 
 export type estatesTypes = {
@@ -92,7 +86,7 @@ const estatesSlice = createSlice({
       state.datas = action.payload.data.response;
     });
     builder.addCase(getEstatesData.fulfilled, (state, action) => {
-      // state.detail = action.payload;
+      state.detail = action.payload.data.response;
     });
   },
 });

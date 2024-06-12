@@ -9,12 +9,14 @@ const Container = styled.div`
 `;
 
 const ButtonContainer = styled.div`
-  ${tw`mt-4 w-10/12 max-w-lg mx-auto`}
+  ${tw`mt-4 w-10/12 max-w-lg mx-auto `}
+    button {
+    ${tw`bg-[rgba(218, 218, 218, 0.1)] text-black`}
 `;
 
 const TransactionResult: React.FC = () => {
   const { type } = useParams<{
-    type: 'buy' | 'sell' | 'energyInvest' | 'estateInvest' | 'cancel';
+    type: 'buy' | 'sell' | 'energy' | 'estate' | 'cancel';
   }>();
   const navigate = useNavigate();
 

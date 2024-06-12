@@ -7,14 +7,14 @@ import energy from '../../../assets/energy.svg';
 import estate from '../../../assets/estate.svg';
 
 interface ResultMessageProps {
-  type: 'buy' | 'sell' | 'energyInvest' | 'estateInvest' | 'cancel';
+  type: 'buy' | 'sell' | 'energy' | 'estate' | 'cancel';
 }
 
 const messageDetails: { [key: string]: { image: string; text: string } } = {
   buy: { image: coin, text: '구매가 완료되었습니다!' },
   sell: { image: check, text: '판매가 완료되었습니다!' },
-  energyInvest: { image: energy, text: '구매가 완료되었습니다!' },
-  estateInvest: { image: estate, text: '구매가 완료되었습니다!' },
+  energy: { image: energy, text: '구매가 완료되었습니다!' },
+  estate: { image: estate, text: '구매가 완료되었습니다!' },
   cancel: { image: check, text: '구매가 취소되었습니다.' },
 };
 
@@ -31,7 +31,7 @@ const Image = styled.img`
 `;
 
 const Text = styled.p`
-  ${tw`text-3xl text-black`}
+  ${tw`text-xl text-black`}
 `;
 
 const ResultMessage: React.FC<ResultMessageProps> = ({ type }) => {

@@ -8,6 +8,7 @@ import InvestTypeTest from './pages/InvestTypeTest';
 import CalendarPage from './pages/CalendarPage';
 import StockMainPage from './pages/Stock/StockMainPage';
 import TransactionResult from './pages/TransactionResult';
+import StockDetailPage from './pages/Stock/StockDetailPage';
 
 export default function Routers() {
   return (

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import tw, { styled } from 'twin.macro';
-import SelectStock from '../components/Stock/SelectStock';
-import StockRecommend from '../components/common/Stock/StockRecommend';
-import Button from '../components/common/Button';
-import Navbar from '../components/common/Navbar';
-import BottomUpModal from '../components/common/Modal/BottomUpModal';
-import StockOptions from '../components/common/Stock/StockOptions'
-import { useNavigate } from "react-router-dom";
+import SelectStock from '../../components/Stock/SelectStock';
+import StockRecommend from '../../components/common/Stock/StockRecommend';
+import Button from '../../components/common/Button';
+import Navbar from '../../components/common/Navbar';
+import BottomUpModal from '../../components/common/Modal/BottomUpModal';
+import StockOptions from '../../components/Stock/StockOptions';
+import { useNavigate } from 'react-router-dom';
 
 interface SemiStock {
   code: string;
@@ -16,7 +16,7 @@ interface SemiStock {
 }
 
 const Container = styled.div`
-  ${tw`h-[calc(100% - 210px)] mt-14 mb-[88px] px-5 py-8 flex flex-col gap-3`}
+  ${tw`h-[calc(100% - 200px)] mt-14 mb-[84px] px-5 py-8 flex flex-col gap-3`}
 `;
 
 const Wrapper = styled.div`
@@ -48,18 +48,21 @@ const StockContainer = styled.div`
 `;
 
 const AbsoluteButtonContainer = styled.div`
-  ${tw`bg-white px-6 h-22 fixed left-0 right-0 bottom-0`} 
+  ${tw`bg-white px-5 h-22 fixed left-0 right-0 bottom-0 flex justify-center items-start gap-7`}
 `;
 
 const StockDetailPage: React.FC = () => {
+  const [currentMonth, setCurrentMonth] = useState(0);
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedStocks, setSelectedStocks] = useState<SemiStock[]>([
-    { code:'005930', name: '삼성', price: '63000', amount: 200 },
-    { code:'035720', name: '카카오', price: '43400', amount: 1 }
+    { code: '005930', name: '삼성', price: '63000', amount: 200 },
+    { code: '035720', name: '카카오', price: '43400', amount: 1 },
   ]);
 
   const handleDelete = (name: string) => {
-    setSelectedStocks(prevStocks => prevStocks.filter(stock => stock.name !== name));
+    setSelectedStocks((prevStocks) =>
+      prevStocks.filter((stock) => stock.name !== name),
+    );
   };
 
   const handleAddStock = () => {
@@ -71,21 +74,29 @@ const StockDetailPage: React.FC = () => {
   };
 
   const handleNext = () => {
-    //navigate(`/stocks/detail/2`);
+    if (currentMonth < 2) {
+      setCurrentMonth(currentMonth + 1);
+    }
   };
-
-  // const handleStockSelect = (stock:SemiStock) => {
-  //   setSelectedStocks(prevStocks => [...prevStocks, stock]);
-  //   handleCloseModal();
-  // };
+  const handlePrev = () => {
+    if (currentMonth > 0) {
+      setCurrentMonth(currentMonth - 1);
+    }
+  };
+  const handleBuyBtn = () => {
+    // 조합 결과 구매하기
+  };
 
   return (
     <>
       <Navbar name="" type="close" />
       <Container>
-        <HeaderText>1·4·7·10월 추천 배당주</HeaderText>
+        <HeaderText>
+          {currentMonth + 1}·{currentMonth + 3}·{currentMonth + 5}·
+          {currentMonth + 7}월 추천 배당주
+        </HeaderText>
         <StockContainer>
-          {selectedStocks.map(stock => (
+          {selectedStocks.map((stock) => (
             <SelectStock
               key={stock.name}
               name={stock.name}
@@ -114,12 +125,26 @@ const StockDetailPage: React.FC = () => {
           />
         </Wrapper>
         {isModalOpen && (
-          <BottomUpModal onClose={handleCloseModal} 
-            content={<StockOptions/>} />
+          <BottomUpModal
+            onClose={handleCloseModal}
+            content={<StockOptions />}
+          />
         )}
       </Container>
       <AbsoluteButtonContainer>
-          <Button name="다음" status="active" onClick={handleNext} />
+        {currentMonth === 0 ? (
+          <Button name="다음" status={'active'} onClick={handleNext} />
+        ) : currentMonth === 2 ? (
+          <>
+            <Button name="이전" status="plain" onClick={handlePrev} />
+            <Button name="구매하기" status={'active'} onClick={handleBuyBtn} />
+          </>
+        ) : (
+          <>
+            <Button name="이전" status="plain" onClick={handlePrev} />
+            <Button name="다음" status={'active'} onClick={handleNext} />
+          </>
+        )}
       </AbsoluteButtonContainer>
     </>
   );

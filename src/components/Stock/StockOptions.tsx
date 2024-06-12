@@ -1,6 +1,9 @@
-import React,{useState} from 'react';
+import React,{useState, useEffect} from 'react';
+import { AppDispatch } from "../../store/store";
+import { useDispatch } from "react-redux";
 import tw, { styled } from 'twin.macro';
-import SearchBar from './SearchBar';
+import SearchBar from '../common/Stock/SearchBar';
+import { getStocksDatas } from "../../store/reducers/stocks/stocks";
 
 interface Stock {
   code: string;
@@ -11,10 +14,10 @@ interface Stock {
   image: string;
 }
 
-interface StockOptionsProps {
-  onStockSelect: (stock: Stock) => void;
-  closeModal: () => void;
-}
+// interface StockOptionsProps {
+//   onStockSelect: (stock: Stock) => void;
+//   closeModal: () => void;
+// }
 
 const Container = styled.div`
   ${tw`w-full h-[450px] flex flex-col items-center p-3`}
@@ -145,8 +148,13 @@ const initialStockList: Stock[]= [
 ];
 
 const StockOptions = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const [stockList, setStockList] = useState<Stock[]>(initialStockList);
   const [searchTerm, setSearchTerm] = useState<string>('');
+
+  useEffect(() => {
+    dispatch(getStocksDatas());
+  }, [])
 
   // const handleSelect = (stock:Stock) => {
   //   onStockSelect(stock);

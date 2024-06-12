@@ -48,10 +48,7 @@ const StockContainer = styled.div`
 `;
 
 const AbsoluteButtonContainer = styled.div`
-  ${tw`absolute w-10/12 bg-white`} bottom: 3%;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 16px;
+  ${tw`bg-white px-6 h-22 fixed left-0 right-0 bottom-0`} 
 `;
 
 const StockDetailPage: React.FC = () => {
@@ -77,30 +74,26 @@ const StockDetailPage: React.FC = () => {
     //navigate(`/stocks/detail/2`);
   };
 
-  const handleNavbarClick = () => {
-    alert('뒤로 가기 로직을 이 자리에 구현');
-  };
+  // const handleStockSelect = (stock:SemiStock) => {
+  //   setSelectedStocks(prevStocks => [...prevStocks, stock]);
+  //   handleCloseModal();
+  // };
 
   return (
-    <Wrapper>
-      <Navbar name="back" type="close" onClick={handleNavbarClick} />
+    <>
+      <Navbar name="" type="close" />
       <Container>
         <HeaderText>1·4·7·10월 추천 배당주</HeaderText>
         <StockContainer>
-          <SelectStock
-            name="삼성"
-            price="1,200"
-            amount={200}
-            onDelete={() => handleDelete('삼성')}
-          />
-        </StockContainer>
-        <StockContainer>
-          <SelectStock
-            name="카카오"
-            price="1,200"
-            amount={0}
-            onDelete={() => handleDelete('카카오')}
-          />
+          {selectedStocks.map(stock => (
+            <SelectStock
+              key={stock.name}
+              name={stock.name}
+              price={stock.price}
+              amount={stock.amount}
+              onDelete={() => handleDelete(stock.name)}
+            />
+          ))}
         </StockContainer>
         <AddStock onClick={handleAddStock}>+ 종목 추가하기</AddStock>
         <Divider />

@@ -89,7 +89,6 @@ const Product = ({ isEstates, data, isLike, setIsLike }: ProductProps) => {
             .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
           원
         </MiniText>
-        {/* <Tag tags={data.tags} /> */}
       </ItemContainer>
     </Container>
   );

@@ -6,6 +6,7 @@ import LoginPage from './pages/LoginPage';
 import InvestTypeTest from './pages/InvestTypeTest';
 import CalendarPage from './pages/CalendarPage';
 import StockMainPage from './pages/Stock/StockMainPage';
+import TransactionResult from './pages/TransactionResult';
 
 export default function Routers() {
   return (
@@ -17,6 +18,7 @@ export default function Routers() {
       <Route path="/estates/:estates_id" element={<EstatesDetail />} />
       <Route path="/stocks" element={<StockMainPage />} />
       <Route path="/calendar" element={<CalendarPage />} />
+      <Route path="/result/:type" element={<TransactionResult />} />
     </Routes>
   );
 }

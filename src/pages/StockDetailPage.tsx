@@ -1,7 +1,7 @@
 import React from 'react';
 import tw, { styled } from 'twin.macro';
 import SelectStock from '../components/Stock/SelectStock';
-import StockRecommend from '../components/common/Stock/StockRecommend'; 
+import StockRecommend from '../components/common/Stock/StockRecommend';
 import Button from '../components/common/Button';
 import Navbar from '../components/common/Navbar';
 
@@ -38,7 +38,10 @@ const StockContainer = styled.div`
 `;
 
 const AbsoluteButtonContainer = styled.div`
-  ${tw`absolute w-10/12 bg-white`} bottom: 3%; left: 50%; transform: translateX(-50%); padding: 16px;
+  ${tw`absolute w-10/12 bg-white`} bottom: 3%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 16px;
 `;
 
 const StockDetailPage: React.FC = () => {
@@ -54,16 +57,30 @@ const StockDetailPage: React.FC = () => {
     alert('다음 단계로 이동');
   };
 
+  const handleNavbarClick = () => {
+    alert('뒤로 가기 로직을 이 자리에 구현');
+  };
+
   return (
     <Wrapper>
-      <Navbar name="" type="close" />
+      <Navbar name="back" type="close" onClick={handleNavbarClick} />
       <Container>
         <HeaderText>1·4·7·10월 추천 배당주</HeaderText>
         <StockContainer>
-          <SelectStock name="삼성" price="1,200" amount={200} onDelete={() => handleDelete('삼성')} />
+          <SelectStock
+            name="삼성"
+            price="1,200"
+            amount={200}
+            onDelete={() => handleDelete('삼성')}
+          />
         </StockContainer>
         <StockContainer>
-          <SelectStock name="카카오" price="1,200" amount={0} onDelete={() => handleDelete('카카오')} />
+          <SelectStock
+            name="카카오"
+            price="1,200"
+            amount={0}
+            onDelete={() => handleDelete('카카오')}
+          />
         </StockContainer>
         <AddStock onClick={handleAddStock}>+ 종목 추가하기</AddStock>
         <Divider />

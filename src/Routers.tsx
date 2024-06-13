@@ -1,6 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
 import EnergyMain from './pages/Energy/EnergyMain';
-
 import EstatesMain from './pages/Estates/EstatesMain';
 import EstatesDetail from './pages/Estates/EstatesDetail';
 import LoginPage from './pages/LoginPage';

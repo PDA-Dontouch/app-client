@@ -1,6 +1,6 @@
 import tw, { styled } from "twin.macro";
-import ModalItem from "../Modal/ModalItem";
-import Button, { StatusType } from "../Button";
+import ModalItem from "../../Modal/ModalItem";
+import Button, { StatusType } from "../../Button";
 
 interface PurchaseProps {
   amount: number;

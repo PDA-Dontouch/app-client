@@ -8,7 +8,7 @@ import InvestTypeTest from './pages/InvestTypeTest';
 import CalendarPage from './pages/CalendarPage';
 import StockMainPage from './pages/Stock/StockMainPage';
 import TransactionResult from './pages/TransactionResult';
-
+import MainPage from './pages/MainPage';
 export default function Routers() {
   return (
     <Routes>
@@ -20,6 +20,7 @@ export default function Routers() {
       <Route path="/stocks" element={<StockMainPage />} />
       <Route path="/calendar" element={<CalendarPage />} />
       <Route path="/result/:type" element={<TransactionResult />} />
+      <Route path="/" element={<MainPage />} />
     </Routes>
   );
 }

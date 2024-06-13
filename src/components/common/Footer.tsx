@@ -42,7 +42,7 @@ const Footer = () => {
       </TabDiv>
       <TabDiv
         onClick={() => {
-          navigate('/')
+          navigate('/');
         }}
       >
         <img src={Main} />
@@ -50,7 +50,7 @@ const Footer = () => {
       </TabDiv>
       <TabDiv
         onClick={() => {
-          navigate('/estates')
+          navigate('/estates');
         }}
       >
         <img src={House} />
@@ -58,7 +58,7 @@ const Footer = () => {
       </TabDiv>
       <TabDiv
         onClick={() => {
-          navigate('/energy')
+          navigate('/energy');
         }}
       >
         <img src={Energy} />

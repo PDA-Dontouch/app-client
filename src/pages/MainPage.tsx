@@ -1,5 +1,5 @@
 import tw, { styled } from 'twin.macro';
-import coinImg from '../assets/coin.svg';
+import coinImg from '../assets/coinInMain.svg';
 import arrowImg from '../assets/arrow.svg';
 import Calendar from '../components/Calendar/Calendar';
 import { salaryData } from './CalendarPage';

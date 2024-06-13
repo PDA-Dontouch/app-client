@@ -25,7 +25,7 @@ const TransactionResult: React.FC = () => {
   }
 
   const handleMainPageClick = () => {
-    navigate('/calendar');
+    navigate('/');
   };
 
   return (

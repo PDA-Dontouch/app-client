@@ -40,7 +40,7 @@ const Divider = styled.div`
 `;
 
 const ReasonTitle = styled.span`
-  ${tw`text-lg mb-2`}
+  ${tw`text-lg ml-2 mb-2`}
 `;
 
 const StockContainer = styled.div`
@@ -127,7 +127,7 @@ const StockDetailPage: React.FC = () => {
         {isModalOpen && (
           <BottomUpModal
             onClose={handleCloseModal}
-            content={<StockOptions />}
+            content={<StockOptions dividendMonth={currentMonth + 1}/>}
           />
         )}
       </Container>

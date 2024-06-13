@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { AppDispatch } from "../../store/store";
 import { useDispatch } from "react-redux";
+import { useNavigate } from 'react-router-dom';
 import tw, { css, styled } from 'twin.macro';
 import Navbar from '../../components/common/Navbar';
 import Footer from '../../components/common/Footer';
@@ -160,6 +161,11 @@ const SortType = styled.span`
 
 const StockMainPage: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+      navigate('/stocks/detail');
+    };
     const [activeTab, setActiveTab] = useState<'recommend' | 'individual'>('recommend');
     const [stockItems, setStockItems] =  useState(stockList);
     const [likeStocks, setLikeStocks] = useState<string[]>([]);
@@ -215,7 +221,7 @@ const StockMainPage: React.FC = () => {
               <NextText>바로 구매하기</NextText>
               <NavImage src={Triangle} />
             </TextContainer>
-            <CombiBoxContainer>
+            <CombiBoxContainer onClick={handleClick}>
               <CombiBox data={stockData} />
             </CombiBoxContainer>
             </div>

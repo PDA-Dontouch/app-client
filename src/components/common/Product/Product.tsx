@@ -1,26 +1,14 @@
-import { Dispatch, SetStateAction } from 'react';
 import tw, { styled } from 'twin.macro';
-import Tag from './Tag';
 import ProgressBar from './Progressbar';
 
 import Empty from '../../../assets/empty-heart.svg';
 import Fill from '../../../assets/fill-heart.svg';
 import { useNavigate } from 'react-router-dom';
-
-type ProductType = {
-  id: number;
-  name: string;
-  profit_rate: number;
-  period: number;
-  recruited_cash: number;
-  target_cash: number;
-  tags: string[];
-  image: string;
-};
+import { Products } from '../../../store/reducers/estates/estates';
 
 interface ProductProps {
   isEstates: boolean;
-  data: ProductType;
+  data: Products;
   isLike: boolean;
   setIsLike: () => void;
 }
@@ -34,7 +22,7 @@ const ImgContainer = styled.div`
 `;
 
 const Img = styled.img`
-  ${tw`w-[70px] h-[100px] rounded-8`}
+  ${tw`w-[76px] h-[100px] rounded-8`}
 `;
 
 const Heart = styled.img`
@@ -42,7 +30,7 @@ const Heart = styled.img`
 `;
 
 const ItemContainer = styled.div`
-  ${tw`min-w-[240px] w-full flex flex-col gap-2`}
+  ${tw`min-w-[234px] w-full flex flex-col gap-2`}
 `;
 
 const MainText = styled.span`
@@ -50,7 +38,7 @@ const MainText = styled.span`
 `;
 
 const SubContainer = styled.div`
-  ${tw`flex gap-3`}
+  ${tw`flex gap-2`}
 `;
 
 const SubText = styled.span`
@@ -58,12 +46,13 @@ const SubText = styled.span`
 `;
 
 const MiniText = styled.span`
-  ${tw`text-xxs`}
+  ${tw`text-xs`}
 `;
 
 const Product = ({ isEstates, data, isLike, setIsLike }: ProductProps) => {
   const navigate = useNavigate();
-  const percentage = (data.recruited_cash / data.target_cash) * 100;
+  const percentage =
+    (data.sumOfInvestmentAndReservation / data.totalAmountInvestments) * 100;
 
   const navigateDetail = () => {
     if (isEstates) {
@@ -76,7 +65,7 @@ const Product = ({ isEstates, data, isLike, setIsLike }: ProductProps) => {
   return (
     <Container>
       <ImgContainer>
-        <Img src={data.image} />
+        <Img src={data.titleMainImageUrl} />
         {isLike ? (
           <Heart src={Fill} onClick={setIsLike} />
         ) : (
@@ -84,23 +73,22 @@ const Product = ({ isEstates, data, isLike, setIsLike }: ProductProps) => {
         )}
       </ImgContainer>
       <ItemContainer onClick={navigateDetail}>
-        <MainText>{data.name}</MainText>
+        <MainText>{data.title}</MainText>
         <SubContainer>
-          <SubText>{data.profit_rate}%</SubText>
-          <SubText>{data.period}개월</SubText>
+          <SubText>{data.earningRate}%</SubText>
+          <SubText>{data.length}개월</SubText>
         </SubContainer>
         <ProgressBar isEstates={isEstates} percentage={percentage} />
         <MiniText>
-          {data.recruited_cash
+          {data.sumOfInvestmentAndReservation
             .toString()
             .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
           원 /{' '}
-          {data.target_cash
+          {data.totalAmountInvestments
             .toString()
             .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
           원
         </MiniText>
-        <Tag tags={data.tags} />
       </ItemContainer>
     </Container>
   );

@@ -1,23 +1,10 @@
-import React,{useState, useEffect} from 'react';
-import { AppDispatch } from "../../store/store";
-import { useDispatch } from "react-redux";
+import React, { useState, useEffect, useCallback } from 'react';
+import { AppDispatch, RootState } from '../../store/store';
+import { useDispatch, useSelector } from 'react-redux';
 import tw, { styled } from 'twin.macro';
 import SearchBar from '../common/Stock/SearchBar';
-import { getStocksDatas } from "../../store/reducers/stocks/stocks";
-
-interface Stock {
-  code: string;
-  name: string;
-  market: string;
-  price: number;
-  dividend_rate: number;
-  image: string;
-}
-
-// interface StockOptionsProps {
-//   onStockSelect: (stock: Stock) => void;
-//   closeModal: () => void;
-// }
+import { getStocksDatas } from '../../store/reducers/stocks/stocks';
+import logoImg from '../../assets/logo.svg';
 
 const Container = styled.div`
   ${tw`w-full h-[450px] flex flex-col items-center p-3`}
@@ -55,106 +42,56 @@ const SubText = styled.span`
 const PriceContainer = styled.div`
   ${tw`flex items-center`}
 `;
+
 const PriceText = styled.span`
   ${tw`text-sm`}
 `;
 
-const initialStockList: Stock[]= [
-  {
-    code: '005930',
-    name: '삼성전자',
-    market: 'KSC',
-    image:
-      'https://file.alphasquare.co.kr/media/images/stock_logo/kr/005930.png',
-    price: 63000,
-    dividend_rate: 3.64,
-  },
-  {
-    code: '035420',
-    name: '네이버',
-    market: 'KSC',
-    image:
-      'https://file.alphasquare.co.kr/media/images/stock_logo/kr/035420.png',
-    price: 171300,
-    dividend_rate: 3.64,
-  },
-  {
-    code: 'AAPL',
-    name: '애플',
-    market: 'NASDAQ',
-    image: 'https://file.alphasquare.co.kr/media/images/stock_logo/us/AAPL.png',
-    price: 196.88,
-    dividend_rate: 3.64,
-  },
-  {
-    code: 'TSLA',
-    name: '테슬라',
-    market: 'NASDAQ',
-    image: 'https://file.alphasquare.co.kr/media/images/stock_logo/us/TSLA.png',
-    price: 177.42,
-    dividend_rate: 3.64,
-  },
-  {
-    code: '035720',
-    name: '카카오',
-    market: 'KSC',
-    image:
-      'https://file.alphasquare.co.kr/media/images/stock_logo/kr/035720.png',
-    price: 43400,
-    dividend_rate: 3.64,
-  },
-  {
-    code: '000660',
-    name: 'SK하이닉스',
-    market: 'KSC',
-    image:
-      'https://file.alphasquare.co.kr/media/images/stock_logo/kr/000660.png',
-    price: 208000,
-    dividend_rate: 3.64,
-  },{
-    code: '005930',
-    name: '삼성전자',
-    market: 'KSC',
-    image:
-      'https://file.alphasquare.co.kr/media/images/stock_logo/kr/005930.png',
-    price: 63000,
-    dividend_rate: 3.64,
-  },
-  {
-    code: '035420',
-    name: '네이버',
-    market: 'KSC',
-    image:
-      'https://file.alphasquare.co.kr/media/images/stock_logo/kr/035420.png',
-    price: 171300,
-    dividend_rate: 3.64,
-  },
-  {
-    code: 'AAPL',
-    name: '애플',
-    market: 'NASDAQ',
-    image: 'https://file.alphasquare.co.kr/media/images/stock_logo/us/AAPL.png',
-    price: 196.88,
-    dividend_rate: 3.64,
-  },
-  {
-    code: 'TSLA',
-    name: '테슬라',
-    market: 'NASDAQ',
-    image: 'https://file.alphasquare.co.kr/media/images/stock_logo/us/TSLA.png',
-    price: 177.42,
-    dividend_rate: 3.64,
-  }
-];
+interface StockOptionsProps {
+  dividendMonth: number;
+}
 
-const StockOptions = () => {
+const StockOptions: React.FC<StockOptionsProps> = ({ dividendMonth }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const [stockList, setStockList] = useState<Stock[]>(initialStockList);
+  const stockList = useSelector((state: RootState) => state.stocks.datas);
+  const [page, setPage] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
   const [searchTerm, setSearchTerm] = useState<string>('');
 
+  const loadMoreStocks = useCallback(async () => {
+    if (isLoading || !hasMore) return;
+
+    const requestData = {
+      userInvestmentType: 0,
+      safeScore: 33,
+      dividendScore: 33,
+      growthScore: 33,
+      dividendMonth: dividendMonth,
+      page: page,
+      size: 24,
+    };
+    setIsLoading(true);
+
+    try {
+      const resultAction = await dispatch(getStocksDatas(requestData)).unwrap();
+  
+      if (resultAction.data.response.length === 0) {
+        setHasMore(false);
+      } else {
+        console.log(page);
+        setPage((prevPage) => prevPage + 1);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [dispatch, isLoading, hasMore, page,dividendMonth]);
+
   useEffect(() => {
-    dispatch(getStocksDatas());
-  }, [])
+    loadMoreStocks();
+  }, []);
 
   // const handleSelect = (stock:Stock) => {
   //   onStockSelect(stock);
@@ -162,46 +99,48 @@ const StockOptions = () => {
 
   const handleSearch = (term: string) => {
     setSearchTerm(term);
-    
-      const filteredList = initialStockList.filter(stock =>
-        stock.name.toLowerCase().includes(term.toLowerCase()) || 
-        stock.code.toLowerCase().includes(term.toLowerCase())
-      );
-      setStockList(filteredList);
-    
   };
+    
+  const filteredList = stockList.filter(stock =>
+    stock.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    stock.symbol.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <Container>
-      <SearchBar onSearch={handleSearch} modal={true}/>
+      <SearchBar onSearch={handleSearch} modal={true} />
       <StockItems>
-        {initialStockList.map((stock) => (
-          <StockInfo key={stock.code} >
-            <ItemContainer>
-              <StockLogo src={stock.image} />
-              <InfoContainer>
-                <MainText>{stock.name}</MainText>
-                <SubContainer>
-                  <SubText>{stock.code}</SubText>
-                  <SubText>{stock.market}</SubText>
-                </SubContainer>
-              </InfoContainer>
-            </ItemContainer>
-
-            <PriceContainer>
-              <PriceText>
-                {stock.price
-                  .toString()
-                  .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
-                원 (
-                {stock.dividend_rate
-                  .toString()
-                  .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
-                %)
-              </PriceText>
-            </PriceContainer>
-          </StockInfo>
-        ))}
+        {filteredList.map((stock) => {
+          const isKRStock = stock.symbol.slice(-3) === '.ks';
+          const displaySymbol = isKRStock ? stock.symbol.slice(0, -3) : stock.symbol;
+          return (
+            <StockInfo key={stock.id}>
+              <ItemContainer>
+              <StockLogo
+                  src={`https://file.alphasquare.co.kr/media/images/stock_logo/${isKRStock ? 'kr' : 'us'}/${stock.symbol}.png`}
+                  onError={(e) => {
+                    e.currentTarget.src = logoImg;
+                  }}
+                />
+                <InfoContainer>
+                  <MainText>{stock.name}</MainText>
+                  <SubContainer>
+                    <SubText>{displaySymbol}</SubText>
+                    <SubText>{stock.exchange}</SubText>
+                  </SubContainer>
+                </InfoContainer>
+              </ItemContainer>
+              <PriceContainer>
+                <PriceText>
+                  {isKRStock
+                    ? `${stock.dividendYieldTtm.toFixed(2)} 원`
+                    : `$${stock.dividendYieldTtm.toFixed(2)}`}
+                  ({stock.dividendYieldTtm.toFixed(2)}%)
+                </PriceText>
+              </PriceContainer>
+            </StockInfo>
+          );
+        })}
       </StockItems>
     </Container>
   );

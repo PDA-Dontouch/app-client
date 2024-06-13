@@ -31,7 +31,7 @@ const GreenBar = styled.div`
   width: 100%;
   position: absolute;
   bottom: 0;
-  ${tw`h-3`};
+  ${tw`h-1/2`};
   background-color: #1aa76e66;
 `;
 

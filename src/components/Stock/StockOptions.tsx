@@ -59,18 +59,19 @@ const StockOptions: React.FC<StockOptionsProps> = ({ dividendMonth }) => {
   const [hasMore, setHasMore] = useState(true);
   const [searchTerm, setSearchTerm] = useState<string>('');
 
+  const requestData = {
+    userInvestmentType: 0,
+    safeScore: 33,
+    dividendScore: 33,
+    growthScore: 33,
+    dividendMonth: dividendMonth,
+    page: page,
+    size: 10,
+  };
+
   const loadMoreStocks = useCallback(async () => {
     if (isLoading || !hasMore) return;
 
-    const requestData = {
-      userInvestmentType: 0,
-      safeScore: 33,
-      dividendScore: 33,
-      growthScore: 33,
-      dividendMonth: dividendMonth,
-      page: page,
-      size: 24,
-    };
     setIsLoading(true);
 
     try {
@@ -93,6 +94,15 @@ const StockOptions: React.FC<StockOptionsProps> = ({ dividendMonth }) => {
     loadMoreStocks();
   }, []);
 
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const bottom =
+      e.currentTarget.scrollHeight - e.currentTarget.scrollTop ===
+      e.currentTarget.clientHeight;
+    if (bottom) {
+      loadMoreStocks();
+    }
+  };
+
   // const handleSelect = (stock:Stock) => {
   //   onStockSelect(stock);
   // };
@@ -109,7 +119,7 @@ const StockOptions: React.FC<StockOptionsProps> = ({ dividendMonth }) => {
   return (
     <Container>
       <SearchBar onSearch={handleSearch} modal={true} />
-      <StockItems>
+      <StockItems onScroll={handleScroll}>
         {filteredList.map((stock) => {
           const isKRStock = stock.symbol.slice(-3) === '.ks';
           const displaySymbol = isKRStock ? stock.symbol.slice(0, -3) : stock.symbol;

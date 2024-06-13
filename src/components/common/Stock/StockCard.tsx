@@ -2,15 +2,17 @@ import tw, { styled } from 'twin.macro';
 
 import Empty from '../../../assets/line-heart.svg';
 import Fill from '../../../assets/fill-heart.svg';
+import logoImg from '../../../assets/logo.svg';
 import { useNavigate } from 'react-router-dom';
 
 type StockType = {
-  code: string;
+  id:number;
+  symbol: string;
   name: string;
-  market: string;
-  image: string;
-  price: number;
-  dividend_rate: number;
+  type: string;
+  exchange: string;
+  dividendMonth: number;
+  dividendYieldTtm: number;
 };
 
 interface StockProps {
@@ -60,31 +62,38 @@ const Heart = styled.img`
 const StockCard = ({ data, isLike, setIsLike }: StockProps) => {
   const navigate = useNavigate();
   const navigateDetail = () => {
-    navigate(`/stocks/${data.code}`);
+    navigate(`/stocks/${data.id}`);
   };
-
   const handleHeartClick = (event: React.MouseEvent) => {
     event.stopPropagation();
     setIsLike();
   };
 
+  const isKRStock = data.symbol.slice(-3) === '.ks';
+  const displaySymbol = isKRStock ? data.symbol.slice(0, -3) : data.symbol;
+
   return (
     <Container onClick={navigateDetail}>
       <ItemContainer >
-        <StockLogo src={data.image} />
+        <StockLogo src={`https://file.alphasquare.co.kr/media/images/stock_logo/${isKRStock ? 'kr' : 'us'}/${data.symbol}.png`}
+                  onError={(e) => {
+                    e.currentTarget.src = logoImg;
+                  }} />
         <InfoContainer>
           <MainText>{data.name}</MainText>
           <SubContainer>
-            <SubText>{data.code}</SubText>
-            <SubText>{data.market}</SubText>
+            <SubText>{displaySymbol}</SubText>
+            <SubText>{data.exchange}</SubText>
           </SubContainer>
         </InfoContainer>
       </ItemContainer>
 
       <PriceContainer>
         <PriceText>
-          {data.price.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}원 
-          ({data.dividend_rate.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}%)
+        {isKRStock
+                    ? `${data.dividendMonth.toFixed(2)} 원`
+                    : `$${data.dividendMonth.toFixed(2)}`}
+                  ({data.dividendYieldTtm.toFixed(2)}%)
         </PriceText>
         <Heart src={isLike ? Fill : Empty} onClick={handleHeartClick} />
       </PriceContainer>

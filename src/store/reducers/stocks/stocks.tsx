@@ -51,6 +51,7 @@ interface RequestBodyType {
   page: number;
   size: number;
 }
+
 export const getStocksDatas = createAsyncThunk<ActionPayload, RequestBodyType>(
   "stocks/getDatas",
   async (requestBody, thunkAPI) => {

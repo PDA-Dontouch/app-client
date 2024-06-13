@@ -98,7 +98,6 @@ const StockDetailPage: React.FC = () => {
         <StockContainer>
           {selectedStocks.map((stock) => (
             <SelectStock
-              key={stock.name}
               name={stock.name}
               price={stock.price}
               amount={stock.amount}

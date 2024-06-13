@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { AppDispatch } from "../../store/store";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useState,useCallback } from 'react';
+import { AppDispatch, RootState } from '../../store/store';
+import { useDispatch,useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import tw, { css, styled } from 'twin.macro';
 import Navbar from '../../components/common/Navbar';
@@ -9,108 +9,94 @@ import RecommendBar from '../../components/common/Stock/RecommendBar';
 import CombiBox from '../../components/common/Stock/CombiBox';
 import StockCard from '../../components/common/Stock/StockCard';
 import SearchBar from '../../components/common/Stock/SearchBar';
-import Triangle from "../../assets/triangle.svg";
+import NextBtn from '../../components/common/Stock/NextBtn';
 
-import { addLikeStocks, delStocksLike, delLikeStocks, getStocksDatas, setStocksLike } from "../../store/reducers/stocks/stocks";
 
+import {
+  addLikeStocks,
+  delStocksLike,
+  delLikeStocks,
+  getStocksDatas,
+  setStocksLike,
+} from '../../store/reducers/stocks/stocks';
 
 const stockData = {
   combination1: {
     diviend_income: 0,
     stocks: [
-      { code: "001", name: "삼성전자", price: 50000, amount: 100, total_price: 5000000, growth_score: 60, safe_score: 70, dividend_score: 80, personalized_score: 90 },
-      { code: "002", name: "카카오", price: 150000, amount: 200, total_price: 30000000, growth_score: 65, safe_score: 75, dividend_score: 85, personalized_score: 95 }
-    ]
+      {
+        id: 4,
+        code: '001',
+        name: '삼성전자',
+        price: 50000,
+        amount: 100,
+        total_price: 5000000,
+        growth_score: 60,
+        safe_score: 70,
+        dividend_score: 80,
+        personalized_score: 90,
+      },
+      {
+        id: 6,
+        code: '002',
+        name: '카카오',
+        price: 150000,
+        amount: 200,
+        total_price: 30000000,
+        growth_score: 65,
+        safe_score: 75,
+        dividend_score: 85,
+        personalized_score: 95,
+      },
+    ],
   },
   combination2: {
     diviend_income: 0,
     stocks: [
-      { code: "003", name: "네이버", price: 300000, amount: 70, total_price: 21000000, growth_score: 70, safe_score: 80, dividend_score: 90, personalized_score: 85 }
-    ]
+      {
+        id: 5,
+        code: '003',
+        name: '네이버',
+        price: 300000,
+        amount: 70,
+        total_price: 21000000,
+        growth_score: 70,
+        safe_score: 80,
+        dividend_score: 90,
+        personalized_score: 85,
+      },
+    ],
   },
   combination3: {
     diviend_income: 0,
     stocks: [
-      { code: "004", name: "테슬라", price: 700000, amount: 100, total_price: 70000000, growth_score: 75, safe_score: 85, dividend_score: 95, personalized_score: 100 },
-      { code: "005", name: "애플", price: 1500000, amount: 20, total_price: 30000000, growth_score: 80, safe_score: 90, dividend_score: 100, personalized_score: 95 }
-    ]
-  }
-};
-
-const stockList = [
-  {
-    code: "005930",
-    name: "삼성전자",
-    market: "KSC",
-    image: "https://file.alphasquare.co.kr/media/images/stock_logo/kr/005930.png",
-    price: 63000,
-    dividend_rate: 3.64,
-  },{
-    code: "035420",
-    name: "네이버",
-    market: "KSC",
-    image: "https://file.alphasquare.co.kr/media/images/stock_logo/kr/035420.png",
-    price: 171300,
-    dividend_rate: 3.64,
-  },{
-    code: "AAPL",
-    name: "애플",
-    market: "NASDAQ",
-    image: "https://file.alphasquare.co.kr/media/images/stock_logo/us/AAPL.png",
-    price: 196.88,
-    dividend_rate: 3.64,
-  },{
-    code: "TSLA",
-    name: "테슬라",
-    market: "NASDAQ",
-    image: "https://file.alphasquare.co.kr/media/images/stock_logo/us/TSLA.png",
-    price: 177.42,
-    dividend_rate: 3.64,
-  },{
-    code: "035720",
-    name: "카카오",
-    market: "KSC",
-    image: "https://file.alphasquare.co.kr/media/images/stock_logo/kr/035720.png",
-    price: 43400,
-    dividend_rate: 3.64,
-  },{
-    code: "000660",
-    name: "SK하이닉스",
-    market: "KSC",
-    image: "https://file.alphasquare.co.kr/media/images/stock_logo/kr/000660.png",
-    price: 208000,
-    dividend_rate: 3.64,
+      {
+        id: 1,
+        code: '004',
+        name: '테슬라',
+        price: 700000,
+        amount: 100,
+        total_price: 70000000,
+        growth_score: 75,
+        safe_score: 85,
+        dividend_score: 95,
+        personalized_score: 100,
+      },
+      {
+        id: 2,
+        code: '005',
+        name: '애플',
+        price: 1500000,
+        amount: 20,
+        total_price: 30000000,
+        growth_score: 80,
+        safe_score: 90,
+        dividend_score: 100,
+        personalized_score: 95,
+      },
+    ],
   },
-  {
-    code: "005930",
-    name: "삼성전자",
-    market: "KSC",
-    image: "https://file.alphasquare.co.kr/media/images/stock_logo/kr/005930.png",
-    price: 63000,
-    dividend_rate: 3.64,
-  },{
-    code: "035420",
-    name: "네이버",
-    market: "KSC",
-    image: "https://file.alphasquare.co.kr/media/images/stock_logo/kr/035420.png",
-    price: 171300,
-    dividend_rate: 3.64,
-  },{
-    code: "AAPL",
-    name: "애플",
-    market: "NASDAQ",
-    image: "https://file.alphasquare.co.kr/media/images/stock_logo/us/AAPL.png",
-    price: 196.88,
-    dividend_rate: 3.64,
-  },{
-    code: "TSLA",
-    name: "테슬라",
-    market: "NASDAQ",
-    image: "https://file.alphasquare.co.kr/media/images/stock_logo/us/TSLA.png",
-    price: 177.42,
-    dividend_rate: 3.64,
-  }
-]
+};
 
 const MainContainer = styled.div`
   ${tw`flex flex-col min-h-screen`}
@@ -118,11 +104,6 @@ const MainContainer = styled.div`
 
 const ContentContainer = styled.div`
   ${tw`flex-1 p-4 mt-15`}
-`;
-
-
-const TextContainer = styled.div`
-  ${tw`flex justify-end mt-3 mr-4 gap-1`}
 `;
 
 const SectionHeader = styled.div`
@@ -138,10 +119,6 @@ const SubTab = styled(MainTab)`
   `}
 `;
 
-const NextText = styled.span`
-  ${tw`text-base`}
-`;
-
 const CombiBoxContainer = styled.div`
   ${tw`top-1 p-6 rounded-lg relative overflow-y-auto`}
 `;
@@ -150,102 +127,144 @@ const ItemContainer = styled.div`
   ${tw`flex flex-col gap-3`}
 `;
 
-const NavImage = styled.img`
-  ${tw`w-3 h-3 mt-1`}
-`;
-
 const SortType = styled.span`
   ${tw`text-sm mt-5 mb-5 text-right block`}
 `;
 
-
 const StockMainPage: React.FC = () => {
-    const dispatch = useDispatch<AppDispatch>();
-    const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+  const stockList = useSelector((state: RootState) => state.stocks.datas);
+  const navigate = useNavigate();
 
-    const handleClick = () => {
-      navigate('/stocks/detail');
-    };
-    const [activeTab, setActiveTab] = useState<'recommend' | 'individual'>('recommend');
-    const [stockItems, setStockItems] =  useState(stockList);
-    const [likeStocks, setLikeStocks] = useState<string[]>([]);
-    const [searchTerm, setSearchTerm] = useState('');
+  const handleClick = () => {
+    navigate('/stocks/detail');
+  };
+  const [activeTab, setActiveTab] = useState<'recommend' | 'individual'>(
+    'recommend',
+  );
+  const [likeStocks, setLikeStocks] = useState<number[]>([]);
+  const [page, setPage] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
-    useEffect(() => {
-      dispatch(getStocksDatas());
-    }, [])
+  const requestData = {
+    userInvestmentType: 0,
+    safeScore: 33,
+    dividendScore: 33,
+    growthScore: 33,
+    dividendMonth: null,
+    page: page,
+    size: 24,
+  };
 
-    const handleTabClick = (tab: 'recommend' | 'individual') => {
-        setActiveTab(tab);
-    };
+  const loadMoreStocks = useCallback(async () => {
+    if (isLoading || !hasMore) return;
 
-    const setLike = (stocks_id: string) => {
-      if (likeStocks.includes(stocks_id)) {
-        setLikeStocks(likeStocks.filter(id => id !== stocks_id));
-        dispatch(delStocksLike(stocks_id));
+    setIsLoading(true);
+
+    try {
+      const resultAction = await dispatch(getStocksDatas(requestData)).unwrap();
+  
+      if (resultAction.data.response.length === 0) {
+        setHasMore(false);
       } else {
-        setLikeStocks([...likeStocks, stocks_id]);
-        dispatch(setStocksLike(stocks_id));
+        console.log(page);
+        setPage((prevPage) => prevPage + 1);
       }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
     }
+  }, [dispatch, isLoading, hasMore, page]);
 
-    const handleSearch = (term: string) => {
-      setSearchTerm(term);
-      const filteredList = stockItems.filter(stock =>
-        stock.name.toLowerCase().includes(term.toLowerCase()) || 
-        stock.code.toLowerCase().includes(term.toLowerCase())
-      );
-      setStockItems(filteredList);
-    };
+  useEffect(() => {
+    loadMoreStocks();
+  }, []);
 
-    return (
+  useEffect(() => {
+    console.log(stockList); // stockList를 확인하기 위해 콘솔 로그 추가
+  }, [stockList]);
+
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const bottom =
+      e.currentTarget.scrollHeight - e.currentTarget.scrollTop ===
+      e.currentTarget.clientHeight;
+    if (bottom) {
+      loadMoreStocks();
+    }
+  };
+
+  const handleSearch = (term: string) => {
+    setSearchTerm(term);
+  };
+    
+  const filteredList = stockList.filter(stock =>
+    stock.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    stock.symbol.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleTabClick = (tab: 'recommend' | 'individual') => {
+    setActiveTab(tab);
+  };
+
+  const setLike = (stocks_id: number) => {
+    if (likeStocks.includes(stocks_id)) {
+      setLikeStocks(likeStocks.filter((id) => id !== stocks_id));
+      dispatch(delStocksLike(stocks_id));
+    } else {
+      setLikeStocks([...likeStocks, stocks_id]);
+      dispatch(setStocksLike(stocks_id));
+    }
+  };
+
+  return (
     <MainContainer>
       <Navbar name="박유진" type="main" />
       <ContentContainer>
         <RecommendBar />
-        <TextContainer>
-          <NextText>갱신하기</NextText>
-          <NavImage src={Triangle} />
-        </TextContainer>
-          {activeTab === 'recommend' ? (
-            <div className="flex flex-col space-y-4">
+        <NextBtn content='갱신하기'/>
+        {activeTab === 'recommend' ? (
+          <div className="flex flex-col space-y-4">
             <SectionHeader>
               <MainTab onClick={() => handleTabClick('recommend')}>
-                  추천 조합
+                추천 조합
               </MainTab>
               <SubTab onClick={() => handleTabClick('individual')}>
-                  개별 종목
+                개별 종목
               </SubTab>
-          </SectionHeader>
-          <TextContainer>
-              <NextText>바로 구매하기</NextText>
-              <NavImage src={Triangle} />
-            </TextContainer>
-            <CombiBoxContainer onClick={handleClick}>
+            </SectionHeader>
+            <NextBtn content='바로 구매하기'/>
+            <CombiBoxContainer onScroll={handleScroll} onClick={handleClick}>
               <CombiBox data={stockData} />
             </CombiBoxContainer>
-            </div>
-          ) : (
-            <div className="flex flex-col space-y-4">
+          </div>
+        ) : (
+          <div className="flex flex-col space-y-4">
             <SectionHeader>
               <SubTab onClick={() => handleTabClick('recommend')}>
-                  추천 조합
+                추천 조합
               </SubTab>
               <MainTab onClick={() => handleTabClick('individual')}>
-                  개별 종목
+                개별 종목
               </MainTab>
             </SectionHeader>
-            <SearchBar onSearch={handleSearch} modal={false}/>
+            <SearchBar onSearch={handleSearch} modal={false} />
             <SortType>추천 종목순</SortType>
             <ItemContainer>
-              {stockItems.map((item,idx)=>
-                <div key={item.code}>
-                  <StockCard data={item} isLike={likeStocks.includes(item.code) ? true : false} setIsLike={() => setLike(item.code)}/>
+              {filteredList.map((item, idx) => (
+                <div key={idx}>
+                  <StockCard
+                    data={item}
+                    isLike={likeStocks.includes(item.id) ? true : false}
+                    setIsLike={() => setLike(item.id)}
+                  />
                 </div>
-              )}
+              ))}
             </ItemContainer>
-            </div>        
-          )}
+          </div>
+        )}
       </ContentContainer>
       <Footer />
     </MainContainer>

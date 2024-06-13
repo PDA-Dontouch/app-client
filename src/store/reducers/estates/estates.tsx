@@ -24,6 +24,18 @@ interface EstatesState {
   detail: productDetail;
 }
 
+type ActionPayload = {
+  data: {
+    response: Products[];
+  };
+};
+
+type ActionPayloadDetail = {
+  data: {
+    response: productDetail;
+  };
+};
+
 const initialState: EstatesState = {
   likes: [-1],
   datas: [],
@@ -35,19 +47,19 @@ export type estatesTypes = {
   estates_id: number;
 };
 
-export const getEstatesDatas = createAsyncThunk(
+export const getEstatesDatas = createAsyncThunk<ActionPayload, void>(
   'estates/getDatas',
   async (data, thunkAPI) => {
     const response = await estatesDatas();
-    return response;
+    return response as ActionPayload;
   },
 );
 
-export const getEstatesData = createAsyncThunk(
+export const getEstatesData = createAsyncThunk<ActionPayloadDetail, number>(
   'estates/getData',
   async (data: number, thunkAPI) => {
     const response = await estatesData(data);
-    return response;
+    return response as ActionPayloadDetail;
   },
 );
 
@@ -82,12 +94,18 @@ const estatesSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(getEstatesDatas.fulfilled, (state, action) => {
-      state.datas = action.payload.data.response;
-    });
-    builder.addCase(getEstatesData.fulfilled, (state, action) => {
-      state.detail = action.payload.data.response;
-    });
+    builder.addCase(
+      getEstatesDatas.fulfilled,
+      (state, action: PayloadAction<ActionPayload>) => {
+        state.datas = action.payload.data.response;
+      },
+    );
+    builder.addCase(
+      getEstatesData.fulfilled,
+      (state, action: PayloadAction<ActionPayloadDetail>) => {
+        state.detail = action.payload.data.response;
+      },
+    );
   },
 });
 

@@ -34,21 +34,33 @@ const Footer = () => {
       </TabDiv>
       <TabDiv
         onClick={() => {
-          navigate('/stock');
+          navigate('/stocks');
         }}
       >
         <img src={Stock} />
         <TabText>배당</TabText>
       </TabDiv>
-      <TabDiv>
+      <TabDiv
+        onClick={() => {
+          navigate('/');
+        }}
+      >
         <img src={Main} />
         <TabText>메인</TabText>
       </TabDiv>
-      <TabDiv>
+      <TabDiv
+        onClick={() => {
+          navigate('/estates');
+        }}
+      >
         <img src={House} />
         <TabText>부동산</TabText>
       </TabDiv>
-      <TabDiv>
+      <TabDiv
+        onClick={() => {
+          navigate('/energy');
+        }}
+      >
         <img src={Energy} />
         <TabText>에너지</TabText>
       </TabDiv>

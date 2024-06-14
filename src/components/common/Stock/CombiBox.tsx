@@ -1,19 +1,19 @@
-import tw, { styled } from "twin.macro";
-import StockContainer, { ItemType } from "./StockContainer";
+import tw, { styled } from 'twin.macro';
+import StockContainer, { ItemType } from './StockContainer';
 
-type StockType = {
+export type StockType = {
   combination1: {
     diviend_income: number;
     stocks: ItemType[];
-  },
+  };
   combination2: {
     diviend_income: number;
     stocks: ItemType[];
-  },
+  };
   combination3: {
     diviend_income: number;
     stocks: ItemType[];
-  }
+  };
 };
 
 interface StockProps {
@@ -32,7 +32,9 @@ const ItemContainer = styled.div`
   ${tw`flex flex-col gap-5`}
 `;
 
-const MainText = styled.span`${tw`text-base`}`;
+const MainText = styled.span`
+  ${tw`text-base`}
+`;
 
 const Line = styled.hr`
   ${tw`w-full h-[3px] bg-gray30 border-none`}

@@ -1,10 +1,10 @@
 import tw, { styled } from 'twin.macro';
 
 import Expert from '../../assets/expert.svg';
-import { productDetail } from '../../types/product';
+import { estatesDetail } from '../../types/estates_product';
 
 interface ExpertProps {
-  data: productDetail;
+  data: estatesDetail;
 }
 
 const Container = styled.div`

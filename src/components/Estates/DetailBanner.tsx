@@ -1,10 +1,11 @@
 import tw, { css, styled } from 'twin.macro';
 import InfoInBanner from './InfoInBanner';
-import { productDetail } from '../../types/product';
+import { estatesDetail } from '../../types/estates_product';
+import { energyDetail } from '../../types/energy_product';
 
 interface BannerProps {
   isEstates: boolean;
-  data: productDetail;
+  data: estatesDetail | energyDetail;
 }
 
 const Container = styled.div<{ isEstates: boolean }>`
@@ -46,15 +47,33 @@ const DetailBanner = ({ isEstates, data }: BannerProps) => {
   return (
     <Container isEstates={isEstates}>
       <TopItem>
-        <Grade>등급 {data.eightCreditGrade}</Grade>
-        <MiniText>{data.startDatetime.slice(0, 10)} 오픈</MiniText>
+        <Grade>
+          등급{' '}
+          {isEstates
+            ? (data as estatesDetail).eightCreditGrade
+            : (data as energyDetail).creditRating}
+        </Grade>
+        <MiniText>
+          {isEstates
+            ? (data as estatesDetail).startDatetime.slice(0, 10)
+            : (data as energyDetail).startPeriod.slice(0, 10)}{' '}
+          오픈
+        </MiniText>
       </TopItem>
       <MidItem>
         <MainText>{data.title}</MainText>
         <InfoInBanner
           earningRate={data.earningRate}
-          length={data.length}
-          totalAmountInvestments={data.totalAmountInvestments}
+          length={
+            isEstates
+              ? (data as estatesDetail).length
+              : (data as energyDetail).investmentPeriod
+          }
+          totalAmountInvestments={
+            isEstates
+              ? (data as estatesDetail).totalAmountInvestments
+              : (data as energyDetail).fundingAmount + '억원'
+          }
         />
       </MidItem>
     </Container>

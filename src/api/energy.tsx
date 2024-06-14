@@ -1,10 +1,11 @@
-import { energyTypes } from "../store/reducers/energy/energy";
-import { energyInstance } from "./api";
+import { energyTypes } from '../store/reducers/energy/energy';
+import { energyInstance } from './api';
+
+export const energy_url = `/api/energy`;
 
 export const energyDatas = async () => {
-  const baseUrl = `/`;
   try {
-    const response = await energyInstance.get(baseUrl);
+    const response = await energyInstance.get(energy_url);
     return response;
   } catch (err) {
     console.error(err);
@@ -12,10 +13,9 @@ export const energyDatas = async () => {
   }
 };
 
-export const energyData = async (energy_id: number) => {
-  const baseUrl = `/${energy_id}`;
+export const energyData = async (energy_id: string) => {
   try {
-    const response = await energyInstance.get(baseUrl);
+    const response = await energyInstance.get(energy_url + `/${energy_id}`);
     return response;
   } catch (err) {
     console.error(err);
@@ -24,9 +24,8 @@ export const energyData = async (energy_id: number) => {
 };
 
 export const energyLike = async (data: energyTypes) => {
-  const baseUrl = `/like`;
   try {
-    const response = await energyInstance.post(baseUrl, data);
+    const response = await energyInstance.post(energy_url + '/like', data);
     return response;
   } catch (err) {
     console.error(err);
@@ -35,9 +34,10 @@ export const energyLike = async (data: energyTypes) => {
 };
 
 export const energyDisLike = async (data: energyTypes) => {
-  const baseUrl = `/like`;
   try {
-    const response = await energyInstance.delete(baseUrl, { data: data });
+    const response = await energyInstance.delete(energy_url + '/like', {
+      data: data,
+    });
     return response;
   } catch (err) {
     console.error(err);

@@ -6,9 +6,10 @@ import { MyStockProductType } from '../../components/Main/MyStockProduct';
 import { MyP2PProductType } from '../../components/Main/MyP2PProduct';
 import Footer from '../../components/common/Footer';
 import StockP2P from '../../components/Main/StockP2P';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import BottomUpModal from '../../components/common/Modal/BottomUpModal';
-import StocksHeldContent from '../../components/Main/StocksHeldContent';
+import AddStockModal from '../../components/Main/AddStockModal';
+import SearchBar from '../../components/common/Stock/SearchBar';
 
 interface LocationState {
   initialActive: boolean;
@@ -82,12 +83,11 @@ export default function ProductsHeldPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const state = location.state as LocationState;
-
   return (
     <>
       {modal && (
         <BottomUpModal
-          content={<></>}
+          content={<AddStockModal setModal={setModal} />}
           onClose={() => {
             setModal(false);
           }}
@@ -100,6 +100,7 @@ export default function ProductsHeldPage() {
           navigate('/');
         }}
       />
+
       <ProductsHeldPageContainer>
         <GreenBarTitle text="보유 상품" />
         <StockP2P

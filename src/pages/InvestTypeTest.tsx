@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import testData from '../assets/testData';
 import tw, { styled } from 'twin.macro';
 import SelectButton from '../components/StockTest/SelectButton';
 import Button from '../components/common/Button';
-import BasicModal from '../components/common/Modal/BasicModal';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Navbar from '../components/common/Navbar';
 

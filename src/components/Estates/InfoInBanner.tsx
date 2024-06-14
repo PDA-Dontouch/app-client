@@ -3,7 +3,7 @@ import tw, { styled } from 'twin.macro';
 interface InfoProps {
   earningRate: number;
   length: number;
-  totalAmountInvestments: number;
+  totalAmountInvestments: number | string;
 }
 
 const Container = styled.div`
@@ -75,7 +75,11 @@ const InfoInBanner = ({
       <Divide />
       <Wrapper>
         <SubText>총 모집금액</SubText>
-        <MainText>{formatNumberToKorean(totalAmountInvestments)}</MainText>
+        <MainText>
+          {typeof totalAmountInvestments === 'number'
+            ? formatNumberToKorean(totalAmountInvestments)
+            : totalAmountInvestments}
+        </MainText>
       </Wrapper>
     </Container>
   );

@@ -9,9 +9,9 @@ const ProgressBarContainer = styled.div`
   ${tw`w-full bg-gray30 rounded-full h-[6px]`}
 `;
 
-const Filler = styled.div<{ isEstates: boolean, percentage: number }>`
+const Filler = styled.div<{ isEstates: boolean; percentage: number }>`
   ${tw`h-full rounded-full flex items-center justify-end`}
-  ${({ isEstates }) => isEstates ? tw`bg-yellow` : tw`bg-blue`}
+  ${({ isEstates }) => (isEstates ? tw`bg-yellow` : tw`bg-blue`)}
   width: ${({ percentage }) => `${percentage}%`};
   transition: width 0.5s ease-in-out;
 `;

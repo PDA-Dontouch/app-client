@@ -36,7 +36,8 @@ const EstatesDetail = () => {
   const params = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const detail = useSelector((state: RootState) => state.estates.detail);
-  const { likeArr, setLike } = useLike('estates');
+  const { EstatesLikeArr, setLikeEstates, EnergyLikeArr, setLikeEnergy } =
+    useLike();
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   useEffect(() => {
@@ -60,8 +61,8 @@ const EstatesDetail = () => {
       </Container>
       <BtnContainer>
         <LikeBtn
-          isLike={likeArr.includes(parseInt(params.estates_id!)) ? true : false}
-          setIsLike={() => setLike(parseInt(params.estates_id!))}
+          isLike={EstatesLikeArr.includes(detail.id) ? true : false}
+          setIsLike={() => setLikeEstates(detail.id)}
         />
         <Button
           name="구매하기"
@@ -72,7 +73,13 @@ const EstatesDetail = () => {
       {isOpen && (
         <BottomUpModal
           onClose={() => setIsOpen(false)}
-          content={<Purchase period="6" profit="205,100" btnType="estates" />}
+          content={
+            <Purchase
+              period={detail.length}
+              profit={200000}
+              btnType="estates"
+            />
+          }
         />
         // <BottomUpModal onClose={() => setIsOpen(false)} content={<Cancel amount={5000000} period={6} profit={205100} btnType="plain" />} />
       )}

@@ -1,4 +1,15 @@
-export type productDetail = {
+export interface EstatesList {
+  id: number;
+  earningRate: number;
+  length: number;
+  loanAmountBaseLtv: number;
+  sumOfInvestmentAndReservation: number;
+  title: string;
+  titleMainImageUrl: string;
+  totalAmountInvestments: number;
+}
+
+export type estatesDetail = {
   id: number;
   title: string;
   length: number;
@@ -59,7 +70,7 @@ export type productDetail = {
   category: string;
 };
 
-export const initialDetail = {
+export const initialEstatesDetail = {
   id: 0,
   title: '',
   length: 0,

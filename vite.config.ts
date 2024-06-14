@@ -28,6 +28,11 @@ export default defineConfig(({ mode }) => {
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api\/estates/, ''),
         },
+        '/api/energy': {
+          target: 'http://localhost:8084',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api\/energy/, ''),
+        },
       },
     },
   };

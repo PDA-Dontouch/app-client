@@ -4,11 +4,12 @@ import ProgressBar from './Progressbar';
 import Empty from '../../../assets/empty-heart.svg';
 import Fill from '../../../assets/fill-heart.svg';
 import { useNavigate } from 'react-router-dom';
-import { Products } from '../../../store/reducers/estates/estates';
+import { EstatesList } from '../../../types/estates_product';
+import { EnergyList } from '../../../types/energy_product';
 
 interface ProductProps {
   isEstates: boolean;
-  data: Products;
+  data: EstatesList | EnergyList;
   isLike: boolean;
   setIsLike: () => void;
 }
@@ -34,7 +35,7 @@ const ItemContainer = styled.div`
 `;
 
 const MainText = styled.span`
-  ${tw`text-sm`}
+  ${tw`text-base`}
 `;
 
 const SubContainer = styled.div`
@@ -51,21 +52,44 @@ const MiniText = styled.span`
 
 const Product = ({ isEstates, data, isLike, setIsLike }: ProductProps) => {
   const navigate = useNavigate();
-  const percentage =
-    (data.sumOfInvestmentAndReservation / data.totalAmountInvestments) * 100;
+  const percentage = (): number => {
+    if (isEstates) {
+      const estatesData = data as EstatesList;
+      return (
+        (estatesData.sumOfInvestmentAndReservation /
+          estatesData.totalAmountInvestments) *
+        100
+      );
+    } else {
+      const energyData = data as EnergyList;
+      return (
+        (energyData.sumOfInvestmentAndReservation /
+          (energyData.fundingAmount * 100000000)) *
+        100
+      );
+    }
+  };
 
   const navigateDetail = () => {
     if (isEstates) {
-      navigate(`/estates/${data.id}`);
+      const estatesData = data as EstatesList;
+      navigate(`/estates/${estatesData.id}`);
     } else {
-      navigate(`/energy/${data.id}`);
+      const energyData = data as EnergyList;
+      navigate(`/energy/${energyData.energyId}`);
     }
   };
 
   return (
     <Container>
       <ImgContainer>
-        <Img src={data.titleMainImageUrl} />
+        <Img
+          src={
+            isEstates
+              ? (data as EstatesList).titleMainImageUrl
+              : (data as EnergyList).titleImageUrl
+          }
+        />
         {isLike ? (
           <Heart src={Fill} onClick={setIsLike} />
         ) : (
@@ -76,17 +100,26 @@ const Product = ({ isEstates, data, isLike, setIsLike }: ProductProps) => {
         <MainText>{data.title}</MainText>
         <SubContainer>
           <SubText>{data.earningRate}%</SubText>
-          <SubText>{data.length}개월</SubText>
+          <SubText>
+            {isEstates
+              ? (data as EstatesList).length
+              : (data as EnergyList).investment_period}
+            개월
+          </SubText>
         </SubContainer>
-        <ProgressBar isEstates={isEstates} percentage={percentage} />
+        <ProgressBar isEstates={isEstates} percentage={percentage()} />
         <MiniText>
           {data.sumOfInvestmentAndReservation
             .toString()
             .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
           원 /{' '}
-          {data.totalAmountInvestments
-            .toString()
-            .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
+          {isEstates
+            ? (data as EstatesList).totalAmountInvestments
+                .toString()
+                .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
+            : Math.ceil((data as EnergyList).fundingAmount * 100000000)
+                .toString()
+                .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
           원
         </MiniText>
       </ItemContainer>

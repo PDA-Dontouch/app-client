@@ -1,10 +1,10 @@
 import tw, { styled } from 'twin.macro';
 import Carousel from '../common/Product/Detail/Carousel';
-import { productDetail } from '../../types/product';
+import { estatesDetail } from '../../types/estates_product';
 import { formatNumberToKorean } from './InfoInBanner';
 
 interface BasicProps {
-  data: productDetail;
+  data: estatesDetail;
 }
 
 const Container = styled.div`
@@ -26,7 +26,7 @@ const SubText = styled.span`
   ${tw`text-base font-semibold`}
 `;
 const MiniText = styled.span`
-  ${tw`text-sm w-[100px]`}
+  ${tw`text-[15px] w-[100px]`}
 `;
 
 const Img = styled.img`
@@ -34,9 +34,6 @@ const Img = styled.img`
 `;
 
 const BasicInfo = ({ data }: BasicProps) => {
-  // const SLIDE_COUNT = data.photos.length;
-  // const SLIDES = Array.from(Array(SLIDE_COUNT).keys());
-
   return (
     <Container>
       <MainText>상품 개요</MainText>

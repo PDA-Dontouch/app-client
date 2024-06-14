@@ -15,13 +15,22 @@ import BottomUpModal from '../../components/common/Modal/BottomUpModal';
 import Purchase from '../../components/common/Product/Detail/Purchase';
 import Cancel from '../../components/common/Product/Detail/Cancel';
 import Dropdown from '../../components/common/Dropdown';
+import InvestPoint from '../../components/Energy/InvestPoint';
+import BusinessInfo from '../../components/Energy/BusinessInfo';
+import ProtectInvestor from '../../components/Energy/ProtectInvestor';
+import Repayment from '../../components/Energy/Repayment';
+import BasicInfo from '../../components/Energy/BasicInfo';
 
-const BtnContainer = styled.div`
-  ${tw`w-[100%] h-[56px] flex gap-4 px-6 fixed bottom-7 box-border`}
+const Container = styled.div`
+  ${tw`mt-14 pb-20 h-full overflow-y-scroll`}
 `;
 
-const Input = styled.input`
-  ${tw`w-[50px] bg-gray-light border-0 border-solid border-b border-gray-dark focus:outline-none text-base text-end`}
+const BtnContainer = styled.div`
+  ${tw`w-[100%] h-[56px] flex gap-4 px-6 fixed bottom-7 box-border z-[99]`}
+`;
+
+const Hr = styled.div`
+  ${tw`w-full h-2 bg-gray-light`}
 `;
 
 const EnergyDetail = () => {
@@ -29,26 +38,35 @@ const EnergyDetail = () => {
   const params = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const detail = useSelector((state: RootState) => state.energy.detail);
-  const { likeArr, setLike } = useLike('energy');
+  const { EstatesLikeArr, setLikeEstates, EnergyLikeArr, setLikeEnergy } =
+    useLike();
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    dispatch(getEnergyData(parseInt(params.energy_id!)));
+    dispatch(getEnergyData(params.energy_id!));
   }, []);
 
   return (
     <>
       <Navbar name="back" type="" onClick={() => navigate('/energy')} />
-      <DetailBanner
-        isEstates={false}
-        tags={['태그', '태그', '태그']}
-        date="2024.05.13"
-        title="의성군 외 총 993.40kW 태양광 담보"
-      />
+      <Container>
+        <DetailBanner isEstates={false} data={detail} />
+        <Dropdown isEstates={false} profit_rate={detail.earningRate} />
+        <Hr />
+        <InvestPoint data={detail} />
+        <Hr />
+        <BasicInfo data={detail} />
+        <Hr />
+        <BusinessInfo data={detail} />
+        <Hr />
+        <Repayment data={detail} />
+        <Hr />
+        <ProtectInvestor data={detail} />
+      </Container>
       <BtnContainer>
         <LikeBtn
-          isLike={likeArr.includes(parseInt(params.energy_id!)) ? true : false}
-          setIsLike={() => setLike(parseInt(params.energy_id!))}
+          isLike={EnergyLikeArr.includes(detail.energyId) ? true : false}
+          setIsLike={() => setLikeEnergy(detail.energyId)}
         />
         <Button
           name="구매하기"
@@ -59,11 +77,16 @@ const EnergyDetail = () => {
       {isOpen && (
         <BottomUpModal
           onClose={() => setIsOpen(false)}
-          content={<Purchase period="6" profit="205,100" btnType="energy" />}
+          content={
+            <Purchase
+              period={detail.investmentPeriod}
+              profit={200000}
+              btnType="energy"
+            />
+          }
         />
         // <BottomUpModal onClose={() => setIsOpen(false)} content={<Cancel amount={5000000} period={6} profit={205100} btnType="plain" />} />
       )}
-      <Dropdown isEstates={false} />
     </>
   );
 };

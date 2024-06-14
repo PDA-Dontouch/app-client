@@ -52,7 +52,6 @@ const InvestTypeTest = () => {
   const [answers, setAnswers] = useState<number[]>(
     new Array(testData.length).fill(-1),
   );
-  const [showModal, setShowModal] = useState(false);
   const [totalScore, setTotalScore] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
@@ -86,12 +85,12 @@ const InvestTypeTest = () => {
       0,
     );
     setTotalScore(totalPoints);
-    setShowModal(true);
-    console.log('Total Score:', totalPoints);
+    navigate('/asset-input', { state: { totalScore: totalPoints } });
   };
 
   return (
     <>
+      {' '}
       {state.nav && (
         <Navbar
           name="back"
@@ -100,9 +99,6 @@ const InvestTypeTest = () => {
             navigate('/');
           }}
         />
-      )}
-      {showModal && (
-        <BasicModal type="안전추구" onClick={() => navigate('/')} />
       )}
       <Container>
         <ItemContainer>
@@ -136,7 +132,7 @@ const InvestTypeTest = () => {
             />
           ) : currentQuestion === 6 ? (
             <Button
-              name="완료"
+              name="내 계좌 연동하기"
               status={answers[currentQuestion] === -1 ? 'disabled' : 'active'}
               onClick={handleSubmit}
             />

@@ -1,68 +1,102 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { energyDisLike, energyLike, energyDatas, energyData } from "../../../api/energy";
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {
+  energyDisLike,
+  energyLike,
+  energyDatas,
+  energyData,
+} from '../../../api/energy';
+import {
+  EnergyList,
+  energyDetail,
+  initialEnergyDetail,
+} from '../../../types/energy_product';
 
-const initialState = {
-  likes: [-1],
-  datas: [],
-  detail: {}
+interface EnergyState {
+  energyLike: string[];
+  datas: EnergyList[];
+  detail: energyDetail;
 }
+
+type ActionPayload = {
+  data: {
+    response: EnergyList[];
+  };
+};
+
+type ActionPayloadDetail = {
+  data: {
+    response: energyDetail;
+  };
+};
+
+const initialState: EnergyState = {
+  energyLike: ['-1'],
+  datas: [],
+  detail: initialEnergyDetail,
+};
 
 export type energyTypes = {
   token: string;
   energy_id: number;
-}
+};
 
-export const getEnergyDatas = createAsyncThunk(
-  "energy/getDatas",
+export const getEnergyDatas = createAsyncThunk<ActionPayload, void>(
+  'energy/getDatas',
   async (data, thunkAPI) => {
     const response = await energyDatas();
-    return response;
-  }
+    return response as ActionPayload;
+  },
 );
 
-export const getEnergyData = createAsyncThunk(
-  "energy/getData",
-  async (data: number, thunkAPI) => {
+export const getEnergyData = createAsyncThunk<ActionPayloadDetail, string>(
+  'energy/getData',
+  async (data: string, thunkAPI) => {
     const response = await energyData(data);
-    return response;
-  }
+    return response as ActionPayloadDetail;
+  },
 );
 
 export const addLikeEnergy = createAsyncThunk(
-  "energy/like",
+  'energy/like',
   async (data: energyTypes, thunkAPI) => {
     const response = await energyLike(data);
     return response;
-  }
+  },
 );
 
 export const delLikeEnergy = createAsyncThunk(
-  "energy/like",
+  'energy/like',
   async (data: energyTypes, thunkAPI) => {
     const response = await energyDisLike(data);
     return response;
-  }
+  },
 );
 
 const energySlice = createSlice({
-  name: "energy",
+  name: 'energy',
   initialState: initialState,
   reducers: {
     setEnergyLike: (state, action) => {
-      state.likes.push(action.payload);
+      state.energyLike.push(action.payload);
     },
     delEnergyLike: (state, action) => {
-      state.likes = state.likes.filter((el) => el !== action.payload);
-    }
+      state.energyLike = state.energyLike.filter((el) => el !== action.payload);
+    },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getEnergyDatas.fulfilled, (state, action) => {
-        // state.datas = action.payload;
-      })
-      .addCase(getEnergyData.fulfilled, (state, action) => {
-        // state.detail = action.payload;
-      })
+      .addCase(
+        getEnergyDatas.fulfilled,
+        (state, action: PayloadAction<ActionPayload>) => {
+          state.datas = action.payload.data.response;
+        },
+      )
+      .addCase(
+        getEnergyData.fulfilled,
+        (state, action: PayloadAction<ActionPayloadDetail>) => {
+          state.detail = action.payload.data.response;
+        },
+      );
   },
 });
 

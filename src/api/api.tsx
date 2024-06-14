@@ -1,19 +1,21 @@
-import axios from "axios";
+import axios from 'axios';
 
-export const BASE_URL = '/api';
+export const BASE_URL = '/';
+export const ESTATES_BASE_URL = '/api/estates';
+export const ENERGY_BASE_URL = '/api/energy';
 
 export const authInstance = axios.create({
   baseURL: BASE_URL + '/users',
-})
+});
 
 export const energyInstance = axios.create({
-  baseURL: BASE_URL + '/energy',
-})
+  baseURL: ENERGY_BASE_URL,
+});
 
 export const estatesInstance = axios.create({
-  baseURL: BASE_URL + '/estates',
-})
+  baseURL: ESTATES_BASE_URL,
+});
 
 export const stockInstance = axios.create({
   baseURL: BASE_URL + '/stocks',
-})
+});

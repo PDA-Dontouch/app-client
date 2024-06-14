@@ -1,26 +1,25 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useCallback } from 'react';
 import { RootState } from '../store/store';
-import { delEstatesLike, setEstatesLike } from '../store/reducers/estates/estates';
+import {
+  delEstatesLike,
+  setEstatesLike,
+} from '../store/reducers/estates/estates';
 import { delEnergyLike, setEnergyLike } from '../store/reducers/energy/energy';
-// import { addLikeEstates, delLikeEstates, addLikeEnergy, delLikeEnergy } from '../api'; // API 호출이 필요한 경우 주석 해제
+// import { addLikeEstates, delLikeEstates, addLikeEnergy, delLikeEnergy } from '../api';
 
-type LikeType = 'estates' | 'energy';
-
-const useLike = (type: LikeType) => {
+const useLike = () => {
   const dispatch = useDispatch();
-  const likeArr = useSelector((state: RootState) => {
-    if (type === 'estates') {
-      return state.estates.likes;
-    } else if (type === 'energy') {
-      return state.energy.likes;
-    }
-    return [];
-  });
+  const EstatesLikeArr = useSelector(
+    (state: RootState) => state.estates.estatesLike,
+  );
+  const EnergyLikeArr = useSelector(
+    (state: RootState) => state.energy.energyLike,
+  );
 
-  const setLike = useCallback((id: number) => {
-    if (likeArr.includes(id)) {
-      if (type === 'estates') {
+  const setLikeEstates = useCallback(
+    (id: number) => {
+      if (EstatesLikeArr.includes(id)) {
         dispatch(delEstatesLike(id));
         // const data = {
         //   token: "token",
@@ -32,21 +31,7 @@ const useLike = (type: LikeType) => {
         //       dispatch(delEstatesLike(id));
         //     }
         //   })
-      } else if (type === 'energy') {
-        dispatch(delEnergyLike(id));
-        // const data = {
-        //   token: "token",
-        //   energy_id: id
-        // }
-        // dispatch(delLikeEnergy(data))
-        //   .then((res) => {
-        //     if (res.payload.success === true) {
-        //       dispatch(delEnergyLike(id));
-        //     }
-        //   })
-      }
-    } else {
-      if (type === 'estates') {
+      } else {
         dispatch(setEstatesLike(id));
         // const data = {
         //   token: "token",
@@ -58,7 +43,26 @@ const useLike = (type: LikeType) => {
         //       dispatch(setEstatesLike(id));
         //     }
         //   })
-      } else if (type === 'energy') {
+      }
+    },
+    [dispatch, EstatesLikeArr],
+  );
+
+  const setLikeEnergy = useCallback(
+    (id: string) => {
+      if (EnergyLikeArr.includes(id)) {
+        dispatch(delEnergyLike(id));
+        // const data = {
+        //   token: "token",
+        //   energy_id: id
+        // }
+        // dispatch(delLikeEnergy(data))
+        //   .then((res) => {
+        //     if (res.payload.success === true) {
+        //       dispatch(delEnergyLike(id));
+        //     }
+        //   })
+      } else {
         dispatch(setEnergyLike(id));
         // const data = {
         //   token: "token",
@@ -71,10 +75,11 @@ const useLike = (type: LikeType) => {
         //     }
         //   })
       }
-    }
-  }, [dispatch, likeArr, type]);
+    },
+    [dispatch, EnergyLikeArr],
+  );
 
-  return { likeArr, setLike };
+  return { EstatesLikeArr, setLikeEstates, EnergyLikeArr, setLikeEnergy };
 };
 
 export default useLike;

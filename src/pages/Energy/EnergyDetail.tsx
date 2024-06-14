@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import tw, { css, styled } from 'twin.macro';
+import tw, { styled } from 'twin.macro';
 
 import useLike from '../../hooks/useLike';
 import { AppDispatch, RootState } from '../../store/store';
-import { getEstatesData } from '../../store/reducers/estates/estates';
+import { getEnergyData } from '../../store/reducers/energy/energy';
+
 import DetailBanner from '../../components/Estates/DetailBanner';
 import Navbar from '../../components/common/Navbar';
 import LikeBtn from '../../components/common/LikeBtn';
@@ -14,10 +15,11 @@ import BottomUpModal from '../../components/common/Modal/BottomUpModal';
 import Purchase from '../../components/common/Product/Detail/Purchase';
 import Cancel from '../../components/common/Product/Detail/Cancel';
 import Dropdown from '../../components/common/Dropdown';
-import DetailInfo from '../../components/Estates/DetailInfo';
-import BasicInfo from '../../components/Estates/BasicInfo';
-import InvestPoint from '../../components/Estates/InvestPoint';
-import ExpertCheck from '../../components/Estates/ExpertCheck';
+import InvestPoint from '../../components/Energy/InvestPoint';
+import BusinessInfo from '../../components/Energy/BusinessInfo';
+import ProtectInvestor from '../../components/Energy/ProtectInvestor';
+import Repayment from '../../components/Energy/Repayment';
+import BasicInfo from '../../components/Energy/BasicInfo';
 
 const Container = styled.div`
   ${tw`mt-14 pb-20 h-full overflow-y-scroll`}
@@ -31,42 +33,44 @@ const Hr = styled.div`
   ${tw`w-full h-2 bg-gray-light`}
 `;
 
-const EstatesDetail = () => {
+const EnergyDetail = () => {
   const navigate = useNavigate();
   const params = useParams();
   const dispatch = useDispatch<AppDispatch>();
-  const detail = useSelector((state: RootState) => state.estates.detail);
+  const detail = useSelector((state: RootState) => state.energy.detail);
   const { EstatesLikeArr, setLikeEstates, EnergyLikeArr, setLikeEnergy } =
     useLike();
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    dispatch(getEstatesData(parseInt(params.estates_id!)));
+    dispatch(getEnergyData(params.energy_id!));
   }, []);
 
   return (
     <>
-      <Navbar name="back" type="" onClick={() => navigate('/estates')} />
+      <Navbar name="back" type="" onClick={() => navigate('/energy')} />
       <Container>
-        <DetailBanner isEstates={true} data={detail} />
-        <Dropdown isEstates={true} profit_rate={detail.earningRate} />
+        <DetailBanner isEstates={false} data={detail} />
+        <Dropdown isEstates={false} profit_rate={detail.earningRate} />
         <Hr />
         <InvestPoint data={detail} />
         <Hr />
         <BasicInfo data={detail} />
         <Hr />
-        <DetailInfo data={detail} />
+        <BusinessInfo data={detail} />
         <Hr />
-        <ExpertCheck data={detail} />
+        <Repayment data={detail} />
+        <Hr />
+        <ProtectInvestor data={detail} />
       </Container>
       <BtnContainer>
         <LikeBtn
-          isLike={EstatesLikeArr.includes(detail.id) ? true : false}
-          setIsLike={() => setLikeEstates(detail.id)}
+          isLike={EnergyLikeArr.includes(detail.energyId) ? true : false}
+          setIsLike={() => setLikeEnergy(detail.energyId)}
         />
         <Button
           name="구매하기"
-          status="estates"
+          status="energy"
           onClick={() => setIsOpen(true)}
         />
       </BtnContainer>
@@ -75,9 +79,9 @@ const EstatesDetail = () => {
           onClose={() => setIsOpen(false)}
           content={
             <Purchase
-              period={detail.length}
+              period={detail.investmentPeriod}
               profit={200000}
-              btnType="estates"
+              btnType="energy"
             />
           }
         />
@@ -87,4 +91,4 @@ const EstatesDetail = () => {
   );
 };
 
-export default EstatesDetail;
+export default EnergyDetail;

@@ -1,15 +1,16 @@
 import tw, { styled } from 'twin.macro';
-import arrowImg from '../assets/arrow.svg';
-import Calendar from '../components/Calendar/Calendar';
-import BottomUpModal from '../components/common/Modal/BottomUpModal';
-import SalaryPlan, { PlanDetailType } from '../components/Calendar/SalaryPlan';
-import { useEffect, useState } from 'react';
+import arrowImg from '../../assets/arrow.svg';
+import Calendar from '../../components/Calendar/Calendar';
+import BottomUpModal from '../../components/common/Modal/BottomUpModal';
+import SalaryPlan, {
+  PlanDetailType,
+} from '../../components/Calendar/SalaryPlan';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../components/common/Navbar';
-import Footer from '../components/common/Footer';
-import arrow from '../assets/arrow.svg';
-import darkRedHeart from '../assets/dark-red-heart.svg';
-import testBlue from '../assets/test-blue.svg';
+import Navbar from '../../components/common/Navbar';
+import Footer from '../../components/common/Footer';
+import darkRedHeartImg from '../../assets/dark-red-heart.svg';
+import testBlueImg from '../../assets/test-blue.svg';
 
 type TitleNameProps = {
   type: 'name' | 'nim';
@@ -50,7 +51,7 @@ const salaryData: PlanDetailType[] = [
 ];
 
 const MyPageContainer = styled.div`
-  ${tw`flex flex-col gap-8 px-5 py-18 w-full`}
+  ${tw`flex flex-col gap-8 px-5 pt-18 pb-22 w-full`}
   box-sizing: border-box;
 `;
 
@@ -128,6 +129,7 @@ const AssetDetailSection = styled.div`
 const AssetDetail = styled.div`
   ${tw`flex flex-row justify-between items-center px-3 py-4 bg-gray-light`}
   border-radius : 12px;
+  box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.15);
 `;
 
 const AssetDetailInfo = styled.div`
@@ -143,7 +145,7 @@ const AdditionalFunctionContainer = styled.div`
 `;
 
 const AdditionalFunction = styled.div`
-  ${tw`flex flex-row gap-1 p-3 w-full items-center`}
+  ${tw`flex flex-col gap-1 p-3 w-full items-center`}
   box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.15);
   border-radius: 12px;
 `;
@@ -153,7 +155,7 @@ const AdditionalFunctionImg = styled.img`
 `;
 
 const AdditionalFunctionText = styled.div`
-  ${tw`text-xxs`}
+  ${tw`text-xs`}
 `;
 
 function AssetDetailCommon({ type, price, onClick }: AssetDetailCommonProps) {
@@ -163,7 +165,7 @@ function AssetDetailCommon({ type, price, onClick }: AssetDetailCommonProps) {
         <div>{type}</div>
         <div>{price.toLocaleString()} 원</div>
       </AssetDetailInfo>
-      <AssetDetailArrow src={arrow} />
+      <AssetDetailArrow src={arrowImg} />
     </AssetDetail>
   );
 }
@@ -173,8 +175,6 @@ export default function MainPage() {
   const [date, setDate] = useState<number>(today.getDate());
   const [modal, setModal] = useState<boolean>(false);
   const navigate = useNavigate();
-
-  useEffect(() => {}, []);
 
   return (
     <>
@@ -254,14 +254,14 @@ export default function MainPage() {
               type="주식"
               price={634320}
               onClick={() => {
-                navigate('/products/held');
+                navigate('/products/held', { state: { initialActive: true } });
               }}
             />
             <AssetDetailCommon
-              type="입출금"
+              type="P2P"
               price={425480}
               onClick={() => {
-                navigate('/products/held');
+                navigate('/products/held', { state: { initialActive: false } });
               }}
             />
           </AssetDetailSection>
@@ -269,18 +269,18 @@ export default function MainPage() {
         <AdditionalFunctionContainer>
           <AdditionalFunction
             onClick={() => {
-              navigate('/products/like');
+              navigate('/products/like', { state: { initialActive: true } });
             }}
           >
-            <AdditionalFunctionImg src={darkRedHeart} />
+            <AdditionalFunctionImg src={darkRedHeartImg} />
             <AdditionalFunctionText>관심 종목 보러가기</AdditionalFunctionText>
           </AdditionalFunction>
           <AdditionalFunction
             onClick={() => {
-              navigate('/typetest');
+              navigate('/typetest', { state: { nav: true } });
             }}
           >
-            <AdditionalFunctionImg src={testBlue} />
+            <AdditionalFunctionImg src={testBlueImg} />
             <AdditionalFunctionText>
               투자 성향 테스트 다시하기
             </AdditionalFunctionText>

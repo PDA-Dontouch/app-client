@@ -25,7 +25,9 @@ const StockContainer = ({ item }: ItemProps) => {
   return (
     <Container>
       {item.map((item, idx) => (
-        <StockItem name={item.name} amount={item.amount} />
+        <div key={item.code}>
+          <StockItem name={item.name} amount={item.amount} />
+        </div>
       ))}
     </Container>
   );

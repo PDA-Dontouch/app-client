@@ -5,6 +5,9 @@ import MyStock from './MyStock';
 import MyP2P from './MyP2P';
 import { MyP2PProductType } from './MyP2PProduct';
 import { MyStockProductType } from './MyStockProduct';
+import StocksHeldContent from './StocksHeldContent';
+import { useNavigate } from 'react-router-dom';
+import P2PHeldContent from './P2PHeldContent';
 
 const StockP2PContainer = styled.div`
   ${tw`flex flex-col gap-6 px-2`}
@@ -17,6 +20,10 @@ type StockP2PProps = {
   usaData: MyStockProductType[];
   energyData: MyP2PProductType[];
   estateData: MyP2PProductType[];
+  initialActive: boolean;
+  setModal?: () => void;
+  StockTotalPrice?: number;
+  P2PTotalPrice?: number;
 };
 
 export default function StockP2P({
@@ -25,19 +32,33 @@ export default function StockP2P({
   usaData,
   energyData,
   estateData,
+  initialActive,
+  setModal,
+  StockTotalPrice,
+  P2PTotalPrice,
 }: StockP2PProps) {
-  const [active, setActive] = useState<boolean>(true);
+  const [active, setActive] = useState<boolean>(initialActive);
+  const navigate = useNavigate();
+
   return (
     <StockP2PContainer>
       <SelectStockP2P active={active} setActive={setActive} />
+      {type === 'held' &&
+        (active ? (
+          <StocksHeldContent
+            leftOnClick={setModal}
+            rightOnClick={() => {
+              navigate('/products/combinations');
+            }}
+            totalPrice={StockTotalPrice}
+          />
+        ) : (
+          <P2PHeldContent totalPrice={P2PTotalPrice} />
+        ))}
       {active ? (
         <MyStock koreaData={koreaData} usaData={usaData} />
       ) : (
-        <MyP2P
-          type={type}
-          energyData={energyData}
-          estateData={estateData}
-        ></MyP2P>
+        <MyP2P energyData={energyData} estateData={estateData}></MyP2P>
       )}
     </StockP2PContainer>
   );

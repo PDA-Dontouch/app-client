@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import tw, { styled } from 'twin.macro';
 
 type SelectYearMonthProps = {

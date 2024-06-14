@@ -8,7 +8,12 @@ import InvestTypeTest from './pages/InvestTypeTest';
 import CalendarPage from './pages/CalendarPage';
 import StockMainPage from './pages/Stock/StockMainPage';
 import TransactionResult from './pages/TransactionResult';
-import MainPage from './pages/MainPage';
+import MainPage from './pages/Main/MainPage';
+import AccountPage from './pages/Main/AccountPage';
+import ProductsHeldPage from './pages/Main/ProductsHeldPage';
+import ProductsLikePage from './pages/Main/ProductsLikePage';
+import CombinationLogPage from './pages/Main/CombinationLogPage';
+
 import AssetInput from './pages/AssetInput';
 import IndividualStock from './pages/Stock/IndividualStock';
 export default function Routers() {
@@ -26,6 +31,10 @@ export default function Routers() {
       <Route path="/asset-input" element={<AssetInput />} />
       <Route path="/" element={<MainPage />} />
       <Route path="/chart" element={<IndividualStock />} />
+      <Route path="/account" element={<AccountPage />} />
+      <Route path="/products/held" element={<ProductsHeldPage />} />
+      <Route path="/products/like" element={<ProductsLikePage />} />
+      <Route path="/products/combinations" element={<CombinationLogPage />} />
     </Routes>
   );
 }

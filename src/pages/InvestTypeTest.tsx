@@ -3,7 +3,12 @@ import testData from '../assets/testData';
 import tw, { styled } from 'twin.macro';
 import SelectButton from '../components/StockTest/SelectButton';
 import Button from '../components/common/Button';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Navbar from '../components/common/Navbar';
+
+interface LocationState {
+  nav?: boolean;
+}
 
 const Container = styled.div`
   ${tw`h-[100%] px-7 py-22 box-border`}
@@ -48,6 +53,8 @@ const InvestTypeTest = () => {
   );
   const [totalScore, setTotalScore] = useState(0);
   const navigate = useNavigate();
+  const location = useLocation();
+  const state = location.state as LocationState;
 
   const handleAnswerSelect = (index: number) => {
     const newAnswers = [...answers];
@@ -81,52 +88,66 @@ const InvestTypeTest = () => {
   };
 
   return (
-    <Container>
-      <ItemContainer>
-        <Wrapper>
-          <TextContainer>
-            <TextItem>
-              <XLargeText>0{currentQuestion + 1}</XLargeText>
-              <LargeText> / 0{testData.length}</LargeText>
-            </TextItem>
-            <Title>{testData[currentQuestion].question}</Title>
-          </TextContainer>
-          <TextContainer>
-            {testData[currentQuestion].answers.map((item, idx) => (
-              <div key={idx}>
-                <SelectButton
-                  name={item.text}
-                  status={answers[currentQuestion] === idx ? 'active' : 'plain'}
-                  onClick={() => handleAnswerSelect(idx)}
-                />
-              </div>
-            ))}
-          </TextContainer>
-        </Wrapper>
-        {currentQuestion === 0 ? (
-          <Button
-            name="다음"
-            status={answers[currentQuestion] === -1 ? 'disabled' : 'active'}
-            onClick={handleNext}
-          />
-        ) : currentQuestion === 6 ? (
-          <Button
-            name="내 계좌 연동하기"
-            status={answers[currentQuestion] === -1 ? 'disabled' : 'active'}
-            onClick={handleSubmit}
-          />
-        ) : (
-          <BtnWrapper>
-            <Button name="이전" status="plain" onClick={handlePrev} />
+    <>
+      {' '}
+      {state.nav && (
+        <Navbar
+          name="back"
+          type="back"
+          onClick={() => {
+            navigate('/');
+          }}
+        />
+      )}
+      <Container>
+        <ItemContainer>
+          <Wrapper>
+            <TextContainer>
+              <TextItem>
+                <XLargeText>0{currentQuestion + 1}</XLargeText>
+                <LargeText> / 0{testData.length}</LargeText>
+              </TextItem>
+              <Title>{testData[currentQuestion].question}</Title>
+            </TextContainer>
+            <TextContainer>
+              {testData[currentQuestion].answers.map((item, idx) => (
+                <div key={idx}>
+                  <SelectButton
+                    name={item.text}
+                    status={
+                      answers[currentQuestion] === idx ? 'active' : 'plain'
+                    }
+                    onClick={() => handleAnswerSelect(idx)}
+                  />
+                </div>
+              ))}
+            </TextContainer>
+          </Wrapper>
+          {currentQuestion === 0 ? (
             <Button
               name="다음"
               status={answers[currentQuestion] === -1 ? 'disabled' : 'active'}
               onClick={handleNext}
             />
-          </BtnWrapper>
-        )}
-      </ItemContainer>
-    </Container>
+          ) : currentQuestion === 6 ? (
+            <Button
+              name="내 계좌 연동하기"
+              status={answers[currentQuestion] === -1 ? 'disabled' : 'active'}
+              onClick={handleSubmit}
+            />
+          ) : (
+            <BtnWrapper>
+              <Button name="이전" status="plain" onClick={handlePrev} />
+              <Button
+                name="다음"
+                status={answers[currentQuestion] === -1 ? 'disabled' : 'active'}
+                onClick={handleNext}
+              />
+            </BtnWrapper>
+          )}
+        </ItemContainer>
+      </Container>
+    </>
   );
 };
 

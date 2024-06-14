@@ -1,10 +1,11 @@
-import { stocksTypes } from "../store/reducers/stocks/stocks";
-import { stockInstance } from "./api";
+import { stocksTypes } from '../store/reducers/stocks/stocks';
+import { stockInstance } from './api';
+
+export const stocks_url = `/api/stocks`;
 
 export const stocksDatas = async () => {
-  const baseUrl = `/`;
   try {
-    const response = await stockInstance.get(baseUrl);
+    const response = await stockInstance.get(stocks_url);
     return response;
   } catch (err) {
     console.error(err);
@@ -13,9 +14,8 @@ export const stocksDatas = async () => {
 };
 
 export const stocksData = async (stocks_id: string) => {
-  const baseUrl = `/${stocks_id}`;
   try {
-    const response = await stockInstance.get(baseUrl);
+    const response = await stockInstance.get(stocks_url + `/${stocks_id}`);
     return response;
   } catch (err) {
     console.error(err);
@@ -24,9 +24,8 @@ export const stocksData = async (stocks_id: string) => {
 };
 
 export const stocksLike = async (data: stocksTypes) => {
-  const baseUrl = `/like`;
   try {
-    const response = await stockInstance.post(baseUrl, data);
+    const response = await stockInstance.post(stocks_url + '/like', data);
     return response;
   } catch (err) {
     console.error(err);
@@ -35,9 +34,20 @@ export const stocksLike = async (data: stocksTypes) => {
 };
 
 export const stocksDisLike = async (data: stocksTypes) => {
-  const baseUrl = `/like`;
   try {
-    const response = await stockInstance.delete(baseUrl, { data: data });
+    const response = await stockInstance.delete(stocks_url + '/like', {
+      data: data,
+    });
+    return response;
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
+};
+
+export const stocksChart = async (code: string) => {
+  try {
+    const response = await stockInstance.delete(stocks_url + '/chart');
     return response;
   } catch (err) {
     console.error(err);

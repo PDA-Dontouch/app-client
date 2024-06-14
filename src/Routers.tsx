@@ -10,6 +10,7 @@ import StockMainPage from './pages/Stock/StockMainPage';
 import TransactionResult from './pages/TransactionResult';
 import MainPage from './pages/MainPage';
 import AssetInput from './pages/AssetInput';
+import IndividualStock from './pages/Stock/IndividualStock';
 export default function Routers() {
   return (
     <Routes>
@@ -24,6 +25,7 @@ export default function Routers() {
       <Route path="/result/:type" element={<TransactionResult />} />
       <Route path="/asset-input" element={<AssetInput />} />
       <Route path="/" element={<MainPage />} />
+      <Route path="/chart" element={<IndividualStock />} />
     </Routes>
   );
 }

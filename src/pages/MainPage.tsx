@@ -1,28 +1,56 @@
 import tw, { styled } from 'twin.macro';
-import coinImg from '../assets/coinInMain.svg';
 import arrowImg from '../assets/arrow.svg';
 import Calendar from '../components/Calendar/Calendar';
-import { salaryData } from './CalendarPage';
 import BottomUpModal from '../components/common/Modal/BottomUpModal';
-import SalaryPlan from '../components/Calendar/SalaryPlan';
-import { useEffect, useRef, useState } from 'react';
+import SalaryPlan, { PlanDetailType } from '../components/Calendar/SalaryPlan';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import rd3 from 'react-d3-graph';
-import * as d3 from 'd3';
 import Navbar from '../components/common/Navbar';
 import Footer from '../components/common/Footer';
+import arrow from '../assets/arrow.svg';
+import darkRedHeart from '../assets/dark-red-heart.svg';
+import testBlue from '../assets/test-blue.svg';
 
 type TitleNameProps = {
   type: 'name' | 'nim';
 };
 
+type AssetDetailCommonProps = {
+  type: string;
+  price: number;
+  onClick: () => void;
+};
+
+const salaryData: PlanDetailType[] = [
+  {
+    type: '배당',
+    name: '삼성전자',
+    price: 1200,
+  },
+  {
+    type: '에너지',
+    name: '삼성전자',
+    price: 21955,
+  },
+  {
+    type: '부동산',
+    name: '울산 행복아파트',
+    price: 40560,
+  },
+  {
+    type: '배당',
+    name: '삼성전자',
+    price: 1200,
+  },
+  {
+    type: '에너지',
+    name: '삼성전자',
+    price: 21955,
+  },
+];
+
 const MyPageContainer = styled.div`
   ${tw`flex flex-col gap-8 px-5 py-18 w-full`}
-  box-sizing: border-box;
-`;
-
-const InfoSection = styled.div`
-  ${tw`flex flex-col w-full gap-2`}
   box-sizing: border-box;
 `;
 
@@ -32,31 +60,20 @@ const TitleNameContainer = styled.div`
 `;
 
 const TitleName = styled.div<TitleNameProps>`
-  ${({ type }) => (type === 'name' ? tw`text-3xl` : tw`text-base`)}
+  ${({ type }) => (type === 'name' ? tw`text-xl` : tw`text-base`)}
   ${tw`flex flex-col h-full`}
 `;
 
-const TotalAssetContainer = styled.div`
-  ${tw`flex flex-row justify-end items-center px-1 gap-2 w-full`}
-  box-sizing: border-box;
+const TitleInvestmentType = styled.div`
+  ${tw`text-xl`}
+  position: relative;
 `;
 
-const TotalAssetText = styled.div`
-  ${tw`text-lg`}
-`;
-
-const TotalAssetMoneyContainer = styled.div`
-  ${tw`flex flex-row gap-1`}
-`;
-
-const TotalAssetMoneyImg = styled.img`
-  width: 25px;
-  height: 25px;
-`;
-
-const TotalAssetMoneyNumber = styled.div`
-  ${tw`text-2xl text-green-dark`}
-  font-weight: 600;
+const GreenBar = styled.div`
+  position: absolute;
+  bottom: 0;
+  ${tw`h-1/2 w-full`};
+  background-color: #1aa76e66;
 `;
 
 const ThisMonthSalaryContainer = styled.div`
@@ -87,37 +104,69 @@ const CalendarGoToThisMonthText = styled.div`
   ${tw`text-sm`}
 `;
 
-const SalaryRatioContainer = styled.div`
-  ${tw`flex flex-col gap-3 justify-center items-center`}
+const TotalAssetSection = styled.div`
+  ${tw`flex flex-col gap-3`}
 `;
 
-const SalaryRatioTitle = styled.div``;
+const TotalAssetTitle = styled.div`
+  ${tw`flex flex-row items-center gap-3`}
+`;
 
-const SalaryRatioVisualization = styled.svg``;
+const TotalAssetTitleText = styled.div`
+  ${tw`text-sm`}
+`;
 
-const SalaryRatioTop3 = styled.div``;
+const TotalAssetTitleNumber = styled.div`
+  ${tw`text-3xl`}
+  font-weight: 500;
+`;
 
-type BubbleStockData = {
-  name: string;
-  price: number;
-  code: string;
-};
+const AssetDetailSection = styled.div`
+  ${tw`flex flex-col gap-3 w-full`}
+`;
 
-type BubbleEnergyData = {
-  name: string;
-  img: string;
-  price: number;
-};
+const AssetDetail = styled.div`
+  ${tw`flex flex-row justify-between items-center px-3 py-4 bg-gray-light`}
+  border-radius : 12px;
+`;
 
-const dummyData: BubbleStockData[] = [
-  { name: '삼성전자', price: 5000, code: '005930' },
-  { name: '테슬라', price: 2000, code: 'TSLA ' },
-  { name: '카카오', price: 3000, code: '035720' },
-];
+const AssetDetailInfo = styled.div`
+  ${tw`flex flex-row justify-between px-1 w-full`}
+`;
 
-const dummyData1: BubbleEnergyData[] = [
-  { name: '에너지', img: '', price: 1000 },
-];
+const AssetDetailArrow = styled.img`
+  ${tw`w-3 h-3`}
+`;
+
+const AdditionalFunctionContainer = styled.div`
+  ${tw`flex flex-row gap-3`}
+`;
+
+const AdditionalFunction = styled.div`
+  ${tw`flex flex-row gap-1 p-3 w-full items-center`}
+  box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.15);
+  border-radius: 12px;
+`;
+
+const AdditionalFunctionImg = styled.img`
+  ${tw`w-6 h-6`}
+`;
+
+const AdditionalFunctionText = styled.div`
+  ${tw`text-xxs`}
+`;
+
+function AssetDetailCommon({ type, price, onClick }: AssetDetailCommonProps) {
+  return (
+    <AssetDetail onClick={onClick}>
+      <AssetDetailInfo>
+        <div>{type}</div>
+        <div>{price.toLocaleString()} 원</div>
+      </AssetDetailInfo>
+      <AssetDetailArrow src={arrow} />
+    </AssetDetail>
+  );
+}
 
 export default function MainPage() {
   const today: Date = new Date();
@@ -125,13 +174,17 @@ export default function MainPage() {
   const [modal, setModal] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  const bubbleRef = useRef(null);
-
   useEffect(() => {}, []);
 
   return (
     <>
-      <Navbar name="박유진" type="main" onClick={() => {}}></Navbar>
+      <Navbar
+        name="박유진"
+        type="main"
+        onClick={() => {
+          navigate('/mypage');
+        }}
+      ></Navbar>
       {modal && (
         <BottomUpModal
           onClose={() => setModal(false)}
@@ -144,27 +197,21 @@ export default function MainPage() {
         ></BottomUpModal>
       )}
       <MyPageContainer>
-        <InfoSection>
-          <TitleNameContainer>
-            <TitleName type="name">박유진</TitleName>
-            <TitleName type="nim">님</TitleName>
-          </TitleNameContainer>
-          <TotalAssetContainer>
-            <TotalAssetText>총자산</TotalAssetText>
-            <TotalAssetMoneyContainer>
-              <TotalAssetMoneyImg src={coinImg}></TotalAssetMoneyImg>
-              <TotalAssetMoneyNumber>
-                {(6045200).toLocaleString()}원
-              </TotalAssetMoneyNumber>
-            </TotalAssetMoneyContainer>
-          </TotalAssetContainer>
-          <ThisMonthSalaryContainer>
-            <ThisMonthSalaryTitle>이번달 보너스 월급은?</ThisMonthSalaryTitle>
-            <ThisMonthSalaryNumber>
-              {(406000).toLocaleString()}원
-            </ThisMonthSalaryNumber>
-          </ThisMonthSalaryContainer>
-        </InfoSection>
+        <TitleNameContainer>
+          <TitleName type="name">박유진</TitleName>
+          <TitleInvestmentType>
+            <GreenBar></GreenBar>
+            (공격투자형)
+          </TitleInvestmentType>
+          <TitleName type="nim">님</TitleName>
+        </TitleNameContainer>
+        <ThisMonthSalaryContainer>
+          <ThisMonthSalaryTitle>이번달 보너스 월급은?</ThisMonthSalaryTitle>
+          <ThisMonthSalaryNumber>
+            {(406000).toLocaleString()}원
+          </ThisMonthSalaryNumber>
+        </ThisMonthSalaryContainer>
+
         <CalendarContainer>
           <CalendarGoToThisMonth>
             <CalendarGoToThisMonthText
@@ -188,11 +235,57 @@ export default function MainPage() {
             openModal={() => setModal(true)}
           ></Calendar>
         </CalendarContainer>
-        <SalaryRatioContainer>
-          <SalaryRatioTitle>이번달 수익 비중</SalaryRatioTitle>
-          <SalaryRatioVisualization ref={bubbleRef}></SalaryRatioVisualization>
-          <SalaryRatioTop3></SalaryRatioTop3>
-        </SalaryRatioContainer>
+        <TotalAssetSection>
+          <TotalAssetTitle>
+            <TotalAssetTitleText>총자산</TotalAssetTitleText>
+            <TotalAssetTitleNumber>
+              {(6045200).toLocaleString()}원
+            </TotalAssetTitleNumber>
+          </TotalAssetTitle>
+          <AssetDetailSection>
+            <AssetDetailCommon
+              type="입출금"
+              price={4003000}
+              onClick={() => {
+                navigate('/account');
+              }}
+            />
+            <AssetDetailCommon
+              type="주식"
+              price={634320}
+              onClick={() => {
+                navigate('/products/held');
+              }}
+            />
+            <AssetDetailCommon
+              type="입출금"
+              price={425480}
+              onClick={() => {
+                navigate('/products/held');
+              }}
+            />
+          </AssetDetailSection>
+        </TotalAssetSection>
+        <AdditionalFunctionContainer>
+          <AdditionalFunction
+            onClick={() => {
+              navigate('/products/like');
+            }}
+          >
+            <AdditionalFunctionImg src={darkRedHeart} />
+            <AdditionalFunctionText>관심 종목 보러가기</AdditionalFunctionText>
+          </AdditionalFunction>
+          <AdditionalFunction
+            onClick={() => {
+              navigate('/typetest');
+            }}
+          >
+            <AdditionalFunctionImg src={testBlue} />
+            <AdditionalFunctionText>
+              투자 성향 테스트 다시하기
+            </AdditionalFunctionText>
+          </AdditionalFunction>
+        </AdditionalFunctionContainer>
       </MyPageContainer>
       <Footer />
     </>

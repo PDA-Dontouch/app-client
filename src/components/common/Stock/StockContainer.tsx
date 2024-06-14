@@ -1,5 +1,5 @@
-import tw, { styled } from "twin.macro";
-import StockItem from "./StockItem";
+import tw, { styled } from 'twin.macro';
+import StockItem from './StockItem';
 
 export type ItemType = {
   code: string;
@@ -24,9 +24,9 @@ const Container = styled.div`
 const StockContainer = ({ item }: ItemProps) => {
   return (
     <Container>
-      {item.map((item, idx) =>
+      {item.map((item, idx) => (
         <StockItem name={item.name} amount={item.amount} />
-      )}
+      ))}
     </Container>
   );
 };

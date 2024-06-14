@@ -5,13 +5,15 @@ import fillHeart from '../../assets/fill-heart.svg';
 import arrow from '../../assets/arrow.svg';
 import { useNavigate } from 'react-router-dom';
 import StockP2P from '../../components/My/StockP2P';
+import { MyStockProductType } from '../../components/My/MyStockProduct';
+import { MyP2PProductType } from '../../components/My/MyP2PProduct';
 
 type TitleNameProps = {
   type: 'name' | 'nim';
 };
 
 const MyMainPageContainer = styled.div`
-  ${tw`flex flex-col gap-5 px-5 pt-18 pb-22 w-full`}
+  ${tw`flex flex-col gap-5 px-5 pt-14 pb-22 w-full`}
   box-sizing: border-box;
 `;
 
@@ -112,6 +114,64 @@ const GoToCombinationLog = styled.div`
   ${tw`flex flex-row justify-center items-center gap-2 text-sm`}
 `;
 
+const koreaData: MyStockProductType[] = [
+  {
+    code: '005930',
+    name: '삼성전자',
+    price: 60000,
+    compare: 1.1,
+  },
+  {
+    code: '000080',
+    name: '하이트진로',
+    price: 60000,
+    compare: -1.1,
+  },
+];
+
+const usaData: MyStockProductType[] = [
+  {
+    code: 'TSLA',
+    name: '테슬라',
+    price: 60000,
+    compare: -1.1,
+  },
+];
+
+const energyData: MyP2PProductType[] = [
+  {
+    img: '',
+    name: '디지털복합단지 럭셔리타워 신축 2호 4차',
+    annualRate: 13.0,
+    monthlyDividend: 63800,
+    openDate: new Date(2024, 6, 30),
+  },
+  {
+    img: '',
+    name: '디지털복합단지 럭셔리타워 신축 2호 4차',
+    annualRate: 13.0,
+    monthlyDividend: 63800,
+    openDate: new Date(2024, 4, 30),
+  },
+];
+
+const estateData: MyP2PProductType[] = [
+  {
+    img: '',
+    name: '의성군 외 총 993.40kW 태양광 담보',
+    annualRate: 13.0,
+    monthlyDividend: 270000,
+    openDate: new Date(2024, 6, 30),
+  },
+  {
+    img: '',
+    name: '의성군 외 총 993.40kW 태양광 담보',
+    annualRate: 13.0,
+    monthlyDividend: 63800,
+    openDate: new Date(2024, 4, 30),
+  },
+];
+
 export default function MyMainPage() {
   const navigate = useNavigate();
 
@@ -183,7 +243,13 @@ export default function MyMainPage() {
               <img src={arrow} />
             </GoToCombinationLog>
           </ProductHeldTitleContainer>
-          <StockP2P />
+          <StockP2P
+            type="held"
+            usaData={usaData}
+            koreaData={koreaData}
+            energyData={energyData}
+            estateData={estateData}
+          />
         </ProductHeldContainer>
       </MyMainPageContainer>
       <Footer />

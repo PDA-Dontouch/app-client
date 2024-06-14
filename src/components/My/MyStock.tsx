@@ -2,8 +2,8 @@ import tw, { styled } from 'twin.macro';
 import MyStockProduct, { MyStockProductType } from './MyStockProduct';
 
 type MyStockProps = {
-  koreaDate: MyStockProductType[];
-  usaDate: MyStockProductType[];
+  koreaData: MyStockProductType[];
+  usaData: MyStockProductType[];
 };
 
 const Stocks = styled.div`
@@ -14,12 +14,12 @@ const StocksCountry = styled.div`
   ${tw`text-xs`}
 `;
 
-export default function MyStock({ koreaDate, usaDate }: MyStockProps) {
+export default function MyStock({ koreaData, usaData }: MyStockProps) {
   return (
     <>
       <Stocks>
         <StocksCountry>국내</StocksCountry>{' '}
-        {koreaDate.map((stock, idx) => {
+        {koreaData.map((stock, idx) => {
           return (
             <div key={idx}>
               <MyStockProduct
@@ -34,7 +34,7 @@ export default function MyStock({ koreaDate, usaDate }: MyStockProps) {
       </Stocks>
       <Stocks>
         <StocksCountry>해외</StocksCountry>{' '}
-        {usaDate.map((stock, idx) => {
+        {usaData.map((stock, idx) => {
           return (
             <div key={idx}>
               <MyStockProduct

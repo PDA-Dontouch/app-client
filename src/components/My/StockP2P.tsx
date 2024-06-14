@@ -11,74 +11,30 @@ const StockP2PContainer = styled.div`
   box-sizing: border-box;
 `;
 
-const koreaDate: MyStockProductType[] = [
-  {
-    code: '005930',
-    name: '삼성전자',
-    price: 60000,
-    compare: 1.1,
-  },
-  {
-    code: '000080',
-    name: '하이트진로',
-    price: 60000,
-    compare: -1.1,
-  },
-];
+type StockP2PProps = {
+  type: 'held' | 'like';
+  koreaData: MyStockProductType[];
+  usaData: MyStockProductType[];
+  energyData: MyP2PProductType[];
+  estateData: MyP2PProductType[];
+};
 
-const usaDate: MyStockProductType[] = [
-  {
-    code: 'TSLA',
-    name: '테슬라',
-    price: 60000,
-    compare: -1.1,
-  },
-];
-
-const energyData: MyP2PProductType[] = [
-  {
-    img: '',
-    name: '디지털복합단지 럭셔리타워 신축 2호 4차',
-    annualRate: 13.0,
-    monthlyDividend: 63800,
-    openDate: new Date(2024, 6, 30),
-  },
-  {
-    img: '',
-    name: '디지털복합단지 럭셔리타워 신축 2호 4차',
-    annualRate: 13.0,
-    monthlyDividend: 63800,
-    openDate: new Date(2024, 4, 30),
-  },
-];
-
-const estateData: MyP2PProductType[] = [
-  {
-    img: '',
-    name: '의성군 외 총 993.40kW 태양광 담보',
-    annualRate: 13.0,
-    monthlyDividend: 270000,
-    openDate: new Date(2024, 6, 30),
-  },
-  {
-    img: '',
-    name: '의성군 외 총 993.40kW 태양광 담보',
-    annualRate: 13.0,
-    monthlyDividend: 63800,
-    openDate: new Date(2024, 4, 30),
-  },
-];
-
-export default function StockP2P() {
+export default function StockP2P({
+  type,
+  koreaData,
+  usaData,
+  energyData,
+  estateData,
+}: StockP2PProps) {
   const [active, setActive] = useState<boolean>(true);
   return (
     <StockP2PContainer>
       <SelectStockP2P active={active} setActive={setActive} />
       {active ? (
-        <MyStock koreaDate={koreaDate} usaDate={usaDate} />
+        <MyStock koreaData={koreaData} usaData={usaData} />
       ) : (
         <MyP2P
-          type="held"
+          type={type}
           energyData={energyData}
           estateData={estateData}
         ></MyP2P>

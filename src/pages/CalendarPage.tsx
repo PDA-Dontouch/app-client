@@ -6,6 +6,7 @@ import SelectYearMonth from '../components/Calendar/SelectYearMonth';
 import Navbar from '../components/common/Navbar';
 import Footer from '../components/common/Footer';
 import SalaryPlan, { PlanDetailType } from '../components/Calendar/SalaryPlan';
+import { useNavigate } from 'react-router-dom';
 
 type ModalType = 'date' | 'plan';
 
@@ -57,7 +58,7 @@ const Salary = styled.div`
   ${tw`leading-7`}
 `;
 
-export const salaryData: PlanDetailType[] = [
+const salaryData: PlanDetailType[] = [
   {
     type: '배당',
     name: '삼성전자',
@@ -94,6 +95,8 @@ export default function CalendarPage() {
   const [date, setDate] = useState<number>(today.getDate());
   const day = today.getDay();
 
+  const navigate = useNavigate();
+
   function onOpenModal(type: ModalType) {
     if (type == 'date') {
       setModalType('date');
@@ -128,7 +131,13 @@ export default function CalendarPage() {
         />
       )}
       <CalendarPageContainer>
-        <Navbar name="박유진" type="main" onClick={() => {}} />
+        <Navbar
+          name="박유진"
+          type="main"
+          onClick={() => {
+            navigate('/mypage');
+          }}
+        />
         <CalendarTitle>
           <YYMM
             onClick={() => {

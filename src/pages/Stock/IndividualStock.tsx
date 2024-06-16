@@ -1,200 +1,141 @@
-import ApexChart from 'react-apexcharts';
+import tw, { styled } from 'twin.macro';
+import StockChart from '../../components/Stock/StockChart';
+import Navbar from '../../components/common/Navbar';
+
+import Empty from '../../assets/line-heart.svg';
+import Fill from '../../assets/fill-heart.svg';
+import Button from '../../components/common/Button';
+import { useState } from 'react';
+import TradingStock from '../../components/Stock/TradingStock';
+
+const Container = styled.div`
+  ${tw`px-7 py-5 mt-14`}
+`;
+
+const NameContainer = styled.div`
+  ${tw`w-full flex justify-between items-center`}
+`;
+
+const SubName = styled.div`
+  ${tw`flex flex-col gap-1`}
+`;
+
+const MainText = styled.span`
+  ${tw`text-xl`}
+`;
+
+const SubText = styled.span`
+  ${tw`text-base`}
+`;
+
+const Img = styled.img`
+  ${tw`h-8 w-8 fill-black`}
+`;
+
+const ItemContainer = styled.div`
+  ${tw`flex flex-wrap gap-2 py-8`}
+`;
+
+const Item = styled.div<{ isCol: boolean; isTwo: boolean }>`
+  ${tw`flex bg-gray-light px-4 py-3 justify-between rounded-8`}
+  ${({ isCol }) => (isCol ? tw`flex-col gap-2` : '')}
+  ${({ isTwo }) => (isTwo ? 'flex: 1 1 30%' : 'flex: 1 1 20%')}
+`;
+
+const ItemText = styled.span`
+  ${tw`text-sm`}
+`;
+
+const SubItemContainer = styled.div`
+  ${tw`flex flex-col mt-2`}
+`;
+
+const BtnContainer = styled.div`
+  ${tw`w-full flex px-8 justify-between gap-3 fixed left-0 bottom-[44px] box-border`}
+`;
 
 const IndividualStock = () => {
-  const data = [
-    {
-      date: '2024-06-07',
-      close_price: 77300.0,
-    },
-    {
-      date: '2024-05-30',
-      close_price: 73500.0,
-    },
-    {
-      date: '2024-05-23',
-      close_price: 78300.0,
-    },
-    {
-      date: '2024-05-16',
-      close_price: 78200.0,
-    },
-    {
-      date: '2024-05-08',
-      close_price: 81300.0,
-    },
-    {
-      date: '2024-04-29',
-      close_price: 76700.0,
-    },
-    {
-      date: '2024-04-22',
-      close_price: 76100.0,
-    },
-    {
-      date: '2024-04-15',
-      close_price: 82200.0,
-    },
-    {
-      date: '2024-04-05',
-      close_price: 84500.0,
-    },
-    {
-      date: '2024-03-29',
-      close_price: 82400.0,
-    },
-    {
-      date: '2024-03-22',
-      close_price: 78900.0,
-    },
-    {
-      date: '2024-03-15',
-      close_price: 72300.0,
-    },
-    {
-      date: '2024-03-08',
-      close_price: 73300.0,
-    },
-    {
-      date: '2024-02-29',
-      close_price: 73400.0,
-    },
-    {
-      date: '2024-02-22',
-      close_price: 73100.0,
-    },
-    {
-      date: '2024-02-15',
-      close_price: 73000.0,
-    },
-    {
-      date: '2024-02-06',
-      close_price: 74400.0,
-    },
-    {
-      date: '2024-01-30',
-      close_price: 74300.0,
-    },
-    {
-      date: '2024-01-23',
-      close_price: 75200.0,
-    },
-    {
-      date: '2024-01-16',
-      close_price: 72600.0,
-    },
-    {
-      date: '2024-01-09',
-      close_price: 74700.0,
-    },
-    {
-      date: '2024-01-02',
-      close_price: 79600.0,
-    },
-    {
-      date: '2023-12-21',
-      close_price: 75000.0,
-    },
-    {
-      date: '2023-12-14',
-      close_price: 73100.0,
-    },
-    {
-      date: '2023-12-07',
-      close_price: 71500.0,
-    },
-    {
-      date: '2023-11-30',
-      close_price: 72800.0,
-    },
-    {
-      date: '2023-11-23',
-      close_price: 72400.0,
-    },
-    {
-      date: '2023-11-16',
-      close_price: 72800.0,
-    },
-  ];
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isSell, setIsSell] = useState<boolean>(false);
 
   return (
-    <ApexChart
-      type="line"
-      series={[
-        {
-          name: 'Price',
-          data: data?.map((price) => Number(price.close_price)) as number[],
-        },
-      ]}
-      options={{
-        theme: {
-          mode: 'dark',
-        },
-        chart: {
-          height: 500,
-          width: 500,
-          toolbar: {
-            tools: {},
-          },
-          background: 'transparent',
-        },
-        stroke: {
-          curve: 'smooth',
-          width: 2,
-        },
-        colors: ['#1AA76E'],
-        grid: {
-          show: false,
-        },
-        plotOptions: {
-          candlestick: {
-            wick: {
-              useFillColor: true,
-            },
-          },
-        },
-        xaxis: {
-          labels: {
-            show: true,
-            style: {
-              colors: 'rgba(0, 0, 0, 0.5)',
-            },
-            // datetimeFormatter: {
-            //   month: "mmm 'yy",
-            // },
-          },
-          type: 'datetime',
-          categories: data?.map((date) => date.date),
-          axisBorder: {
-            show: true,
-          },
-          axisTicks: {
-            show: true,
-          },
-        },
-        yaxis: {
-          labels: {
-            show: true,
-            style: {
-              colors: 'rgba(0, 0, 0, 0.5)',
-            },
-            // datetimeFormatter: {
-            //   month: "mmm 'yy",
-            // },
-          },
-          axisBorder: {
-            show: true,
-          },
-          axisTicks: {
-            show: true,
-          },
-        },
-        tooltip: {
-          y: {
-            formatter: (v) => `$ ${v.toFixed(2)}`,
-          },
-        },
-      }}
-    />
+    <>
+      <Navbar name="back" type="" onClick={() => {}} />
+      <Container>
+        <NameContainer>
+          <SubName>
+            <MainText>삼성전자</MainText>
+            <SubText>60,200원</SubText>
+          </SubName>
+          <Img src={Empty} />
+        </NameContainer>
+        <ItemContainer>
+          <Item isCol={true} isTwo={true}>
+            <ItemText>시가총액</ItemText>
+            <ItemText>9,019.2억원</ItemText>
+          </Item>
+          <Item isCol={true} isTwo={true}>
+            <ItemText>다음 배당 예상 지급일</ItemText>
+            <ItemText>9,019.2억원</ItemText>
+          </Item>
+          <Item isCol={false} isTwo={true}>
+            <ItemText>PBR</ItemText>
+            <ItemText>6.7배</ItemText>
+          </Item>
+          <Item isCol={false} isTwo={true}>
+            <ItemText>주당 배당금</ItemText>
+            <ItemText>9000원</ItemText>
+          </Item>
+          <Item isCol={false} isTwo={true}>
+            <ItemText>PER</ItemText>
+            <ItemText>13.7배</ItemText>
+          </Item>
+          <Item isCol={false} isTwo={true}>
+            <ItemText>배당 수익률</ItemText>
+            <ItemText>2.6%</ItemText>
+          </Item>
+        </ItemContainer>
+        <StockChart />
+        <SubItemContainer>
+          <SubText>보유 현황</SubText>
+          <ItemContainer>
+            <Item isCol={true} isTwo={false}>
+              <ItemText>평균 단가</ItemText>
+              <ItemText>58,000원</ItemText>
+            </Item>
+            <Item isCol={true} isTwo={false}>
+              <ItemText>나의 수익률</ItemText>
+              <ItemText>3.3%</ItemText>
+            </Item>
+            <Item isCol={true} isTwo={false}>
+              <ItemText>보유 수량</ItemText>
+              <ItemText>230주</ItemText>
+            </Item>
+          </ItemContainer>
+        </SubItemContainer>
+      </Container>
+      <BtnContainer>
+        <Button
+          name="매도"
+          status="stock_sell"
+          onClick={() => {
+            setIsOpen(true);
+            setIsSell(true);
+          }}
+        />
+        <Button
+          name="매수"
+          status="stock_purchase"
+          onClick={() => {
+            setIsOpen(true);
+            setIsSell(false);
+          }}
+        />
+      </BtnContainer>
+      {isOpen && (
+        <TradingStock isSell={isSell} onClose={() => setIsOpen(false)} />
+      )}
+    </>
   );
 };
 

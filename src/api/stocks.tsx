@@ -1,4 +1,5 @@
 import { stocksTypes } from '../store/reducers/stocks/stocks';
+import { ChartPost } from '../types/individual_stock';
 import { stockInstance } from './api';
 
 export const stocks_url = `/api/stocks`;
@@ -45,9 +46,22 @@ export const stocksDisLike = async (data: stocksTypes) => {
   }
 };
 
-export const stocksChart = async (code: string) => {
+export const stocksChart = async (data: ChartPost) => {
   try {
-    const response = await stockInstance.delete(stocks_url + '/chart');
+    const response = await stockInstance.post(stocks_url + '/chart', data);
+    return response;
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
+};
+
+export const stocksDetail = async (exchange: string, stockId: number) => {
+  try {
+    const response = await stockInstance.post(stocks_url + '/detail', {
+      exchange: exchange,
+      stockId: stockId,
+    });
     return response;
   } catch (err) {
     console.error(err);

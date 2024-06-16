@@ -49,3 +49,20 @@ export const stocksDisLike = async (data: stocksTypes) => {
     return err;
   }
 };
+
+interface UserInfo {
+  safe_score: number,
+	growth_score: number,
+	dividend_score: number,
+  asset: number,
+}
+
+export const stockCombination = async (requestUser:UserInfo) => {
+  try {
+    const response = await stockInstance.post('/combination', requestUser);
+    return response;
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
+};

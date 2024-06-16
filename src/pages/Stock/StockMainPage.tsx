@@ -1,16 +1,16 @@
-import React, { useEffect, useState,useCallback } from 'react';
+import React, { useEffect, useState} from 'react';
 import { AppDispatch, RootState } from '../../store/store';
 import { useDispatch,useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { useInView } from 'react-intersection-observer';
 import tw, { css, styled } from 'twin.macro';
 import Navbar from '../../components/common/Navbar';
 import Footer from '../../components/common/Footer';
-import RecommendBar from '../../components/common/Stock/RecommendBar';
 import CombiBox from '../../components/common/Stock/CombiBox';
 import StockCard from '../../components/common/Stock/StockCard';
 import SearchBar from '../../components/common/Stock/SearchBar';
 import NextBtn from '../../components/common/Stock/NextBtn';
-
+import PersonalInfo from '../../components/common/Stock/PersonalInfo';
 
 import {
   addLikeStocks,
@@ -103,11 +103,11 @@ const MainContainer = styled.div`
 `;
 
 const ContentContainer = styled.div`
-  ${tw`flex-1 p-4 mt-15`}
+  ${tw`h-[calc(100% - 200px)] flex-1 p-4 mt-15 mb-17`}
 `;
 
 const SectionHeader = styled.div`
-  ${tw`flex gap-4 my-4 pl-2 mt-7`}
+  ${tw`flex gap-4 my-4 pl-2 mt-6`}
 `;
 
 const MainTab = styled.span`
@@ -120,7 +120,7 @@ const SubTab = styled(MainTab)`
 `;
 
 const CombiBoxContainer = styled.div`
-  ${tw`top-1 p-6 rounded-lg relative overflow-y-auto`}
+  ${tw`mt-3 p-2`}
 `;
 
 const ItemContainer = styled.div`
@@ -143,62 +143,25 @@ const StockMainPage: React.FC = () => {
     'recommend',
   );
   const [likeStocks, setLikeStocks] = useState<number[]>([]);
-  const [page, setPage] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
   const [searchTerm, setSearchTerm] = useState<string>('');
+
+  const [page, setPage] = useState(0);
 
   const requestData = {
     userInvestmentType: 0,
-    safeScore: 33,
-    dividendScore: 33,
-    growthScore: 33,
+    safeScore: 80,
+    dividendScore: 5,
+    growthScore: 15,
     dividendMonth: null,
     page: page,
     size: 24,
   };
+ 
+  useEffect(()=>{
+    dispatch(getStocksDatas(requestData));
+  },[]);
 
-  const loadMoreStocks = useCallback(async () => {
-    if (isLoading || !hasMore) return;
-
-    setIsLoading(true);
-
-    try {
-      const resultAction = await dispatch(getStocksDatas(requestData)).unwrap();
-  
-      if (resultAction.data.response.length === 0) {
-        setHasMore(false);
-      } else {
-        console.log(page);
-        setPage((prevPage) => prevPage + 1);
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [dispatch, isLoading, hasMore, page]);
-
-  useEffect(() => {
-    loadMoreStocks();
-  }, []);
-
-  useEffect(() => {
-    console.log(stockList); // stockList를 확인하기 위해 콘솔 로그 추가
-  }, [stockList]);
-
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const bottom =
-      e.currentTarget.scrollHeight - e.currentTarget.scrollTop ===
-      e.currentTarget.clientHeight;
-    if (bottom) {
-      loadMoreStocks();
-    }
-  };
-
-  const handleSearch = (term: string) => {
-    setSearchTerm(term);
-  };
+  console.log(stockList);
     
   const filteredList = stockList.filter(stock =>
     stock.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -221,10 +184,9 @@ const StockMainPage: React.FC = () => {
 
   return (
     <MainContainer>
-      <Navbar name="박유진" type="main" />
+      <Navbar name="박유진" type="main" onClick={() => {}}/>
       <ContentContainer>
-        <RecommendBar />
-        <NextBtn content='갱신하기'/>
+        <PersonalInfo/>
         {activeTab === 'recommend' ? (
           <div className="flex flex-col space-y-4">
             <SectionHeader>
@@ -236,7 +198,7 @@ const StockMainPage: React.FC = () => {
               </SubTab>
             </SectionHeader>
             <NextBtn content='바로 구매하기'/>
-            <CombiBoxContainer onScroll={handleScroll} onClick={handleClick}>
+            <CombiBoxContainer onClick={handleClick}>
               <CombiBox data={stockData} />
             </CombiBoxContainer>
           </div>
@@ -250,7 +212,7 @@ const StockMainPage: React.FC = () => {
                 개별 종목
               </MainTab>
             </SectionHeader>
-            <SearchBar onSearch={handleSearch} modal={false} />
+            <SearchBar setSearchTerm={setSearchTerm} modal={false} />
             <SortType>추천 종목순</SortType>
             <ItemContainer>
               {filteredList.map((item, idx) => (

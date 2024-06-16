@@ -68,7 +68,7 @@ export const getStocksData = createAsyncThunk<ActionPayloadDetail, number>(
   }
 );
 
-export const addLikeEstates = createAsyncThunk(
+export const addLikeStocks = createAsyncThunk(
   "stocks/like",
   async (data: stocksTypes, thunkAPI) => {
     const response = await stocksLike(data);
@@ -76,8 +76,16 @@ export const addLikeEstates = createAsyncThunk(
   }
 );
 
-export const delLikeEstates = createAsyncThunk(
+export const delLikeStocks = createAsyncThunk(
   "stocks/dislike",
+  async (data: stocksTypes, thunkAPI) => {
+    const response = await stocksDisLike(data);
+    return response;
+  }
+);
+
+export const makeCombiStocks = createAsyncThunk(
+  "stocks/combination",
   async (data: stocksTypes, thunkAPI) => {
     const response = await stocksDisLike(data);
     return response;

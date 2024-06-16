@@ -69,8 +69,10 @@ const StockCard = ({ data, isLike, setIsLike }: StockProps) => {
     setIsLike();
   };
 
-  const isKRStock = data.symbol.slice(-3) === '.ks';
+  const isKRStock = data.symbol.slice(-3) === '.KS';
   const displaySymbol = isKRStock ? data.symbol.slice(0, -3) : data.symbol;
+ 
+  console.log(displaySymbol);
 
   return (
     <Container onClick={navigateDetail}>

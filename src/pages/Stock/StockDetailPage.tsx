@@ -8,10 +8,12 @@ import BottomUpModal from '../../components/common/Modal/BottomUpModal';
 import StockOptions from '../../components/Stock/StockOptions';
 import { useNavigate } from 'react-router-dom';
 
-interface SemiStock {
-  code: string;
+interface CombiStock {
+  id: number;
+  symbol: string;
   name: string;
   price: string;
+  dividendMonth: number;
   amount: number;
 }
 
@@ -43,7 +45,7 @@ const ReasonTitle = styled.span`
   ${tw`text-lg ml-2 mb-2`}
 `;
 
-const StockContainer = styled.div`
+const StockCombination = styled.div`
   ${tw`flex flex-col gap-4`}
 `;
 
@@ -54,9 +56,23 @@ const AbsoluteButtonContainer = styled.div`
 const StockDetailPage: React.FC = () => {
   const [currentMonth, setCurrentMonth] = useState(0);
   const [isModalOpen, setModalOpen] = useState(false);
-  const [selectedStocks, setSelectedStocks] = useState<SemiStock[]>([
-    { code: '005930', name: '삼성', price: '63000', amount: 200 },
-    { code: '035720', name: '카카오', price: '43400', amount: 1 },
+  const [selectedStocks, setSelectedStocks] = useState<CombiStock[]>([
+    {
+      id: 1,
+      symbol: '005930',
+      name: '삼성',
+      price: '63000',
+      dividendMonth: 1,
+      amount: 200,
+    },
+    {
+      id: 2,
+      symbol: '035720',
+      name: '카카오',
+      price: '43400',
+      dividendMonth: 1,
+      amount: 1,
+    },
   ]);
 
   const handleDelete = (name: string) => {
@@ -89,22 +105,24 @@ const StockDetailPage: React.FC = () => {
 
   return (
     <>
-      <Navbar name="" type="close" />
+      <Navbar name="" type="close" onClick={() => {}} />
       <Container>
         <HeaderText>
           {currentMonth + 1}·{currentMonth + 3}·{currentMonth + 5}·
           {currentMonth + 7}월 추천 배당주
         </HeaderText>
-        <StockContainer>
-          {selectedStocks.map((stock) => (
-            <SelectStock
-              name={stock.name}
-              price={stock.price}
-              amount={stock.amount}
-              onDelete={() => handleDelete(stock.name)}
-            />
+        <StockCombination>
+          {selectedStocks.map((stock, idx) => (
+            <div key={idx}>
+              <SelectStock
+                name={stock.name}
+                price={stock.price}
+                amount={stock.amount}
+                onDelete={() => handleDelete(stock.name)}
+              />
+            </div>
           ))}
-        </StockContainer>
+        </StockCombination>
         <AddStock onClick={handleAddStock}>+ 종목 추가하기</AddStock>
         <Divider />
         <ExpectedDividend>예상 월 배당금 360,000원</ExpectedDividend>
@@ -126,7 +144,7 @@ const StockDetailPage: React.FC = () => {
         {isModalOpen && (
           <BottomUpModal
             onClose={handleCloseModal}
-            content={<StockOptions dividendMonth={currentMonth + 1}/>}
+            content={<StockOptions dividendMonth={currentMonth + 1} />}
           />
         )}
       </Container>

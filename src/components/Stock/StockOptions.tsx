@@ -7,7 +7,7 @@ import { getStocksDatas } from '../../store/reducers/stocks/stocks';
 import logoImg from '../../assets/logo.svg';
 
 const Container = styled.div`
-  ${tw`w-full h-[450px] flex flex-col items-center p-3`}
+  ${tw`w-full h-[450px] flex flex-col items-center p-3 gap-3`}
 `;
 const StockItems = styled.div`
   ${tw`w-full flex-col flex flex-1 overflow-y-auto gap-2`}
@@ -55,8 +55,8 @@ const StockOptions: React.FC<StockOptionsProps> = ({ dividendMonth }) => {
   const dispatch = useDispatch<AppDispatch>();
   const stockList = useSelector((state: RootState) => state.stocks.datas);
   const [page, setPage] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [hasMore, setHasMore] = useState<boolean>(true);
   const [searchTerm, setSearchTerm] = useState<string>('');
 
   const requestData = {
@@ -88,28 +88,15 @@ const StockOptions: React.FC<StockOptionsProps> = ({ dividendMonth }) => {
     } finally {
       setIsLoading(false);
     }
-  }, [dispatch, isLoading, hasMore, page,dividendMonth]);
+  }, [isLoading, hasMore, dispatch, page]);
 
   useEffect(() => {
     loadMoreStocks();
   }, []);
 
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const bottom =
-      e.currentTarget.scrollHeight - e.currentTarget.scrollTop ===
-      e.currentTarget.clientHeight;
-    if (bottom) {
-      loadMoreStocks();
-    }
-  };
-
   // const handleSelect = (stock:Stock) => {
   //   onStockSelect(stock);
   // };
-
-  const handleSearch = (term: string) => {
-    setSearchTerm(term);
-  };
     
   const filteredList = stockList.filter(stock =>
     stock.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -118,8 +105,8 @@ const StockOptions: React.FC<StockOptionsProps> = ({ dividendMonth }) => {
 
   return (
     <Container>
-      <SearchBar onSearch={handleSearch} modal={true} />
-      <StockItems onScroll={handleScroll}>
+      <SearchBar setSearchTerm={setSearchTerm} modal={false} />
+      <StockItems>
         {filteredList.map((stock) => {
           const isKRStock = stock.symbol.slice(-3) === '.ks';
           const displaySymbol = isKRStock ? stock.symbol.slice(0, -3) : stock.symbol;

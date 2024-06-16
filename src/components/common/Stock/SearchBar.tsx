@@ -1,48 +1,54 @@
 import React, { useState } from 'react';
 import tw, { styled } from 'twin.macro';
-import SearchIcon from "../../../assets/search.svg";
+import SearchIcon from '../../../assets/search.svg';
 
-interface SearchBarProps{
-  onSearch: (searchTerm: string) => void;
+interface SearchBarProps {
+  setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
   modal: boolean;
 }
-interface TextBoxProps{
+interface TextBoxProps {
   modal: boolean;
 }
 
 const SearchContainer = styled.div`
-  ${tw`w-full flex items-center p-2 mb-4`}
+  ${tw`flex flex-row w-full justify-between items-center px-3 py-1 bg-white border-green border-solid border`}
+  border-radius: 20px;
+  box-sizing: border-box;
 `;
 
 const TextBox = styled.input<TextBoxProps>`
-  ${tw`flex-1 p-2`}
+  ${tw`flex-1 p-2 text-base`}
   border: none;
-  border-bottom: solid 1px black;
-  background-color: ${({ modal }) => (modal ? '#F9F9F9' : 'white')};
-  &:focus{
+  background-color: ${({ modal }) => (modal ? 'transparent' : 'white')};
+  &:focus {
     outline: none;
-  } 
+    background-color: transparent;
+  }
 `;
 
 const SearchBtn = styled.img`
   ${tw`w-6 h-6 ml-2 cursor-pointer`}
 `;
 
-const SearchBar: React.FC<SearchBarProps> = ({onSearch, modal}) => {
-    const [searchTerm, setSearchTerm] = useState('');
+const SearchBar: React.FC<SearchBarProps> = ({ setSearchTerm, modal }) => {
+  const [search, setSearch] = useState<string>('');
 
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      const value = event.target.value;
-      setSearchTerm(value);
-      onSearch(value);
-    };
-
-    return (
-    <SearchContainer>
-        <TextBox modal={modal} value={searchTerm} onChange={handleInputChange}></TextBox>
-        <SearchBtn src={SearchIcon}></SearchBtn>
-    </SearchContainer>
-    );
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setSearch(value);
+    setSearchTerm(value);
   };
-  
-  export default SearchBar;
+
+  return (
+    <SearchContainer>
+      <TextBox
+        modal={modal}
+        value={search}
+        onChange={handleInputChange}
+      ></TextBox>
+      <SearchBtn src={SearchIcon}></SearchBtn>
+    </SearchContainer>
+  );
+};
+
+export default SearchBar;

@@ -1,6 +1,8 @@
 import tw, { styled } from 'twin.macro';
 import MapComponent from '../common/MapComponent';
 import { estatesDetail } from '../../types/estates_product';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
 
 interface DetailProps {
   data: estatesDetail;
@@ -15,7 +17,10 @@ const MainText = styled.span`
 `;
 
 const DetailInfo = ({ data }: DetailProps) => {
-  const addressParts = data.title.split(' ');
+  const clickData = useSelector(
+    (state: RootState) => state.estates.clickEstates,
+  );
+  const addressParts = clickData.title.split(' ');
   const lastPartAddress = addressParts[addressParts.length - 1];
 
   return (

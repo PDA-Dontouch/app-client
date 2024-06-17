@@ -1,7 +1,9 @@
 import tw, { styled } from 'twin.macro';
 import Carousel from '../common/Product/Detail/Carousel';
-import { estatesDetail } from '../../types/estates_product';
+import { EstatesList, estatesDetail } from '../../types/estates_product';
 import { formatNumberToKorean } from './InfoInBanner';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
 
 interface BasicProps {
   data: estatesDetail;
@@ -34,6 +36,10 @@ const Img = styled.img`
 `;
 
 const BasicInfo = ({ data }: BasicProps) => {
+  const clickData = useSelector(
+    (state: RootState) => state.estates.clickEstates,
+  );
+
   return (
     <Container>
       <MainText>상품 개요</MainText>
@@ -57,7 +63,7 @@ const BasicInfo = ({ data }: BasicProps) => {
         </TextContainer>
         <TextContainer>
           <MiniText>유효담보비율</MiniText>
-          <SubText>{data.loanAmountBaseLtv.toFixed(2)}%</SubText>
+          <SubText>{clickData.loanAmountBaseLtv.toFixed(2)}%</SubText>
         </TextContainer>
         <TextContainer>
           <MiniText>감정가</MiniText>

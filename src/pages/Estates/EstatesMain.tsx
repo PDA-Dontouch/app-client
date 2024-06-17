@@ -75,7 +75,7 @@ const EstatesMain = () => {
 
   const renderProducts = (data: EstatesList[]) => {
     return data.map((item) => (
-      <div key={item.id}>
+      <div key={item.id} onClick={() => clickEstates(item)}>
         <Product
           isEstates={true}
           data={item}

@@ -36,6 +36,9 @@ const EstatesDetail = () => {
   const params = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const detail = useSelector((state: RootState) => state.estates.detail);
+  const clickData = useSelector(
+    (state: RootState) => state.estates.clickEstates,
+  );
   const { EstatesLikeArr, setLikeEstates, EnergyLikeArr, setLikeEnergy } =
     useLike();
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -49,7 +52,7 @@ const EstatesDetail = () => {
       <Navbar name="back" type="" onClick={() => navigate('/estates')} />
       <Container>
         <DetailBanner isEstates={true} data={detail} />
-        <Dropdown isEstates={true} profit_rate={detail.earningRate} />
+        <Dropdown isEstates={true} profit_rate={clickData.earningRate} />
         <Hr />
         <InvestPoint data={detail} />
         <Hr />
@@ -75,7 +78,7 @@ const EstatesDetail = () => {
           onClose={() => setIsOpen(false)}
           content={
             <Purchase
-              period={detail.length}
+              period={clickData.length}
               profit={200000}
               btnType="estates"
             />

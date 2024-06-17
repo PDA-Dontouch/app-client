@@ -13,13 +13,6 @@ export interface EstatesList {
 
 export type estatesDetail = {
   id: number;
-  title: string;
-  length: number;
-  titleMainImageUrl: string;
-  earningRate: number;
-  totalAmountInvestments: number;
-  sumOfInvestmentAndReservation: number;
-  loanAmountBaseLtv: number;
   estateId: number;
   latitude: number;
   longitude: number;
@@ -74,13 +67,6 @@ export type estatesDetail = {
 
 export const initialEstatesDetail = {
   id: 0,
-  title: '',
-  length: 0,
-  titleMainImageUrl: '',
-  earningRate: 0,
-  totalAmountInvestments: 0,
-  sumOfInvestmentAndReservation: 0,
-  loanAmountBaseLtv: 0,
   estateId: 0,
   latitude: 0,
   longitude: 0,
@@ -107,7 +93,7 @@ export const initialEstatesDetail = {
   workStartDate: '',
   repaymentDay: 0,
   isRenewalLoan: false,
-  isRepaymentDayFollowingExecutionDay: false,
+  isRepaymentDayFollowingExecutionDay: true,
   comment: '',
   startDatetime: '',
   state: '',

@@ -131,13 +131,7 @@ export default function CalendarPage() {
         />
       )}
       <CalendarPageContainer>
-        <Navbar
-          name="박유진"
-          type="main"
-          onClick={() => {
-            navigate('/mypage');
-          }}
-        />
+        <Navbar name="박유진" type="main" onClick={() => {}} />
         <CalendarTitle>
           <YYMM
             onClick={() => {

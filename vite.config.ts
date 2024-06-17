@@ -23,6 +23,10 @@ export default defineConfig(({ mode }) => {
     ],
     server: {
       proxy: {
+        '/api/stocks': {
+          target: 'http://localhost:8082',
+          changeOrigin: true,
+        },
         '/api/estates': {
           target: 'http://localhost:8083',
           changeOrigin: true,

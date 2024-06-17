@@ -1,14 +1,35 @@
-import { stocksTypes } from "../store/reducers/stocks/stocks";
-import { stockInstance } from "./api";
+import { stocksTypes } from '../store/reducers/stocks/stocks';
+import { stockInstance } from './api';
+import { PromiseAxiosRes, WithToken } from '../types/response_product';
+import {
+  CalendarStockPlanType,
+  StockDataResultType,
+} from '../types/stocks_product';
 
-export const stocksDatas = async () => {
-  const baseUrl = `/`;
+interface RequestBodyType {
+  userInvestmentType: number;
+  safeScore: number;
+  dividendScore: number;
+  growthScore: number;
+  dividendMonth: number | null;
+  page: number;
+  size: number;
+}
+
+type CalendarStockPlansRequestBodyType = {
+  startDate: Date;
+  endDate: Date;
+} & WithToken;
+
+export const stocksDatas = async (
+  requestData: RequestBodyType,
+): PromiseAxiosRes<StockDataResultType[]> => {
   try {
-    const response = await stockInstance.get(baseUrl);
+    const response = await stockInstance.post('', requestData);
     return response;
   } catch (err) {
     console.error(err);
-    return err;
+    throw err;
   }
 };
 
@@ -42,5 +63,17 @@ export const stocksDisLike = async (data: stocksTypes) => {
   } catch (err) {
     console.error(err);
     return err;
+  }
+};
+
+export const CalendarStockPlans = async (
+  data: CalendarStockPlansRequestBodyType,
+): PromiseAxiosRes<CalendarStockPlanType[]> => {
+  try {
+    const response = await stockInstance.post('/calendar', data);
+    return response;
+  } catch (err: unknown) {
+    console.error(err);
+    throw err;
   }
 };

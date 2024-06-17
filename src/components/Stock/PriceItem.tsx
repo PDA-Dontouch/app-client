@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import tw, { styled } from 'twin.macro';
 
 interface PriceItemProps {
@@ -33,23 +34,31 @@ const PriceItem = ({
   backgroundColor,
   textColor,
   amount,
-}: PriceItemProps) => (
-  <PriceContainer
-    onClick={() => onPriceSelect(price)}
-    backgroundColor={backgroundColor}
-    border={price === nowPrice ? '1px solid black' : 'none'}
-    cursor="pointer"
-  >
-    {isSelected && <SelectedIndicator />}
-    {price !== '' && (
-      <>
-        <PriceText>{price.toLocaleString()}</PriceText>
-        <AmountText style={{ color: textColor }}>
-          {amount.toLocaleString()}
-        </AmountText>
-      </>
-    )}
-  </PriceContainer>
-);
+}: PriceItemProps) => {
+  const [isSelect, setIsSelect] = useState<boolean>(false);
+  return (
+    <PriceContainer
+      // onClick={() => onPriceSelect(price)}
+      onClick={() => {
+        setIsSelect((prev) => !prev);
+        onPriceSelect(price);
+      }}
+      backgroundColor={backgroundColor}
+      border={price === nowPrice ? '1px solid #000' : ''}
+      cursor="pointer"
+    >
+      {/* {isSelected && <SelectedIndicator />} */}
+      {isSelect && <SelectedIndicator />}
+      {price !== '' && (
+        <>
+          <PriceText>{price.toLocaleString()}</PriceText>
+          <AmountText style={{ color: textColor }}>
+            {amount.toLocaleString()}
+          </AmountText>
+        </>
+      )}
+    </PriceContainer>
+  );
+};
 
 export default PriceItem;

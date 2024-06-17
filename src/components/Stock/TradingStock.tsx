@@ -3,17 +3,19 @@ import PriceItem from './PriceItem';
 import SellBuyStock from './SellBuyStock';
 
 import Close from '../../assets/close.svg';
+import { useState } from 'react';
+import { useWebSocket } from '../../hooks/useWebSocket';
 
 interface TradingProps {
   isSell: boolean;
   onClose: () => void;
 }
 
-const SellItem = () => {
-  const handlePriceSelect = (price: string) => {
-    //
-  };
+interface ItemProps {
+  handlePriceSelect: (price: string) => void;
+}
 
+const SellItem = ({ handlePriceSelect }: ItemProps) => {
   return (
     <PriceItem
       price={'20000'}
@@ -27,11 +29,7 @@ const SellItem = () => {
   );
 };
 
-const PurchaseItem = () => {
-  const handlePriceSelect = (price: string) => {
-    //
-  };
-
+const PurchaseItem = ({ handlePriceSelect }: ItemProps) => {
   return (
     <PriceItem
       price={'20000'}
@@ -81,6 +79,14 @@ const ItemContainer = styled.div`
 `;
 
 const TradingStock = ({ isSell, onClose }: TradingProps) => {
+  const [clickPrice, setClickPrice] = useState<string>('');
+  const handlePriceSelect = (price: string) => {
+    setClickPrice(price);
+  };
+
+  const { nowPrice, askPrice } = useWebSocket();
+  console.log(askPrice);
+
   return (
     <>
       <BackDrop />
@@ -90,22 +96,22 @@ const TradingStock = ({ isSell, onClose }: TradingProps) => {
         </ItemContainer>
         <Container>
           <ItemBox>
-            <SellItem />
-            <SellItem />
-            <SellItem />
-            <SellItem />
-            <SellItem />
-            <SellItem />
-            <SellItem />
-            <PurchaseItem />
-            <PurchaseItem />
-            <PurchaseItem />
-            <PurchaseItem />
-            <PurchaseItem />
-            <PurchaseItem />
-            <PurchaseItem />
+            <SellItem handlePriceSelect={handlePriceSelect} />
+            <SellItem handlePriceSelect={handlePriceSelect} />
+            <SellItem handlePriceSelect={handlePriceSelect} />
+            <SellItem handlePriceSelect={handlePriceSelect} />
+            <SellItem handlePriceSelect={handlePriceSelect} />
+            <SellItem handlePriceSelect={handlePriceSelect} />
+            <SellItem handlePriceSelect={handlePriceSelect} />
+            <PurchaseItem handlePriceSelect={handlePriceSelect} />
+            <PurchaseItem handlePriceSelect={handlePriceSelect} />
+            <PurchaseItem handlePriceSelect={handlePriceSelect} />
+            <PurchaseItem handlePriceSelect={handlePriceSelect} />
+            <PurchaseItem handlePriceSelect={handlePriceSelect} />
+            <PurchaseItem handlePriceSelect={handlePriceSelect} />
+            <PurchaseItem handlePriceSelect={handlePriceSelect} />
           </ItemBox>
-          <SellBuyStock isSell={isSell} />
+          <SellBuyStock isSell={isSell} clickPrice={clickPrice} />
         </Container>
       </ModalContainer>
     </>

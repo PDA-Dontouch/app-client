@@ -1,221 +1,159 @@
-import ApexChart from 'react-apexcharts';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../store/store';
-import { useEffect } from 'react';
-import { getChartDatas } from '../../store/reducers/stocks/individualStock';
+import { format } from 'd3-format';
+import { timeFormat } from 'd3-time-format';
+import {
+  discontinuousTimeScaleProviderBuilder,
+  Chart,
+  ChartCanvas,
+  BarSeries,
+  CandlestickSeries,
+  lastVisibleItemBasedZoomAnchor,
+  XAxis,
+  YAxis,
+  CrossHairCursor,
+  EdgeIndicator,
+  MouseCoordinateX,
+  MouseCoordinateY,
+} from 'react-financial-charts';
+import { initialData } from './data';
+import { ChartData } from '../../types/individual_stock';
 
 const StockChart = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const chartData = useSelector(
-    (state: RootState) => state.individualStock.chartData,
-  );
+  const ScaleProvider =
+    discontinuousTimeScaleProviderBuilder().inputDateAccessor(
+      (d) => new Date(d.date),
+    );
+  const height = 300;
+  const width = window.innerWidth;
+  const margin = { left: 0, right: 48, top: 0, bottom: 24 };
 
-  useEffect(() => {
-    const data = {
-      exchange: 'KSC',
-      stockId: 5,
-      month: 30,
-      interval: 5,
-    };
-    dispatch(getChartDatas(data));
-  }, []);
+  const { data, xScale, xAccessor, displayXAccessor } =
+    ScaleProvider(initialData);
+  const pricesDisplayFormat = format('.2f');
 
-  console.log(chartData);
-  const data = [
-    {
-      date: '2024-06-07',
-      close_price: 77300.0,
-    },
-    {
-      date: '2024-05-30',
-      close_price: 73500.0,
-    },
-    {
-      date: '2024-05-23',
-      close_price: 78300.0,
-    },
-    {
-      date: '2024-05-16',
-      close_price: 78200.0,
-    },
-    {
-      date: '2024-05-08',
-      close_price: 81300.0,
-    },
-    {
-      date: '2024-04-29',
-      close_price: 76700.0,
-    },
-    {
-      date: '2024-04-22',
-      close_price: 76100.0,
-    },
-    {
-      date: '2024-04-15',
-      close_price: 82200.0,
-    },
-    {
-      date: '2024-04-05',
-      close_price: 84500.0,
-    },
-    {
-      date: '2024-03-29',
-      close_price: 82400.0,
-    },
-    {
-      date: '2024-03-22',
-      close_price: 78900.0,
-    },
-    {
-      date: '2024-03-15',
-      close_price: 72300.0,
-    },
-    {
-      date: '2024-03-08',
-      close_price: 73300.0,
-    },
-    {
-      date: '2024-02-29',
-      close_price: 73400.0,
-    },
-    {
-      date: '2024-02-22',
-      close_price: 73100.0,
-    },
-    {
-      date: '2024-02-15',
-      close_price: 73000.0,
-    },
-    {
-      date: '2024-02-06',
-      close_price: 74400.0,
-    },
-    {
-      date: '2024-01-30',
-      close_price: 74300.0,
-    },
-    {
-      date: '2024-01-23',
-      close_price: 75200.0,
-    },
-    {
-      date: '2024-01-16',
-      close_price: 72600.0,
-    },
-    {
-      date: '2024-01-09',
-      close_price: 74700.0,
-    },
-    {
-      date: '2024-01-02',
-      close_price: 79600.0,
-    },
-    {
-      date: '2023-12-21',
-      close_price: 75000.0,
-    },
-    {
-      date: '2023-12-14',
-      close_price: 73100.0,
-    },
-    {
-      date: '2023-12-07',
-      close_price: 71500.0,
-    },
-    {
-      date: '2023-11-30',
-      close_price: 72800.0,
-    },
-    {
-      date: '2023-11-23',
-      close_price: 72400.0,
-    },
-    {
-      date: '2023-11-16',
-      close_price: 72800.0,
-    },
+  const x_max = xAccessor(data[data.length - 1]);
+  const x_min = xAccessor(data[Math.max(0, data.length - 100)]);
+  const xExtents = [x_min, x_max + 2];
+
+  const gridHeight = height - margin.top - margin.bottom;
+
+  const barChartHeight = gridHeight / 4;
+
+  const barChartOrigin = (_: number, h: number) => [
+    0,
+    gridHeight - barChartHeight,
   ];
 
-  return (
-    <ApexChart
-      type="line"
-      series={[
-        {
-          name: 'Price',
-          data: data?.map((price) => Number(price.close_price)) as number[],
-        },
-      ]}
-      options={{
-        theme: {
-          mode: 'dark',
-        },
-        chart: {
-          height: 500,
-          width: 500,
-          toolbar: {
-            tools: {},
-          },
-          background: 'transparent',
-        },
-        stroke: {
-          curve: 'smooth',
-          width: 2,
-        },
-        colors: ['#1AA76E'],
-        grid: {
-          show: false,
-        },
-        plotOptions: {
-          candlestick: {
-            wick: {
-              useFillColor: true,
-            },
-          },
-        },
-        xaxis: {
-          labels: {
-            show: true,
-            style: {
-              colors: 'rgba(0, 0, 0, 0.5)',
-            },
-            // datetimeFormatter: {
-            //   month: "mmm 'yy",
-            // },
-          },
-          type: 'datetime',
-          categories: data?.map((date) => date.date),
-          axisBorder: {
-            show: true,
-          },
-          axisTicks: {
-            show: true,
-          },
-        },
-        yaxis: {
-          labels: {
-            show: true,
-            style: {
-              colors: 'rgba(0, 0, 0, 0.5)',
-            },
-            // datetimeFormatter: {
-            //   month: "mmm 'yy",
-            // },
-          },
-          axisBorder: {
-            show: true,
-          },
-          axisTicks: {
-            show: true,
-          },
-        },
-        tooltip: {
-          y: {
-            formatter: (v) => `$ ${v.toFixed(2)}`,
-          },
-        },
-      }}
-    />
-  );
+  const chartHeight = gridHeight - barChartHeight;
+
+  const yExtents = (data: ChartData) => {
+    return [data.high, data.low];
+  };
+  const dateTimeFormat = '%d %b';
+  const timeDisplayFormat = timeFormat(dateTimeFormat);
+
+  const barChartExtents = (data: ChartData) => {
+    return data.volume;
+  };
+
+  const candleChartExtents = (data: ChartData) => {
+    return [data.high, data.low];
+  };
+
+  const yEdgeIndicator = (data: ChartData) => {
+    return data.close;
+  };
+
+  const volumeColor = (data: ChartData) => {
+    return data.close > data.open
+      ? 'rgba(38, 166, 154, 0.3)'
+      : 'rgba(239, 83, 80, 0.3)';
+  };
+
+  const volumeSeries = (data: ChartData) => {
+    return data.volume;
+  };
+
+  const openCloseColor = (data: ChartData) => {
+    return data.close > data.open ? '#26a69a' : '#ef5350';
+  };
+
+  return data?.length > 0 ? (
+    <>
+      <ChartCanvas
+        height={height}
+        ratio={3}
+        width={width}
+        margin={margin}
+        data={data}
+        displayXAccessor={displayXAccessor}
+        seriesName="Data"
+        xScale={xScale}
+        xAccessor={xAccessor}
+        xExtents={xExtents}
+        zoomAnchor={lastVisibleItemBasedZoomAnchor}
+      >
+        <Chart
+          id={2}
+          height={barChartHeight}
+          origin={barChartOrigin}
+          yExtents={barChartExtents}
+          padding={{ top: 10, bottom: 0 }}
+        >
+          <XAxis
+            showGridLines
+            showTickLabel={false}
+            showTicks={false}
+            strokeStyle="#BABABA"
+          />
+          <YAxis
+            ticks={4}
+            tickFormat={pricesDisplayFormat}
+            tickLabelFill="#BABABA"
+            tickStrokeStyle="#BABABA"
+            strokeStyle="#BABABA"
+          />
+          <BarSeries fillStyle={volumeColor} yAccessor={volumeSeries} />
+        </Chart>
+
+        <Chart
+          id={1}
+          height={chartHeight}
+          yExtents={candleChartExtents}
+          padding={20}
+        >
+          <XAxis
+            showGridLines
+            showTickLabel={false}
+            showTicks={false}
+            strokeStyle="#BABABA"
+          />
+          <YAxis
+            showGridLines
+            tickFormat={pricesDisplayFormat}
+            tickLabelFill="#BABABA"
+            tickStrokeStyle="#BABABA"
+            strokeStyle="#BABABA"
+          />
+          <CandlestickSeries fill={openCloseColor} />
+          <MouseCoordinateX displayFormat={timeDisplayFormat} />
+          <MouseCoordinateY
+            rectWidth={margin.right}
+            displayFormat={pricesDisplayFormat}
+          />
+          <EdgeIndicator
+            itemType="last"
+            rectWidth={margin.right}
+            fill={openCloseColor}
+            lineStroke={openCloseColor}
+            displayFormat={pricesDisplayFormat}
+            yAccessor={yEdgeIndicator}
+            fullWidth={true}
+          />
+        </Chart>
+        <CrossHairCursor />
+      </ChartCanvas>
+    </>
+  ) : null;
 };
 
 export default StockChart;

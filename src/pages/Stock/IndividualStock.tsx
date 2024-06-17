@@ -5,15 +5,19 @@ import Navbar from '../../components/common/Navbar';
 import Empty from '../../assets/line-heart.svg';
 import Fill from '../../assets/fill-heart.svg';
 import Button from '../../components/common/Button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import TradingStock from '../../components/Stock/TradingStock';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../store/store';
+import { getChartDetail } from '../../store/reducers/stocks/individualStock';
+import { useWebSocket } from '../../hooks/useWebSocket';
 
 const Container = styled.div`
-  ${tw`px-7 py-5 mt-14`}
+  ${tw`h-full py-8 mt-14`}
 `;
 
 const NameContainer = styled.div`
-  ${tw`w-full flex justify-between items-center`}
+  ${tw`w-full px-7 flex justify-between items-center box-border`}
 `;
 
 const SubName = styled.div`
@@ -21,7 +25,7 @@ const SubName = styled.div`
 `;
 
 const MainText = styled.span`
-  ${tw`text-xl`}
+  ${tw`text-xl font-semibold`}
 `;
 
 const SubText = styled.span`
@@ -33,7 +37,7 @@ const Img = styled.img`
 `;
 
 const ItemContainer = styled.div`
-  ${tw`flex flex-wrap gap-2 py-8`}
+  ${tw`flex flex-wrap gap-2 py-8 px-7`}
 `;
 
 const Item = styled.div<{ isCol: boolean; isTwo: boolean }>`
@@ -46,8 +50,12 @@ const ItemText = styled.span`
   ${tw`text-sm`}
 `;
 
+const SubContainer = styled.div`
+  ${tw`flex flex-col mt-2 px-7`}
+`;
+
 const SubItemContainer = styled.div`
-  ${tw`flex flex-col mt-2`}
+  ${tw`flex flex-wrap gap-2 py-8`}
 `;
 
 const BtnContainer = styled.div`
@@ -55,8 +63,33 @@ const BtnContainer = styled.div`
 `;
 
 const IndividualStock = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const detail = useSelector(
+    (state: RootState) => state.individualStock.detail,
+  );
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isSell, setIsSell] = useState<boolean>(false);
+  const [isLike, setIsLike] = useState<boolean>(false);
+
+  useEffect(() => {
+    const data = {
+      exchange: 'KSC',
+      stockId: 10,
+    };
+    dispatch(getChartDetail(data));
+  }, []);
+
+  const formatNumber = (num: number): string => {
+    if (num >= 1e8) {
+      const billion = num / 1e8;
+      const formattedBillion = billion.toFixed(1);
+      return `${formattedBillion.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}억원`;
+    } else {
+      return `${num.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}원`;
+    }
+  };
+
+  console.log(detail);
 
   return (
     <>
@@ -64,41 +97,51 @@ const IndividualStock = () => {
       <Container>
         <NameContainer>
           <SubName>
-            <MainText>삼성전자</MainText>
+            <MainText>{detail.basic_info.name}</MainText>
             <SubText>60,200원</SubText>
           </SubName>
-          <Img src={Empty} />
+          <Img
+            src={isLike ? Fill : Empty}
+            onClick={() => setIsLike((prev) => !prev)}
+          />
         </NameContainer>
         <ItemContainer>
           <Item isCol={true} isTwo={true}>
             <ItemText>시가총액</ItemText>
-            <ItemText>9,019.2억원</ItemText>
+            <ItemText>{formatNumber(detail.detail_info.marketCap)}</ItemText>
           </Item>
           <Item isCol={true} isTwo={true}>
-            <ItemText>다음 배당 예상 지급일</ItemText>
-            <ItemText>9,019.2억원</ItemText>
+            <ItemText>배당 지급월</ItemText>
+            <ItemText>
+              {detail.basic_info.dividendMonth}•
+              {detail.basic_info.dividendMonth + 3}•
+              {detail.basic_info.dividendMonth + 6}•
+              {detail.basic_info.dividendMonth + 9}월
+            </ItemText>
           </Item>
-          <Item isCol={false} isTwo={true}>
+          {/* <Item isCol={false} isTwo={true}>
             <ItemText>PBR</ItemText>
             <ItemText>6.7배</ItemText>
           </Item>
           <Item isCol={false} isTwo={true}>
             <ItemText>주당 배당금</ItemText>
             <ItemText>9000원</ItemText>
-          </Item>
+          </Item> */}
           <Item isCol={false} isTwo={true}>
             <ItemText>PER</ItemText>
-            <ItemText>13.7배</ItemText>
+            <ItemText>{detail.detail_info.peRatioTtm.toFixed(2)}배</ItemText>
           </Item>
           <Item isCol={false} isTwo={true}>
             <ItemText>배당 수익률</ItemText>
-            <ItemText>2.6%</ItemText>
+            <ItemText>
+              {detail.basic_info.dividendYieldTtm.toFixed(3)}%
+            </ItemText>
           </Item>
         </ItemContainer>
         <StockChart />
-        <SubItemContainer>
+        <SubContainer>
           <SubText>보유 현황</SubText>
-          <ItemContainer>
+          <SubItemContainer>
             <Item isCol={true} isTwo={false}>
               <ItemText>평균 단가</ItemText>
               <ItemText>58,000원</ItemText>
@@ -111,8 +154,8 @@ const IndividualStock = () => {
               <ItemText>보유 수량</ItemText>
               <ItemText>230주</ItemText>
             </Item>
-          </ItemContainer>
-        </SubItemContainer>
+          </SubItemContainer>
+        </SubContainer>
       </Container>
       <BtnContainer>
         <Button

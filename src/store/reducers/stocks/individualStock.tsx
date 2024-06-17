@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { stocksChart, stocksDetail } from '../../../api/stocks';
-import { ChartPost } from '../../../types/individual_stock';
+import { ChartPost, GetDetail } from '../../../types/individual_stock';
 
 const initialState = {
   chartData: {
@@ -8,6 +8,30 @@ const initialState = {
     stock_id: 0,
     symbol: '',
     close_prices: [],
+  },
+  detail: {
+    basic_info: {
+      id: 0,
+      symbol: '',
+      name: '',
+      type: '',
+      exchange: '',
+      dividendMonth: 0,
+      dividendYieldTtm: 0,
+      personalizedScore: null,
+    },
+    detail_info: {
+      stockId: 0,
+      symbol: '',
+      marketCap: 0,
+      peRatioTtm: 0,
+      tenYShareHoldersEquityGrowthPerShare: 0,
+      fiveYShareHoldersEquityGrowthPerShare: 0,
+      threeYShareHoldersEquityGrowthPerShare: 0,
+      tenYDividendPerShareGrowthPerShare: 0,
+      fiveYDividendPerShareGrowthPerShare: null,
+      threeYDividendPerShareGrowthPerShare: 0,
+    },
   },
 };
 
@@ -29,6 +53,12 @@ type ActionPayload = {
   };
 };
 
+type ActionDetailPayload = {
+  data: {
+    response: GetDetail;
+  };
+};
+
 export const getChartDatas = createAsyncThunk(
   'stocks/getChartDatas',
   async (data: ChartPost, thunkAPI) => {
@@ -41,7 +71,7 @@ export const getChartDetail = createAsyncThunk(
   'stocks/getChartDetail',
   async (data: DetailData, thunkAPI) => {
     const response = await stocksDetail(data.exchange, data.stockId);
-    return response as ActionPayload;
+    return response as ActionDetailPayload;
   },
 );
 
@@ -52,6 +82,9 @@ const individualStockSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(getChartDatas.fulfilled, (state, action) => {
       state.chartData = action.payload.data.response;
+    });
+    builder.addCase(getChartDetail.fulfilled, (state, action) => {
+      state.detail = action.payload.data.response;
     });
   },
 });

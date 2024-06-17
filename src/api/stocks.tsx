@@ -58,7 +58,7 @@ export const stocksChart = async (data: ChartPost) => {
 
 export const stocksDetail = async (exchange: string, stockId: number) => {
   try {
-    const response = await stockInstance.post(stocks_url + '/detail', {
+    const response = await stockInstance.post('/detail', {
       exchange: exchange,
       stockId: stockId,
     });

@@ -7,6 +7,8 @@ export interface EstatesList {
   title: string;
   titleMainImageUrl: string;
   totalAmountInvestments: number;
+  eightCreditGrade: string;
+  currentInvest: number;
 }
 
 export type estatesDetail = {

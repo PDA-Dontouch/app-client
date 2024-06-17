@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getEstatesDatas } from '../../store/reducers/estates/estates';
 import useLike from '../../hooks/useLike';
+import { EstatesList } from '../../types/estates_product';
 
 const Container = styled.div`
   ${tw`w-[calc(100% - 56px)] mt-14 mb-16 px-7 py-8 flex flex-col gap-5`}
@@ -28,34 +29,58 @@ const MainText = styled.span`
   `}
 `;
 
-const SubText = styled.span`
+const SubText = styled.span<{ isSelect: boolean }>`
   ${tw`text-lg`}
+  ${({ isSelect }) => (isSelect ? tw`text-black` : tw`text-gray70`)}
 `;
 
 const ItemContainer = styled.div`
   ${tw`flex flex-col gap-8`}
 `;
 
+const SelectContainer = styled.div`
+  ${tw`flex gap-3`}
+`;
+
 const EstatesMain = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const estatesDatas = useSelector((state: RootState) => state.estates.datas);
-  const [sortByProfit, setSortByProfit] = useState<boolean>(false);
+  const [sortByProfit, setSortByProfit] = useState(false);
+  const [isSelect, setIsSelect] = useState(0);
 
   useEffect(() => {
     dispatch(getEstatesDatas());
-  }, []);
+  }, [dispatch]);
 
-  const sortDataByProfit = () => {
-    setSortByProfit(!sortByProfit);
+  const { EstatesLikeArr, setLikeEstates } = useLike();
+
+  const filterAndSortData = (data: EstatesList[], completed: boolean) => {
+    const filteredData = data.filter((estate) =>
+      completed
+        ? estate.currentInvest === estate.totalAmountInvestments
+        : estate.currentInvest !== estate.totalAmountInvestments,
+    );
+    return sortByProfit
+      ? filteredData.sort((a, b) => b.earningRate - a.earningRate)
+      : filteredData;
   };
 
-  const sortedData = sortByProfit
-    ? [...estatesDatas].sort((a, b) => b.earningRate - a.earningRate)
-    : estatesDatas;
+  const renderProducts = (data: EstatesList[]) => {
+    return data.map((item) => (
+      <div key={item.id}>
+        <Product
+          isEstates={true}
+          data={item}
+          isLike={EstatesLikeArr.includes(item.id)}
+          setIsLike={() => setLikeEstates(item.id)}
+        />
+      </div>
+    ));
+  };
 
-  const { EstatesLikeArr, setLikeEstates, EnergyLikeArr, setLikeEnergy } =
-    useLike();
+  const ongoingInvestments = filterAndSortData(estatesDatas, false);
+  const completedInvestments = filterAndSortData(estatesDatas, true);
 
   return (
     <>
@@ -73,21 +98,21 @@ const EstatesMain = () => {
             isEstates={true}
             isSelect={sortByProfit}
             title="수익률순"
-            onClick={sortDataByProfit}
+            onClick={() => setSortByProfit(true)}
           />
         </BtnContainer>
         <ItemContainer>
-          <SubText>모집 중</SubText>
-          {sortedData.map((item, idx) => (
-            <div key={item.id}>
-              <Product
-                isEstates={true}
-                data={item}
-                isLike={EstatesLikeArr.includes(item.id) ? true : false}
-                setIsLike={() => setLikeEstates(item.id)}
-              />
-            </div>
-          ))}
+          <SelectContainer>
+            <SubText isSelect={isSelect === 0} onClick={() => setIsSelect(0)}>
+              모집 중
+            </SubText>
+            <SubText isSelect={isSelect === 1} onClick={() => setIsSelect(1)}>
+              모집 완료
+            </SubText>
+          </SelectContainer>
+          {isSelect === 0
+            ? renderProducts(ongoingInvestments)
+            : renderProducts(completedInvestments)}
         </ItemContainer>
       </Container>
       <Footer />

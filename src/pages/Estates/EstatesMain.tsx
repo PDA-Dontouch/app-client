@@ -9,7 +9,10 @@ import Product from '../../components/common/Product/Product';
 import { AppDispatch, RootState } from '../../store/store';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getEstatesDatas } from '../../store/reducers/estates/estates';
+import {
+  getEstatesDatas,
+  setClickEstates,
+} from '../../store/reducers/estates/estates';
 import useLike from '../../hooks/useLike';
 import { EstatesList } from '../../types/estates_product';
 
@@ -64,6 +67,10 @@ const EstatesMain = () => {
     return sortByProfit
       ? filteredData.sort((a, b) => b.earningRate - a.earningRate)
       : filteredData;
+  };
+
+  const clickEstates = (data: EstatesList) => {
+    dispatch(setClickEstates(data));
   };
 
   const renderProducts = (data: EstatesList[]) => {

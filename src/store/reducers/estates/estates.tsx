@@ -7,6 +7,7 @@ import {
 } from '../../../api/estates';
 import {
   EstatesList,
+  clickEstates,
   estatesDetail,
   initialEstatesDetail,
 } from '../../../types/estates_product';
@@ -15,6 +16,7 @@ interface EstatesState {
   estatesLike: number[];
   datas: EstatesList[];
   detail: estatesDetail;
+  clickEstates: EstatesList;
 }
 
 type ActionPayload = {
@@ -33,6 +35,7 @@ const initialState: EstatesState = {
   estatesLike: [-1],
   datas: [],
   detail: initialEstatesDetail,
+  clickEstates: clickEstates,
 };
 
 export type estatesTypes = {
@@ -87,6 +90,9 @@ const estatesSlice = createSlice({
         (el) => el !== action.payload,
       );
     },
+    setClickEstates: (state, action) => {
+      state.clickEstates = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(
@@ -104,6 +110,7 @@ const estatesSlice = createSlice({
   },
 });
 
-export const { setEstatesLike, delEstatesLike } = estatesSlice.actions;
+export const { setEstatesLike, delEstatesLike, setClickEstates } =
+  estatesSlice.actions;
 
 export default estatesSlice.reducer;

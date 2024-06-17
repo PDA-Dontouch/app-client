@@ -132,3 +132,16 @@ export const initialEstatesDetail = {
   dealType: '',
   category: '',
 };
+
+export const clickEstates = {
+  id: 0,
+  earningRate: 0,
+  length: 0,
+  loanAmountBaseLtv: 0,
+  sumOfInvestmentAndReservation: 0,
+  title: '',
+  titleMainImageUrl: '',
+  totalAmountInvestments: 0,
+  eightCreditGrade: '',
+  currentInvest: 0,
+};

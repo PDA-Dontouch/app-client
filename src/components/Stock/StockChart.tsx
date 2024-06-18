@@ -16,8 +16,28 @@ import {
 } from 'react-financial-charts';
 import { initialData } from './data';
 import { ChartData } from '../../types/individual_stock';
+import { useEffect } from 'react';
+import { PriceType } from '../../types/socket';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../store/store';
 
-const StockChart = () => {
+interface ChartProps {
+  nowPrice: PriceType;
+}
+
+const StockChart = ({ nowPrice }: ChartProps) => {
+  const dispatch = useDispatch<AppDispatch>();
+  // useEffect(() => {
+  //   const today = new Date();
+  //   const formattedDate = today.toISOString().slice(0, 10).replace(/-/g, '');
+
+  //   if (nowPrice) {
+  //     // setUpNum(parseFloat(nowPrice.message.close) - parseFloat(dataList[dataList.length - 2].close))
+  //     nowPrice.message['time'] = formattedDate;
+  //     dispatch(setLiveData(nowPrice.message));
+  //   }
+  // }, [nowPrice]);
+
   const ScaleProvider =
     discontinuousTimeScaleProviderBuilder().inputDateAccessor(
       (d) => new Date(d.date),

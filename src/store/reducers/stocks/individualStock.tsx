@@ -67,8 +67,8 @@ export const getChartDatas = createAsyncThunk(
   },
 );
 
-export const getChartDetail = createAsyncThunk(
-  'stocks/getChartDetail',
+export const getDetail = createAsyncThunk(
+  'stocks/getDetail',
   async (data: DetailData, thunkAPI) => {
     const response = await stocksDetail(data.exchange, data.stockId);
     return response as ActionDetailPayload;
@@ -78,12 +78,17 @@ export const getChartDetail = createAsyncThunk(
 const individualStockSlice = createSlice({
   name: 'individual_stocks',
   initialState: initialState,
-  reducers: {},
+  reducers: {
+    // setLiveData(state, action) {
+    //   state.chartData.close_prices.pop();
+    //   state.chartData.close_prices.push(action.payload);
+    // },
+  },
   extraReducers: (builder) => {
     builder.addCase(getChartDatas.fulfilled, (state, action) => {
       state.chartData = action.payload.data.response;
     });
-    builder.addCase(getChartDetail.fulfilled, (state, action) => {
+    builder.addCase(getDetail.fulfilled, (state, action) => {
       state.detail = action.payload.data.response;
     });
   },

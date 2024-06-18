@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 import TradingStock from '../../components/Stock/TradingStock';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
-import { getChartDetail } from '../../store/reducers/stocks/individualStock';
+import { getDetail } from '../../store/reducers/stocks/individualStock';
 import { useWebSocket } from '../../hooks/useWebSocket';
 import { useNavigate } from 'react-router-dom';
 import { setSelectedPrice } from '../../store/reducers/stocks/trading';
@@ -82,7 +82,7 @@ const IndividualStock = () => {
       exchange: 'KSC',
       stockId: 10,
     };
-    dispatch(getChartDetail(data));
+    dispatch(getDetail(data));
   }, []);
 
   const { askPrice, nowPrice } = useWebSocket();
@@ -144,7 +144,7 @@ const IndividualStock = () => {
             </ItemText>
           </Item>
         </ItemContainer>
-        <StockChart />
+        <StockChart nowPrice={nowPrice} />
         <SubContainer>
           <SubText>보유 현황</SubText>
           <SubItemContainer>

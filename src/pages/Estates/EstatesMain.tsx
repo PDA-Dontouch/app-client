@@ -15,6 +15,7 @@ import {
 } from '../../store/reducers/estates/estates';
 import useLike from '../../hooks/useLike';
 import { EstatesList } from '../../types/estates_product';
+import ProductSkeleton from '../../components/Skeleton/ProductSkeleton';
 
 const Container = styled.div`
   ${tw`w-[calc(100% - 56px)] mt-14 mb-16 px-7 py-8 flex flex-col gap-5`}
@@ -51,10 +52,26 @@ const EstatesMain = () => {
   const estatesDatas = useSelector((state: RootState) => state.estates.datas);
   const [sortByProfit, setSortByProfit] = useState(false);
   const [isSelect, setIsSelect] = useState(0);
+  const [showSkeleton, setShowSkeleton] = useState(true);
 
   useEffect(() => {
     dispatch(getEstatesDatas());
   }, [dispatch]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowSkeleton(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleSelectChange = (index: number) => {
+    setIsSelect(index);
+    setShowSkeleton(true);
+    setTimeout(() => {
+      setShowSkeleton(false);
+    }, 2000);
+  };
 
   const { EstatesLikeArr, setLikeEstates } = useLike();
 
@@ -110,16 +127,24 @@ const EstatesMain = () => {
         </BtnContainer>
         <ItemContainer>
           <SelectContainer>
-            <SubText isSelect={isSelect === 0} onClick={() => setIsSelect(0)}>
+            <SubText
+              isSelect={isSelect === 0}
+              onClick={() => handleSelectChange(0)}
+            >
               모집 중
             </SubText>
-            <SubText isSelect={isSelect === 1} onClick={() => setIsSelect(1)}>
+            <SubText
+              isSelect={isSelect === 1}
+              onClick={() => handleSelectChange(1)}
+            >
               모집 완료
             </SubText>
           </SelectContainer>
-          {isSelect === 0
-            ? renderProducts(ongoingInvestments)
-            : renderProducts(completedInvestments)}
+          {showSkeleton
+            ? [...Array(5)].map((_, index) => <ProductSkeleton />)
+            : isSelect === 0
+              ? renderProducts(ongoingInvestments)
+              : renderProducts(completedInvestments)}
         </ItemContainer>
       </Container>
       <Footer />

@@ -3,6 +3,7 @@ import storage from 'redux-persist/lib/storage';
 import { persistReducer, persistStore } from 'redux-persist';
 import logger from 'redux-logger';
 import energyReducer from './reducers/energy/energy';
+import stocksReducer from './reducers/stocks/stocks';
 import estatesReducer from './reducers/estates/estates';
 import individualStockSlice from './reducers/stocks/individualStock';
 import tradingReducer from './reducers/stocks/trading';
@@ -28,6 +29,7 @@ const rootReducer = combineReducers({
   estates: estatesReducer,
   individualStock: individualStockSlice,
   trading: persistReducer(tradingPersistConfig, tradingReducer),
+  stocks: stocksReducer,
 });
 
 const persistedReducer = persistReducer(rootPersistConfig, rootReducer);

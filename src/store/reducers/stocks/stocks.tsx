@@ -1,34 +1,74 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { stocksData, stocksDatas, stocksDisLike, stocksLike } from "../../../api/stocks";
+import { initialDetail, stockDetail } from "../../../types/stockInfo";
 
-const initialState = {
+
+export interface Stocks {
+  id:number;
+  symbol: string;
+  name: string;
+  type: string;
+  exchange: string;
+  dividendMonth: number;
+  dividendYieldTtm: number;
+}
+
+interface StocksState {
+  likes: number[];
+  datas: Stocks[];
+  detail: stockDetail;
+}
+
+type ActionPayload = {
+  data: {
+    response: Stocks[];
+  };
+};
+
+type ActionPayloadDetail = {
+  data: {
+    response: stockDetail;
+  };
+};
+
+const initialState:StocksState = {
   likes: [-1],
   datas: [],
-  detail: {}
+  detail: initialDetail,
 }
 
 export type stocksTypes = {
   token: string;
-  stocks_id: string;
+  stock_id: number;
+};
+
+interface RequestBodyType {
+  userInvestmentType: number;
+  safeScore: number;
+  dividendScore: number;
+  growthScore: number;
+  dividendMonth: number | null;
+  page: number;
+  size: number;
 }
 
-export const getStocksDatas = createAsyncThunk(
+export const getStocksDatas = createAsyncThunk<ActionPayload, RequestBodyType>(
   "stocks/getDatas",
-  async (data, thunkAPI) => {
-    const response = await stocksDatas();
-    return response;
+  async (requestBody, thunkAPI) => {
+    const response = await stocksDatas(requestBody);
+    return response as ActionPayload;
   }
 );
 
-export const getStocksData = createAsyncThunk(
+export const getStocksData = createAsyncThunk<ActionPayloadDetail, number>(
   "stocks/getData",
-  async (data: string, thunkAPI) => {
+  async (data: number, thunkAPI) => {
     const response = await stocksData(data);
-    return response;
+    return response as ActionPayloadDetail;
   }
 );
 
-export const addLikeEstates = createAsyncThunk(
+export const addLikeStocks = createAsyncThunk(
   "stocks/like",
   async (data: stocksTypes, thunkAPI) => {
     const response = await stocksLike(data);
@@ -36,8 +76,16 @@ export const addLikeEstates = createAsyncThunk(
   }
 );
 
-export const delLikeEstates = createAsyncThunk(
+export const delLikeStocks = createAsyncThunk(
   "stocks/dislike",
+  async (data: stocksTypes, thunkAPI) => {
+    const response = await stocksDisLike(data);
+    return response;
+  }
+);
+
+export const makeCombiStocks = createAsyncThunk(
+  "stocks/combination",
   async (data: stocksTypes, thunkAPI) => {
     const response = await stocksDisLike(data);
     return response;
@@ -56,12 +104,14 @@ const stocksSlice = createSlice({
     }
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(getStocksDatas.fulfilled, (state, action) => {
-        // state.datas = action.payload;
-      })
-      .addCase(getStocksData.fulfilled, (state, action) => {
-        // state.detail = action.payload;
+    builder.addCase(
+      getStocksDatas.fulfilled,(state, action: PayloadAction<ActionPayload>) => {
+        state.datas = action.payload.data.response;
+      },
+    );
+    builder.addCase(
+      getStocksData.fulfilled, (state, action: PayloadAction<ActionPayloadDetail>) => {
+        state.detail = action.payload.data.response;
       })
   },
 });

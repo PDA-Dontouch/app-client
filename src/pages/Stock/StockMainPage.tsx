@@ -8,8 +8,8 @@ import Footer from '../../components/common/Footer';
 import CombiBox from '../../components/common/Stock/CombiBox';
 import StockCard from '../../components/common/Stock/StockCard';
 import SearchBar from '../../components/common/Stock/SearchBar';
-// import NextBtn from '../../components/common/Stock/NextBtn';
-// import PersonalInfo from '../../components/common/Stock/PersonalInfo';
+import NextBtn from '../../components/common/Stock/NextBtn';
+import PersonalInfo from '../../components/common/Stock/PersonalInfo';
 
 import {
   addLikeStocks,

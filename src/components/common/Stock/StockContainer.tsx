@@ -2,6 +2,7 @@ import tw, { styled } from 'twin.macro';
 import StockItem from './StockItem';
 
 export type ItemType = {
+  id: number;
   code: string;
   name: string;
   price: number;

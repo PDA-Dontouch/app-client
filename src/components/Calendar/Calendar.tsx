@@ -1,16 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import tw, { styled } from 'twin.macro';
-import { PlanDetailType } from './SalaryPlan';
+import { CalendarStockPlanType } from '../../types/stocks_product';
 
 type CalendarProps = {
-  type: 'week' | 'month';
+  startDate: number;
+  datesCount: number;
   year: number;
   month: number;
-  setMonth: React.Dispatch<React.SetStateAction<number>> | null;
-  date: number;
   setDate: React.Dispatch<React.SetStateAction<number>> | null;
-  day: number;
-  plans: PlanDetailType[];
+  stockPlans: CalendarStockPlanType[];
   openModal: () => void;
 };
 
@@ -27,7 +25,7 @@ type DateTextProps = {
 };
 
 type SalaryPlanProps = {
-  type: '배당' | '에너지' | '부동산';
+  type: '주식' | '에너지' | '부동산';
 };
 
 const CalendarContainer = styled.div`
@@ -74,7 +72,7 @@ const DateText = styled.div<DateTextProps>`
 
 const SalaryPlan = styled.div<SalaryPlanProps>`
   ${({ type }) =>
-    type === '배당'
+    type === '주식'
       ? 'background-color: #E9F1D6;'
       : type === '부동산'
         ? 'background-color: #A4C3B2;'
@@ -84,27 +82,15 @@ const SalaryPlan = styled.div<SalaryPlanProps>`
 `;
 
 export default function Calendar({
-  type,
+  startDate,
+  datesCount,
   year,
   month,
-  setMonth,
-  date,
   setDate,
-  day,
-  plans,
+  stockPlans,
   openModal,
 }: CalendarProps) {
   const days = ['일', '월', '화', '수', '목', '금', '토'];
-  const startDate =
-    type == 'month' ? 1 - new Date(year, month, 1).getDay() : date - day;
-
-  const datesCount =
-    type == 'month'
-      ? new Date(year, month + 1, 0).getDate() +
-        new Date(year, month, 1).getDay() +
-        6 -
-        new Date(year, month + 1, 0).getDay()
-      : 7;
 
   const dates: Date[] = [];
 
@@ -127,16 +113,23 @@ export default function Calendar({
           <DateCell
             key={idx}
             inThisMonth={date.getMonth() === month ? true : false}
-            onClick={() => {
-              if (date.getMonth() === month) {
-                openModal();
-              }
-              if (setDate) setDate(date.getDate());
-            }}
+            onClick={
+              date.getMonth() === month && setDate
+                ? () => {
+                    openModal();
+                    setDate(date.getDate());
+                  }
+                : () => {}
+            }
           >
             <DateText day={date.getDay()}>{date.getDate()}</DateText>
-            {plans.map((plan, i) => {
-              return <SalaryPlan key={i} type={plan.type}></SalaryPlan>;
+            {stockPlans.map((plan, i) => {
+              const dividendDate = new Date(plan.dividendDate);
+              if (
+                dividendDate.getMonth() === date.getMonth() &&
+                dividendDate.getDate() === date.getDate()
+              )
+                return <SalaryPlan key={i} type={'주식'}></SalaryPlan>;
             })}
           </DateCell>
         );

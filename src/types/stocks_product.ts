@@ -3,6 +3,7 @@ export type CalendarStockPlanType = {
   dividendDate: Date;
   isFixed: boolean;
   symbol: string;
+  name: string;
   dividend: number;
   paymentDate: Date;
 };

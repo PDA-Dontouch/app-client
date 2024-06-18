@@ -2,15 +2,19 @@ import tw, { styled } from 'twin.macro';
 import arrowImg from '../../assets/arrow.svg';
 import Calendar from '../../components/Calendar/Calendar';
 import BottomUpModal from '../../components/common/Modal/BottomUpModal';
-import SalaryPlan, {
-  PlanDetailType,
-} from '../../components/Calendar/SalaryPlan';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/common/Navbar';
 import Footer from '../../components/common/Footer';
 import darkRedHeartImg from '../../assets/dark-red-heart.svg';
 import testBlueImg from '../../assets/test-blue.svg';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
+import { CalendarStockPlanType } from '../../types/stocks_product';
+import SalaryPlan from '../../components/Calendar/SalaryPlan';
+import { calendarStockPlans, getExchangeRate } from '../../api/stocks';
+import { investmentTypeToString } from '../../utils/investmentType';
+import { useCookies } from 'react-cookie';
 
 type TitleNameProps = {
   type: 'name' | 'nim';
@@ -21,34 +25,6 @@ type AssetDetailCommonProps = {
   price: number;
   onClick: () => void;
 };
-
-const salaryData: PlanDetailType[] = [
-  {
-    type: '배당',
-    name: '삼성전자',
-    price: 1200,
-  },
-  {
-    type: '에너지',
-    name: '삼성전자',
-    price: 21955,
-  },
-  {
-    type: '부동산',
-    name: '울산 행복아파트',
-    price: 40560,
-  },
-  {
-    type: '배당',
-    name: '삼성전자',
-    price: 1200,
-  },
-  {
-    type: '에너지',
-    name: '삼성전자',
-    price: 21955,
-  },
-];
 
 const MyPageContainer = styled.div`
   ${tw`flex flex-col gap-8 px-5 pt-18 pb-22 w-full`}
@@ -174,41 +150,99 @@ export default function MainPage() {
   const today: Date = new Date();
   const [date, setDate] = useState<number>(today.getDate());
   const [modal, setModal] = useState<boolean>(false);
+  const [stockPlans, setStockPlans] = useState<CalendarStockPlanType[]>([]);
+  const [totalSalary, setTotalSalary] = useState<number>(0);
+  const [exchangeRate, setExchangeRate] = useState<number>(0);
+  const user = useSelector((state: RootState) => state.user);
+  const [cookies, setCookie] = useCookies(['exchange_rate']);
+
   const navigate = useNavigate();
+
+  const startDate = today.getDate() - today.getDay();
+
+  const expireDate = new Date(Date.now() + 60 * 60 * 1000);
+
+  const getPlans = useCallback(() => {
+    calendarStockPlans({
+      token: user.token,
+      startDate: new Date(today.getFullYear(), today.getMonth(), 1),
+      endDate: new Date(today.getFullYear(), today.getMonth() + 1, 1),
+    }).then((data) => {
+      setTotalSalary(
+        data.data.response.reduce((accumulator, stock) => {
+          if (new Date(stock.dividendDate).getMonth() === today.getMonth()) {
+            if (
+              'A' <= stock.symbol.charAt(0) &&
+              stock.symbol.charAt(0) <= 'Z'
+            ) {
+              return accumulator + stock.dividend * exchangeRate;
+            } else {
+              return accumulator + stock.dividend;
+            }
+          } else {
+            return accumulator;
+          }
+        }, 0),
+      );
+    });
+  }, [exchangeRate]);
+
+  useEffect(() => {
+    calendarStockPlans({
+      token: user.token,
+      startDate: new Date(today.getFullYear(), today.getMonth(), startDate + 1),
+      endDate: new Date(today.getFullYear(), today.getMonth(), startDate + 8),
+    }).then((data) => {
+      setStockPlans(data.data.response);
+    });
+
+    if (cookies['exchange_rate'] !== undefined) {
+      setExchangeRate(cookies['exchange_rate']);
+    } else {
+      getExchangeRate().then((data) => {
+        for (let i = data.data.length - 1; i > -1; i--) {
+          if (data.data[i].cur_unit === 'USD') {
+            setCookie(
+              'exchange_rate',
+              Number(data.data[i].bkpr.replace(',', '')),
+              { expires: expireDate },
+            );
+          }
+          setExchangeRate(cookies['exchange_rate']);
+        }
+      });
+    }
+
+    getPlans();
+    console.log(exchangeRate);
+  }, [exchangeRate]);
 
   return (
     <>
-      <Navbar
-        name="박유진"
-        type="main"
-        onClick={() => {
-          navigate('/mypage');
-        }}
-      ></Navbar>
+      <Navbar name="박유진" type="main" onClick={() => {}}></Navbar>
       {modal && (
         <BottomUpModal
           onClose={() => setModal(false)}
           content={
             <SalaryPlan
               date={new Date(today.getFullYear(), today.getMonth(), date)}
-              plans={salaryData}
             />
           }
         ></BottomUpModal>
       )}
       <MyPageContainer>
         <TitleNameContainer>
-          <TitleName type="name">박유진</TitleName>
+          <TitleName type="name">{user.user.nickname}</TitleName>
           <TitleInvestmentType>
-            <GreenBar></GreenBar>
-            (공격투자형)
+            <GreenBar></GreenBar>(
+            {investmentTypeToString(user.user.investmentType)})
           </TitleInvestmentType>
           <TitleName type="nim">님</TitleName>
         </TitleNameContainer>
         <ThisMonthSalaryContainer>
           <ThisMonthSalaryTitle>이번달 보너스 월급은?</ThisMonthSalaryTitle>
           <ThisMonthSalaryNumber>
-            {(406000).toLocaleString()}원
+            {Math.floor(totalSalary).toLocaleString()}원
           </ThisMonthSalaryNumber>
         </ThisMonthSalaryContainer>
 
@@ -224,14 +258,12 @@ export default function MainPage() {
             <img src={arrowImg} />
           </CalendarGoToThisMonth>
           <Calendar
-            type="week"
+            startDate={startDate}
+            datesCount={7}
             year={today.getFullYear()}
-            setMonth={null}
             month={today.getMonth()}
-            date={today.getDate()}
             setDate={setDate}
-            day={today.getDay()}
-            plans={salaryData}
+            stockPlans={stockPlans}
             openModal={() => setModal(true)}
           ></Calendar>
         </CalendarContainer>

@@ -37,6 +37,12 @@ export default defineConfig(({ mode }) => {
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api\/energy/, ''),
         },
+        '/api/exchangeRate': {
+          target:
+            'https://www.koreaexim.go.kr/site/program/financial/exchangeJSON',
+          changeOrigin: true,
+          rewrite: (path) => path.replace('/api/exchangeRate', ''),
+        },
       },
     },
   };

@@ -12,10 +12,9 @@ export interface UserDetail {
   growthScore: number;
 }
 
-export type userAccount = {
-  id: number;
+export type DepositWithDrawalType = {
   userId: number | null;
-  cash: number;
+  price: number;
 };
 
 export const initialUserDetail = {

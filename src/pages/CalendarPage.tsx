@@ -1,12 +1,16 @@
 import tw, { styled } from 'twin.macro';
 import Calendar from '../components/Calendar/Calendar';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import BottomUpModal from '../components/common/Modal/BottomUpModal';
 import SelectYearMonth from '../components/Calendar/SelectYearMonth';
 import Navbar from '../components/common/Navbar';
 import Footer from '../components/common/Footer';
-import SalaryPlan, { PlanDetailType } from '../components/Calendar/SalaryPlan';
-import { useNavigate } from 'react-router-dom';
+import SalaryPlan from '../components/Calendar/SalaryPlan';
+import { calendarStockPlans, getExchangeRate } from '../api/stocks';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
+import { CalendarStockPlanType } from '../types/stocks_product';
+import { useCookies } from 'react-cookie';
 
 type ModalType = 'date' | 'plan';
 
@@ -36,7 +40,7 @@ const GreenBar = styled.div`
   background-color: #1aa76e66;
 `;
 
-const YYMM = styled.div`
+const YearMonth = styled.div`
   ${tw`text-3xl`}
 `;
 
@@ -58,34 +62,6 @@ const Salary = styled.div`
   ${tw`leading-7`}
 `;
 
-const salaryData: PlanDetailType[] = [
-  {
-    type: '배당',
-    name: '삼성전자',
-    price: 1200,
-  },
-  {
-    type: '에너지',
-    name: '삼성전자',
-    price: 21955,
-  },
-  {
-    type: '부동산',
-    name: '울산 행복아파트',
-    price: 40560,
-  },
-  {
-    type: '배당',
-    name: '삼성전자',
-    price: 1200,
-  },
-  {
-    type: '에너지',
-    name: '삼성전자',
-    price: 21955,
-  },
-];
-
 export default function CalendarPage() {
   const [modal, setModal] = useState<boolean>(false);
   const [modalType, setModalType] = useState<ModalType>('date');
@@ -93,9 +69,18 @@ export default function CalendarPage() {
   const [year, setYear] = useState<number>(today.getFullYear());
   const [month, setMonth] = useState<number>(today.getMonth());
   const [date, setDate] = useState<number>(today.getDate());
-  const day = today.getDay();
+  const token = useSelector((state: RootState) => state.user.token);
+  const [stockPlans, setStockPlans] = useState<CalendarStockPlanType[]>([]);
+  const [totalSalary, setTotalSalary] = useState<number>(0);
+  const startDate = 1 - new Date(year, month, 1).getDay();
+  const [exchangeRate, setExchangeRate] = useState<number>(0);
+  const [cookies, setCookie] = useCookies();
 
-  const navigate = useNavigate();
+  const datesCount =
+    new Date(year, month + 1, 0).getDate() +
+    new Date(year, month, 1).getDay() +
+    6 -
+    new Date(year, month + 1, 0).getDay();
 
   function onOpenModal(type: ModalType) {
     if (type == 'date') {
@@ -106,6 +91,58 @@ export default function CalendarPage() {
 
     setModal(true);
   }
+
+  const getPlans = useCallback(() => {
+    console.log(new Date(year, month, startDate));
+    calendarStockPlans({
+      token: token,
+      startDate: new Date(year, month, startDate + 1),
+      endDate: new Date(year, month, startDate + datesCount + 1),
+    }).then((data) => {
+      const totalStockSalary = data.data.response.reduce(
+        (accumulator, stock) => {
+          if (new Date(stock.dividendDate).getMonth() === month) {
+            if (
+              'A' <= stock.symbol.charAt(0) &&
+              stock.symbol.charAt(0) <= 'Z'
+            ) {
+              return accumulator + stock.dividend * exchangeRate;
+            } else {
+              return accumulator + stock.dividend;
+            }
+          } else {
+            return accumulator;
+          }
+        },
+        0,
+      );
+      setStockPlans(data.data.response);
+      console.log(data.data.response);
+      setTotalSalary(totalStockSalary);
+    });
+  }, [year, month, exchangeRate]);
+
+  const expireDate = new Date();
+  expireDate.setTime(expireDate.getTime() + 60 * 60 * 1000);
+
+  useEffect(() => {
+    if (cookies['exchange_rate'] !== undefined) {
+      setExchangeRate(cookies['exchange_rate']);
+    } else {
+      getExchangeRate().then((data) => {
+        for (let i = data.data.length - 1; i > -1; i--) {
+          if (data.data[i].cur_unit === 'USD') {
+            setCookie(
+              'exchange_rate',
+              Number(data.data[i].bkpr.replace(',', '')),
+              { expires: expireDate },
+            );
+          }
+        }
+      });
+    }
+    getPlans();
+  }, [year, month, exchangeRate]);
 
   return (
     <>
@@ -122,10 +159,7 @@ export default function CalendarPage() {
                 setModal={setModal}
               />
             ) : (
-              <SalaryPlan
-                date={new Date(year, month, date)}
-                plans={salaryData}
-              />
+              <SalaryPlan date={new Date(year, month, date)} />
             )
           }
         />
@@ -133,28 +167,27 @@ export default function CalendarPage() {
       <CalendarPageContainer>
         <Navbar name="박유진" type="main" onClick={() => {}} />
         <CalendarTitle>
-          <YYMM
+          <YearMonth
             onClick={() => {
               onOpenModal('date');
             }}
           >
             {year}.{month + 1 < 10 ? '0' + (month + 1).toString() : month + 1}
-          </YYMM>
+          </YearMonth>
           <SalaryContainer>
             <GreenBar></GreenBar>
             <SalaryText>이번달 월급</SalaryText>
-            <Salary>402,000 원</Salary>
+            <Salary>{Math.floor(totalSalary).toLocaleString()} 원</Salary>
           </SalaryContainer>
         </CalendarTitle>
+
         <Calendar
-          type="month"
+          startDate={startDate}
+          datesCount={datesCount}
           year={year}
           month={month}
-          setMonth={setMonth}
-          date={date}
           setDate={setDate}
-          day={day}
-          plans={salaryData}
+          stockPlans={stockPlans}
           openModal={() => {
             onOpenModal('plan');
           }}

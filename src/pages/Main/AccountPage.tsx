@@ -6,7 +6,7 @@ import GreenBarTitle from '../../components/common/GreenBarTitle';
 import TotalPrice from '../../components/Main/TotalPrice';
 import GreenBtnSet from '../../components/Main/GreenBtnSet';
 import BottomUpModal from '../../components/common/Modal/BottomUpModal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import WithdrawDeposit from '../../components/Main/WithdrawDeposit';
 
 type LogType = 'deposit' | 'withdraw';
@@ -68,6 +68,7 @@ export default function AccountPage() {
   const navigate = useNavigate();
   const [modal, setModal] = useState<boolean>(false);
   const [modalType, setModalType] = useState<LogType>('deposit');
+  const [accountAmount, setAccountAmount] = useState<number>(0);
 
   function onClickDeposit() {
     setModal(true);
@@ -78,6 +79,10 @@ export default function AccountPage() {
     setModal(true);
     setModalType('withdraw');
   }
+
+  function getAccountAmount() {}
+
+  useEffect(() => {}, []);
 
   return (
     <>

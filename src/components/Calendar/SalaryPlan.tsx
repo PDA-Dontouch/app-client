@@ -1,14 +1,13 @@
 import tw, { styled } from 'twin.macro';
+import { CalendarStockPlanType } from '../../types/stocks_product';
+import { useEffect, useState } from 'react';
+import { calendarStockPlans, getExchangeRate } from '../../api/stocks';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
+import { useCookies } from 'react-cookie';
 
 type SalaryPlanProps = {
   date: Date;
-  plans: PlanDetailType[];
-};
-
-export type PlanDetailType = {
-  type: '배당' | '에너지' | '부동산';
-  name: string;
-  price: number;
 };
 
 const PlanContainer = styled.div`
@@ -44,7 +43,13 @@ const PlanDetail = styled.div`
   ${tw`w-full flex flex-row justify-between`}
 `;
 
-const PlanName = styled.div``;
+const PlanName = styled.div`
+  ${tw`w-4/5`}
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 10rem;
+`;
 
 const PlanPrice = styled.div``;
 
@@ -53,7 +58,46 @@ const TotalPrice = styled.div`
   text-align:right
 `;
 
-export default function SalaryPlan({ date, plans }: SalaryPlanProps) {
+export default function SalaryPlan({ date }: SalaryPlanProps) {
+  const [stockPlans, setStockPlans] = useState<CalendarStockPlanType[]>([]);
+  const token = useSelector((state: RootState) => state.user.token);
+  const newDate = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate() + 1,
+  );
+  const [exchangeRate, setExchangeRate] = useState<number>(0);
+
+  const [cookies, setCookie] = useCookies(['exchange_rate']);
+  const expireDate = new Date();
+  expireDate.setTime(expireDate.getTime() + 60 * 60 * 1000);
+
+  useEffect(() => {
+    calendarStockPlans({
+      token: token,
+      endDate: newDate,
+      startDate: newDate,
+    }).then((data) => {
+      setStockPlans(data.data.response);
+    });
+
+    if (cookies['exchange_rate']) {
+      setExchangeRate(cookies['exchange_rate']);
+    } else {
+      exchangeRate().then((data) => {
+        for (let i = data.data.length - 1; i > -1; i--) {
+          if (data.data[i].cur_unit === 'USD') {
+            setCookie(
+              'exchange_rate',
+              Number(data.data[i].bkpr.replace(',', '')),
+              { expires: expireDate },
+            );
+          }
+        }
+      });
+    }
+  }, []);
+
   return (
     <>
       <PlanContainer>
@@ -63,13 +107,19 @@ export default function SalaryPlan({ date, plans }: SalaryPlanProps) {
           {date.getDate()}
         </Today>
         <Plans>
-          {plans.map((plan, idx) => {
+          {stockPlans.map((plan, idx) => {
             return (
               <Plan key={idx}>
-                <PlanType>{plan.type}</PlanType>
+                <PlanType>주식</PlanType>
                 <PlanDetail>
                   <PlanName>{plan.name}</PlanName>
-                  <PlanPrice>{plan.price.toLocaleString()}원</PlanPrice>
+                  <PlanPrice>
+                    {'A' <= plan.symbol.charAt(0) &&
+                    plan.symbol.charAt(0) <= 'Z'
+                      ? (plan.dividend * exchangeRate).toLocaleString()
+                      : plan.dividend.toLocaleString()}
+                    원
+                  </PlanPrice>
                 </PlanDetail>
               </Plan>
             );
@@ -77,9 +127,16 @@ export default function SalaryPlan({ date, plans }: SalaryPlanProps) {
         </Plans>
         <TotalPrice>
           {'총 '}
-          {plans
-            .reduce((accumulator, currentValue) => {
-              return accumulator + currentValue.price;
+          {stockPlans
+            .reduce((accumulator, stock) => {
+              if (
+                'A' <= stock.symbol.charAt(0) &&
+                stock.symbol.charAt(0) <= 'Z'
+              ) {
+                return accumulator + stock.dividend * exchangeRate;
+              } else {
+                return accumulator + stock.dividend;
+              }
             }, 0)
             .toLocaleString()}
           {' 원'}

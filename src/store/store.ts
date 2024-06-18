@@ -3,6 +3,7 @@ import storage from 'redux-persist/lib/storage';
 import { persistReducer, persistStore } from 'redux-persist';
 import logger from 'redux-logger';
 import energyReducer from './reducers/energy/energy';
+import stocksReducer from "./reducers/stocks/stocks";
 import estatesReducer from './reducers/estates/estates';
 import userReducer from './reducers/auth/auth';
 
@@ -18,6 +19,7 @@ const rootReducer = combineReducers({
   user: userReducer,
   energy: energyReducer,
   estates: estatesReducer,
+  stocks: stocksReducer,
 });
 
 const persistedReducer = persistReducer(rootPersistConfig, rootReducer);

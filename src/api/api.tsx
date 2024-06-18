@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 export const BASE_URL = '/';
+export const STOCKS_BASE_URL = '/api/stocks';
 export const ESTATES_BASE_URL = '/api/estates';
 export const ENERGY_BASE_URL = '/api/energy';
 
@@ -17,5 +18,5 @@ export const estatesInstance = axios.create({
 });
 
 export const stockInstance = axios.create({
-  baseURL: BASE_URL + '/stocks',
+  baseURL: STOCKS_BASE_URL,
 });

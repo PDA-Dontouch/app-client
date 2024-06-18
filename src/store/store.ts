@@ -4,6 +4,7 @@ import { persistReducer, persistStore } from 'redux-persist';
 import logger from 'redux-logger';
 import energyReducer from './reducers/energy/energy';
 import estatesReducer from './reducers/estates/estates';
+import userReducer from './reducers/auth/auth';
 
 const rootPersistConfig = {
   key: 'root',
@@ -14,6 +15,7 @@ const rootPersistConfig = {
 const myMiddlewares = [logger];
 
 const rootReducer = combineReducers({
+  user: userReducer,
   energy: energyReducer,
   estates: estatesReducer,
 });

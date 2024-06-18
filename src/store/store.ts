@@ -6,6 +6,7 @@ import energyReducer from './reducers/energy/energy';
 import estatesReducer from './reducers/estates/estates';
 import individualStockSlice from './reducers/stocks/individualStock';
 import tradingReducer from './reducers/stocks/trading';
+import userReducer from './reducers/auth/auth';
 
 const tradingPersistConfig = {
   key: 'trading',
@@ -22,6 +23,7 @@ const rootPersistConfig = {
 const myMiddlewares = [logger];
 
 const rootReducer = combineReducers({
+  user: userReducer,
   energy: energyReducer,
   estates: estatesReducer,
   individualStock: individualStockSlice,

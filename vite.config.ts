@@ -23,6 +23,10 @@ export default defineConfig(({ mode }) => {
     ],
     server: {
       proxy: {
+        '/api/stocks': {
+          target: 'http://localhost:8082',
+          changeOrigin: true,
+        },
         '/api/estates': {
           target: 'http://localhost:8083',
           changeOrigin: true,
@@ -33,14 +37,15 @@ export default defineConfig(({ mode }) => {
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api\/energy/, ''),
         },
-        '/api/stocks': {
-          target: 'http://localhost:8082',
-          changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api\/stocks/, ''),
-        },
         '/api': {
           target: 'http://localhost:3000',
           changeOrigin: true,
+        },
+        '/api/exchangeRate': {
+          target:
+            'https://www.koreaexim.go.kr/site/program/financial/exchangeJSON',
+          changeOrigin: true,
+          rewrite: (path) => path.replace('/api/exchangeRate', ''),
         },
       },
     },

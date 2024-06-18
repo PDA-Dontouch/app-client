@@ -1,4 +1,7 @@
 import tw, { styled } from 'twin.macro';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
+import { depositWithdrawal } from '../../api/auth';
 
 type ModalType = {
   type: 'withdraw' | 'deposit';
@@ -41,6 +44,11 @@ const Confirm = styled.button`
 `;
 
 export default function WithdrawDeposit({ type, setModal }: ModalType) {
+  const user = useSelector((state: RootState) => state.user);
+  function getAccountAmount() {
+    // depositWithdrawal({userId: user.user.id, token : user.token, })
+  }
+
   function onSubmit() {
     setModal(false);
   }

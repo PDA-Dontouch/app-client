@@ -1,7 +1,7 @@
 import tw, { styled } from 'twin.macro';
 import ModalItem from '../../Modal/ModalItem';
 import Button, { StatusType } from '../../Button';
-import { useState } from 'react';
+import { SetStateAction, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../../../store/store';
 import { buyEstates } from '../../../../store/reducers/estates/buysell';
@@ -10,8 +10,9 @@ interface PurchaseProps {
   period: number;
   earningRate: number;
   btnType: StatusType;
-  estateFundId: number;
-  estateName: string;
+  onClick: () => void;
+  value: number;
+  setValue: React.Dispatch<SetStateAction<number>>;
 }
 
 type ActionPayload = {
@@ -42,21 +43,28 @@ const Purchase = ({
   period,
   earningRate,
   btnType,
-  estateFundId,
-  estateName,
+  onClick,
+  value,
+  setValue,
 }: PurchaseProps) => {
-  const dispatch = useDispatch<AppDispatch>();
-  const [value, setValue] = useState<number>(0);
+  const [error, setError] = useState<string | undefined>(undefined);
 
-  const clickBuyBtn = () => {
-    const data = {
-      userId: 12,
-      estateFundId: estateFundId,
-      inputCash: value,
-      estateName: estateName,
-      estateEarningRate: earningRate,
-    };
-    dispatch(buyEstates(data)).then((res) => console.log(res.payload));
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = event.target.value;
+    const numericValue = inputValue.replace(/[^0-9]/g, '');
+    const parsedValue = numericValue === '' ? 0 : parseInt(numericValue, 10);
+
+    if (isNaN(parsedValue)) {
+      setError('숫자만 입력 가능합니다.');
+      setValue(0);
+    }
+
+    if (parsedValue > 500) {
+      setError('최대 투자 금액은 500만원입니다.');
+    } else {
+      setError(undefined);
+      setValue(parsedValue);
+    }
   };
 
   return (
@@ -67,9 +75,9 @@ const Purchase = ({
           content={''}
           isModify={true}
           isStock={false}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-            setValue(parseInt(event.target.value))
-          }
+          value={value}
+          onChange={handleInputChange}
+          error={error}
         />
         <ModalItem
           title="투자 기간"
@@ -81,16 +89,18 @@ const Purchase = ({
         <ModalItem
           title="기대 수익"
           content={
-            (earningRate * value * 100)
-              .toString()
-              .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',') + '원'
+            value === 0
+              ? '0원'
+              : (earningRate * value * 100)
+                  .toString()
+                  .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',') + '원'
           }
           isModify={false}
           isStock={false}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {}}
         />
       </InfoItem>
-      <Button name="구매하기" status={btnType} onClick={clickBuyBtn} />
+      <Button name="구매하기" status={btnType} onClick={onClick} />
       <TextItem>
         <ModalText>구매 시 오픈 전까지 취소 가능합니다.</ModalText>
         <ModalText>금액 변경은 취소 후 다시 구매해주십시오.</ModalText>

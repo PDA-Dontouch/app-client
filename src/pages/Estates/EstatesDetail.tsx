@@ -18,6 +18,18 @@ import DetailInfo from '../../components/Estates/DetailInfo';
 import BasicInfo from '../../components/Estates/BasicInfo';
 import InvestPoint from '../../components/Estates/InvestPoint';
 import ExpertCheck from '../../components/Estates/ExpertCheck';
+import { estatesBuy } from '../../api/estates';
+
+interface BuyEstatesResponse {
+  data: {
+    success: boolean;
+    response: string | boolean;
+    error: {
+      errorMessage: string;
+      httpStatus: string;
+    } | null;
+  };
+}
 
 const Container = styled.div`
   ${tw`mt-14 pb-20 h-full overflow-y-scroll`}
@@ -39,13 +51,35 @@ const EstatesDetail = () => {
   const clickData = useSelector(
     (state: RootState) => state.estates.clickEstates,
   );
-  const { EstatesLikeArr, setLikeEstates, EnergyLikeArr, setLikeEnergy } =
-    useLike();
+  const { EstatesLikeArr, setLikeEstates } = useLike();
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [value, setValue] = useState<number>(0);
 
   useEffect(() => {
     dispatch(getEstatesData(parseInt(params.estates_id!)));
   }, []);
+
+  const clickBuyBtn = async () => {
+    const data = {
+      userId: 12,
+      estateFundId: clickData.id,
+      inputCash: value,
+      estateName: clickData.title,
+      estateEarningRate: clickData.earningRate,
+    };
+
+    try {
+      const response = await estatesBuy(data);
+      console.log(response);
+      if ((response as BuyEstatesResponse).data.success) {
+        navigate('/result/estate');
+      } else {
+        // 실패
+      }
+    } catch (error) {
+      console.error('Failed to buy estates', error);
+    }
+  };
 
   return (
     <>
@@ -88,9 +122,10 @@ const EstatesDetail = () => {
             <Purchase
               period={clickData.length}
               earningRate={clickData.earningRate}
-              btnType="estates"
-              estateFundId={clickData.id}
-              estateName={clickData.title}
+              btnType={value === 0 ? 'disabled' : 'estates'}
+              onClick={clickBuyBtn}
+              value={value}
+              setValue={setValue}
             />
           }
         />

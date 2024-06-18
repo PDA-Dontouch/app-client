@@ -8,26 +8,20 @@ import {
 import {
   EstatesList,
   clickEstates,
-  estatesDetail,
+  EstatesDetail,
   initialEstatesDetail,
 } from '../../../types/estates_product';
 
 interface EstatesState {
   estatesLike: number[];
   datas: EstatesList[];
-  detail: estatesDetail;
+  detail: EstatesDetail;
   clickEstates: EstatesList;
 }
 
-type ActionPayload = {
+type ActionPayload<T> = {
   data: {
-    response: EstatesList[];
-  };
-};
-
-type ActionPayloadDetail = {
-  data: {
-    response: estatesDetail;
+    response: T;
   };
 };
 
@@ -38,30 +32,30 @@ const initialState: EstatesState = {
   clickEstates: clickEstates,
 };
 
-export type estatesTypes = {
+export type EstatesTypes = {
   token: string;
   estates_id: number;
 };
 
-export const getEstatesDatas = createAsyncThunk<ActionPayload, void>(
+export const getEstatesDatas = createAsyncThunk(
   'estates/getDatas',
-  async (data, thunkAPI) => {
+  async () => {
     const response = await estatesDatas();
-    return response as ActionPayload;
+    return response as ActionPayload<EstatesList[]>;
   },
 );
 
-export const getEstatesData = createAsyncThunk<ActionPayloadDetail, number>(
+export const getEstatesData = createAsyncThunk(
   'estates/getData',
-  async (data: number, thunkAPI) => {
+  async (data: number) => {
     const response = await estatesData(data);
-    return response as ActionPayloadDetail;
+    return response as ActionPayload<EstatesDetail>;
   },
 );
 
 export const addLikeEstates = createAsyncThunk(
   'estates/like',
-  async (data: estatesTypes, thunkAPI) => {
+  async (data: EstatesTypes) => {
     const response = await estatesLike(data);
     return response;
   },
@@ -69,7 +63,7 @@ export const addLikeEstates = createAsyncThunk(
 
 export const delLikeEstates = createAsyncThunk(
   'estates/dislike',
-  async (data: estatesTypes, thunkAPI) => {
+  async (data: EstatesTypes) => {
     const response = await estatesDisLike(data);
     return response;
   },
@@ -77,33 +71,30 @@ export const delLikeEstates = createAsyncThunk(
 
 const estatesSlice = createSlice({
   name: 'estates',
-  initialState: initialState,
+  initialState,
   reducers: {
-    // setEstatesDatas: (state, action) => {
-    //   state.datas = action.payload;
-    // },
-    setEstatesLike: (state, action) => {
+    setEstatesLike: (state, action: PayloadAction<number>) => {
       state.estatesLike.push(action.payload);
     },
-    delEstatesLike: (state, action) => {
+    delEstatesLike: (state, action: PayloadAction<number>) => {
       state.estatesLike = state.estatesLike.filter(
         (el) => el !== action.payload,
       );
     },
-    setClickEstates: (state, action) => {
+    setClickEstates: (state, action: PayloadAction<EstatesList>) => {
       state.clickEstates = action.payload;
     },
   },
   extraReducers: (builder) => {
     builder.addCase(
       getEstatesDatas.fulfilled,
-      (state, action: PayloadAction<ActionPayload>) => {
+      (state, action: PayloadAction<ActionPayload<EstatesList[]>>) => {
         state.datas = action.payload.data.response;
       },
     );
     builder.addCase(
       getEstatesData.fulfilled,
-      (state, action: PayloadAction<ActionPayloadDetail>) => {
+      (state, action: PayloadAction<ActionPayload<EstatesDetail>>) => {
         state.detail = action.payload.data.response;
       },
     );

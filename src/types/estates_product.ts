@@ -11,7 +11,7 @@ export interface EstatesList {
   currentInvest: number;
 }
 
-export type estatesDetail = {
+export type EstatesDetail = {
   id: number;
   estateId: number;
   latitude: number;
@@ -65,7 +65,7 @@ export type estatesDetail = {
   category: string;
 };
 
-export const initialEstatesDetail = {
+export const initialEstatesDetail: EstatesDetail = {
   id: 0,
   estateId: 0,
   latitude: 0,
@@ -119,7 +119,7 @@ export const initialEstatesDetail = {
   category: '',
 };
 
-export const clickEstates = {
+export const clickEstates: EstatesList = {
   id: 0,
   earningRate: 0,
   length: 0,

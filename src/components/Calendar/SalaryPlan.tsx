@@ -1,10 +1,9 @@
 import tw, { styled } from 'twin.macro';
 import { CalendarStockPlanType } from '../../types/stocks_product';
 import { useEffect, useState } from 'react';
-import { calendarStockPlans, getExchangeRate } from '../../api/stocks';
+import { calendarStockPlans } from '../../api/stocks';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
-import { useCookies } from 'react-cookie';
 
 type SalaryPlanProps = {
   date: Date;
@@ -68,7 +67,6 @@ export default function SalaryPlan({ date }: SalaryPlanProps) {
   );
   const [exchangeRate, setExchangeRate] = useState<number>(0);
 
-  const [cookies, setCookie] = useCookies(['exchange_rate']);
   const expireDate = new Date();
   expireDate.setTime(expireDate.getTime() + 60 * 60 * 1000);
 
@@ -80,22 +78,6 @@ export default function SalaryPlan({ date }: SalaryPlanProps) {
     }).then((data) => {
       setStockPlans(data.data.response);
     });
-
-    if (cookies['exchange_rate']) {
-      setExchangeRate(cookies['exchange_rate']);
-    } else {
-      exchangeRate().then((data) => {
-        for (let i = data.data.length - 1; i > -1; i--) {
-          if (data.data[i].cur_unit === 'USD') {
-            setCookie(
-              'exchange_rate',
-              Number(data.data[i].bkpr.replace(',', '')),
-              { expires: expireDate },
-            );
-          }
-        }
-      });
-    }
   }, []);
 
   return (

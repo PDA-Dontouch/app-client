@@ -6,11 +6,10 @@ import SelectYearMonth from '../components/Calendar/SelectYearMonth';
 import Navbar from '../components/common/Navbar';
 import Footer from '../components/common/Footer';
 import SalaryPlan from '../components/Calendar/SalaryPlan';
-import { calendarStockPlans, getExchangeRate } from '../api/stocks';
+import { calendarStockPlans } from '../api/stocks';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { CalendarStockPlanType } from '../types/stocks_product';
-import { useCookies } from 'react-cookie';
 
 type ModalType = 'date' | 'plan';
 
@@ -74,7 +73,6 @@ export default function CalendarPage() {
   const [totalSalary, setTotalSalary] = useState<number>(0);
   const startDate = 1 - new Date(year, month, 1).getDay();
   const [exchangeRate, setExchangeRate] = useState<number>(0);
-  const [cookies, setCookie] = useCookies();
 
   const datesCount =
     new Date(year, month + 1, 0).getDate() +
@@ -126,21 +124,6 @@ export default function CalendarPage() {
   expireDate.setTime(expireDate.getTime() + 60 * 60 * 1000);
 
   useEffect(() => {
-    if (cookies['exchange_rate'] !== undefined) {
-      setExchangeRate(cookies['exchange_rate']);
-    } else {
-      getExchangeRate().then((data) => {
-        for (let i = data.data.length - 1; i > -1; i--) {
-          if (data.data[i].cur_unit === 'USD') {
-            setCookie(
-              'exchange_rate',
-              Number(data.data[i].bkpr.replace(',', '')),
-              { expires: expireDate },
-            );
-          }
-        }
-      });
-    }
     getPlans();
   }, [year, month, exchangeRate]);
 

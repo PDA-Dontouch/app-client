@@ -12,9 +12,8 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { CalendarStockPlanType } from '../../types/stocks_product';
 import SalaryPlan from '../../components/Calendar/SalaryPlan';
-import { calendarStockPlans, getExchangeRate } from '../../api/stocks';
+import { calendarStockPlans } from '../../api/stocks';
 import { investmentTypeToString } from '../../utils/investmentType';
-import { useCookies } from 'react-cookie';
 
 type TitleNameProps = {
   type: 'name' | 'nim';
@@ -154,13 +153,10 @@ export default function MainPage() {
   const [totalSalary, setTotalSalary] = useState<number>(0);
   const [exchangeRate, setExchangeRate] = useState<number>(0);
   const user = useSelector((state: RootState) => state.user);
-  const [cookies, setCookie] = useCookies(['exchange_rate']);
 
   const navigate = useNavigate();
 
   const startDate = today.getDate() - today.getDay();
-
-  const expireDate = new Date(Date.now() + 60 * 60 * 1000);
 
   const getPlans = useCallback(() => {
     calendarStockPlans({
@@ -196,25 +192,7 @@ export default function MainPage() {
       setStockPlans(data.data.response);
     });
 
-    if (cookies['exchange_rate'] !== undefined) {
-      setExchangeRate(cookies['exchange_rate']);
-    } else {
-      getExchangeRate().then((data) => {
-        for (let i = data.data.length - 1; i > -1; i--) {
-          if (data.data[i].cur_unit === 'USD') {
-            setCookie(
-              'exchange_rate',
-              Number(data.data[i].bkpr.replace(',', '')),
-              { expires: expireDate },
-            );
-          }
-          setExchangeRate(cookies['exchange_rate']);
-        }
-      });
-    }
-
     getPlans();
-    console.log(exchangeRate);
   }, [exchangeRate]);
 
   return (

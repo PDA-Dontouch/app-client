@@ -80,8 +80,6 @@ export default function AccountPage() {
     setModalType('withdraw');
   }
 
-  function getAccountAmount() {}
-
   useEffect(() => {}, []);
 
   return (
@@ -103,7 +101,7 @@ export default function AccountPage() {
         <AccountDetailSection>
           <GreenBarTitle text="입출금" />
           <AccountDetail>
-            <TotalPrice text="출금 가능 금액" price={6045200} />
+            <TotalPrice text="출금 가능 금액" price={accountAmount} />
             <GreenBtnSet
               leftColor="green"
               rightColor="white"

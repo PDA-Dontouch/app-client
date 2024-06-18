@@ -1,8 +1,8 @@
 import tw, { styled } from 'twin.macro';
-import { productDetail } from '../../types/product';
+import { estatesDetail } from '../../types/estates_product';
 
 interface PointProps {
-  data: productDetail;
+  data: estatesDetail;
 }
 
 const Container = styled.div`

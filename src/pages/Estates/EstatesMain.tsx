@@ -9,13 +9,7 @@ import Product from '../../components/common/Product/Product';
 import { AppDispatch, RootState } from '../../store/store';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  addLikeEstates,
-  delEstatesLike,
-  delLikeEstates,
-  getEstatesDatas,
-  setEstatesLike,
-} from '../../store/reducers/estates/estates';
+import { getEstatesDatas } from '../../store/reducers/estates/estates';
 import useLike from '../../hooks/useLike';
 
 const Container = styled.div`
@@ -60,7 +54,8 @@ const EstatesMain = () => {
     ? [...estatesDatas].sort((a, b) => b.earningRate - a.earningRate)
     : estatesDatas;
 
-  const { likeArr, setLike } = useLike('estates');
+  const { EstatesLikeArr, setLikeEstates, EnergyLikeArr, setLikeEnergy } =
+    useLike();
 
   return (
     <>
@@ -88,8 +83,8 @@ const EstatesMain = () => {
               <Product
                 isEstates={true}
                 data={item}
-                isLike={likeArr.includes(idx) ? true : false}
-                setIsLike={() => setLike(idx)}
+                isLike={EstatesLikeArr.includes(item.id) ? true : false}
+                setIsLike={() => setLikeEstates(item.id)}
               />
             </div>
           ))}

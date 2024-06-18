@@ -11,7 +11,7 @@ interface TextBoxProps {
 }
 
 const SearchContainer = styled.div`
-  ${tw`flex flex-row w-full justify-between items-center px-3 py-1 bg-white border-green border-solid border`}
+  ${tw`flex flex-row w-full justify-between items-center py-1 px-3 bg-white border-green border-solid border`}
   border-radius: 20px;
   box-sizing: border-box;
 `;

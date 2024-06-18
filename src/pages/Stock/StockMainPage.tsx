@@ -2,7 +2,6 @@ import React, { useEffect, useState} from 'react';
 import { AppDispatch, RootState } from '../../store/store';
 import { useDispatch,useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { useInView } from 'react-intersection-observer';
 import tw, { css, styled } from 'twin.macro';
 import Navbar from '../../components/common/Navbar';
 import Footer from '../../components/common/Footer';

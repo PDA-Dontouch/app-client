@@ -5,41 +5,34 @@ import {
   estatesDisLike,
   estatesLike,
 } from '../../../api/estates';
-import { initialDetail, productDetail } from '../../../types/product';
-
-export interface Products {
-  id: number;
-  earningRate: number;
-  length: number;
-  loanAmountBaseLtv: number;
-  sumOfInvestmentAndReservation: number;
-  title: string;
-  titleMainImageUrl: string;
-  totalAmountInvestments: number;
-}
+import {
+  EstatesList,
+  estatesDetail,
+  initialEstatesDetail,
+} from '../../../types/estates_product';
 
 interface EstatesState {
-  likes: number[];
-  datas: Products[];
-  detail: productDetail;
+  estatesLike: number[];
+  datas: EstatesList[];
+  detail: estatesDetail;
 }
 
 type ActionPayload = {
   data: {
-    response: Products[];
+    response: EstatesList[];
   };
 };
 
 type ActionPayloadDetail = {
   data: {
-    response: productDetail;
+    response: estatesDetail;
   };
 };
 
 const initialState: EstatesState = {
-  likes: [-1],
+  estatesLike: [-1],
   datas: [],
-  detail: initialDetail,
+  detail: initialEstatesDetail,
 };
 
 export type estatesTypes = {
@@ -87,10 +80,12 @@ const estatesSlice = createSlice({
     //   state.datas = action.payload;
     // },
     setEstatesLike: (state, action) => {
-      state.likes.push(action.payload);
+      state.estatesLike.push(action.payload);
     },
     delEstatesLike: (state, action) => {
-      state.likes = state.likes.filter((el) => el !== action.payload);
+      state.estatesLike = state.estatesLike.filter(
+        (el) => el !== action.payload,
+      );
     },
   },
   extraReducers: (builder) => {

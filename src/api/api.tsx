@@ -1,14 +1,17 @@
 import axios from 'axios';
 
 export const BASE_URL = '/';
+export const STOCKS_BASE_URL = '/api/stocks';
 export const ESTATES_BASE_URL = '/api/estates';
+export const ENERGY_BASE_URL = '/api/energy';
+
 
 export const authInstance = axios.create({
   baseURL: BASE_URL + '/users',
 });
 
 export const energyInstance = axios.create({
-  baseURL: BASE_URL + '/energy',
+  baseURL: ENERGY_BASE_URL,
 });
 
 export const estatesInstance = axios.create({
@@ -16,5 +19,5 @@ export const estatesInstance = axios.create({
 });
 
 export const stockInstance = axios.create({
-  baseURL: 'http://localhost:8082/api/stocks',
+  baseURL: STOCKS_BASE_URL,
 });

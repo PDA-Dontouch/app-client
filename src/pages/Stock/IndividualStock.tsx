@@ -11,6 +11,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
 import { getChartDetail } from '../../store/reducers/stocks/individualStock';
 import { useWebSocket } from '../../hooks/useWebSocket';
+import { useNavigate } from 'react-router-dom';
+import { setSelectedPrice } from '../../store/reducers/stocks/trading';
 
 const Container = styled.div`
   ${tw`h-full py-8 mt-14`}
@@ -64,8 +66,12 @@ const BtnContainer = styled.div`
 
 const IndividualStock = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const detail = useSelector(
     (state: RootState) => state.individualStock.detail,
+  );
+  const selectCode = useSelector(
+    (state: RootState) => state.trading.selectCode,
   );
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isSell, setIsSell] = useState<boolean>(false);
@@ -79,6 +85,8 @@ const IndividualStock = () => {
     dispatch(getChartDetail(data));
   }, []);
 
+  const { askPrice, nowPrice } = useWebSocket();
+
   const formatNumber = (num: number): string => {
     if (num >= 1e8) {
       const billion = num / 1e8;
@@ -89,11 +97,9 @@ const IndividualStock = () => {
     }
   };
 
-  console.log(detail);
-
   return (
     <>
-      <Navbar name="back" type="" onClick={() => {}} />
+      <Navbar name="back" type="" onClick={() => navigate('/stocks')} />
       <Container>
         <NameContainer>
           <SubName>
@@ -176,7 +182,15 @@ const IndividualStock = () => {
         />
       </BtnContainer>
       {isOpen && (
-        <TradingStock isSell={isSell} onClose={() => setIsOpen(false)} />
+        <TradingStock
+          isSell={isSell}
+          onClose={() => {
+            setIsOpen(false);
+            dispatch(setSelectedPrice('0'));
+          }}
+          nowPrice={nowPrice}
+          askPrice={askPrice}
+        />
       )}
     </>
   );

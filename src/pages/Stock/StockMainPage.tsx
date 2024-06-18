@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { AppDispatch } from '../../store/store';
-import { useDispatch } from 'react-redux';
+import { AppDispatch, RootState } from '../../store/store';
+import { useDispatch, useSelector } from 'react-redux';
 import tw, { css, styled } from 'twin.macro';
 import Navbar from '../../components/common/Navbar';
 import Footer from '../../components/common/Footer';
@@ -15,6 +15,9 @@ import {
   getStocksDatas,
   setStocksLike,
 } from '../../store/reducers/stocks/stocks';
+import { setSelectCode } from '../../store/reducers/stocks/trading';
+import { useNavigate } from 'react-router-dom';
+import { leaveRoom } from '../../store/webSocket/nowPrice';
 
 const stockData = {
   combination1: {
@@ -186,11 +189,15 @@ const SearchImage = styled.img`
 
 const StockMainPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'recommend' | 'individual'>(
     'recommend',
   );
   const [stockItems, setStockItems] = useState(stockList);
   const [likeStocks, setLikeStocks] = useState<string[]>([]);
+  const selectCode = useSelector(
+    (state: RootState) => state.trading.selectCode,
+  );
 
   useEffect(() => {
     dispatch(getStocksDatas());
@@ -209,6 +216,10 @@ const StockMainPage: React.FC = () => {
       dispatch(setStocksLike(stocks_id));
     }
   };
+
+  useEffect(() => {
+    leaveRoom(selectCode);
+  }, []);
 
   return (
     <MainContainer>
@@ -252,7 +263,13 @@ const StockMainPage: React.FC = () => {
             </SearchContainer>
             <ItemContainer>
               {stockItems.map((item, idx) => (
-                <div key={item.code}>
+                <div
+                  key={item.code}
+                  onClick={() => {
+                    dispatch(setSelectCode(item.code));
+                    navigate(`/stocks/${item.code}`);
+                  }}
+                >
                   <StockCard
                     data={item}
                     isLike={likeStocks.includes(item.code) ? true : false}

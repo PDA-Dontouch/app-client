@@ -36,7 +36,7 @@ export default defineConfig(({ mode }) => {
         '/api/stocks': {
           target: 'http://localhost:8082',
           changeOrigin: true,
-          // rewrite: (path) => path.replace(/^\/api\/stocks/, ''),
+          rewrite: (path) => path.replace(/^\/api\/stocks/, ''),
         },
         '/api': {
           target: 'http://localhost:3000',

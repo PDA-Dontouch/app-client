@@ -1,5 +1,5 @@
 import io from 'socket.io-client';
-import { PriceType } from '../../types/socket';
+import { PriceType, SocketType } from '../../types/socket';
 const SERVER_URL = 'http://localhost:3000';
 
 const socket = io(SERVER_URL);
@@ -24,8 +24,8 @@ export const subscribeNowPrice = (callback: (message: PriceType) => void) => {
   return () => socket.off('nowPrice');
 };
 
-export const subscribeAskPrice = (callback: (message: PriceType) => void) => {
-  socket.on('askPrice', (message: PriceType) => {
+export const subscribeAskPrice = (callback: (message: SocketType) => void) => {
+  socket.on('askPrice', (message: SocketType) => {
     callback(message);
   });
 

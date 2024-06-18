@@ -1,10 +1,11 @@
 import tw, { styled } from 'twin.macro';
 import Button from '../common/Button';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
 
 interface SellBuyProps {
   isSell: boolean;
-  clickPrice: string;
 }
 
 const Container = styled.div`
@@ -56,10 +57,13 @@ const SubText = styled.span`
   ${tw`text-sm`}
 `;
 
-const SellBuyStock = ({ isSell, clickPrice }: SellBuyProps) => {
+const SellBuyStock = ({ isSell }: SellBuyProps) => {
   const [price, setPrice] = useState<number>(0);
   const [amount, setAmount] = useState<number>(0);
   const [isSelect, setIsSelect] = useState<number>(0);
+  const selectPrice = useSelector(
+    (state: RootState) => state.trading.selectedPrice,
+  );
 
   const formatNumber = (num: number): string => {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -80,6 +84,14 @@ const SellBuyStock = ({ isSell, clickPrice }: SellBuyProps) => {
 
     if (!isNaN(numericValue)) {
       setAmount(numericValue);
+    }
+  };
+
+  const onSellBuy = () => {
+    if (amount === 0) {
+      alert('수량을 입력해주세요.');
+    } else {
+      alert('구매 완료');
     }
   };
 
@@ -107,9 +119,9 @@ const SellBuyStock = ({ isSell, clickPrice }: SellBuyProps) => {
           <Input
             disabled={isSelect === 1 ? true : false}
             value={
-              clickPrice === ''
+              selectPrice === '0'
                 ? '원'
-                : `${formatNumber(parseInt(clickPrice))}원`
+                : `${formatNumber(parseInt(selectPrice))}원`
             }
             onChange={handlePriceChange}
           />
@@ -125,12 +137,12 @@ const SellBuyStock = ({ isSell, clickPrice }: SellBuyProps) => {
       <BtnContainer>
         <TextContainer>
           <SubText>주문금액</SubText>
-          <MainText>{formatNumber(price * amount)}원</MainText>
+          <MainText>{formatNumber(parseInt(selectPrice) * amount)}원</MainText>
         </TextContainer>
         <Button
           name={isSell ? '매도' : '매수'}
           status={isSell ? 'stock_sell' : 'stock_purchase'}
-          onClick={() => {}}
+          onClick={onSellBuy}
         />
       </BtnContainer>
     </Container>

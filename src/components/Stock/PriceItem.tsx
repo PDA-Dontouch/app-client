@@ -1,14 +1,13 @@
-import { useState } from 'react';
 import tw, { styled } from 'twin.macro';
 
 interface PriceItemProps {
   price: string;
   nowPrice: string;
-  isSelected: boolean;
   onPriceSelect: (price: string) => void;
   backgroundColor: string;
   textColor: string;
   amount: number;
+  selectedPrice: string;
 }
 
 const PriceContainer = styled.div<{
@@ -29,26 +28,25 @@ const AmountText = tw.span`text-[0.7rem]`;
 const PriceItem = ({
   price,
   nowPrice,
-  isSelected,
   onPriceSelect,
   backgroundColor,
   textColor,
   amount,
+  selectedPrice,
 }: PriceItemProps) => {
-  const [isSelect, setIsSelect] = useState<boolean>(false);
+  const isSelected = price.toString() === selectedPrice?.toString();
+
   return (
     <PriceContainer
       // onClick={() => onPriceSelect(price)}
       onClick={() => {
-        setIsSelect((prev) => !prev);
         onPriceSelect(price);
       }}
       backgroundColor={backgroundColor}
       border={price === nowPrice ? '1px solid #000' : ''}
       cursor="pointer"
     >
-      {/* {isSelected && <SelectedIndicator />} */}
-      {isSelect && <SelectedIndicator />}
+      {isSelected && <SelectedIndicator />}
       {price !== '' && (
         <>
           <PriceText>{price.toLocaleString()}</PriceText>

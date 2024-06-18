@@ -5,11 +5,18 @@ import logger from 'redux-logger';
 import energyReducer from './reducers/energy/energy';
 import estatesReducer from './reducers/estates/estates';
 import individualStockSlice from './reducers/stocks/individualStock';
+import tradingReducer from './reducers/stocks/trading';
+
+const tradingPersistConfig = {
+  key: 'trading',
+  storage: storage,
+  whitelist: ['selectCode'],
+};
 
 const rootPersistConfig = {
   key: 'root',
   storage: storage,
-  whitelist: [],
+  whitelist: ['trading'],
 };
 
 const myMiddlewares = [logger];
@@ -18,6 +25,7 @@ const rootReducer = combineReducers({
   energy: energyReducer,
   estates: estatesReducer,
   individualStock: individualStockSlice,
+  trading: persistReducer(tradingPersistConfig, tradingReducer),
 });
 
 const persistedReducer = persistReducer(rootPersistConfig, rootReducer);

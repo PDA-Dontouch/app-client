@@ -1,54 +1,24 @@
 import tw, { css, styled } from 'twin.macro';
-import PriceItem from './PriceItem';
 import SellBuyStock from './SellBuyStock';
 
 import Close from '../../assets/close.svg';
 import { useState } from 'react';
-import { useWebSocket } from '../../hooks/useWebSocket';
+import PriceBook from './PriceBook';
+import { PriceType, SocketType } from '../../types/socket';
 
 interface TradingProps {
   isSell: boolean;
   onClose: () => void;
+  nowPrice: PriceType;
+  askPrice: SocketType;
 }
-
-interface ItemProps {
-  handlePriceSelect: (price: string) => void;
-}
-
-const SellItem = ({ handlePriceSelect }: ItemProps) => {
-  return (
-    <PriceItem
-      price={'20000'}
-      nowPrice={'100000'}
-      isSelected={false}
-      onPriceSelect={handlePriceSelect}
-      backgroundColor="#E7F0FD"
-      textColor="#015FFF"
-      amount={200}
-    />
-  );
-};
-
-const PurchaseItem = ({ handlePriceSelect }: ItemProps) => {
-  return (
-    <PriceItem
-      price={'20000'}
-      nowPrice={'100000'}
-      isSelected={false}
-      onPriceSelect={handlePriceSelect}
-      backgroundColor="#FDE8E7"
-      textColor="red"
-      amount={200}
-    />
-  );
-};
 
 const Container = styled.div`
   ${tw`flex justify-between`}
 `;
 
 const ItemBox = styled.div`
-  ${tw`flex flex-col`}
+  ${tw`flex flex-col h-[600px]`}
 `;
 
 const BackDrop = styled.div`
@@ -78,14 +48,16 @@ const ItemContainer = styled.div`
   ${tw`px-5 flex justify-end`}
 `;
 
-const TradingStock = ({ isSell, onClose }: TradingProps) => {
+const TradingStock = ({
+  isSell,
+  onClose,
+  nowPrice,
+  askPrice,
+}: TradingProps) => {
   const [clickPrice, setClickPrice] = useState<string>('');
   const handlePriceSelect = (price: string) => {
     setClickPrice(price);
   };
-
-  const { nowPrice, askPrice } = useWebSocket();
-  console.log(askPrice);
 
   return (
     <>
@@ -96,22 +68,9 @@ const TradingStock = ({ isSell, onClose }: TradingProps) => {
         </ItemContainer>
         <Container>
           <ItemBox>
-            <SellItem handlePriceSelect={handlePriceSelect} />
-            <SellItem handlePriceSelect={handlePriceSelect} />
-            <SellItem handlePriceSelect={handlePriceSelect} />
-            <SellItem handlePriceSelect={handlePriceSelect} />
-            <SellItem handlePriceSelect={handlePriceSelect} />
-            <SellItem handlePriceSelect={handlePriceSelect} />
-            <SellItem handlePriceSelect={handlePriceSelect} />
-            <PurchaseItem handlePriceSelect={handlePriceSelect} />
-            <PurchaseItem handlePriceSelect={handlePriceSelect} />
-            <PurchaseItem handlePriceSelect={handlePriceSelect} />
-            <PurchaseItem handlePriceSelect={handlePriceSelect} />
-            <PurchaseItem handlePriceSelect={handlePriceSelect} />
-            <PurchaseItem handlePriceSelect={handlePriceSelect} />
-            <PurchaseItem handlePriceSelect={handlePriceSelect} />
+            <PriceBook nowPrice={nowPrice} askPrice={askPrice} />
           </ItemBox>
-          <SellBuyStock isSell={isSell} clickPrice={clickPrice} />
+          <SellBuyStock isSell={isSell} />
         </Container>
       </ModalContainer>
     </>

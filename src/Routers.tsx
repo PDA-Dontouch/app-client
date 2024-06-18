@@ -26,11 +26,11 @@ export default function Routers() {
       <Route path="/estates" element={<EstatesMain />} />
       <Route path="/estates/:estates_id" element={<EstatesDetail />} />
       <Route path="/stocks" element={<StockMainPage />} />
+      <Route path="/stocks/:stock_id" element={<IndividualStock />} />
       <Route path="/calendar" element={<CalendarPage />} />
       <Route path="/result/:type" element={<TransactionResult />} />
       <Route path="/asset-input" element={<AssetInput />} />
       <Route path="/" element={<MainPage />} />
-      <Route path="/chart" element={<IndividualStock />} />
       <Route path="/account" element={<AccountPage />} />
       <Route path="/products/held" element={<ProductsHeldPage />} />
       <Route path="/products/like" element={<ProductsLikePage />} />

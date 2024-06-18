@@ -12,28 +12,30 @@ import {
   subscribeNowPrice,
   subscribeAskPrice,
 } from '../store/webSocket/nowPrice.ts';
-import { PriceType } from '../types/socket.ts';
+import { PriceType, SocketType } from '../types/socket.ts';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store.ts';
 
 interface WebSocketData {
-  askPrice: PriceType;
+  askPrice: SocketType;
   nowPrice: PriceType;
   ready: boolean;
 }
 
 const useWebSocketConnection = () => {
-  const [askPrice, setAskPrice] = useState<PriceType>({
-    response: {
+  const [askPrice, setAskPrice] = useState<SocketType>({
+    message: {
       code: '',
       time: '',
-      close: '',
-      open: '',
-      high: '',
-      low: '',
+      sellPrice: [],
+      buyPrice: [],
+      sellAmount: [],
+      buyAmount: [],
     },
   });
 
   const [nowPrice, setNowPrice] = useState<PriceType>({
-    response: {
+    message: {
       code: '',
       time: '',
       close: '',
@@ -42,23 +44,23 @@ const useWebSocketConnection = () => {
       low: '',
     },
   });
-  // const before = useSelector((state) => state.company.data[0]?.code);
-  // const now = useSelector((state) => state.company.data[1]?.code);
+  // const before = useSelector((state: RootState) => state.trading.selectCode[0]);
+  const now = useSelector((state: RootState) => state.trading.selectCode);
+
+  useEffect(() => {
+    // leaveRoom(before);
+    joinRoom(now);
+    // setNowPrice(null);
+  }, [now]);
 
   // useEffect(() => {
   //   leaveRoom(before);
   //   joinRoom(now);
-  //   setNowPrice(null);
-  // }, [before, now]);
+  //   // setNowPrice(null);
+  // }, []);
 
   useEffect(() => {
-    // leaveRoom('005930');
-    joinRoom('005930');
-    // setNowPrice(null);
-  }, []);
-
-  useEffect(() => {
-    const settingAskPrice = subscribeAskPrice((askPriceMessage: PriceType) => {
+    const settingAskPrice = subscribeAskPrice((askPriceMessage: SocketType) => {
       setAskPrice(askPriceMessage);
     });
 

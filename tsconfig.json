@@ -18,7 +18,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
 
-    "types": ["kakao.maps.d.ts"]
+    //"types": ["kakao.maps.d.ts"]
   },
   "include": ["src", "types"],
   "references": [{ "path": "./tsconfig.node.json" }]

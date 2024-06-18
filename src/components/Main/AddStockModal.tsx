@@ -1,7 +1,11 @@
 import tw, { styled } from 'twin.macro';
 import SearchBar from '../common/Stock/SearchBar';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import AddStock from './AddStock';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
+import { stocksDatas } from '../../api/stocks';
+import { StockDataResultType } from '../../types/stocks_product';
 
 type ProductsHeldPageProps = {
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -75,10 +79,32 @@ export default function AddStockModal({ setModal }: ProductsHeldPageProps) {
   const [status, setStatus] = useState<'search' | 'add'>('search');
   const [price, setPrice] = useState<number>();
   const [amount, setAmount] = useState<number>();
+  const [page, setPage] = useState<number>(0);
   const [selectedStock, setSelectedStock] = useState<SelectedStockType>({
     code: '',
     name: '',
   });
+  const [searchResult, setSearchResult] = useState<StockDataResultType[]>([]);
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const scrollStdRef = useRef<HTMLDivElement>(null);
+
+  const user = useSelector((state: RootState) => state.user);
+
+  function getSearchResult(searchTerm: string) {
+    stocksDatas({
+      userInvestmentType: user.user.investmentType,
+      safeScore: user.user.safeScore,
+      dividendScore: user.user.dividendScore,
+      growthScore: user.user.growthScore,
+      dividendMonth: null,
+      page: page,
+      size: 10,
+    }).then((data) => {
+      setPage(page + 1);
+      setSearchResult(searchResult.concat(data.data.response));
+    });
+  }
 
   function onClickHandler(code: string, name: string) {
     setStatus('add');
@@ -89,40 +115,40 @@ export default function AddStockModal({ setModal }: ProductsHeldPageProps) {
     setModal(false);
   }
 
+  function onScrollHandler() {
+    if (scrollRef.current && scrollStdRef.current) {
+      const stdRef = scrollStdRef.current.getBoundingClientRect();
+      const sRef = scrollRef.current.getBoundingClientRect();
+
+      if (stdRef.bottom >= sRef.bottom - 100) {
+        getSearchResult(searchTerm);
+      }
+    }
+  }
+
   useEffect(() => {
-    console.log(searchTerm);
-  });
+    getSearchResult(searchTerm);
+  }, []);
 
   return (
     <>
       {status === 'search' ? (
         <AddStockModalContainer>
           <SearchBar modal={true} setSearchTerm={setSearchTerm} />
-          <SearchResult>
-            <AddStock
-              type="add"
-              code="005930"
-              name="삼성전자"
-              onClick={onClickHandler}
-            />
-            <AddStock
-              type="add"
-              code="005930"
-              name="삼성전자"
-              onClick={() => {}}
-            />
-            <AddStock
-              type="add"
-              code="005930"
-              name="삼성전자"
-              onClick={() => {}}
-            />
-            <AddStock
-              type="add"
-              code="005930"
-              name="삼성전자"
-              onClick={() => {}}
-            />
+          <SearchResult ref={scrollStdRef} onScroll={onScrollHandler}>
+            {searchResult.map((data, idx) => {
+              return (
+                <div key={idx}>
+                  <AddStock
+                    type="add"
+                    code={data.symbol.replace(/\.ks$/, '')}
+                    name={data.name}
+                    onClick={onClickHandler}
+                  />
+                </div>
+              );
+            })}
+            <div ref={scrollRef}></div>
           </SearchResult>
         </AddStockModalContainer>
       ) : (

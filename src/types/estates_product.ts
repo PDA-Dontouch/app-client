@@ -131,3 +131,11 @@ export const clickEstates = {
   eightCreditGrade: '',
   currentInvest: 0,
 };
+
+export type BuyType = {
+  userId: number;
+  estateFundId: number;
+  inputCash: number;
+  estateName: string;
+  estateEarningRate: number;
+};

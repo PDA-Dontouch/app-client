@@ -1,4 +1,5 @@
 import { estatesTypes } from '../store/reducers/estates/estates';
+import { BuyType } from '../types/estates_product';
 import { estatesInstance } from './api';
 
 export const estate_url = `/api/estates`;
@@ -38,6 +39,16 @@ export const estatesDisLike = async (data: estatesTypes) => {
     const response = await estatesInstance.delete(estate_url + '/like', {
       data: data,
     });
+    return response;
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
+};
+
+export const estatesBuy = async (data: BuyType) => {
+  try {
+    const response = await estatesInstance.post(estate_url + '/buy', data);
     return response;
   } catch (err) {
     console.error(err);

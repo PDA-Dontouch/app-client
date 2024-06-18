@@ -68,8 +68,16 @@ const EstatesDetail = () => {
           setIsLike={() => setLikeEstates(detail.id)}
         />
         <Button
-          name="구매하기"
-          status="estates"
+          name={
+            clickData.currentInvest === clickData.totalAmountInvestments
+              ? '모집이 완료되었습니다.'
+              : '구매하기'
+          }
+          status={
+            clickData.currentInvest === clickData.totalAmountInvestments
+              ? 'disabled'
+              : 'estates'
+          }
           onClick={() => setIsOpen(true)}
         />
       </BtnContainer>
@@ -79,8 +87,10 @@ const EstatesDetail = () => {
           content={
             <Purchase
               period={clickData.length}
-              profit={200000}
+              earningRate={clickData.earningRate}
               btnType="estates"
+              estateFundId={clickData.id}
+              estateName={clickData.title}
             />
           }
         />

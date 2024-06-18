@@ -98,7 +98,7 @@ const EstatesMain = () => {
           <SortButton
             isEstates={true}
             isSelect={!sortByProfit}
-            title="최신순"
+            title="등급순"
             onClick={() => setSortByProfit(false)}
           />
           <SortButton

@@ -1,12 +1,26 @@
 import tw, { styled } from 'twin.macro';
 import ModalItem from '../../Modal/ModalItem';
 import Button, { StatusType } from '../../Button';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../../../store/store';
+import { buyEstates } from '../../../../store/reducers/estates/buysell';
 
 interface PurchaseProps {
   period: number;
-  profit: number;
+  earningRate: number;
   btnType: StatusType;
+  estateFundId: number;
+  estateName: string;
 }
+
+type ActionPayload = {
+  payload: {
+    data: {
+      response: boolean;
+    };
+  };
+};
 
 const InfoContainer = styled.div`
   ${tw`w-full flex flex-col gap-6`}
@@ -24,33 +38,59 @@ const ModalText = styled.span`
   ${tw`text-xs text-black40`}
 `;
 
-const Purchase = ({ period, profit, btnType }: PurchaseProps) => {
+const Purchase = ({
+  period,
+  earningRate,
+  btnType,
+  estateFundId,
+  estateName,
+}: PurchaseProps) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const [value, setValue] = useState<number>(0);
+
+  const clickBuyBtn = () => {
+    const data = {
+      userId: 12,
+      estateFundId: estateFundId,
+      inputCash: value,
+      estateName: estateName,
+      estateEarningRate: earningRate,
+    };
+    dispatch(buyEstates(data)).then((res) => console.log(res.payload));
+  };
+
   return (
     <InfoContainer>
       <InfoItem>
         <ModalItem
           title="투자 금액"
-          content=""
+          content={''}
           isModify={true}
           isStock={false}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+            setValue(parseInt(event.target.value))
+          }
         />
         <ModalItem
           title="투자 기간"
           content={period + '개월'}
           isModify={false}
           isStock={false}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {}}
         />
         <ModalItem
           title="기대 수익"
           content={
-            profit.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',') +
-            '원'
+            (earningRate * value * 100)
+              .toString()
+              .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',') + '원'
           }
           isModify={false}
           isStock={false}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {}}
         />
       </InfoItem>
-      <Button name="구매하기" status={btnType} onClick={() => {}} />
+      <Button name="구매하기" status={btnType} onClick={clickBuyBtn} />
       <TextItem>
         <ModalText>구매 시 오픈 전까지 취소 가능합니다.</ModalText>
         <ModalText>금액 변경은 취소 후 다시 구매해주십시오.</ModalText>

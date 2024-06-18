@@ -1,10 +1,12 @@
-import tw, { styled } from "twin.macro";
+import { SetStateAction } from 'react';
+import tw, { styled } from 'twin.macro';
 
 interface ItemProps {
   title: string;
   content: string | number;
   isModify: boolean;
   isStock: boolean;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const Container = styled.div`
@@ -19,20 +21,28 @@ const Input = styled.input`
   ${tw`w-[50px] bg-gray-light border-0 border-solid border-b border-gray-dark focus:outline-none text-base text-end`}
 `;
 
-const MainText = styled.span`${tw`text-sm`}`;
+const MainText = styled.span`
+  ${tw`text-sm`}
+`;
 
-const ModalItem = ({ title, content, isModify, isStock }: ItemProps) => {
+const ModalItem = ({
+  title,
+  content,
+  isModify,
+  isStock,
+  onChange,
+}: ItemProps) => {
   return (
     <Container>
       <MainText>{title}</MainText>
-      {isModify ?
+      {isModify ? (
         <Item>
-          <Input defaultValue={0} />
+          <Input defaultValue={0} onChange={onChange} />
           {isStock ? <MainText>주</MainText> : <MainText>만원</MainText>}
         </Item>
-      :
+      ) : (
         <MainText>{content}</MainText>
-      }
+      )}
     </Container>
   );
 };

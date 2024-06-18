@@ -14,12 +14,15 @@ import {
   MouseCoordinateX,
   MouseCoordinateY,
 } from 'react-financial-charts';
-import { initialData } from './data';
 import { ChartData } from '../../types/individual_stock';
 import { useEffect } from 'react';
 import { PriceType } from '../../types/socket';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../store/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../store/store';
+import {
+  getChartDatas,
+  setLiveData,
+} from '../../store/reducers/stocks/individualStock';
 
 interface ChartProps {
   nowPrice: PriceType;
@@ -27,16 +30,42 @@ interface ChartProps {
 
 const StockChart = ({ nowPrice }: ChartProps) => {
   const dispatch = useDispatch<AppDispatch>();
-  // useEffect(() => {
-  //   const today = new Date();
-  //   const formattedDate = today.toISOString().slice(0, 10).replace(/-/g, '');
+  const chartData = useSelector(
+    (state: RootState) => state.individualStock.chartData.prices,
+  );
 
-  //   if (nowPrice) {
-  //     // setUpNum(parseFloat(nowPrice.message.close) - parseFloat(dataList[dataList.length - 2].close))
-  //     nowPrice.message['time'] = formattedDate;
-  //     dispatch(setLiveData(nowPrice.message));
-  //   }
-  // }, [nowPrice]);
+  // useEffect(() => {
+  //   const data = {
+  //     exchange: 'KSC',
+  //     stockId: 5,
+  //     month: 30,
+  //     interval: 5,
+  //   };
+  //   dispatch(getChartDatas(data));
+  // }, []);
+
+  console.log(chartData);
+  useEffect(() => {
+    const today = new Date();
+    const formattedDate = today.toISOString().slice(0, 10).replace(/-/g, '');
+
+    if (nowPrice) {
+      // setUpNum(parseFloat(nowPrice.message.close) - parseFloat(dataList[dataList.length - 2].close))
+      nowPrice.message['time'] = formattedDate;
+      const liveData = {
+        data: {
+          response: {
+            date: nowPrice.message.time,
+            open: parseInt(nowPrice.message.open),
+            high: parseInt(nowPrice.message.high),
+            low: parseInt(nowPrice.message.low),
+            close: parseInt(nowPrice.message.close),
+          },
+        },
+      };
+      dispatch(setLiveData(liveData));
+    }
+  }, [nowPrice]);
 
   const ScaleProvider =
     discontinuousTimeScaleProviderBuilder().inputDateAccessor(
@@ -47,7 +76,7 @@ const StockChart = ({ nowPrice }: ChartProps) => {
   const margin = { left: 0, right: 48, top: 0, bottom: 24 };
 
   const { data, xScale, xAccessor, displayXAccessor } =
-    ScaleProvider(initialData);
+    ScaleProvider(chartData);
   const pricesDisplayFormat = format('.2f');
 
   const x_max = xAccessor(data[data.length - 1]);
@@ -112,7 +141,7 @@ const StockChart = ({ nowPrice }: ChartProps) => {
         xExtents={xExtents}
         zoomAnchor={lastVisibleItemBasedZoomAnchor}
       >
-        <Chart
+        {/* <Chart
           id={2}
           height={barChartHeight}
           origin={barChartOrigin}
@@ -133,7 +162,7 @@ const StockChart = ({ nowPrice }: ChartProps) => {
             strokeStyle="#BABABA"
           />
           <BarSeries fillStyle={volumeColor} yAccessor={volumeSeries} />
-        </Chart>
+        </Chart> */}
 
         <Chart
           id={1}

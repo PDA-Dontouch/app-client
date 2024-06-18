@@ -7,7 +7,15 @@ const initialState = {
     exchange: '',
     stock_id: 0,
     symbol: '',
-    close_prices: [],
+    prices: [
+      {
+        date: '2024-06-17',
+        open: 79200,
+        high: 79500,
+        low: 78000,
+        close: 78100,
+      },
+    ],
   },
   detail: {
     basic_info: {
@@ -36,10 +44,18 @@ const initialState = {
 };
 
 interface ChartData {
-  exchange: string;
-  stock_id: number;
-  symbol: string;
-  close_prices: [];
+  exchange: '';
+  stock_id: 0;
+  symbol: '';
+  prices: [
+    {
+      date: '';
+      open: 0;
+      high: 0;
+      low: 0;
+      close: 0;
+    },
+  ];
 }
 
 interface DetailData {
@@ -50,6 +66,20 @@ interface DetailData {
 type ActionPayload = {
   data: {
     response: ChartData;
+  };
+};
+
+type ActionType = {
+  payload: {
+    data: {
+      response: {
+        date: string;
+        open: number;
+        high: number;
+        low: number;
+        close: number;
+      };
+    };
   };
 };
 
@@ -79,10 +109,10 @@ const individualStockSlice = createSlice({
   name: 'individual_stocks',
   initialState: initialState,
   reducers: {
-    // setLiveData(state, action) {
-    //   state.chartData.close_prices.pop();
-    //   state.chartData.close_prices.push(action.payload);
-    // },
+    setLiveData(state, action: ActionType) {
+      state.chartData.prices.pop();
+      state.chartData.prices.push(action.payload.data.response);
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getChartDatas.fulfilled, (state, action) => {
@@ -93,5 +123,7 @@ const individualStockSlice = createSlice({
     });
   },
 });
+
+export const { setLiveData } = individualStockSlice.actions;
 
 export default individualStockSlice.reducer;

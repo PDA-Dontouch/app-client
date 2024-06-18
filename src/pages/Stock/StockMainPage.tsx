@@ -18,6 +18,8 @@ import {
   getStocksDatas,
   setStocksLike,
 } from '../../store/reducers/stocks/stocks';
+import { joinRoom, leaveRoom } from '../../store/webSocket/nowPrice';
+import { setSelectCode } from '../../store/reducers/stocks/trading';
 
 const stockData = {
   combination1: {
@@ -160,8 +162,6 @@ const StockMainPage: React.FC = () => {
     dispatch(getStocksDatas(requestData));
   }, []);
 
-  console.log(stockList);
-
   const filteredList = stockList.filter(
     (stock) =>
       stock.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -216,7 +216,14 @@ const StockMainPage: React.FC = () => {
             <SortType>추천 종목순</SortType>
             <ItemContainer>
               {filteredList.map((item, idx) => (
-                <div key={idx}>
+                <div
+                  key={idx}
+                  onClick={() => {
+                    setSelectCode(item.symbol);
+                    joinRoom(item.symbol);
+                    navigate(`/stocks/${item.id}`);
+                  }}
+                >
                   <StockCard
                     data={item}
                     isLike={likeStocks.includes(item.id) ? true : false}

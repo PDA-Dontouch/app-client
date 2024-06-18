@@ -13,6 +13,7 @@ import { getDetail } from '../../store/reducers/stocks/individualStock';
 import { useWebSocket } from '../../hooks/useWebSocket';
 import { useNavigate } from 'react-router-dom';
 import { setSelectedPrice } from '../../store/reducers/stocks/trading';
+import { leaveRoom } from '../../store/webSocket/nowPrice';
 
 const Container = styled.div`
   ${tw`h-full py-8 mt-14`}
@@ -99,7 +100,14 @@ const IndividualStock = () => {
 
   return (
     <>
-      <Navbar name="back" type="" onClick={() => navigate('/stocks')} />
+      <Navbar
+        name="back"
+        type=""
+        onClick={() => {
+          leaveRoom(selectCode);
+          navigate('/stocks');
+        }}
+      />
       <Container>
         <NameContainer>
           <SubName>

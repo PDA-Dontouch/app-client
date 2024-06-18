@@ -43,7 +43,7 @@ export default function Routers() {
       <Route path="/estates" element={<EstatesMain />} />
       <Route path="/estates/:estates_id" element={<EstatesDetail />} />
       <Route path="/stocks" element={<StockMainPage />} />
-      <Route path="/stocks/:stock_id" element={<IndividualStock />} />
+      <Route path="/stocks/:id" element={<IndividualStock />} />
       <Route path="/stocks/detail" element={<StockDetailPage />} />
       <Route path="/calendar" element={<CalendarPage />} />
       <Route path="/result/:type" element={<TransactionResult />} />

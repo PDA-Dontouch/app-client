@@ -9,16 +9,10 @@ import individualStockSlice from './reducers/stocks/individualStock';
 import tradingReducer from './reducers/stocks/trading';
 import userReducer from './reducers/auth/auth';
 
-const tradingPersistConfig = {
-  key: 'trading',
-  storage: storage,
-  whitelist: ['selectCode'],
-};
-
 const rootPersistConfig = {
   key: 'root',
   storage: storage,
-  whitelist: ['trading'],
+  whitelist: [],
 };
 
 const myMiddlewares = [logger];
@@ -28,7 +22,7 @@ const rootReducer = combineReducers({
   energy: energyReducer,
   estates: estatesReducer,
   individualStock: individualStockSlice,
-  trading: persistReducer(tradingPersistConfig, tradingReducer),
+  trading: tradingReducer,
   stocks: stocksReducer,
 });
 

@@ -13,17 +13,16 @@ import {
   EdgeIndicator,
   MouseCoordinateX,
   MouseCoordinateY,
-  CurrentCoordinate,
 } from 'react-financial-charts';
-import { ChartData } from '../../types/individual_stock';
+import { ChartData } from '../../../types/individual_stock';
 import { useEffect, useState } from 'react';
-import { PriceType } from '../../types/socket';
+import { PriceType } from '../../../types/socket';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../store/store';
+import { AppDispatch, RootState } from '../../../store/store';
 import {
   getChartDatas,
   setLiveData,
-} from '../../store/reducers/stocks/individualStock';
+} from '../../../store/reducers/stocks/individualStock';
 
 interface ChartProps {
   nowPrice: PriceType;
@@ -35,8 +34,6 @@ const StockChart = ({ nowPrice }: ChartProps) => {
     (state: RootState) => state.individualStock.chartData.prices,
   );
 
-  const [displayData, setDisplayData] = useState<ChartData[]>([]);
-
   useEffect(() => {
     const data = {
       exchange: 'KSC',
@@ -46,13 +43,6 @@ const StockChart = ({ nowPrice }: ChartProps) => {
     };
     dispatch(getChartDatas(data));
   }, [dispatch]);
-
-  useEffect(() => {
-    if (chartData.length > 0) {
-      const oneMonthData = chartData.slice(-30); // 최근 1개월치 데이터 선택
-      setDisplayData(oneMonthData);
-    }
-  }, [chartData]);
 
   useEffect(() => {
     const today = new Date();
@@ -124,8 +114,8 @@ const StockChart = ({ nowPrice }: ChartProps) => {
 
   const volumeColor = (data: ChartData) => {
     return data?.close > data?.open
-      ? 'rgba(239, 83, 80, 0.3)'
-      : 'rgba(38, 166, 154, 0.3)';
+      ? 'rgba(239, 83, 80, 0.6)'
+      : 'rgba(38, 166, 154, 0.6)';
   };
 
   const volumeSeries = (data: ChartData) => {

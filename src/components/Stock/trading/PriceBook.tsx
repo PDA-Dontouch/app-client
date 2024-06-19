@@ -5,11 +5,11 @@ import PriceItem from './PriceItem';
 import {
   setScrollPosition,
   setSelectedPrice,
-} from '../../store/reducers/stocks/trading';
+} from '../../../store/reducers/stocks/trading';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../store/store';
+import { RootState } from '../../../store/store';
 import tw, { styled } from 'twin.macro';
-import { PriceType, SocketType } from '../../types/socket';
+import { PriceType, SocketType } from '../../../types/socket';
 
 interface PriceBookProps {
   nowPrice: PriceType;

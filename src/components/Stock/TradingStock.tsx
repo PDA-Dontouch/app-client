@@ -1,9 +1,9 @@
 import tw, { css, styled } from 'twin.macro';
-import SellBuyStock from './SellBuyStock';
+import SellBuyStock from './trading/SellBuyStock';
 
 import Close from '../../assets/close.svg';
 import { useState } from 'react';
-import PriceBook from './PriceBook';
+import PriceBook from './trading/PriceBook';
 import { PriceType, SocketType } from '../../types/socket';
 
 interface TradingProps {

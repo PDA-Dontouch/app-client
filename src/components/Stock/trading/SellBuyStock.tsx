@@ -1,8 +1,8 @@
 import tw, { styled } from 'twin.macro';
-import Button from '../common/Button';
+import Button from '../../common/Button';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../store/store';
+import { RootState } from '../../../store/store';
 
 interface SellBuyProps {
   isSell: boolean;

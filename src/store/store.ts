@@ -3,9 +3,10 @@ import storage from 'redux-persist/lib/storage';
 import { persistReducer, persistStore } from 'redux-persist';
 import logger from 'redux-logger';
 import energyReducer from './reducers/energy/energy';
-import stocksReducer from "./reducers/stocks/stocks";
+import stocksReducer from './reducers/stocks/stocks';
 import estatesReducer from './reducers/estates/estates';
 import userReducer from './reducers/auth/auth';
+import holdingEstatesReducer from './reducers/estates/holding';
 
 const rootPersistConfig = {
   key: 'root',
@@ -20,6 +21,7 @@ const rootReducer = combineReducers({
   energy: energyReducer,
   estates: estatesReducer,
   stocks: stocksReducer,
+  holdingEstates: holdingEstatesReducer,
 });
 
 const persistedReducer = persistReducer(rootPersistConfig, rootReducer);

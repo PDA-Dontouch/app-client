@@ -5,7 +5,11 @@ import tw, { css, styled } from 'twin.macro';
 
 import useLike from '../../hooks/useLike';
 import { AppDispatch, RootState } from '../../store/store';
-import { getEstatesData } from '../../store/reducers/estates/estates';
+import {
+  buyEstates,
+  getEstatesData,
+  sellEstates,
+} from '../../store/reducers/estates/estates';
 import DetailBanner from '../../components/Estates/DetailBanner';
 import Navbar from '../../components/common/Navbar';
 import LikeBtn from '../../components/common/LikeBtn';
@@ -18,7 +22,8 @@ import DetailInfo from '../../components/Estates/DetailInfo';
 import BasicInfo from '../../components/Estates/BasicInfo';
 import InvestPoint from '../../components/Estates/InvestPoint';
 import ExpertCheck from '../../components/Estates/ExpertCheck';
-import { estatesBuy } from '../../api/estates';
+import { getHoldingEstates } from '../../store/reducers/estates/holding';
+import { BuyType } from '../../types/estates_product';
 
 interface BuyEstatesResponse {
   data: {
@@ -51,35 +56,67 @@ const EstatesDetail = () => {
   const clickData = useSelector(
     (state: RootState) => state.estates.clickEstates,
   );
+  const holdingEstates = useSelector(
+    (state: RootState) => state.holdingEstates.datas,
+  );
   const { EstatesLikeArr, setLikeEstates } = useLike();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [value, setValue] = useState<number>(0);
+  const [error, setError] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     dispatch(getEstatesData(parseInt(params.estates_id!)));
-  }, []);
+    dispatch(getHoldingEstates(13));
+  }, [dispatch, params.estates_id]);
 
-  const clickBuyBtn = async () => {
+  const clickBuyBtn = () => {
+    if (value < 5000) {
+      setError('최소 투자 금액은 5천원입니다.');
+    } else {
+      const data: BuyType = {
+        userId: 13,
+        estateFundId: clickData.id,
+        inputCash: value,
+        estateName: clickData.title,
+        estateEarningRate: clickData.earningRate,
+      };
+
+      dispatch(buyEstates(data)).then((res) => {
+        if ((res.payload as BuyEstatesResponse).data.success) {
+          navigate('/result/estate');
+        }
+      });
+    }
+  };
+
+  const clickCancelBtn = async () => {
     const data = {
-      userId: 12,
+      userId: 13,
       estateFundId: clickData.id,
       inputCash: value,
       estateName: clickData.title,
       estateEarningRate: clickData.earningRate,
     };
 
-    try {
-      const response = await estatesBuy(data);
-      console.log(response);
-      if ((response as BuyEstatesResponse).data.success) {
-        navigate('/result/estate');
-      } else {
-        // 실패
+    dispatch(sellEstates(data)).then((res) => {
+      if ((res.payload as BuyEstatesResponse).data.success) {
+        navigate('/result/sell');
       }
-    } catch (error) {
-      console.error('Failed to buy estates', error);
-    }
+    });
   };
+
+  let isEstateHeld = false;
+  let matchingEstate = null;
+
+  if (holdingEstates && holdingEstates.length > 0) {
+    isEstateHeld = holdingEstates.some(
+      (estate) => estate.estateFundId === detail.estateId,
+    );
+
+    matchingEstate = holdingEstates.find(
+      (estate) => estate.estateFundId === detail.estateId,
+    );
+  }
 
   return (
     <>
@@ -98,19 +135,23 @@ const EstatesDetail = () => {
       </Container>
       <BtnContainer>
         <LikeBtn
-          isLike={EstatesLikeArr.includes(detail.id) ? true : false}
+          isLike={EstatesLikeArr.includes(detail.id)}
           setIsLike={() => setLikeEstates(detail.id)}
         />
         <Button
           name={
-            clickData.currentInvest === clickData.totalAmountInvestments
-              ? '모집이 완료되었습니다.'
-              : '구매하기'
+            isEstateHeld
+              ? '취소하기'
+              : clickData.currentInvest === clickData.totalAmountInvestments
+                ? '모집이 완료되었습니다.'
+                : '구매하기'
           }
           status={
-            clickData.currentInvest === clickData.totalAmountInvestments
-              ? 'disabled'
-              : 'estates'
+            isEstateHeld
+              ? 'plain'
+              : clickData.currentInvest === clickData.totalAmountInvestments
+                ? 'disabled'
+                : 'estates'
           }
           onClick={() => setIsOpen(true)}
         />
@@ -119,17 +160,32 @@ const EstatesDetail = () => {
         <BottomUpModal
           onClose={() => setIsOpen(false)}
           content={
-            <Purchase
-              period={clickData.length}
-              earningRate={clickData.earningRate}
-              btnType={value === 0 ? 'disabled' : 'estates'}
-              onClick={clickBuyBtn}
-              value={value}
-              setValue={setValue}
-            />
+            isEstateHeld ? (
+              <Cancel
+                amount={matchingEstate?.inputCash}
+                period={clickData.length}
+                profit={
+                  ((clickData.earningRate || 0) *
+                    (matchingEstate?.inputCash || 0)) /
+                  100
+                }
+                btnType="plain"
+                onClick={clickCancelBtn}
+              />
+            ) : (
+              <Purchase
+                period={clickData.length}
+                earningRate={clickData.earningRate}
+                btnType={value === 0 ? 'disabled' : 'estates'}
+                onClick={clickBuyBtn}
+                value={value}
+                setValue={setValue}
+                error={error}
+                setError={setError}
+              />
+            )
           }
         />
-        // <BottomUpModal onClose={() => setIsOpen(false)} content={<Cancel amount={5000000} period={6} profit={205100} btnType="plain" />} />
       )}
     </>
   );

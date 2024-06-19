@@ -1,10 +1,7 @@
+import React, { SetStateAction, useState } from 'react';
 import tw, { styled } from 'twin.macro';
 import ModalItem from '../../Modal/ModalItem';
 import Button, { StatusType } from '../../Button';
-import { SetStateAction, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../../../store/store';
-import { buyEstates } from '../../../../store/reducers/estates/buysell';
 
 interface PurchaseProps {
   period: number;
@@ -13,15 +10,9 @@ interface PurchaseProps {
   onClick: () => void;
   value: number;
   setValue: React.Dispatch<SetStateAction<number>>;
+  error?: string;
+  setError?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
-
-type ActionPayload = {
-  payload: {
-    data: {
-      response: boolean;
-    };
-  };
-};
 
 const InfoContainer = styled.div`
   ${tw`w-full flex flex-col gap-6`}
@@ -39,6 +30,10 @@ const ModalText = styled.span`
   ${tw`text-xs text-black40`}
 `;
 
+const formatNumber = (num: number) => {
+  return num.toLocaleString();
+};
+
 const Purchase = ({
   period,
   earningRate,
@@ -46,24 +41,26 @@ const Purchase = ({
   onClick,
   value,
   setValue,
+  error,
+  setError,
 }: PurchaseProps) => {
-  const [error, setError] = useState<string | undefined>(undefined);
-
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = event.target.value;
+    const inputValue = event.target.value.replace(/,/g, '');
     const numericValue = inputValue.replace(/[^0-9]/g, '');
     const parsedValue = numericValue === '' ? 0 : parseInt(numericValue, 10);
 
-    if (isNaN(parsedValue)) {
-      setError('숫자만 입력 가능합니다.');
-      setValue(0);
-    }
+    if (setError !== undefined) {
+      if (isNaN(parsedValue)) {
+        setError('숫자만 입력 가능합니다.');
+        setValue(0);
+      }
 
-    if (parsedValue > 500) {
-      setError('최대 투자 금액은 500만원입니다.');
-    } else {
-      setError(undefined);
-      setValue(parsedValue);
+      if (parsedValue > 5000000) {
+        setError('최대 투자 금액은 500만원입니다.');
+      } else {
+        setError(undefined);
+        setValue(parsedValue);
+      }
     }
   };
 
@@ -75,7 +72,7 @@ const Purchase = ({
           content={''}
           isModify={true}
           isStock={false}
-          value={value}
+          value={formatNumber(value)}
           onChange={handleInputChange}
           error={error}
         />
@@ -91,7 +88,7 @@ const Purchase = ({
           content={
             value === 0
               ? '0원'
-              : (earningRate * value * 100)
+              : ((earningRate * value) / 100)
                   .toString()
                   .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',') + '원'
           }

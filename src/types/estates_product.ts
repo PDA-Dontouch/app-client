@@ -139,3 +139,13 @@ export type BuyType = {
   estateName: string;
   estateEarningRate: number;
 };
+
+export type HoldingEstatesType = {
+  id: number;
+  userId: number;
+  estateFundId: number;
+  inputCash: number;
+  estateName: string;
+  estateEarningRate: number;
+  createAt: null;
+};

@@ -1,3 +1,4 @@
+import React from 'react';
 import tw, { styled } from 'twin.macro';
 
 interface ItemProps {
@@ -5,7 +6,8 @@ interface ItemProps {
   content: string | number;
   isModify: boolean;
   isStock: boolean;
-  value?: number;
+  value?: string;
+  formattedValue?: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   error?: string;
 }
@@ -23,7 +25,7 @@ const Item = styled.div`
 `;
 
 const Input = styled.input`
-  ${tw`w-[50px] bg-gray-light border-0 border-solid border-b border-gray-dark focus:outline-none text-base text-end`}
+  ${tw`w-[100px] bg-gray-light border-0 border-solid border-b border-gray-dark focus:outline-none text-base text-end`}
 `;
 
 const MainText = styled.span`
@@ -50,12 +52,12 @@ const ModalItem = ({
         {isModify ? (
           <Item>
             <Input
-              type="number"
+              type="text"
               onChange={onChange}
-              value={value === 0 ? '' : value}
+              value={value === '0' ? '' : value}
               placeholder="0"
             />
-            {isStock ? <MainText>주</MainText> : <MainText>만원</MainText>}
+            {isStock ? <MainText>주</MainText> : <MainText>원</MainText>}
           </Item>
         ) : (
           <MainText>{content}</MainText>

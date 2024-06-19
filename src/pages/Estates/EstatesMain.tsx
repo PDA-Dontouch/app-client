@@ -16,6 +16,7 @@ import {
 import useLike from '../../hooks/useLike';
 import { EstatesList } from '../../types/estates_product';
 import ProductSkeleton from '../../components/Skeleton/ProductSkeleton';
+import { getHoldingEstates } from '../../store/reducers/estates/holding';
 
 const Container = styled.div`
   ${tw`w-[calc(100% - 56px)] mt-14 mb-16 px-7 py-8 flex flex-col gap-5`}
@@ -56,6 +57,7 @@ const EstatesMain = () => {
 
   useEffect(() => {
     dispatch(getEstatesDatas());
+    dispatch(getHoldingEstates(13));
   }, [dispatch]);
 
   useEffect(() => {

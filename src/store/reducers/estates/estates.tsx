@@ -1,15 +1,18 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import {
+  estatesBuy,
   estatesData,
   estatesDatas,
   estatesDisLike,
   estatesLike,
+  estatesSell,
 } from '../../../api/estates';
 import {
   EstatesList,
   clickEstates,
   EstatesDetail,
   initialEstatesDetail,
+  BuyType,
 } from '../../../types/estates_product';
 
 interface EstatesState {
@@ -65,6 +68,22 @@ export const delLikeEstates = createAsyncThunk(
   'estates/dislike',
   async (data: EstatesTypes) => {
     const response = await estatesDisLike(data);
+    return response;
+  },
+);
+
+export const buyEstates = createAsyncThunk(
+  'estates/buyEstates',
+  async (data: BuyType) => {
+    const response = await estatesBuy(data);
+    return response;
+  },
+);
+
+export const sellEstates = createAsyncThunk(
+  'estates/sellEstates',
+  async (data: BuyType) => {
+    const response = await estatesSell(data);
     return response;
   },
 );

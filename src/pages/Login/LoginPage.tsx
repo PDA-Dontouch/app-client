@@ -12,7 +12,7 @@ const Container = styled.div`
 `;
 
 const LogoImage = styled.img`
-  ${tw`w-32 h-auto`}
+  ${tw`w-36 h-auto`}
 `;
 
 const ItemContainer = styled.div`
@@ -38,7 +38,7 @@ const LoginPage = () => {
       <ItemContainer>
         <SocialLogin url={Kakao} name="Kakao" onClick={(e: React.MouseEvent<HTMLElement, MouseEvent>) => onLogin(e, kakaoAuthUrl)} />
         <SocialLogin url={Naver} name="Naver" onClick={(e: React.MouseEvent<HTMLElement, MouseEvent>) => onLogin(e,naverAuthUrl)} />
-        <SocialLogin url={Google} name="Google" onClick={(e: React.MouseEvent<HTMLElement, MouseEvent>) => onLogin(e,googleAuthUrl)} />
+        {/* <SocialLogin url={Google} name="Google" onClick={(e: React.MouseEvent<HTMLElement, MouseEvent>) => onLogin(e,googleAuthUrl)} /> */}
       </ItemContainer>
     </Container>
   );

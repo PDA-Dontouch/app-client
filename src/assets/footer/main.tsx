@@ -18,7 +18,7 @@ const MainIcon = ({ isSelect }: MainIconProps) => {
         height="7.5"
         rx="1"
         stroke={isSelect ? '#1aa76e' : '#222222'}
-        stroke-linejoin="round"
+        strokeLinejoin="round"
       />
       <rect
         x="5"
@@ -27,7 +27,7 @@ const MainIcon = ({ isSelect }: MainIconProps) => {
         height="7.5"
         rx="1"
         stroke={isSelect ? '#1aa76e' : '#222222'}
-        stroke-linejoin="round"
+        strokeLinejoin="round"
       />
       <rect
         x="17.5"
@@ -36,7 +36,7 @@ const MainIcon = ({ isSelect }: MainIconProps) => {
         height="7.5"
         rx="1"
         stroke={isSelect ? '#1aa76e' : '#222222'}
-        stroke-linejoin="round"
+        strokeLinejoin="round"
       />
       <rect
         x="17.5"
@@ -45,7 +45,7 @@ const MainIcon = ({ isSelect }: MainIconProps) => {
         height="7.5"
         rx="1"
         stroke={isSelect ? '#1aa76e' : '#222222'}
-        stroke-linejoin="round"
+        strokeLinejoin="round"
       />
     </svg>
   );

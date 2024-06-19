@@ -18,8 +18,8 @@ const HouseIcon = ({ isSelect }: HouseIconProps) => {
       <path
         d="M18.625 26.75V20.25C18.625 19.6977 18.1773 19.25 17.625 19.25H13.375C12.8227 19.25 12.375 19.6977 12.375 20.25V26.75"
         stroke={isSelect ? '#1aa76e' : '#222222'}
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );

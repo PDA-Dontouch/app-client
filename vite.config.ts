@@ -23,6 +23,10 @@ export default defineConfig(({ mode }) => {
     ],
     server: {
       proxy: {
+        '/api/user': {
+          target: 'http://localhost:8081',
+          changeOrigin: true,
+        },
         '/api/stocks': {
           target: 'http://localhost:8082',
           changeOrigin: true,
@@ -37,8 +41,13 @@ export default defineConfig(({ mode }) => {
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api\/energy/, ''),
         },
+<<<<<<< HEAD
         '/api': {
           target: 'http://localhost:3000',
+=======
+        '/api/holding': {
+          target: 'http://localhost:8085',
+>>>>>>> b1e153e6f3bd64cd11e1e0143c3ad1713f5f74ed
           changeOrigin: true,
         },
         '/api/exchangeRate': {

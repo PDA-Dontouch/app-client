@@ -3,6 +3,7 @@ import NextImg from '../../../assets/triangle.svg';
 
 interface TextProps {
   content: string;
+  onClick: ()=>void;
 }
 
 const TextContainer = styled.div`
@@ -17,10 +18,9 @@ const NavImage = styled.img`
   ${tw`w-3 h-3 mt-1`}
 `;
 
-
 const NextBtn = (input: TextProps) => {
   return (
-    <TextContainer>
+    <TextContainer onClick={input.onClick}>
           <NextText>{input.content}</NextText>
           <NavImage src={NextImg} />
     </TextContainer>

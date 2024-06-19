@@ -49,21 +49,9 @@ const SortType = styled.span`
 `;
 
 const StockMainPage: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
 
-  const handleAddStock = (combination: "combination1" | "combination2" | "combination3", newStock: InsertCombiStock) => {
-    dispatch(insertStock({ combination, stock: newStock }));
-  };
-
-  const handleRemoveStock = (combination: "combination1" | "combination2" | "combination3", stockId: number) => {
-    dispatch(removeStock({ combination, stockId }));
-  };
-
-  const handleClick = () => {
-    navigate('/stocks/detail');
-  };
   const [activeTab, setActiveTab] = useState<'recommend' | 'individual'>('recommend',);
   const [likeStocks, setLikeStocks] = useState<number[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -103,8 +91,8 @@ const StockMainPage: React.FC = () => {
                 개별 종목
               </SubTab>
             </SectionHeader>
-            <NextBtn content='바로 구매하기'/>
-            <CombiBoxContainer onClick={handleClick}>
+            <NextBtn content='바로 구매하기' onClick={()=>(navigate('/stocks/buy'))}/>
+            <CombiBoxContainer onClick={()=>{navigate('/stocks/detail')}}>
               <CombiBox/>
             </CombiBoxContainer>
           </div>

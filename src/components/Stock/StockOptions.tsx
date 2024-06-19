@@ -3,9 +3,10 @@ import { AppDispatch, RootState } from '../../store/store';
 import { useDispatch, useSelector } from 'react-redux';
 import tw, { styled } from 'twin.macro';
 import SearchBar from '../common/Stock/SearchBar';
-import { stocksDatas } from '../../api/stocks';
+import { stocksDatas, combinationDistribute } from '../../api/stocks';
 import logoImg from '../../assets/logo.svg';
 import {InsertCombiStock, StockDataResultType} from '../../types/stocks_product';
+import { addStockToCombination, makeCombiStocks } from '../../store/reducers/stocks/stocks';
 
 const Container = styled.div`
   ${tw`w-full h-[450px] flex flex-col items-center p-3 gap-3`}
@@ -53,7 +54,10 @@ interface StockOptionsProps {
 }
 
 const StockOptions: React.FC<StockOptionsProps> = ({ dividendMonth }) => {
+  const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.user);
+  const combiStocks = useSelector((state: RootState) => state.stocks);
+  const currentCombination = `combination${dividendMonth}` as "combination1" | "combination2" | "combination3";
 
   const [page, setPage] = useState(0);
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -73,17 +77,16 @@ const StockOptions: React.FC<StockOptionsProps> = ({ dividendMonth }) => {
     });
   }, [page]);
 
-  // const handleSelect = (stock:Stock) => {
-  //   onStockSelect(stock);
-  // };
+  
+
   const isKRStock = (symbol: string): boolean => {
     // 모든 문자가 숫자인지 확인
     return /^[0-9]+$/.test(symbol);
   };
 
-  const getImageUrl = (stock: InsertCombiStock): string => {
-    const krStock = isKRStock(stock.symbol);
-    return `https://file.alphasquare.co.kr/media/images/stock_logo/${krStock ? 'kr' : 'us'}/${stock.symbol}.png`;
+  const getImageUrl = (symbol: string) => {
+    const krStock = isKRStock(symbol);
+    return `https://file.alphasquare.co.kr/media/images/stock_logo/${krStock ? 'kr' : 'us'}/${symbol}.png`;
   };
 
   return (
@@ -91,13 +94,11 @@ const StockOptions: React.FC<StockOptionsProps> = ({ dividendMonth }) => {
       <SearchBar setSearchTerm={setSearchTerm} modal={false} />
       <StockItems>
         {stockList.map((stock) => {
-          const isKRStock = stock.symbol.slice(-3) === '.ks';
-          const displaySymbol = isKRStock ? stock.symbol.slice(0, -3) : stock.symbol;
           return (
-            <StockInfo key={stock.id}>
+            <StockInfo key={stock.id} onClick={() => handleInsertStock(stock)}>
               <ItemContainer>
               <StockLogo
-                  src={`https://file.alphasquare.co.kr/media/images/stock_logo/${isKRStock ? 'kr' : 'us'}/${stock.symbol}.png`}
+                  src={getImageUrl(stock.symbol)}
                   onError={(e) => {
                     e.currentTarget.src = logoImg;
                   }}
@@ -105,14 +106,14 @@ const StockOptions: React.FC<StockOptionsProps> = ({ dividendMonth }) => {
                 <InfoContainer>
                   <MainText>{stock.name}</MainText>
                   <SubContainer>
-                    <SubText>{displaySymbol}</SubText>
+                    <SubText>{stock.symbol}</SubText>
                     <SubText>{stock.exchange}</SubText>
                   </SubContainer>
                 </InfoContainer>
               </ItemContainer>
               <PriceContainer>
                 <PriceText>
-                  {isKRStock
+                  {isKRStock(stock.symbol)
                     ? `${stock.dividendYieldTtm.toFixed(2)} 원`
                     : `$${stock.dividendYieldTtm.toFixed(2)}`}
                   ({stock.dividendYieldTtm.toFixed(2)}%)

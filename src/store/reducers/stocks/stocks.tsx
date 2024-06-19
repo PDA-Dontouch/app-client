@@ -1,6 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getStocksCombi } from "../../../api/stocks";
-import { StockCombiType, InsertCombiStock} from "../../../types/stocks_product";
+import { StockCombiType, InsertCombiStock, AddCombiStockReq} from "../../../types/stocks_product";
 import { RootState } from "../../store";
 
 type ActionPayloadCombi = {
@@ -54,7 +54,7 @@ const stocksSlice = createSlice({
   name: "stocks",
   initialState: initialState,
   reducers: {
-    insertStock: (
+    addStockToCombination: (
       state,
       action: PayloadAction<{
         combination: "combination1" | "combination2" | "combination3";
@@ -64,15 +64,32 @@ const stocksSlice = createSlice({
       const { combination, stock } = action.payload;
       state[combination].stocks.push(stock);
     },
-    removeStock: (
+    removeStockFromCombination: (
       state,
       action: PayloadAction<{
         combination: "combination1" | "combination2" | "combination3";
-        stockId: number;
+        stockSymbol: string;
       }>
     ) => {
-      const { combination, stockId } = action.payload;
-      state[combination].stocks = state[combination].stocks.filter(stock => stock.stockId !== stockId);
+      const { combination, stockSymbol } = action.payload;
+      const stockToRemove = state[combination].stocks.find(stock => stock.symbol === stockSymbol);
+      if (stockToRemove) {
+        state[combination].stocks = state[combination].stocks.filter(stock => stock.symbol !== stockSymbol);
+      }
+    },
+    updateStockQuantity: (
+      state,
+      action: PayloadAction<{
+        combination: "combination1" | "combination2" | "combination3";
+        index: number;
+        newAmount: number;
+      }>
+    ) => {
+      const { combination, index, newAmount } = action.payload;
+      const stock = state[combination].stocks[index];
+      if (stock) {
+        stock.quantity = newAmount;
+      }
     },
   },
   extraReducers: (builder) => {
@@ -84,6 +101,6 @@ const stocksSlice = createSlice({
   },
 });
 
-export const { insertStock,removeStock } = stocksSlice.actions;
+export const { addStockToCombination,removeStockFromCombination,updateStockQuantity } = stocksSlice.actions;
 
 export default stocksSlice.reducer;

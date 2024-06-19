@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
+import { tryLogin } from '../../api/auth';
 import axios from 'axios';
 
 const GoogleRedirectPage = () => {
@@ -8,13 +9,16 @@ const GoogleRedirectPage = () => {
 
     const handleOAuthGoogle = async (code:string) => {
         try {
-            // 네이버로부터 받아온 code를 서버에 전달하여 회원가입 & 로그인한다
-            const response = await axios.get(``);
-            const data = response.data; // 응답 데이터
-            console.log(data);
+            //카카오로부터 받아온 code를 서버에 전달하여 카카오로 회원가입 & 로그인한다
+            const response = await tryLogin('google', code);
+            const loginUser = response.data; // 응답 데이터 -> user data 들어와야함
+            console.log(loginUser);
             navigate("/");
-        } catch (error) {
-            navigate("/fail");
+        } catch (err) {
+            if(axios.isAxiosError(err) && err.response && err.response.status === 500)
+                navigate("/");
+            else
+                navigate("/fail");
         }
     };
 

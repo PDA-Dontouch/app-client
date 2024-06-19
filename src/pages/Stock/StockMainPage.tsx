@@ -21,8 +21,10 @@ import {
   StockDataResultType,
   InsertCombiStock,
 } from '../../types/stocks_product';
-import { dispatch } from 'd3';
-import { setSelectCode } from '../../store/reducers/stocks/trading';
+import {
+  setSelectCode,
+  setSelectExchange,
+} from '../../store/reducers/stocks/trading';
 import { joinRoom } from '../../store/webSocket/nowPrice';
 
 const MainContainer = styled.div`
@@ -61,6 +63,7 @@ const SortType = styled.span`
 const StockMainPage: React.FC = () => {
   const user = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
 
   const [activeTab, setActiveTab] = useState<'recommend' | 'individual'>(
     'recommend',
@@ -133,6 +136,7 @@ const StockMainPage: React.FC = () => {
                   key={idx}
                   onClick={() => {
                     dispatch(setSelectCode(item.symbol));
+                    dispatch(setSelectExchange(item.exchange));
                     joinRoom(item.symbol);
                     navigate(`/stocks/${item.id}`);
                   }}

@@ -16,20 +16,9 @@ import { ChartData } from '../../../types/individual_stock';
 import { timeFormat } from 'd3-time-format';
 
 const StockLineChart = () => {
-  const dispatch = useDispatch<AppDispatch>();
   const chartData = useSelector(
     (state: RootState) => state.individualStock.chartData.prices,
   );
-
-  useEffect(() => {
-    const data = {
-      exchange: 'KSC',
-      stockId: 32,
-      month: 30,
-      interval: 5,
-    };
-    dispatch(getChartDatas(data));
-  }, [dispatch]);
 
   const ScaleProvider =
     discontinuousTimeScaleProviderBuilder().inputDateAccessor((d) => {
@@ -50,18 +39,8 @@ const StockLineChart = () => {
 
   const gridHeight = height - margin.top - margin.bottom;
 
-  const barChartHeight = gridHeight / 4;
-
-  const barChartOrigin = (_: number, h: number) => [
-    0,
-    gridHeight - barChartHeight,
-  ];
-
   const chartHeight = gridHeight;
 
-  const yExtents = (data: ChartData) => {
-    return [data.high, data.low];
-  };
   const dateTimeFormat = '%Y/%m';
   const timeDisplayFormat = timeFormat(dateTimeFormat);
 
@@ -104,7 +83,11 @@ const StockLineChart = () => {
           tickStrokeStyle="#BABABA"
           strokeStyle="#BABABA"
         />
-        <LineSeries yAccessor={(d) => d.close} strokeStyle={'#1AA76E'} />
+        <LineSeries
+          yAccessor={(d) => d.close}
+          strokeStyle={'#1AA76E'}
+          strokeWidth={2}
+        />
       </Chart>
     </ChartCanvas>
   );

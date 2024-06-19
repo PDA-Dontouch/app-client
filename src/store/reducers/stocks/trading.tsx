@@ -10,6 +10,7 @@ interface TradingState {
   orderType: string;
   isNew: boolean;
   selectCode: string;
+  selectExchange: string;
 }
 
 const initialState: TradingState = {
@@ -20,6 +21,7 @@ const initialState: TradingState = {
   orderType: '지정가',
   isNew: false,
   selectCode: '',
+  selectExchange: '',
 };
 
 export const buyLimitOrder = createAsyncThunk(
@@ -60,6 +62,9 @@ const tradingSlice = createSlice({
     setSelectCode(state, action: PayloadAction<string>) {
       state.selectCode = action.payload;
     },
+    setSelectExchange(state, action: PayloadAction<string>) {
+      state.selectExchange = action.payload;
+    },
   },
   extraReducers: (builder) => {},
 });
@@ -71,6 +76,7 @@ export const {
   setOrderType,
   setSelectedQuantity,
   setSelectCode,
+  setSelectExchange,
 } = tradingSlice.actions;
 
 export default tradingSlice.reducer;

@@ -61,7 +61,7 @@ const MarketInfo = () => {
       <NameContainer>
         <SubName>
           <MainText>{detail.basic_info.name}</MainText>
-          <SubText>60,200원</SubText>
+          {/* <SubText>60,200원</SubText> */}
         </SubName>
         <Img
           src={isLike ? Fill : Empty}

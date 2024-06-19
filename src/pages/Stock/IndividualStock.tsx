@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
 import { getDetail } from '../../store/reducers/stocks/individualStock';
 import { useWebSocket } from '../../hooks/useWebSocket';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { setSelectedPrice } from '../../store/reducers/stocks/trading';
 import { leaveRoom } from '../../store/webSocket/nowPrice';
 import ChartSelect from '../../components/Stock/individual/ChartSelect';
@@ -30,23 +30,35 @@ const Hr = styled.div`
 `;
 
 const IndividualStock = () => {
+  const params = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const selectCode = useSelector(
     (state: RootState) => state.trading.selectCode,
   );
+  const selectExchange = useSelector(
+    (state: RootState) => state.trading.selectExchange,
+  );
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isSell, setIsSell] = useState<boolean>(false);
+  const [isActive, setIsActive] = useState<boolean>(true);
   const [isCandle, setIsCandle] = useState<boolean>(true);
   const detail = ['일', '주', '월', '년'];
   const simple = ['전체', '10년', '5년', '2년'];
 
   useEffect(() => {
     const data = {
-      exchange: 'KSC',
-      stockId: 10,
+      exchange: selectExchange,
+      stockId: parseInt(params.id || ''),
     };
     dispatch(getDetail(data));
+
+    const now = new Date();
+    const hours = now.getHours();
+
+    if (hours <= 8 || hours >= 16) {
+      setIsActive(false);
+    }
   }, []);
 
   const { askPrice, nowPrice } = useWebSocket();
@@ -69,28 +81,42 @@ const IndividualStock = () => {
         ) : (
           <StockLineChart />
         )}
-        <UnitSelect selects={isCandle ? detail : simple} isCandle={isCandle} />
+        <UnitSelect
+          selects={isCandle ? detail : simple}
+          isCandle={isCandle}
+          stockId={parseInt(params.id || '')}
+        />
         <Hr />
         <HoldingStatus />
       </Container>
-      <BtnContainer>
-        <Button
-          name="매도"
-          status="stock_sell"
-          onClick={() => {
-            setIsOpen(true);
-            setIsSell(true);
-          }}
-        />
-        <Button
-          name="매수"
-          status="stock_purchase"
-          onClick={() => {
-            setIsOpen(true);
-            setIsSell(false);
-          }}
-        />
-      </BtnContainer>
+      {isActive ? (
+        <BtnContainer>
+          <Button
+            name="매도"
+            status="stock_sell"
+            onClick={() => {
+              setIsOpen(true);
+              setIsSell(true);
+            }}
+          />
+          <Button
+            name="매수"
+            status="stock_purchase"
+            onClick={() => {
+              setIsOpen(true);
+              setIsSell(false);
+            }}
+          />
+        </BtnContainer>
+      ) : (
+        <BtnContainer>
+          <Button
+            name="현재 장 시간이 아닙니다."
+            status="disabled"
+            onClick={() => {}}
+          />
+        </BtnContainer>
+      )}
       {isOpen && (
         <TradingStock
           isSell={isSell}

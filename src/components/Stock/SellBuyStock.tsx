@@ -1,6 +1,6 @@
 import tw, { styled } from 'twin.macro';
 import Button from '../common/Button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 
@@ -24,11 +24,20 @@ const TagText = styled.span`
   ${tw`text-sm`}
 `;
 
+const InputContainer = styled.div`
+  ${tw`relative flex items-center`}
+`;
+
 const Input = styled.input`
-  ${tw`w-[100%] px-2 py-3 box-border border-none text-end text-base rounded-8`}
+  ${tw`w-full px-2 py-3 box-border border-none text-end text-base rounded-8`}
+  padding-right: 2.5rem; // Suffix 공간 확보
   &:focus {
     outline: none;
   }
+`;
+
+const Suffix = styled.span`
+  ${tw`absolute right-[1.1rem] text-base`}
 `;
 
 const BtnContainer = styled.div`
@@ -65,16 +74,21 @@ const SellBuyStock = ({ isSell }: SellBuyProps) => {
     (state: RootState) => state.trading.selectedPrice,
   );
 
+  useEffect(() => {
+    setPrice(Number(selectPrice));
+  }, [selectPrice]);
+
   const formatNumber = (num: number): string => {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   };
 
-  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/[^0-9]/g, '');
-    const numericValue = Number(value);
+  const handlePriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = event.target.value.replace(/,/g, '');
+    const numericValue = inputValue.replace(/[^0-9]/g, '');
+    const parsedValue = numericValue === '' ? 0 : parseInt(numericValue, 10);
 
-    if (!isNaN(numericValue)) {
-      setPrice(numericValue);
+    if (!isNaN(parsedValue)) {
+      setPrice(parsedValue);
     }
   };
 
@@ -87,11 +101,35 @@ const SellBuyStock = ({ isSell }: SellBuyProps) => {
     }
   };
 
-  const onSellBuy = () => {
-    if (amount === 0) {
+  const onSell = () => {
+    if (price === 0 && amount === 0) {
+      alert('가격과 수량을 입력해주세요.');
+    } else if (price === 0) {
+      alert('가격을 입력해주세요.');
+    } else if (amount === 0) {
       alert('수량을 입력해주세요.');
     } else {
-      alert('구매 완료');
+      if (isSelect === 0) {
+        // 지정가
+      } else {
+        // 시장가
+      }
+    }
+  };
+
+  const onBuy = () => {
+    if (price === 0 && amount === 0) {
+      alert('가격과 수량을 입력해주세요.');
+    } else if (price === 0) {
+      alert('가격을 입력해주세요.');
+    } else if (amount === 0) {
+      alert('수량을 입력해주세요.');
+    } else {
+      if (isSelect === 0) {
+        // 지정가
+      } else {
+        // 시장가
+      }
     }
   };
 
@@ -101,37 +139,44 @@ const SellBuyStock = ({ isSell }: SellBuyProps) => {
         <SubBtnContainer>
           <Btn
             isLeft={true}
-            isSelect={isSelect === 0 ? true : false}
+            isSelect={isSelect === 0}
             onClick={() => setIsSelect(0)}
           >
             지정가
           </Btn>
           <Btn
             isLeft={false}
-            isSelect={isSelect === 1 ? true : false}
-            onClick={() => setIsSelect(1)}
+            isSelect={isSelect === 1}
+            onClick={() => {
+              setIsSelect(1);
+              setPrice(0);
+            }}
           >
             시장가
           </Btn>
         </SubBtnContainer>
         <Item>
           <TagText>가격</TagText>
-          <Input
-            disabled={isSelect === 1 ? true : false}
-            value={
-              selectPrice === '0'
-                ? '원'
-                : `${formatNumber(parseInt(selectPrice))}원`
-            }
-            onChange={handlePriceChange}
-          />
+          <InputContainer>
+            <Input
+              disabled={isSelect === 1}
+              value={price === 0 ? '' : `${formatNumber(price)}`}
+              placeholder="0"
+              onChange={handlePriceChange}
+            />
+            <Suffix>원</Suffix>
+          </InputContainer>
         </Item>
         <Item>
           <TagText>수량</TagText>
-          <Input
-            value={amount === 0 ? '주' : `${amount}주`}
-            onChange={handleAmountChange}
-          />
+          <InputContainer>
+            <Input
+              value={amount === 0 ? '' : `${amount}`}
+              placeholder="0"
+              onChange={handleAmountChange}
+            />
+            <Suffix>주</Suffix>
+          </InputContainer>
         </Item>
       </ItemContainer>
       <BtnContainer>
@@ -142,7 +187,7 @@ const SellBuyStock = ({ isSell }: SellBuyProps) => {
         <Button
           name={isSell ? '매도' : '매수'}
           status={isSell ? 'stock_sell' : 'stock_purchase'}
-          onClick={onSellBuy}
+          onClick={isSell ? onSell : onBuy}
         />
       </BtnContainer>
     </Container>

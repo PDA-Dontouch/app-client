@@ -19,3 +19,10 @@ export type SocketType = {
     buyAmount: [];
   };
 };
+
+export type postOrderData = {
+  stockCode: string;
+  userId: number;
+  price: number;
+  amount: number;
+};

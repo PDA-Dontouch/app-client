@@ -219,7 +219,7 @@ const StockMainPage: React.FC = () => {
                 <div
                   key={idx}
                   onClick={() => {
-                    setSelectCode(item.symbol);
+                    dispatch(setSelectCode(item.symbol));
                     joinRoom(item.symbol);
                     navigate(`/stocks/${item.id}`);
                   }}

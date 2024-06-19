@@ -9,11 +9,12 @@ const initialState = {
     symbol: '',
     prices: [
       {
-        date: '2024-06-17',
-        open: 79200,
-        high: 79500,
-        low: 78000,
-        close: 78100,
+        date: '',
+        open: 0,
+        high: 0,
+        low: 0,
+        close: 0,
+        volume: 0,
       },
     ],
   },
@@ -54,6 +55,7 @@ interface ChartData {
       high: 0;
       low: 0;
       close: 0;
+      volume: 0;
     },
   ];
 }
@@ -78,6 +80,7 @@ type ActionType = {
         high: number;
         low: number;
         close: number;
+        volume: number;
       };
     };
   };
@@ -116,7 +119,10 @@ const individualStockSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(getChartDatas.fulfilled, (state, action) => {
-      state.chartData = action.payload.data.response;
+      state.chartData.exchange = action.payload.data.response.exchange;
+      state.chartData.stock_id = action.payload.data.response.stock_id;
+      state.chartData.symbol = action.payload.data.response.symbol;
+      state.chartData.prices = action.payload.data.response.prices.reverse();
     });
     builder.addCase(getDetail.fulfilled, (state, action) => {
       state.detail = action.payload.data.response;

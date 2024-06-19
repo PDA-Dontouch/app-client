@@ -13,9 +13,10 @@ import {
   EdgeIndicator,
   MouseCoordinateX,
   MouseCoordinateY,
+  CurrentCoordinate,
 } from 'react-financial-charts';
 import { ChartData } from '../../types/individual_stock';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { PriceType } from '../../types/socket';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
@@ -34,23 +35,30 @@ const StockChart = ({ nowPrice }: ChartProps) => {
     (state: RootState) => state.individualStock.chartData.prices,
   );
 
-  // useEffect(() => {
-  //   const data = {
-  //     exchange: 'KSC',
-  //     stockId: 5,
-  //     month: 30,
-  //     interval: 5,
-  //   };
-  //   dispatch(getChartDatas(data));
-  // }, []);
+  const [displayData, setDisplayData] = useState<ChartData[]>([]);
 
-  console.log(chartData);
+  useEffect(() => {
+    const data = {
+      exchange: 'KSC',
+      stockId: 32,
+      month: 30,
+      interval: 5,
+    };
+    dispatch(getChartDatas(data));
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (chartData.length > 0) {
+      const oneMonthData = chartData.slice(-30); // 최근 1개월치 데이터 선택
+      setDisplayData(oneMonthData);
+    }
+  }, [chartData]);
+
   useEffect(() => {
     const today = new Date();
     const formattedDate = today.toISOString().slice(0, 10).replace(/-/g, '');
 
     if (nowPrice) {
-      // setUpNum(parseFloat(nowPrice.message.close) - parseFloat(dataList[dataList.length - 2].close))
       nowPrice.message['time'] = formattedDate;
       const liveData = {
         data: {
@@ -60,17 +68,19 @@ const StockChart = ({ nowPrice }: ChartProps) => {
             high: parseInt(nowPrice.message.high),
             low: parseInt(nowPrice.message.low),
             close: parseInt(nowPrice.message.close),
+            volume: 0,
           },
         },
       };
       dispatch(setLiveData(liveData));
     }
-  }, [nowPrice]);
+  }, [nowPrice, dispatch]);
 
   const ScaleProvider =
-    discontinuousTimeScaleProviderBuilder().inputDateAccessor(
-      (d) => new Date(d.date),
-    );
+    discontinuousTimeScaleProviderBuilder().inputDateAccessor((d) => {
+      return new Date(d.date);
+    });
+
   const height = 300;
   const width = window.innerWidth;
   const margin = { left: 0, right: 48, top: 0, bottom: 24 };
@@ -79,9 +89,9 @@ const StockChart = ({ nowPrice }: ChartProps) => {
     ScaleProvider(chartData);
   const pricesDisplayFormat = format('.2f');
 
-  const x_max = xAccessor(data[data.length - 1]);
-  const x_min = xAccessor(data[Math.max(0, data.length - 100)]);
-  const xExtents = [x_min, x_max + 2];
+  const start = xAccessor(data[data.length - 1]);
+  const end = xAccessor(data[data.length - 31]);
+  const xExtents = [start, end];
 
   const gridHeight = height - margin.top - margin.bottom;
 
@@ -97,7 +107,7 @@ const StockChart = ({ nowPrice }: ChartProps) => {
   const yExtents = (data: ChartData) => {
     return [data.high, data.low];
   };
-  const dateTimeFormat = '%d %b';
+  const dateTimeFormat = '%Y/%m';
   const timeDisplayFormat = timeFormat(dateTimeFormat);
 
   const barChartExtents = (data: ChartData) => {
@@ -113,9 +123,9 @@ const StockChart = ({ nowPrice }: ChartProps) => {
   };
 
   const volumeColor = (data: ChartData) => {
-    return data.close > data.open
-      ? 'rgba(38, 166, 154, 0.3)'
-      : 'rgba(239, 83, 80, 0.3)';
+    return data?.close > data?.open
+      ? 'rgba(239, 83, 80, 0.3)'
+      : 'rgba(38, 166, 154, 0.3)';
   };
 
   const volumeSeries = (data: ChartData) => {
@@ -123,10 +133,10 @@ const StockChart = ({ nowPrice }: ChartProps) => {
   };
 
   const openCloseColor = (data: ChartData) => {
-    return data.close > data.open ? '#26a69a' : '#ef5350';
+    return data?.close > data?.open ? '#ef5350' : '#26a69a';
   };
 
-  return data?.length > 0 ? (
+  return chartData?.length > 0 ? (
     <>
       <ChartCanvas
         height={height}
@@ -140,8 +150,9 @@ const StockChart = ({ nowPrice }: ChartProps) => {
         xAccessor={xAccessor}
         xExtents={xExtents}
         zoomAnchor={lastVisibleItemBasedZoomAnchor}
+        mouseMoveEvent={true}
       >
-        {/* <Chart
+        <Chart
           id={2}
           height={barChartHeight}
           origin={barChartOrigin}
@@ -150,8 +161,10 @@ const StockChart = ({ nowPrice }: ChartProps) => {
         >
           <XAxis
             showGridLines
-            showTickLabel={false}
-            showTicks={false}
+            showTickLabel={true}
+            showTicks={true}
+            tickFormat={timeDisplayFormat}
+            tickStrokeStyle="#BABABA"
             strokeStyle="#BABABA"
           />
           <YAxis
@@ -162,7 +175,7 @@ const StockChart = ({ nowPrice }: ChartProps) => {
             strokeStyle="#BABABA"
           />
           <BarSeries fillStyle={volumeColor} yAccessor={volumeSeries} />
-        </Chart> */}
+        </Chart>
 
         <Chart
           id={1}

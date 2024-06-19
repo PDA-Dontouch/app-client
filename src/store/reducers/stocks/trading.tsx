@@ -1,4 +1,6 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { buyLimitPrice, sellLimitPrice } from '../../../api/socket';
+import { postOrderData } from '../../../types/socket';
 
 interface TradingState {
   selectedTab: string;
@@ -19,6 +21,22 @@ const initialState: TradingState = {
   isNew: false,
   selectCode: '',
 };
+
+export const buyLimitOrder = createAsyncThunk(
+  'stocks/buyLimitOrder',
+  async (data: postOrderData) => {
+    const response = await buyLimitPrice(data);
+    return response;
+  },
+);
+
+export const sellLimitOrder = createAsyncThunk(
+  'stocks/sellLimitOrder',
+  async (data: postOrderData) => {
+    const response = await sellLimitPrice(data);
+    return response;
+  },
+);
 
 const tradingSlice = createSlice({
   name: 'trading',

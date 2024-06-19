@@ -16,7 +16,7 @@ import { setSelectedPrice } from '../../store/reducers/stocks/trading';
 import { leaveRoom } from '../../store/webSocket/nowPrice';
 
 const Container = styled.div`
-  ${tw`h-full py-8 mt-14`}
+  ${tw`py-7 mt-14`}
 `;
 
 const NameContainer = styled.div`
@@ -62,7 +62,7 @@ const SubItemContainer = styled.div`
 `;
 
 const BtnContainer = styled.div`
-  ${tw`w-full flex px-8 justify-between gap-3 fixed left-0 bottom-[44px] box-border`}
+  ${tw`w-full flex px-8 justify-between gap-3 fixed left-0 bottom-6 box-border`}
 `;
 
 const IndividualStock = () => {

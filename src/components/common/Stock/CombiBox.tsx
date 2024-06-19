@@ -3,7 +3,8 @@ import StockContainer from './StockContainer';
 import {InsertCombiStock} from '../../../types/stocks_product';
 import { AppDispatch, RootState } from '../../../store/store';
 import { useDispatch,useSelector } from 'react-redux';
-import { insertStock, removeStock } from '../../../store/reducers/stocks/stocks';
+import { insertStock, makeCombiStocks, removeStock } from '../../../store/reducers/stocks/stocks';
+import { useEffect } from 'react';
 
 const Wrapper = styled.div`
   ${tw`bg-gray-light px-5 py-5 rounded-16 shadow-[4px_4px_6px_0_rgba(0,0,0,0.15)]`}
@@ -29,8 +30,6 @@ const CombiBox: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const combiStocks = useSelector((state:RootState)=> state.stocks);
 
-  console.log(combiStocks);
-
   const handleAddStock = (combination: "combination1" | "combination2" | "combination3", newStock: InsertCombiStock) => {
     dispatch(insertStock({ combination, stock: newStock }));
   };
@@ -38,6 +37,10 @@ const CombiBox: React.FC = () => {
   const handleRemoveStock = (combination: "combination1" | "combination2" | "combination3", stockId: number) => {
     dispatch(removeStock({ combination, stockId }));
   };
+
+  useEffect(() => {
+    console.log(combiStocks);
+  }, [combiStocks]);
 
   return (
     <Wrapper>

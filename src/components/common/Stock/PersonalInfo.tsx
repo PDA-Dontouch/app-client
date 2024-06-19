@@ -62,9 +62,9 @@ const PersonalInfo: React.FC = () => {
   const [accountAmount, setAccountAmount] = useState<number>(0);
 
   useEffect(() => {
-    console.log(state);
     if (state) {
       setAccountAmount(state);
+      dispatch(makeCombiStocks(state));
     } else {
       getUserAccountAmount({
         token: user.token,

@@ -29,7 +29,7 @@ export const initialUserDetail = {
   sns_type: 1,
   birthday: new Date(),
   nickname: '이한슬',
-  investmentType: 3 as investmentType,
+  investmentType: 1 as investmentType,
   safeScore: 70,
   dividendScore: 10,
   growthScore: 20,

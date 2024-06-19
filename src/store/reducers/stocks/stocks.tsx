@@ -77,7 +77,9 @@ const stocksSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(makeCombiStocks.fulfilled, (state, action) => {
-      state = action.payload.data.response;
+      state.combination1 = action.payload.data.response.combination1;
+      state.combination2 = action.payload.data.response.combination2;
+      state.combination3 = action.payload.data.response.combination3;
     });
   },
 });

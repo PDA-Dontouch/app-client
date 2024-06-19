@@ -3,8 +3,9 @@ import { AppDispatch, RootState } from '../../store/store';
 import { useDispatch, useSelector } from 'react-redux';
 import tw, { styled } from 'twin.macro';
 import SearchBar from '../common/Stock/SearchBar';
-import { getStocksDatas } from '../../store/reducers/stocks/stocks';
+import { stocksDatas } from '../../api/stocks';
 import logoImg from '../../assets/logo.svg';
+import {InsertCombiStock, StockDataResultType} from '../../types/stocks_product';
 
 const Container = styled.div`
   ${tw`w-full h-[450px] flex flex-col items-center p-3 gap-3`}
@@ -52,62 +53,44 @@ interface StockOptionsProps {
 }
 
 const StockOptions: React.FC<StockOptionsProps> = ({ dividendMonth }) => {
-  const dispatch = useDispatch<AppDispatch>();
-  const stockList = useSelector((state: RootState) => state.stocks.datas);
+  const user = useSelector((state: RootState) => state.user);
+
   const [page, setPage] = useState(0);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [hasMore, setHasMore] = useState<boolean>(true);
   const [searchTerm, setSearchTerm] = useState<string>('');
-
-  const requestData = {
-    userInvestmentType: 0,
-    safeScore: 33,
-    dividendScore: 33,
-    growthScore: 33,
-    dividendMonth: dividendMonth,
-    page: page,
-    size: 10,
-  };
-
-  const loadMoreStocks = useCallback(async () => {
-    if (isLoading || !hasMore) return;
-
-    setIsLoading(true);
-
-    try {
-      const resultAction = await dispatch(getStocksDatas(requestData)).unwrap();
-  
-      if (resultAction.data.response.length === 0) {
-        setHasMore(false);
-      } else {
-        console.log(page);
-        setPage((prevPage) => prevPage + 1);
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [isLoading, hasMore, dispatch, page]);
+  const [stockList, setStockList] = useState<StockDataResultType[]>([]);
 
   useEffect(() => {
-    loadMoreStocks();
-  }, []);
+    stocksDatas({
+      searchWord: searchTerm,
+      safeScore: user.user.safeScore,
+      dividendScore: user.user.dividendScore,
+      growthScore: user.user.growthScore,
+      dividendMonth: dividendMonth,
+      page: page,
+      size: 24,
+    }).then((response)=>{
+      setStockList(response.data.response);
+    });
+  }, [page]);
 
   // const handleSelect = (stock:Stock) => {
   //   onStockSelect(stock);
   // };
-    
-  const filteredList = stockList.filter(stock =>
-    stock.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    stock.symbol.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const isKRStock = (symbol: string): boolean => {
+    // 모든 문자가 숫자인지 확인
+    return /^[0-9]+$/.test(symbol);
+  };
+
+  const getImageUrl = (stock: InsertCombiStock): string => {
+    const krStock = isKRStock(stock.symbol);
+    return `https://file.alphasquare.co.kr/media/images/stock_logo/${krStock ? 'kr' : 'us'}/${stock.symbol}.png`;
+  };
 
   return (
     <Container>
       <SearchBar setSearchTerm={setSearchTerm} modal={false} />
       <StockItems>
-        {filteredList.map((stock) => {
+        {stockList.map((stock) => {
           const isKRStock = stock.symbol.slice(-3) === '.ks';
           const displaySymbol = isKRStock ? stock.symbol.slice(0, -3) : stock.symbol;
           return (

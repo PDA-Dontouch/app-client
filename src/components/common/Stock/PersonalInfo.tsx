@@ -1,63 +1,112 @@
 import tw, { css, styled } from 'twin.macro';
-import charIcon from '../../../assets/chartIcon.png';
 import { AppDispatch, RootState } from '../../../store/store';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch,useSelector } from 'react-redux';
+import { investmentTypeToString } from '../../../utils/investmentType';
+import { getUserAccountAmount } from '../../../api/auth';
+import { useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { makeCombiStocks } from '../../../store/reducers/stocks/stocks';
+
 
 const PersonalContainer = styled.div`
-  ${tw`w-full flex flex-row gap-20`}
-   ${css`
-    height: 40vw;
-  `}
+  ${tw`w-full flex flex-col gap-3`}
 `;
 
-const TextContainer = styled.div`
-  ${tw`flex flex-col gap-3 m-2 ml-4`}
-   ${css`
-    height: 90%;
-  `}
+const TopContainer = styled.div`
+  ${tw`flex flex-row justify-between`}
+`;
+const TypeContainer = styled.div`
+  ${tw`flex flex-col gap-3`}
+  width: 6rem;
+`;
 
+const MoneyContainer = styled.div`
+  ${tw`flex flex-col gap-3`}
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 15rem;
 `;
-const IconContainer = styled.div`
-  ${tw`flex items-center justify-center mt-5 mb-5`}
-  ${css`
-    height: 70%;
-    aspect-ratio: 1
-  `}
-  
-`;
-const Icon = styled.img`
-  ${tw`object-cover`}
-  ${css`
-    width: 100%;
-    height: 100%;
-  `}
+const BtnContainer = styled.div`
+  ${tw`flex w-full gap-2 mt-2 justify-end`}
 `;
 
 const Title = styled.span`
-  ${tw`text-lg ml-2`}
+  ${tw`text-sm ml-2`}
   ${css`
     color: rgba(0, 0, 0, 0.4);
   `}
 `;
 const PersonData = styled.span`
-  ${tw`text-xl`}
+  ${tw`text-base`}
+`;
+
+const Btn = styled.button`
+  ${tw`text-sm w-full`}
+  ${({ color }) => {
+    return color == 'green' ? tw`bg-green text-white` : tw`bg-white text-green`;
+  }}
+  border-radius: 12px;
+  border: none;
+  box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.15);
 `;
 
 const PersonalInfo: React.FC = () => {
-  //const dispatch = useDispatch<AppDispatch>();
-  //const user = useSelector((state: RootState) => state.auth.data);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const state = location.state as number | undefined;
+
+  const dispatch = useDispatch<AppDispatch>();
+  const user = useSelector((state: RootState) => state.user);
+
+  const [accountAmount, setAccountAmount] = useState<number>(0);
+
+  useEffect(() => {
+    console.log(state);
+    if (state) {
+      setAccountAmount(state);
+    } else {
+      getUserAccountAmount({
+        token: user.token,
+        userId: user.user.id,
+      }).then((response) => {
+        setAccountAmount(response.data.response.cash);
+        dispatch(makeCombiStocks(response.data.response.cash));
+      });
+    }
+  }, []);
 
   return (
     <PersonalContainer>
-      <TextContainer>
-        <Title>투자 성향</Title>
-        <PersonData>공격투자형</PersonData>
+      <TopContainer>
+        <TypeContainer>
+          <Title>투자 성향</Title>
+          <PersonData>
+            {investmentTypeToString(user.user.investmentType)}
+          </PersonData>
+        </TypeContainer>
+        <BtnContainer>
+          <Btn
+            onClick={() => {
+              navigate('/typetest', { state: { nav: true } });
+            }}
+          >
+            테스트 다시하기
+          </Btn>
+          <Btn
+            color="green"
+            onClick={() => {
+              navigate('/asset/reset');
+            }}
+          >
+            투자금액 변경
+          </Btn>
+        </BtnContainer>
+      </TopContainer>
+      <MoneyContainer>
         <Title>투자 금액</Title>
-        <PersonData>200 만원</PersonData>
-      </TextContainer>
-      <IconContainer>
-        <Icon src={charIcon} />
-      </IconContainer> 
+        <PersonData>{accountAmount.toLocaleString()} 원</PersonData>
+      </MoneyContainer>
     </PersonalContainer>
   );
 };

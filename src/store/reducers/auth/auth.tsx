@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { login } from '../../../api/auth';
+import { getUser } from '../../../api/auth';
 import { UserDetail, initialUserDetail } from '../../../types/user_product';
 
 const initialState = {
@@ -19,10 +19,11 @@ type ActionPayload = {
 export const postLogin = createAsyncThunk<ActionPayload, string>(
   'user/login',
   async (data: string) => {
-    const response = await login(data);
+    const response = await getUser(data);
     return response as ActionPayload;
   },
 );
+
 
 const userSlice = createSlice({
   name: 'user',

@@ -14,7 +14,7 @@ import AccountPage from './pages/Main/AccountPage';
 import ProductsHeldPage from './pages/Main/ProductsHeldPage';
 import ProductsLikePage from './pages/Main/ProductsLikePage';
 import CombinationLogPage from './pages/Main/CombinationLogPage';
-
+import ChangeMoney from './pages/Stock/ChangeMoney';
 import AssetInput from './pages/AssetInput';
 import StockDetailPage from './pages/Stock/StockDetailPage';
 import NaverRedirectPage from './pages/Login/NaverRedirectPage';
@@ -37,6 +37,7 @@ export default function Routers() {
       <Route path="/calendar" element={<CalendarPage />} />
       <Route path="/result/:type" element={<TransactionResult />} />
       <Route path="/asset-input" element={<AssetInput />} />
+      <Route path="/asset/reset" element={<ChangeMoney />} />
       <Route path="/" element={<MainPage />} />
       <Route path="/account" element={<AccountPage />} />
       <Route path="/products/held" element={<ProductsHeldPage />} />

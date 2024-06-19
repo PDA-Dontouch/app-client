@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import tw, { styled } from 'twin.macro';
-import Button from '../components/common/Button';
-import BasicModal from '../components/common/Modal/BasicModal';
+import Button from '../../components/common/Button';
+import Navbar from '../../components/common/Navbar';
 
 const Container = styled.div`
   ${tw`h-[100%] px-7 py-40 box-border`}
@@ -42,11 +42,8 @@ const Unit = styled.span`
 
 const AssetInput = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const { totalScore } = location.state || { totalScore: 0 };
   const [totalAssetNum, setTotalAssetNum] = useState<number>(0);
   const [totalAsset, setTotalAsset] = useState<string>('');
-  const [showModal, setShowModal] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/,/g, '');
@@ -56,33 +53,30 @@ const AssetInput = () => {
         value.charAt(value.length - 1) <= '9') ||
       value.length === 0
     ) {
-      setTotalAssetNum(Number(totalAsset));
-      const formattedValue = Number(value).toLocaleString();
-
+      const numericValue = Number(value);
+      setTotalAssetNum(numericValue);
+      const formattedValue = numericValue.toLocaleString();
       setTotalAsset(formattedValue);
     }
   };
 
   const handleSubmit = () => {
-    setShowModal(true);
+    navigate('/stocks', { state: totalAssetNum });
   };
 
   return (
     <>
-      {showModal && (
-        <div
-          style={{
-            zIndex: 10,
-            position: 'fixed',
-          }}
-        >
-          <BasicModal type="안전추구" onClick={() => navigate('/')} />
-        </div>
-      )}
+      <Navbar
+        name="back"
+        type="back"
+        onClick={() => {
+          navigate(-1);
+        }}
+      />
       <Container>
         <ItemContainer>
           <Wrapper>
-            <Title>나의 총 자산은?</Title>
+            <Title>투자금액 변경하기</Title>
             <InputWrapper>
               <Input
                 type="text"
@@ -96,7 +90,7 @@ const AssetInput = () => {
           </Wrapper>
         </ItemContainer>
         <Button
-          name="완료"
+          name="변경"
           status={totalAsset === '' ? 'disabled' : 'active'}
           onClick={handleSubmit}
         />

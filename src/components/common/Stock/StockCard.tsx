@@ -22,11 +22,13 @@ interface StockProps {
 }
 
 const Container = styled.div`
-  ${tw`flex items-center p-5 border rounded-lg shadow-md mb-1 justify-between`}
+  ${tw`flex items-center p-3 border rounded-lg shadow-md mb-1 justify-between`}
+  height: 60px
+
 `;
 
 const StockLogo = styled.img`
-  ${tw`w-12 h-12 rounded-full`}
+  ${tw`w-10 h-10 rounded-full`}
 `;
 
 const ItemContainer = styled.div`
@@ -34,7 +36,7 @@ const ItemContainer = styled.div`
 `;
 
 const MainText = styled.span`
-  ${tw`text-base`}
+  ${tw`text-sm`}
 `;
 
 const InfoContainer = styled.div`
@@ -42,7 +44,7 @@ const InfoContainer = styled.div`
 `;
 
 const SubContainer = styled.div`
-  ${tw`flex flex-row text-sm`}
+  ${tw`flex flex-row text-xs`}
 `;
 const SubText = styled.span`
   ${tw`mt-1 mr-1`}
@@ -56,7 +58,7 @@ const PriceText = styled.span`
 `;
 
 const Heart = styled.img`
-  ${tw`ml-3 w-6 h-6 cursor-pointer`}
+  ${tw`ml-2 w-6 h-6 cursor-pointer`}
 `;
 
 const StockCard = ({ data, isLike, setIsLike }: StockProps) => {

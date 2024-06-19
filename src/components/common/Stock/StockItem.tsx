@@ -1,10 +1,9 @@
 import tw, { styled } from "twin.macro";
 
-import Samsung from '../../../assets/samsung.svg';
-
 interface ItemProps {
   name: string;
   amount: number;
+  symbol: string;
 }
 
 const Container = styled.div`
@@ -19,10 +18,15 @@ const MainText = styled.span`${tw`text-sm`}`;
 
 const SubText = styled.span`${tw`text-xs`}`;
 
-const StockItem = ({ name, amount }: ItemProps) => {
+const StockItem = ({ name, amount, symbol}: ItemProps) => {
+  const isKr = !isNaN(Number(symbol));
+  const imageUrl = isKr 
+    ? `https://file.alphasquare.co.kr/media/images/stock_logo/${isKr ? 'kr' : 'us'}/${symbol}.png`
+    : `https://file.alphasquare.co.kr/media/images/stock_logo/${isKr ? 'kr' : 'us'}/${symbol}.png`;
+
   return (
     <Container>
-      <img src={Samsung} />
+      <img src={imageUrl} alt={`${name} logo`}/>
       <Item>
         <MainText>{name}</MainText>
         <SubText>{amount}주</SubText>

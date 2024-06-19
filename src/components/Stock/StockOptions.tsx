@@ -3,8 +3,10 @@ import { AppDispatch, RootState } from '../../store/store';
 import { useDispatch, useSelector } from 'react-redux';
 import tw, { styled } from 'twin.macro';
 import SearchBar from '../common/Stock/SearchBar';
-import { getStocksDatas } from '../../store/reducers/stocks/stocks';
+import { stocksDatas, combinationDistribute } from '../../api/stocks';
 import logoImg from '../../assets/logo.svg';
+import {InsertCombiStock, StockDataResultType} from '../../types/stocks_product';
+import { addStockToCombination, makeCombiStocks } from '../../store/reducers/stocks/stocks';
 
 const Container = styled.div`
   ${tw`w-full h-[450px] flex flex-col items-center p-3 gap-3`}
@@ -53,68 +55,50 @@ interface StockOptionsProps {
 
 const StockOptions: React.FC<StockOptionsProps> = ({ dividendMonth }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const stockList = useSelector((state: RootState) => state.stocks.datas);
+  const user = useSelector((state: RootState) => state.user);
+  const combiStocks = useSelector((state: RootState) => state.stocks);
+  const currentCombination = `combination${dividendMonth}` as "combination1" | "combination2" | "combination3";
+
   const [page, setPage] = useState(0);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [hasMore, setHasMore] = useState<boolean>(true);
   const [searchTerm, setSearchTerm] = useState<string>('');
-
-  const requestData = {
-    userInvestmentType: 0,
-    safeScore: 33,
-    dividendScore: 33,
-    growthScore: 33,
-    dividendMonth: dividendMonth,
-    page: page,
-    size: 10,
-  };
-
-  const loadMoreStocks = useCallback(async () => {
-    if (isLoading || !hasMore) return;
-
-    setIsLoading(true);
-
-    try {
-      const resultAction = await dispatch(getStocksDatas(requestData)).unwrap();
-  
-      if (resultAction.data.response.length === 0) {
-        setHasMore(false);
-      } else {
-        console.log(page);
-        setPage((prevPage) => prevPage + 1);
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [isLoading, hasMore, dispatch, page]);
+  const [stockList, setStockList] = useState<StockDataResultType[]>([]);
 
   useEffect(() => {
-    loadMoreStocks();
-  }, []);
+    stocksDatas({
+      searchWord: searchTerm,
+      safeScore: user.user.safeScore,
+      dividendScore: user.user.dividendScore,
+      growthScore: user.user.growthScore,
+      dividendMonth: dividendMonth,
+      page: page,
+      size: 24,
+    }).then((response)=>{
+      setStockList(response.data.response);
+    });
+  }, [page]);
 
-  // const handleSelect = (stock:Stock) => {
-  //   onStockSelect(stock);
-  // };
-    
-  const filteredList = stockList.filter(stock =>
-    stock.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    stock.symbol.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  
+
+  const isKRStock = (symbol: string): boolean => {
+    // 모든 문자가 숫자인지 확인
+    return /^[0-9]+$/.test(symbol);
+  };
+
+  const getImageUrl = (symbol: string) => {
+    const krStock = isKRStock(symbol);
+    return `https://file.alphasquare.co.kr/media/images/stock_logo/${krStock ? 'kr' : 'us'}/${symbol}.png`;
+  };
 
   return (
     <Container>
       <SearchBar setSearchTerm={setSearchTerm} modal={false} />
       <StockItems>
-        {filteredList.map((stock) => {
-          const isKRStock = stock.symbol.slice(-3) === '.ks';
-          const displaySymbol = isKRStock ? stock.symbol.slice(0, -3) : stock.symbol;
+        {stockList.map((stock) => {
           return (
-            <StockInfo key={stock.id}>
+            <StockInfo key={stock.id} onClick={() => handleInsertStock(stock)}>
               <ItemContainer>
               <StockLogo
-                  src={`https://file.alphasquare.co.kr/media/images/stock_logo/${isKRStock ? 'kr' : 'us'}/${stock.symbol}.png`}
+                  src={getImageUrl(stock.symbol)}
                   onError={(e) => {
                     e.currentTarget.src = logoImg;
                   }}
@@ -122,14 +106,14 @@ const StockOptions: React.FC<StockOptionsProps> = ({ dividendMonth }) => {
                 <InfoContainer>
                   <MainText>{stock.name}</MainText>
                   <SubContainer>
-                    <SubText>{displaySymbol}</SubText>
+                    <SubText>{stock.symbol}</SubText>
                     <SubText>{stock.exchange}</SubText>
                   </SubContainer>
                 </InfoContainer>
               </ItemContainer>
               <PriceContainer>
                 <PriceText>
-                  {isKRStock
+                  {isKRStock(stock.symbol)
                     ? `${stock.dividendYieldTtm.toFixed(2)} 원`
                     : `$${stock.dividendYieldTtm.toFixed(2)}`}
                   ({stock.dividendYieldTtm.toFixed(2)}%)

@@ -1,128 +1,119 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { getStocksCombi } from '../../../api/stocks';
 import {
-  stocksData,
-  stocksDatas,
-  stocksDisLike,
-  stocksLike,
-} from '../../../api/stocks';
-import { initialDetail, stockDetail } from '../../../types/stockInfo';
+  StockCombiType,
+  InsertCombiStock,
+  AddCombiStockReq,
+} from '../../../types/stocks_product';
+import { RootState } from '../../store';
 
-export interface Stocks {
-  id: number;
-  symbol: string;
-  name: string;
-  type: string;
-  exchange: string;
-  dividendMonth: number;
-  dividendYieldTtm: number;
-}
-
-interface StocksState {
-  likes: number[];
-  datas: Stocks[];
-  detail: stockDetail;
-}
-
-type ActionPayload = {
+type ActionPayloadCombi = {
   data: {
-    response: Stocks[];
+    response: StockCombiType;
   };
 };
 
-type ActionPayloadDetail = {
-  data: {
-    response: stockDetail;
-  };
+const initialState: StockCombiType = {
+  combination1: {
+    stocks: [],
+    totalDividend: 0,
+  },
+  combination2: {
+    stocks: [],
+    totalDividend: 0,
+  },
+  combination3: {
+    stocks: [],
+    totalDividend: 0,
+  },
 };
 
-const initialState: StocksState = {
-  likes: [-1],
-  datas: [],
-  detail: initialDetail,
-};
-
-export type stocksTypes = {
-  token: string;
-  stock_id: number;
-};
-
-interface RequestBodyType {
-  userInvestmentType: number;
+interface RequestCombiCreate {
   safeScore: number;
-  dividendScore: number;
   growthScore: number;
-  dividendMonth: number | null;
-  page: number;
-  size: number;
+  dividendScore: number;
+  investmentAmount: number;
 }
 
-export const getStocksDatas = createAsyncThunk<ActionPayload, RequestBodyType>(
-  'stocks/getDatas',
-  async (requestBody, thunkAPI) => {
-    const response = await stocksDatas(requestBody);
-    return response as ActionPayload;
-  },
-);
+export const makeCombiStocks = createAsyncThunk<
+  ActionPayloadCombi,
+  number,
+  { state: RootState }
+>('stocks/combination/create', async (investmentAmount: number, thunkAPI) => {
+  const state = thunkAPI.getState();
+  const user = state.user;
 
-export const getStocksData = createAsyncThunk<ActionPayloadDetail, number>(
-  'stocks/getData',
-  async (data: number, thunkAPI) => {
-    const response = await stocksData(data);
-    return response as ActionPayloadDetail;
-  },
-);
+  const requestData: RequestCombiCreate = {
+    safeScore: user.user.safeScore,
+    growthScore: user.user.growthScore,
+    dividendScore: user.user.dividendScore,
+    investmentAmount: investmentAmount,
+  };
 
-export const addLikeStocks = createAsyncThunk(
-  'stocks/like',
-  async (data: stocksTypes, thunkAPI) => {
-    const response = await stocksLike(data);
-    return response;
-  },
-);
-
-export const delLikeStocks = createAsyncThunk(
-  'stocks/dislike',
-  async (data: stocksTypes, thunkAPI) => {
-    const response = await stocksDisLike(data);
-    return response;
-  },
-);
-
-export const makeCombiStocks = createAsyncThunk(
-  'stocks/combination',
-  async (data: stocksTypes, thunkAPI) => {
-    const response = await stocksDisLike(data);
-    return response;
-  },
-);
+  const response = await getStocksCombi(requestData);
+  console.log(response.data.response);
+  return response as ActionPayloadCombi;
+});
 
 const stocksSlice = createSlice({
   name: 'stocks',
   initialState: initialState,
   reducers: {
-    setStocksLike: (state, action) => {
-      state.likes.push(action.payload);
+    addStockToCombination: (
+      state,
+      action: PayloadAction<{
+        combination: 'combination1' | 'combination2' | 'combination3';
+        stock: InsertCombiStock;
+      }>,
+    ) => {
+      const { combination, stock } = action.payload;
+      state[combination].stocks.push(stock);
     },
-    delStocksLike: (state, action) => {
-      state.likes = state.likes.filter((el) => el !== action.payload);
+    removeStockFromCombination: (
+      state,
+      action: PayloadAction<{
+        combination: 'combination1' | 'combination2' | 'combination3';
+        stockSymbol: string;
+      }>,
+    ) => {
+      const { combination, stockSymbol } = action.payload;
+      const stockToRemove = state[combination].stocks.find(
+        (stock) => stock.symbol === stockSymbol,
+      );
+      if (stockToRemove) {
+        state[combination].stocks = state[combination].stocks.filter(
+          (stock) => stock.symbol !== stockSymbol,
+        );
+      }
+    },
+    updateStockQuantity: (
+      state,
+      action: PayloadAction<{
+        combination: 'combination1' | 'combination2' | 'combination3';
+        index: number;
+        newAmount: number;
+      }>,
+    ) => {
+      const { combination, index, newAmount } = action.payload;
+      const stock = state[combination].stocks[index];
+      if (stock) {
+        stock.quantity = newAmount;
+      }
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(
-      getStocksDatas.fulfilled,
-      (state, action: PayloadAction<ActionPayload>) => {
-        state.datas = action.payload.data.response;
-      },
-    );
-    builder.addCase(
-      getStocksData.fulfilled,
-      (state, action: PayloadAction<ActionPayloadDetail>) => {
-        state.detail = action.payload.data.response;
-      },
-    );
+    builder.addCase(makeCombiStocks.fulfilled, (state, action) => {
+      state.combination1 = action.payload.data.response.combination1;
+      state.combination2 = action.payload.data.response.combination2;
+      state.combination3 = action.payload.data.response.combination3;
+    });
   },
 });
 
-export const { setStocksLike, delStocksLike } = stocksSlice.actions;
+export const {
+  addStockToCombination,
+  removeStockFromCombination,
+  updateStockQuantity,
+} = stocksSlice.actions;
 
 export default stocksSlice.reducer;

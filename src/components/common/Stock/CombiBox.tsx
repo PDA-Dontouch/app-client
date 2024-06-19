@@ -1,24 +1,8 @@
 import tw, { styled } from 'twin.macro';
-import StockContainer, { ItemType } from './StockContainer';
+import StockContainer from './StockContainer';
+import { RootState } from '../../../store/store';
+import { useSelector } from 'react-redux';
 
-export type StockType = {
-  combination1: {
-    diviend_income: number;
-    stocks: ItemType[];
-  };
-  combination2: {
-    diviend_income: number;
-    stocks: ItemType[];
-  };
-  combination3: {
-    diviend_income: number;
-    stocks: ItemType[];
-  };
-};
-
-interface StockProps {
-  data: StockType;
-}
 
 const Wrapper = styled.div`
   ${tw`bg-gray-light px-5 py-5 rounded-16 shadow-[4px_4px_6px_0_rgba(0,0,0,0.15)]`}
@@ -40,26 +24,43 @@ const Line = styled.hr`
   ${tw`w-full h-[3px] bg-gray30 border-none`}
 `;
 
-const CombiBox = ({ data }: StockProps) => {
+const InfoText = styled.div`
+  ${tw` text-sm text-green`}
+`;
+
+const CombiBox: React.FC = () => {
+  const combiStocks = useSelector((state: RootState) => state.stocks);
+
+  const areAllCombinationsFilled = 
+    combiStocks.combination1.stocks.length > 0 &&
+    combiStocks.combination2.stocks.length > 0 &&
+    combiStocks.combination3.stocks.length > 0;
+
   return (
-    <Wrapper>
-      <Container>
-        <ItemContainer>
-          <MainText>1•4•7•10월</MainText>
-          <StockContainer item={data.combination1.stocks} />
-        </ItemContainer>
-        <Line />
-        <ItemContainer>
-          <MainText>2•5•8•11월</MainText>
-          <StockContainer item={data.combination2.stocks} />
-        </ItemContainer>
-        <Line />
-        <ItemContainer>
-          <MainText>3•6•9•12월</MainText>
-          <StockContainer item={data.combination3.stocks} />
-        </ItemContainer>
-      </Container>
-    </Wrapper>
+    <>
+      <Wrapper>
+        <Container>
+          <ItemContainer>
+            <MainText>1•4•7•10월</MainText>
+            <StockContainer stocks={combiStocks.combination1.stocks} />
+          </ItemContainer>
+          <Line />
+          <ItemContainer>
+            <MainText>2•5•8•11월</MainText>
+            <StockContainer stocks={combiStocks.combination2.stocks} />
+          </ItemContainer>
+          <Line />
+          <ItemContainer>
+            <MainText>3•6•9•12월</MainText>
+            <StockContainer stocks={combiStocks.combination3.stocks} />
+          </ItemContainer>
+        </Container>
+      </Wrapper>
+      <br></br>
+      {areAllCombinationsFilled && (
+        <InfoText>* 12개월 모두 받을 수 있는 배당 조합입니다.</InfoText>
+      )}
+    </>
   );
 };
 

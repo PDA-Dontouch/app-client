@@ -7,18 +7,14 @@ import Navbar from '../../components/common/Navbar';
 import BottomUpModal from '../../components/common/Modal/BottomUpModal';
 import StockOptions from '../../components/Stock/StockOptions';
 import { useNavigate } from 'react-router-dom';
-
-interface CombiStock {
-  id: number;
-  symbol: string;
-  name: string;
-  price: string;
-  dividendMonth: number;
-  amount: number;
-}
+import { RootState } from '../../store/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch } from '../../store/store';
+import { addStockToCombination, removeStockFromCombination } from '../../store/reducers/stocks/stocks';
+import { InsertCombiStock } from '../../types/stocks_product';
 
 const Container = styled.div`
-  ${tw`h-[calc(100% - 200px)] mt-14 mb-[84px] px-5 py-8 flex flex-col gap-3`}
+  ${tw`h-[calc(100% - 206px)] mt-14 mb-[84px] px-5 py-8 flex flex-col gap-3`}
 `;
 
 const Wrapper = styled.div`
@@ -54,31 +50,18 @@ const AbsoluteButtonContainer = styled.div`
 `;
 
 const StockDetailPage: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const [currentMonth, setCurrentMonth] = useState(0);
   const [isModalOpen, setModalOpen] = useState(false);
-  const [selectedStocks, setSelectedStocks] = useState<CombiStock[]>([
-    {
-      id: 1,
-      symbol: '005930',
-      name: '삼성',
-      price: '63000',
-      dividendMonth: 1,
-      amount: 200,
-    },
-    {
-      id: 2,
-      symbol: '035720',
-      name: '카카오',
-      price: '43400',
-      dividendMonth: 1,
-      amount: 1,
-    },
-  ]);
 
-  const handleDelete = (name: string) => {
-    setSelectedStocks((prevStocks) =>
-      prevStocks.filter((stock) => stock.name !== name),
-    );
+  const combiStocks = useSelector((state: RootState) => state.stocks);
+
+  const currentCombination = `combination${currentMonth + 1}` as "combination1" | "combination2" | "combination3";
+  const selectedStocks = combiStocks[currentCombination];
+  
+  const handleRemoveStock = (stockSymbol: string) => {
+    dispatch(removeStockFromCombination({ combination: currentCombination, stockSymbol }));
   };
 
   const handleAddStock = () => {
@@ -100,32 +83,33 @@ const StockDetailPage: React.FC = () => {
     }
   };
   const handleBuyBtn = () => {
-    // 조합 결과 구매하기
+    navigate('/stocks/buy')
   };
 
   return (
     <>
-      <Navbar name="" type="close" onClick={() => {}} />
+      <Navbar name="" type="close" onClick={() => {navigate(-1)}} />
       <Container>
         <HeaderText>
           {currentMonth + 1}·{currentMonth + 3}·{currentMonth + 5}·
           {currentMonth + 7}월 추천 배당주
         </HeaderText>
         <StockCombination>
-          {selectedStocks.map((stock, idx) => (
+          {selectedStocks.stocks.map((stock, idx) => (
             <div key={idx}>
               <SelectStock
                 name={stock.name}
                 price={stock.price}
-                amount={stock.amount}
-                onDelete={() => handleDelete(stock.name)}
+                amount={stock.quantity}
+                symbol={stock.symbol}
+                onDelete={() => handleRemoveStock(stock.symbol)}
               />
             </div>
           ))}
         </StockCombination>
         <AddStock onClick={handleAddStock}>+ 종목 추가하기</AddStock>
         <Divider />
-        <ExpectedDividend>예상 월 배당금 360,000원</ExpectedDividend>
+        <ExpectedDividend>예상 월 배당금 {selectedStocks.totalDividend}원</ExpectedDividend>
         <Wrapper>
           <ReasonTitle>추천 이유</ReasonTitle>
           <StockRecommend

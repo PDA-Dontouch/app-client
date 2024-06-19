@@ -215,7 +215,7 @@ export default function MainPage() {
 
   return (
     <>
-      <Navbar name="박유진" type="main" onClick={() => {}}></Navbar>
+      <Navbar name={user.user.nickname} type="main" onClick={() => {}}></Navbar>
       {modal && (
         <BottomUpModal
           onClose={() => setModal(false)}

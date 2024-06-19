@@ -1,6 +1,6 @@
 export type investmentType = 1 | 2 | 3 | 4 | 5;
 
-export interface UserDetail {
+export type UserDetail = {
   id: number;
   email: string;
   sns_type: number;
@@ -17,14 +17,20 @@ export type DepositWithDrawalType = {
   price: number;
 };
 
+export type LoginedUser = {
+  nickname: string;
+  email: string;
+  snsType: number;
+}
+
 export const initialUserDetail = {
-  id: 0,
-  email: '',
-  sns_type: 0,
+  id: 1001,
+  email: 'gkstmf616@naver.com',
+  sns_type: 1,
   birthday: new Date(),
-  nickname: '',
+  nickname: '이한슬',
   investmentType: 1 as investmentType,
-  safeScore: 0,
-  dividendScore: 0,
-  growthScore: 0,
+  safeScore: 50,
+  dividendScore: 30,
+  growthScore: 20,
 };

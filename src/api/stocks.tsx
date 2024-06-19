@@ -1,20 +1,53 @@
-import { stocksTypes } from '../store/reducers/stocks/stocks';
 import { stockInstance } from './api';
 import { PromiseAxiosRes, WithToken } from '../types/response_product';
 import {
   CalendarStockPlanType,
   ExchangeRateType,
   StockDataResultType,
+  StockDetailType,
+  StockCombiType,
+  InsertCombiStock,
 } from '../types/stocks_product';
 
 interface RequestBodyType {
-  userInvestmentType: number;
+  searchWord: string | null;
   safeScore: number;
   dividendScore: number;
   growthScore: number;
   dividendMonth: number | null;
   page: number;
   size: number;
+}
+
+interface RequestStockDetail {
+  exchange: string;
+  stockId: number;
+}
+
+interface RequestCombiCreate {
+  safeScore: number;
+  growthScore: number;
+  dividendScore: number;
+  investmentAmount: number;
+}
+
+interface ReorderCombiReq {
+  exchange11: string | null;
+  stockId11: number | null;
+  exchange12: string | null;
+  stockId12: number | null;
+
+  exchange21: number | null;
+  stockId21: number | null;
+  exchange22: string | null;
+  stockId22: number | null;
+
+  exchange31: number | null;
+  stockId31: number | null;
+  exchange32: string | null;
+  stockId32: number | null;
+
+  investmentAmount: number;
 }
 
 type CalendarStockPlansRequestBodyType = {
@@ -34,18 +67,20 @@ export const stocksDatas = async (
   }
 };
 
-export const stocksData = async (stocks_id: string) => {
-  const baseUrl = `/${stocks_id}`;
+export const stocksData = async (
+  requestData: RequestStockDetail,
+): PromiseAxiosRes<StockDetailType> => {
+  const baseUrl = `/detail`;
   try {
-    const response = await stockInstance.get(baseUrl);
+    const response = await stockInstance.post(baseUrl, requestData);
     return response;
   } catch (err) {
     console.error(err);
-    return err;
+    throw err;
   }
 };
 
-export const stocksLike = async (data: stocksTypes) => {
+export const stocksLike = async (data: StockDataResultType) => {
   const baseUrl = `/like`;
   try {
     const response = await stockInstance.post(baseUrl, data);
@@ -56,7 +91,7 @@ export const stocksLike = async (data: stocksTypes) => {
   }
 };
 
-export const stocksDisLike = async (data: stocksTypes) => {
+export const stocksDisLike = async (data: StockDataResultType) => {
   const baseUrl = `/like`;
   try {
     const response = await stockInstance.delete(baseUrl, { data: data });
@@ -82,6 +117,30 @@ export const calendarStockPlans = async (
 export const getExchangeRate = async (): PromiseAxiosRes<ExchangeRateType> => {
   try {
     const response = await stockInstance.get('/exchange/usd');
+    return response;
+  } catch (err: unknown) {
+    console.error(err);
+    throw err;
+  }
+};
+
+export const getStocksCombi = async (
+  body: RequestCombiCreate,
+): PromiseAxiosRes<StockCombiType> => {
+  try {
+    const response = await stockInstance.post('/combination/create', body);
+    return response;
+  } catch (err: unknown) {
+    console.error(err);
+    throw err;
+  }
+};
+
+export const combinationDistribute = async (
+  body: ReorderCombiReq,
+): PromiseAxiosRes<StockCombiType> => {
+  try {
+    const response = await stockInstance.post('/combination/distribute', body);
     return response;
   } catch (err: unknown) {
     console.error(err);

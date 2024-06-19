@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import tw, { styled } from 'twin.macro';
 import Button from '../../components/common/Button';
 import Navbar from '../../components/common/Navbar';
+import { getUserAccountAmount } from '../../api/auth';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
 
 const Container = styled.div`
   ${tw`h-[100%] px-7 py-40 box-border`}
@@ -40,8 +43,16 @@ const Unit = styled.span`
   ${tw`text-3xl ml-1`}
 `;
 
+const SmallButton = styled.button`
+  ${tw`text-sm w-32 h-10 bg-white text-green`}
+  border-radius: 12px;
+  border: none;
+  box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.15);
+`;
+
 const AssetInput = () => {
   const navigate = useNavigate();
+  const user = useSelector((state: RootState) => state.user);
   const [totalAssetNum, setTotalAssetNum] = useState<number>(0);
   const [totalAsset, setTotalAsset] = useState<string>('');
 
@@ -58,6 +69,16 @@ const AssetInput = () => {
       const formattedValue = numericValue.toLocaleString();
       setTotalAsset(formattedValue);
     }
+  };
+
+  const handleInvestAll = () => {
+    getUserAccountAmount({
+      token: user.token,
+      userId: user.user.id,
+    }).then((response) => {
+      setTotalAssetNum(response.data.response.cash);
+      setTotalAsset(response.data.response.cash.toLocaleString());
+    });
   };
 
   const handleSubmit = () => {
@@ -87,6 +108,7 @@ const AssetInput = () => {
               />
               <Unit>원</Unit>
             </InputWrapper>
+            <SmallButton onClick={handleInvestAll}>전액 투자하기</SmallButton>
           </Wrapper>
         </ItemContainer>
         <Button

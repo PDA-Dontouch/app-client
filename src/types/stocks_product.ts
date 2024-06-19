@@ -18,3 +18,9 @@ export type StockDataResultType = {
   dividendYieldTtm: number;
   personalizedScore: number;
 };
+
+export type ExchangeRateType = {
+  currency: string;
+  buying: number;
+  selling: number;
+};

@@ -1,10 +1,14 @@
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { stocksData, stocksDatas, stocksDisLike, stocksLike } from "../../../api/stocks";
-import { initialDetail, stockDetail } from "../../../types/stockInfo";
-
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {
+  stocksData,
+  stocksDatas,
+  stocksDisLike,
+  stocksLike,
+} from '../../../api/stocks';
+import { initialDetail, stockDetail } from '../../../types/stockInfo';
 
 export interface Stocks {
-  id:number;
+  id: number;
   symbol: string;
   name: string;
   type: string;
@@ -31,11 +35,11 @@ type ActionPayloadDetail = {
   };
 };
 
-const initialState:StocksState = {
+const initialState: StocksState = {
   likes: [-1],
   datas: [],
   detail: initialDetail,
-}
+};
 
 export type stocksTypes = {
   token: string;
@@ -53,47 +57,47 @@ interface RequestBodyType {
 }
 
 export const getStocksDatas = createAsyncThunk<ActionPayload, RequestBodyType>(
-  "stocks/getDatas",
+  'stocks/getDatas',
   async (requestBody, thunkAPI) => {
     const response = await stocksDatas(requestBody);
     return response as ActionPayload;
-  }
+  },
 );
 
 export const getStocksData = createAsyncThunk<ActionPayloadDetail, number>(
-  "stocks/getData",
+  'stocks/getData',
   async (data: number, thunkAPI) => {
     const response = await stocksData(data);
     return response as ActionPayloadDetail;
-  }
+  },
 );
 
 export const addLikeStocks = createAsyncThunk(
-  "stocks/like",
+  'stocks/like',
   async (data: stocksTypes, thunkAPI) => {
     const response = await stocksLike(data);
     return response;
-  }
+  },
 );
 
 export const delLikeStocks = createAsyncThunk(
-  "stocks/dislike",
+  'stocks/dislike',
   async (data: stocksTypes, thunkAPI) => {
     const response = await stocksDisLike(data);
     return response;
-  }
+  },
 );
 
 export const makeCombiStocks = createAsyncThunk(
-  "stocks/combination",
+  'stocks/combination',
   async (data: stocksTypes, thunkAPI) => {
     const response = await stocksDisLike(data);
     return response;
-  }
+  },
 );
 
 const stocksSlice = createSlice({
-  name: "stocks",
+  name: 'stocks',
   initialState: initialState,
   reducers: {
     setStocksLike: (state, action) => {
@@ -101,18 +105,21 @@ const stocksSlice = createSlice({
     },
     delStocksLike: (state, action) => {
       state.likes = state.likes.filter((el) => el !== action.payload);
-    }
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(
-      getStocksDatas.fulfilled,(state, action: PayloadAction<ActionPayload>) => {
+      getStocksDatas.fulfilled,
+      (state, action: PayloadAction<ActionPayload>) => {
         state.datas = action.payload.data.response;
       },
     );
     builder.addCase(
-      getStocksData.fulfilled, (state, action: PayloadAction<ActionPayloadDetail>) => {
+      getStocksData.fulfilled,
+      (state, action: PayloadAction<ActionPayloadDetail>) => {
         state.detail = action.payload.data.response;
-      })
+      },
+    );
   },
 });
 

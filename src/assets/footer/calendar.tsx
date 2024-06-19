@@ -32,12 +32,12 @@ const CalendarIcon = ({ isSelect }: CalendarIconProps) => {
       <path
         d="M10 4.25L10 9.25"
         stroke={isSelect ? '#1aa76e' : '#222222'}
-        stroke-linecap="round"
+        strokeLinecap="round"
       />
       <path
         d="M20 4.25L20 9.25"
         stroke={isSelect ? '#1aa76e' : '#222222'}
-        stroke-linecap="round"
+        strokeLinecap="round"
       />
     </svg>
   );

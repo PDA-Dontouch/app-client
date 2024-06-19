@@ -6,7 +6,7 @@ import SelectYearMonth from '../components/Calendar/SelectYearMonth';
 import Navbar from '../components/common/Navbar';
 import Footer from '../components/common/Footer';
 import SalaryPlan from '../components/Calendar/SalaryPlan';
-import { calendarStockPlans } from '../api/stocks';
+import { calendarStockPlans, getExchangeRate } from '../api/stocks';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { CalendarStockPlanType } from '../types/stocks_product';
@@ -91,7 +91,6 @@ export default function CalendarPage() {
   }
 
   const getPlans = useCallback(() => {
-    console.log(new Date(year, month, startDate));
     calendarStockPlans({
       token: token,
       startDate: new Date(year, month, startDate + 1),
@@ -115,7 +114,7 @@ export default function CalendarPage() {
         0,
       );
       setStockPlans(data.data.response);
-      console.log(data.data.response);
+
       setTotalSalary(totalStockSalary);
     });
   }, [year, month, exchangeRate]);
@@ -125,6 +124,9 @@ export default function CalendarPage() {
 
   useEffect(() => {
     getPlans();
+    getExchangeRate().then((data) => {
+      setExchangeRate(data.data.response.selling);
+    });
   }, [year, month, exchangeRate]);
 
   return (

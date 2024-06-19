@@ -8,8 +8,11 @@ import GreenBtnSet from '../../components/Main/GreenBtnSet';
 import BottomUpModal from '../../components/common/Modal/BottomUpModal';
 import { useEffect, useState } from 'react';
 import WithdrawDeposit from '../../components/Main/WithdrawDeposit';
+import { getUserAccountAmount } from '../../api/auth';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
 
-type LogType = 'deposit' | 'withdraw';
+type LogType = 'deposit' | 'withdrawal';
 
 type LogProps = {
   log: LogType;
@@ -61,7 +64,7 @@ type LogDateType = {
 
 const logData: LogDateType[] = [
   { type: 'deposit', price: 50000 },
-  { type: 'withdraw', price: 300000 },
+  { type: 'withdrawal', price: 300000 },
 ];
 
 export default function AccountPage() {
@@ -69,6 +72,7 @@ export default function AccountPage() {
   const [modal, setModal] = useState<boolean>(false);
   const [modalType, setModalType] = useState<LogType>('deposit');
   const [accountAmount, setAccountAmount] = useState<number>(0);
+  const user = useSelector((state: RootState) => state.user);
 
   function onClickDeposit() {
     setModal(true);
@@ -77,10 +81,18 @@ export default function AccountPage() {
 
   function onClickWithdraw() {
     setModal(true);
-    setModalType('withdraw');
+    setModalType('withdrawal');
   }
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    getUserAccountAmount({ userId: user.user.id, token: user.token }).then(
+      (data) => {
+        if (data.data.response.cash) {
+          setAccountAmount(data.data.response.cash);
+        }
+      },
+    );
+  }, []);
 
   return (
     <>

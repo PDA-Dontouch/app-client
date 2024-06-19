@@ -9,7 +9,9 @@ import StockP2P from '../../components/Main/StockP2P';
 import { useEffect, useState } from 'react';
 import BottomUpModal from '../../components/common/Modal/BottomUpModal';
 import AddStockModal from '../../components/Main/AddStockModal';
-import SearchBar from '../../components/common/Stock/SearchBar';
+import { getUserEstateProduct } from '../../api/holding';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
 
 interface LocationState {
   initialActive: boolean;
@@ -61,28 +63,29 @@ const energyData: MyP2PProductType[] = [
   },
 ];
 
-const estateData: MyP2PProductType[] = [
-  {
-    img: '',
-    name: '의성군 외 총 993.40kW 태양광 담보',
-    annualRate: 13.0,
-    monthlyDividend: 270000,
-    openDate: new Date(2024, 6, 30),
-  },
-  {
-    img: '',
-    name: '의성군 외 총 993.40kW 태양광 담보',
-    annualRate: 13.0,
-    monthlyDividend: 63800,
-    openDate: new Date(2024, 4, 30),
-  },
-];
-
 export default function ProductsHeldPage() {
   const [modal, setModal] = useState<boolean>(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const [estateData, setEstateData] = useState<MyP2PProductType[]>([]);
+
+  const user = useSelector((state: RootState) => state.user);
+
   const state = location.state as LocationState;
+
+  function getEstateDataProps() {
+    getUserEstateProduct({ userId: user.user.id, token: user.token }).then(
+      (data) => {
+        setEstateData(data.data.response);
+        if (!data.data.success) setEstateData([]);
+      },
+    );
+  }
+
+  useEffect(() => {
+    getEstateDataProps();
+  }, []);
+
   return (
     <>
       {modal && (

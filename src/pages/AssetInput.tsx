@@ -44,22 +44,26 @@ const AssetInput = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { totalScore } = location.state || { totalScore: 0 };
-  const [totalAsset, setTotalAsset] = useState('');
+  const [totalAssetNum, setTotalAssetNum] = useState<number>(0);
+  const [totalAsset, setTotalAsset] = useState<string>('');
   const [showModal, setShowModal] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/,/g, '');
-    if (isNaN(Number(value))) {
-      alert('숫자를 입력해주세요');
-      setTotalAsset('');
-    } else {
+
+    if (
+      ('0' <= value.charAt(value.length - 1) &&
+        value.charAt(value.length - 1) <= '9') ||
+      value.length === 0
+    ) {
+      setTotalAssetNum(Number(totalAsset));
       const formattedValue = Number(value).toLocaleString();
+
       setTotalAsset(formattedValue);
     }
   };
 
   const handleSubmit = () => {
-    const totalAssetParse = totalAsset.replace(/,/g, '');
     setShowModal(true);
   };
 
@@ -84,6 +88,7 @@ const AssetInput = () => {
                 type="text"
                 value={totalAsset}
                 onChange={handleInputChange}
+                inputMode="decimal"
                 placeholder=""
               />
               <Unit>원</Unit>

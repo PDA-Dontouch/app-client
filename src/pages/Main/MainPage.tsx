@@ -12,8 +12,9 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { CalendarStockPlanType } from '../../types/stocks_product';
 import SalaryPlan from '../../components/Calendar/SalaryPlan';
-import { calendarStockPlans } from '../../api/stocks';
+import { calendarStockPlans, getExchangeRate } from '../../api/stocks';
 import { investmentTypeToString } from '../../utils/investmentType';
+import { getUserAccountAmount } from '../../api/auth';
 
 type TitleNameProps = {
   type: 'name' | 'nim';
@@ -152,6 +153,9 @@ export default function MainPage() {
   const [stockPlans, setStockPlans] = useState<CalendarStockPlanType[]>([]);
   const [totalSalary, setTotalSalary] = useState<number>(0);
   const [exchangeRate, setExchangeRate] = useState<number>(0);
+  const [accountAmount, setAccountAmount] = useState<number>(0);
+  const [stockTotalAmount, setStockTotalAmount] = useState<number>(0);
+  const [p2pTotalAmount, setP2pTotalAmount] = useState<number>(0);
   const user = useSelector((state: RootState) => state.user);
 
   const navigate = useNavigate();
@@ -183,6 +187,16 @@ export default function MainPage() {
     });
   }, [exchangeRate]);
 
+  const getAccountAmount = useCallback(() => {
+    getUserAccountAmount({ userId: user.user.id, token: user.token }).then(
+      (data) => {
+        if (data.data.response.cash) {
+          setAccountAmount(data.data.response.cash);
+        }
+      },
+    );
+  }, []);
+
   useEffect(() => {
     calendarStockPlans({
       token: user.token,
@@ -192,7 +206,11 @@ export default function MainPage() {
       setStockPlans(data.data.response);
     });
 
+    getAccountAmount();
     getPlans();
+    getExchangeRate().then((data) => {
+      setExchangeRate(data.data.response.selling);
+    });
   }, [exchangeRate]);
 
   return (
@@ -249,27 +267,32 @@ export default function MainPage() {
           <TotalAssetTitle>
             <TotalAssetTitleText>총자산</TotalAssetTitleText>
             <TotalAssetTitleNumber>
-              {(6045200).toLocaleString()}원
+              {(
+                accountAmount +
+                stockTotalAmount +
+                p2pTotalAmount
+              ).toLocaleString()}
+              원
             </TotalAssetTitleNumber>
           </TotalAssetTitle>
           <AssetDetailSection>
             <AssetDetailCommon
               type="입출금"
-              price={4003000}
+              price={accountAmount}
               onClick={() => {
                 navigate('/account');
               }}
             />
             <AssetDetailCommon
               type="주식"
-              price={634320}
+              price={stockTotalAmount}
               onClick={() => {
                 navigate('/products/held', { state: { initialActive: true } });
               }}
             />
             <AssetDetailCommon
               type="P2P"
-              price={425480}
+              price={p2pTotalAmount}
               onClick={() => {
                 navigate('/products/held', { state: { initialActive: false } });
               }}

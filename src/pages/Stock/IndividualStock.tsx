@@ -5,7 +5,10 @@ import { useEffect, useState } from 'react';
 import TradingStock from '../../components/Stock/TradingStock';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
-import { getDetail } from '../../store/reducers/stocks/individualStock';
+import {
+  getChartDatas,
+  getDetail,
+} from '../../store/reducers/stocks/individualStock';
 import { useWebSocket } from '../../hooks/useWebSocket';
 import { useNavigate, useParams } from 'react-router-dom';
 import { setSelectedPrice } from '../../store/reducers/stocks/trading';
@@ -18,7 +21,7 @@ import StockCandleChart from '../../components/Stock/individual/StockCandleChart
 import StockLineChart from '../../components/Stock/individual/StockLineChart';
 
 const Container = styled.div`
-  ${tw`py-8 mt-14`}
+  ${tw`py-6 mt-14 mb-4`}
 `;
 
 const BtnContainer = styled.div`
@@ -39,6 +42,7 @@ const IndividualStock = () => {
   const selectExchange = useSelector(
     (state: RootState) => state.trading.selectExchange,
   );
+
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isSell, setIsSell] = useState<boolean>(false);
   const [isActive, setIsActive] = useState<boolean>(true);
@@ -74,7 +78,7 @@ const IndividualStock = () => {
         }}
       />
       <Container>
-        <MarketInfo />
+        <MarketInfo nowPrice={nowPrice} />
         <ChartSelect isCandle={isCandle} setIsCandle={setIsCandle} />
         {isCandle ? (
           <StockCandleChart nowPrice={nowPrice} />

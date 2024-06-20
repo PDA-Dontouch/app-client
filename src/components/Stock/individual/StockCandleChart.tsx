@@ -35,16 +35,6 @@ const StockChart = ({ nowPrice }: ChartProps) => {
   );
 
   useEffect(() => {
-    const data = {
-      exchange: 'KSC',
-      stockId: 32,
-      month: 30,
-      interval: 5,
-    };
-    dispatch(getChartDatas(data));
-  }, [dispatch]);
-
-  useEffect(() => {
     const today = new Date();
     const formattedDate = today.toISOString().slice(0, 10).replace(/-/g, '');
 

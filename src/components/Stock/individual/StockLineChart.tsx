@@ -60,7 +60,7 @@ const StockLineChart = () => {
       xScale={xScale}
       xAccessor={xAccessor}
       xExtents={xExtents}
-      zoomAnchor={lastVisibleItemBasedZoomAnchor}
+      disableZoom={true}
     >
       <Chart
         id={1}

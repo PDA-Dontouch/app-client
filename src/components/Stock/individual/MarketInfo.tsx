@@ -1,10 +1,18 @@
-import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import tw, { styled } from 'twin.macro';
-import { RootState } from '../../../store/store';
+import { AppDispatch, RootState } from '../../../store/store';
 
 import Empty from '../../../assets/empty-heart.svg';
 import Fill from '../../../assets/fill-heart.svg';
+import { PriceType } from '../../../types/socket';
+import { CaretDownFill, CaretUpFill } from 'react-bootstrap-icons';
+import { getChartDatas } from '../../../store/reducers/stocks/individualStock';
+import { useParams } from 'react-router-dom';
+
+interface InfoProps {
+  nowPrice: PriceType;
+}
 
 const NameContainer = styled.div`
   ${tw`w-full px-7 flex justify-between items-center box-border`}
@@ -18,8 +26,8 @@ const MainText = styled.span`
   ${tw`text-xl font-semibold`}
 `;
 
-const SubText = styled.span`
-  ${tw`text-base`}
+const SubText = styled.div`
+  ${tw`px-1 pt-2`}
 `;
 
 const Img = styled.img`
@@ -40,11 +48,81 @@ const ItemText = styled.span`
   ${tw`text-sm`}
 `;
 
-const MarketInfo = () => {
+const StockDiv = styled.div`
+  ${tw`flex items-center mt-2 gap-1`}
+`;
+
+const StockFont = styled.span<{ num: number }>`
+  ${tw`pe-4 text-lg`}
+
+  color: ${(props) =>
+    props.num > 0 ? '#c70606' : props.num < 0 ? '#0636c7' : '#000'};
+`;
+
+const StockFont2 = styled.span<{ num: number }>`
+  color: ${(props) =>
+    props.num > 0 ? '#c70606' : props.num < 0 ? '#0636c7' : '#000'};
+`;
+
+const MarketInfo = ({ nowPrice }: InfoProps) => {
+  const params = useParams();
+  const dispatch = useDispatch<AppDispatch>();
   const detail = useSelector(
     (state: RootState) => state.individualStock.detail,
   );
+  const chartData = useSelector(
+    (state: RootState) => state.individualStock.chartData.prices,
+  );
+  const selectExchange = useSelector(
+    (state: RootState) => state.trading.selectExchange,
+  );
   const [isLike, setIsLike] = useState<boolean>(false);
+  const [upNum, setUpNum] = useState(0);
+  const [nowRate, setNowRate] = useState(0);
+  const [upDown, setUpDown] = useState(0);
+  const [close, setClose] = useState('');
+  const [stockRate, setStockRate] = useState(0);
+
+  useEffect(() => {
+    const data = {
+      exchange: selectExchange,
+      stockId: parseInt(params.id || ''),
+      month: 30,
+      interval: 5,
+    };
+    dispatch(getChartDatas(data)).then((res) => {
+      setUpDown(
+        chartData[chartData.length - 1].close -
+          chartData[chartData.length - 2].close,
+      );
+      setClose(
+        chartData[chartData.length - 1].close
+          .toString()
+          .replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+      );
+      setStockRate(
+        (chartData[chartData.length - 1].close -
+          chartData[chartData.length - 2].close /
+            chartData[chartData.length - 2].close) *
+          100,
+      );
+    });
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (chartData.length > 1) {
+      setUpNum(
+        parseFloat(nowPrice.message.close) -
+          chartData[chartData.length - 2].close,
+      );
+      setNowRate(
+        ((parseFloat(nowPrice.message.close) -
+          chartData[chartData.length - 2].close) /
+          chartData[chartData.length - 2].close) *
+          100,
+      );
+    }
+  }, [nowPrice]);
 
   const formatNumber = (num: number): string => {
     if (num >= 1e8) {
@@ -61,7 +139,50 @@ const MarketInfo = () => {
       <NameContainer>
         <SubName>
           <MainText>{detail.basic_info.name}</MainText>
-          {/* <SubText>60,200원</SubText> */}
+          {/* <SubText>{nowPrice.message.close}원</SubText> */}
+          <SubText>
+            {nowPrice?.message ? (
+              <>
+                <StockFont num={upNum}>
+                  {nowPrice?.message.close
+                    .toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                </StockFont>
+                <StockDiv>
+                  {upNum > 0 ? (
+                    <CaretUpFill color="#c70606" />
+                  ) : upNum < 0 ? (
+                    <CaretDownFill color="#0636c7" />
+                  ) : null}
+                  <StockFont2 num={upNum}>
+                    {upNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  </StockFont2>
+                  <StockFont2 num={nowRate}>(</StockFont2>
+                  {nowRate > 0 && <StockFont2 num={nowRate}>+</StockFont2>}
+                  <StockFont2 num={nowRate}>{nowRate.toFixed(2)}%)</StockFont2>
+                </StockDiv>
+              </>
+            ) : (
+              <>
+                <StockFont num={upDown}>{close}</StockFont>
+                <StockDiv>
+                  {upDown > 0 ? (
+                    <CaretUpFill color="#c70606" />
+                  ) : upDown < 0 ? (
+                    <CaretDownFill color="#0636c7" />
+                  ) : null}
+                  <StockFont2 num={upDown}>
+                    {upDown.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  </StockFont2>
+                  <StockFont2 num={stockRate}>(</StockFont2>
+                  {stockRate > 0 && <StockFont2 num={stockRate}>+</StockFont2>}
+                  <StockFont2 num={stockRate}>
+                    {stockRate.toFixed(2)}%)
+                  </StockFont2>
+                </StockDiv>
+              </>
+            )}
+          </SubText>
         </SubName>
         <Img
           src={isLike ? Fill : Empty}
@@ -82,14 +203,6 @@ const MarketInfo = () => {
             {detail.basic_info.dividendMonth + 9}월
           </ItemText>
         </Item>
-        {/* <Item isCol={false} isTwo={true}>
-            <ItemText>PBR</ItemText>
-            <ItemText>6.7배</ItemText>
-          </Item>
-          <Item isCol={false} isTwo={true}>
-            <ItemText>주당 배당금</ItemText>
-            <ItemText>9000원</ItemText>
-          </Item> */}
         <Item isCol={false} isTwo={true}>
           <ItemText>PER</ItemText>
           <ItemText>{detail.detail_info.peRatioTtm.toFixed(2)}배</ItemText>

@@ -21,6 +21,7 @@ export type SocketType = {
 };
 
 export type postOrderData = {
+  stockName: string;
   stockCode: string;
   userId: number;
   price: number;

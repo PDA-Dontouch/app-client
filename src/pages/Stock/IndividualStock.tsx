@@ -79,7 +79,11 @@ const IndividualStock = () => {
       />
       <Container>
         <MarketInfo nowPrice={nowPrice} />
-        <ChartSelect isCandle={isCandle} setIsCandle={setIsCandle} />
+        <ChartSelect
+          isCandle={isCandle}
+          setIsCandle={setIsCandle}
+          stockId={parseInt(params.id || '')}
+        />
         {isCandle ? (
           <StockCandleChart nowPrice={nowPrice} />
         ) : (

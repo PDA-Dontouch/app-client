@@ -1,21 +1,22 @@
 import React from 'react';
 import tw, { styled } from 'twin.macro';
 
-import check from '../../../assets/check.svg';
+import complete from '../../../assets/complete.svg';
 import coin from '../../../assets/coin.svg';
 import energy from '../../../assets/energy.svg';
 import estate from '../../../assets/estate.svg';
 
 interface ResultMessageProps {
-  type: 'buy' | 'sell' | 'energy' | 'estate' | 'cancel';
+  type: 'buy' | 'sell' | 'energy' | 'estate' | 'cancel' | 'pending';
 }
 
 const messageDetails: { [key: string]: { image: string; text: string } } = {
   buy: { image: coin, text: '구매가 완료되었습니다!' },
-  sell: { image: check, text: '판매가 완료되었습니다!' },
+  sell: { image: complete, text: '판매가 완료되었습니다!' },
   energy: { image: energy, text: '구매가 완료되었습니다!' },
   estate: { image: estate, text: '구매가 완료되었습니다!' },
-  cancel: { image: check, text: '구매가 취소되었습니다.' },
+  cancel: { image: complete, text: '구매가 취소되었습니다.' },
+  pending: { image: complete, text: '예약이 완료되었습니다.' },
 };
 
 const Container = styled.div`

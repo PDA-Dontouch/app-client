@@ -1,8 +1,14 @@
 import tw, { styled } from 'twin.macro';
 import Button from '../../common/Button';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../store/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../../store/store';
+import {
+  buyLimitOrder,
+  sellLimitOrder,
+} from '../../../store/reducers/stocks/trading';
+import { useNavigate } from 'react-router-dom';
+import { leaveRoom } from '../../../store/webSocket/nowPrice';
 
 interface SellBuyProps {
   isSell: boolean;
@@ -62,16 +68,26 @@ const MainText = styled.span`
   ${tw`text-base font-semibold`}
 `;
 
-const SubText = styled.span`
-  ${tw`text-sm`}
+const SubText = styled.span<{ isError: boolean }>`
+  ${tw`text-sm text-end`}
+  ${({ isError }) => (isError ? tw`text-red` : '')}
 `;
 
 const SellBuyStock = ({ isSell }: SellBuyProps) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const [price, setPrice] = useState<number>(0);
   const [amount, setAmount] = useState<number>(0);
   const [isSelect, setIsSelect] = useState<number>(0);
+  const [error, setError] = useState<string>('');
   const selectPrice = useSelector(
     (state: RootState) => state.trading.selectedPrice,
+  );
+  const detail = useSelector(
+    (state: RootState) => state.individualStock.detail,
+  );
+  const selectCode = useSelector(
+    (state: RootState) => state.trading.selectCode,
   );
 
   useEffect(() => {
@@ -102,33 +118,59 @@ const SellBuyStock = ({ isSell }: SellBuyProps) => {
   };
 
   const onSell = () => {
-    if (price === 0 && amount === 0) {
-      alert('가격과 수량을 입력해주세요.');
-    } else if (price === 0) {
-      alert('가격을 입력해주세요.');
+    if (isSelect === 0) {
+      if (price === 0 && amount === 0) {
+        setError('가격과 수량을 입력해주세요.');
+      } else if (price === 0) {
+        setError('가격을 입력해주세요.');
+      }
     } else if (amount === 0) {
-      alert('수량을 입력해주세요.');
+      setError('수량을 입력해주세요.');
     } else {
       if (isSelect === 0) {
-        // 지정가
+        const data = {
+          stockName: detail.basic_info.name,
+          stockCode: detail.basic_info.symbol,
+          userId: 9,
+          price: price,
+          amount: amount,
+        };
+        dispatch(sellLimitOrder(data)).then(() => {
+          navigate('/result/sell');
+          leaveRoom(selectCode);
+        });
       } else {
         // 시장가
+        console.log('시장가로 사기');
       }
     }
   };
 
   const onBuy = () => {
-    if (price === 0 && amount === 0) {
-      alert('가격과 수량을 입력해주세요.');
-    } else if (price === 0) {
-      alert('가격을 입력해주세요.');
+    if (isSelect === 0) {
+      if (price === 0 && amount === 0) {
+        setError('가격과 수량을 입력해주세요.');
+      } else if (price === 0) {
+        setError('가격을 입력해주세요.');
+      }
     } else if (amount === 0) {
-      alert('수량을 입력해주세요.');
+      setError('수량을 입력해주세요.');
     } else {
       if (isSelect === 0) {
-        // 지정가
+        const data = {
+          stockName: detail.basic_info.name,
+          stockCode: detail.basic_info.symbol,
+          userId: 9,
+          price: price,
+          amount: amount,
+        };
+        dispatch(buyLimitOrder(data)).then(() => {
+          navigate('/result/pending');
+          leaveRoom(selectCode);
+        });
       } else {
         // 시장가
+        console.log('시장가로 사기');
       }
     }
   };
@@ -140,7 +182,10 @@ const SellBuyStock = ({ isSell }: SellBuyProps) => {
           <Btn
             isLeft={true}
             isSelect={isSelect === 0}
-            onClick={() => setIsSelect(0)}
+            onClick={() => {
+              setIsSelect(0);
+              setError('');
+            }}
           >
             지정가
           </Btn>
@@ -150,6 +195,7 @@ const SellBuyStock = ({ isSell }: SellBuyProps) => {
             onClick={() => {
               setIsSelect(1);
               setPrice(0);
+              setError('');
             }}
           >
             시장가
@@ -161,7 +207,7 @@ const SellBuyStock = ({ isSell }: SellBuyProps) => {
             <Input
               disabled={isSelect === 1}
               value={price === 0 ? '' : `${formatNumber(price)}`}
-              placeholder="0"
+              placeholder={isSelect === 0 ? '0' : ''}
               onChange={handlePriceChange}
             />
             <Suffix>원</Suffix>
@@ -178,10 +224,11 @@ const SellBuyStock = ({ isSell }: SellBuyProps) => {
             <Suffix>주</Suffix>
           </InputContainer>
         </Item>
+        {error && <SubText isError={true}>{error}</SubText>}
       </ItemContainer>
       <BtnContainer>
         <TextContainer>
-          <SubText>주문금액</SubText>
+          <SubText isError={false}>주문금액</SubText>
           <MainText>{formatNumber(parseInt(selectPrice) * amount)}원</MainText>
         </TextContainer>
         <Button

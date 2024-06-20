@@ -101,9 +101,9 @@ const MarketInfo = ({ nowPrice }: InfoProps) => {
           .replace(/\B(?=(\d{3})+(?!\d))/g, ','),
       );
       setStockRate(
-        (chartData[chartData.length - 1].close -
-          chartData[chartData.length - 2].close /
-            chartData[chartData.length - 2].close) *
+        ((chartData[chartData.length - 1].close -
+          chartData[chartData.length - 2].close) /
+          chartData[chartData.length - 2].close) *
           100,
       );
     });
@@ -141,7 +141,7 @@ const MarketInfo = ({ nowPrice }: InfoProps) => {
           <MainText>{detail.basic_info.name}</MainText>
           {/* <SubText>{nowPrice.message.close}원</SubText> */}
           <SubText>
-            {nowPrice?.message ? (
+            {nowPrice.message.close !== '' ? (
               <>
                 <StockFont num={upNum}>
                   {nowPrice?.message.close

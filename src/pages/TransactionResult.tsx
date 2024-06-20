@@ -16,7 +16,7 @@ const ButtonContainer = styled.div`
 
 const TransactionResult: React.FC = () => {
   const { type } = useParams<{
-    type: 'buy' | 'sell' | 'energy' | 'estate' | 'cancel';
+    type: 'buy' | 'sell' | 'energy' | 'estate' | 'cancel' | 'pending';
   }>();
   const navigate = useNavigate();
 

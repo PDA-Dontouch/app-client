@@ -51,29 +51,15 @@ const EstatesMain = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const estatesDatas = useSelector((state: RootState) => state.estates.datas);
+  const isLoading = useSelector((state: RootState) => state.estates.loading);
   const [sortByProfit, setSortByProfit] = useState(false);
   const [isSelect, setIsSelect] = useState(0);
-  const [showSkeleton, setShowSkeleton] = useState(true);
 
   useEffect(() => {
     dispatch(getEstatesDatas());
     dispatch(getHoldingEstates(13));
+    // dispatch(getHoldingEstates(userId));
   }, [dispatch]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowSkeleton(false);
-    }, 1500);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const handleSelectChange = (index: number) => {
-    setIsSelect(index);
-    setShowSkeleton(true);
-    setTimeout(() => {
-      setShowSkeleton(false);
-    }, 2000);
-  };
 
   const { EstatesLikeArr, setLikeEstates } = useLike();
 
@@ -129,20 +115,14 @@ const EstatesMain = () => {
         </BtnContainer>
         <ItemContainer>
           <SelectContainer>
-            <SubText
-              isSelect={isSelect === 0}
-              onClick={() => handleSelectChange(0)}
-            >
+            <SubText isSelect={isSelect === 0} onClick={() => setIsSelect(0)}>
               모집 중
             </SubText>
-            <SubText
-              isSelect={isSelect === 1}
-              onClick={() => handleSelectChange(1)}
-            >
+            <SubText isSelect={isSelect === 1} onClick={() => setIsSelect(1)}>
               모집 완료
             </SubText>
           </SelectContainer>
-          {showSkeleton
+          {isLoading
             ? [...Array(5)].map((_, index) => <ProductSkeleton />)
             : isSelect === 0
               ? renderProducts(ongoingInvestments)

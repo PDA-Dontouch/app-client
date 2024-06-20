@@ -16,6 +16,7 @@ import {
 } from '../../../types/estates_product';
 
 interface EstatesState {
+  loading: boolean;
   estatesLike: number[];
   datas: EstatesList[];
   detail: EstatesDetail;
@@ -29,6 +30,7 @@ type ActionPayload<T> = {
 };
 
 const initialState: EstatesState = {
+  loading: true,
   estatesLike: [-1],
   datas: [],
   detail: initialEstatesDetail,
@@ -109,6 +111,7 @@ const estatesSlice = createSlice({
       getEstatesDatas.fulfilled,
       (state, action: PayloadAction<ActionPayload<EstatesList[]>>) => {
         state.datas = action.payload.data.response;
+        state.loading = false;
       },
     );
     builder.addCase(

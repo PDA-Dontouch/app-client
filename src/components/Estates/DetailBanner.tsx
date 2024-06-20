@@ -1,13 +1,13 @@
 import tw, { css, styled } from 'twin.macro';
 import InfoInBanner from './InfoInBanner';
-import { EstatesList, estatesDetail } from '../../types/estates_product';
+import { EstatesList, EstatesDetail } from '../../types/estates_product';
 import { energyDetail } from '../../types/energy_product';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 
 interface BannerProps {
   isEstates: boolean;
-  data: estatesDetail | energyDetail;
+  data: EstatesDetail | energyDetail;
 }
 
 const Container = styled.div<{ isEstates: boolean }>`
@@ -61,7 +61,7 @@ const DetailBanner = ({ isEstates, data }: BannerProps) => {
         </Grade>
         <MiniText>
           {isEstates
-            ? (data as estatesDetail).startDatetime.slice(0, 10)
+            ? (data as EstatesDetail).startDatetime.slice(0, 10)
             : (data as energyDetail).startPeriod.slice(0, 10)}{' '}
           오픈
         </MiniText>

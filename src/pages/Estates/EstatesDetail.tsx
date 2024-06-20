@@ -24,6 +24,7 @@ import InvestPoint from '../../components/Estates/InvestPoint';
 import ExpertCheck from '../../components/Estates/ExpertCheck';
 import { getHoldingEstates } from '../../store/reducers/estates/holding';
 import { BuyType } from '../../types/estates_product';
+import CollateralStability from '../../components/Estates/CollateralStability';
 
 interface BuyEstatesResponse {
   data: {
@@ -84,6 +85,9 @@ const EstatesDetail = () => {
       dispatch(buyEstates(data)).then((res) => {
         if ((res.payload as BuyEstatesResponse).data.success) {
           navigate('/result/estate');
+        } else {
+          // 임시 에러 처리
+          alert((res.payload as BuyEstatesResponse).data.error?.errorMessage);
         }
       });
     }
@@ -131,6 +135,8 @@ const EstatesDetail = () => {
         <Hr />
         <DetailInfo data={detail} />
         <Hr />
+        {/* <CollateralStability data={detail} />
+        <Hr /> */}
         <ExpertCheck data={detail} />
       </Container>
       <BtnContainer>

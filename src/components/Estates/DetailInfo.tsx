@@ -1,11 +1,11 @@
 import tw, { styled } from 'twin.macro';
 import MapComponent from '../common/MapComponent';
-import { estatesDetail } from '../../types/estates_product';
+import { EstatesDetail } from '../../types/estates_product';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 
 interface DetailProps {
-  data: estatesDetail;
+  data: EstatesDetail;
 }
 
 const Container = styled.div`

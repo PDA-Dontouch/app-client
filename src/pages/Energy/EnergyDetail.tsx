@@ -74,7 +74,7 @@ const EnergyDetail = () => {
           onClick={() => setIsOpen(true)}
         />
       </BtnContainer>
-      {isOpen && (
+      {/* {isOpen && (
         <BottomUpModal
           onClose={() => setIsOpen(false)}
           content={
@@ -86,7 +86,7 @@ const EnergyDetail = () => {
           }
         />
         // <BottomUpModal onClose={() => setIsOpen(false)} content={<Cancel amount={5000000} period={6} profit={205100} btnType="plain" />} />
-      )}
+      )} */}
     </>
   );
 };

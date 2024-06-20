@@ -4,7 +4,6 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd());
-  console.log(env);
   return {
     plugins: [
       react({
@@ -44,6 +43,7 @@ export default defineConfig(({ mode }) => {
         '/api/holding': {
           target: 'http://localhost:8085',
           changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api\/holding/, ''),
         },
         '/api/exchangeRate': {
           target:

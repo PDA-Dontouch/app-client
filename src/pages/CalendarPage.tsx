@@ -68,7 +68,7 @@ export default function CalendarPage() {
   const [year, setYear] = useState<number>(today.getFullYear());
   const [month, setMonth] = useState<number>(today.getMonth());
   const [date, setDate] = useState<number>(today.getDate());
-  const token = useSelector((state: RootState) => state.user.token);
+  const user = useSelector((state: RootState) => state.user);
   const [stockPlans, setStockPlans] = useState<CalendarStockPlanType[]>([]);
   const [totalSalary, setTotalSalary] = useState<number>(0);
   const startDate = 1 - new Date(year, month, 1).getDay();
@@ -92,7 +92,8 @@ export default function CalendarPage() {
 
   const getPlans = useCallback(() => {
     calendarStockPlans({
-      token: token,
+      userId: user.user.id,
+      token: user.token,
       startDate: new Date(year, month, startDate + 1),
       endDate: new Date(year, month, startDate + datesCount + 1),
     }).then((data) => {

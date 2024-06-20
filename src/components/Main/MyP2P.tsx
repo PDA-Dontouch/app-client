@@ -1,10 +1,12 @@
 import tw, { styled } from 'twin.macro';
-import MyP2PProduct, { MyP2PProductType } from './MyP2PProduct';
+import MyP2PProduct from './MyP2PProduct';
+import { MyP2PProductType, WithEnergyId } from '../../types/energy_product';
 import Nothing from './Nothing';
+import { WithEstateId } from '../../types/estates_product';
 
 type MyP2PProps = {
-  energyData: MyP2PProductType[];
-  estateData: MyP2PProductType[];
+  energyData: (MyP2PProductType & WithEnergyId)[];
+  estateData: (MyP2PProductType & WithEstateId)[];
 };
 
 const MyP2PContainer = styled.div`
@@ -28,13 +30,7 @@ export default function MyP2P({ energyData, estateData }: MyP2PProps) {
           estateData.map((estate, idx) => {
             return (
               <div key={idx}>
-                <MyP2PProduct
-                  img={estate.img}
-                  name={estate.name}
-                  monthlyDividend={estate.monthlyDividend}
-                  annualRate={estate.annualRate}
-                  openDate={estate.openDate}
-                />
+                <MyP2PProduct {...estate} />
               </div>
             );
           })
@@ -48,13 +44,7 @@ export default function MyP2P({ energyData, estateData }: MyP2PProps) {
           energyData.map((energy, idx) => {
             return (
               <div key={idx}>
-                <MyP2PProduct
-                  img={energy.img}
-                  name={energy.name}
-                  monthlyDividend={energy.monthlyDividend}
-                  annualRate={energy.annualRate}
-                  openDate={energy.openDate}
-                />
+                <MyP2PProduct {...energy} />
               </div>
             );
           })

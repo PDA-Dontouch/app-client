@@ -15,6 +15,7 @@ import SalaryPlan from '../../components/Calendar/SalaryPlan';
 import { calendarStockPlans, getExchangeRate } from '../../api/stocks';
 import { investmentTypeToString } from '../../utils/investmentType';
 import { getUserAccountAmount } from '../../api/auth';
+import { getUserTotalEnergy, getUserTotalEstate } from '../../api/holding';
 
 type TitleNameProps = {
   type: 'name' | 'nim';
@@ -155,7 +156,8 @@ export default function MainPage() {
   const [exchangeRate, setExchangeRate] = useState<number>(0);
   const [accountAmount, setAccountAmount] = useState<number>(0);
   const [stockTotalAmount, setStockTotalAmount] = useState<number>(0);
-  const [p2pTotalAmount, setP2pTotalAmount] = useState<number>(0);
+  const [energyTotalAmount, setEnergyTotalAmount] = useState<number>(0);
+  const [estateTotalAmount, setEstateTotalAmount] = useState<number>(0);
   const user = useSelector((state: RootState) => state.user);
 
   const navigate = useNavigate();
@@ -164,6 +166,7 @@ export default function MainPage() {
 
   const getPlans = useCallback(() => {
     calendarStockPlans({
+      userId: user.user.id,
       token: user.token,
       startDate: new Date(today.getFullYear(), today.getMonth(), 1),
       endDate: new Date(today.getFullYear(), today.getMonth() + 1, 1),
@@ -197,8 +200,29 @@ export default function MainPage() {
     );
   }, []);
 
+  const getUserTotalEnergyPrice = useCallback(() => {
+    getUserTotalEnergy({ userId: user.user.id, token: user.token }).then(
+      (data) => {
+        if (data.data.response) {
+          setEnergyTotalAmount(data.data.response);
+        }
+      },
+    );
+  }, []);
+
+  const getUserTotalEstatePrice = useCallback(() => {
+    getUserTotalEstate({ userId: user.user.id, token: user.token }).then(
+      (data) => {
+        if (data.data.response) {
+          setEstateTotalAmount(data.data.response);
+        }
+      },
+    );
+  }, []);
+
   useEffect(() => {
     calendarStockPlans({
+      userId: user.user.id,
       token: user.token,
       startDate: new Date(today.getFullYear(), today.getMonth(), startDate + 1),
       endDate: new Date(today.getFullYear(), today.getMonth(), startDate + 8),
@@ -211,6 +235,8 @@ export default function MainPage() {
     getExchangeRate().then((data) => {
       setExchangeRate(data.data.response.selling);
     });
+    getUserTotalEnergyPrice();
+    getUserTotalEstatePrice();
   }, [exchangeRate]);
 
   return (
@@ -270,7 +296,8 @@ export default function MainPage() {
               {(
                 accountAmount +
                 stockTotalAmount +
-                p2pTotalAmount
+                energyTotalAmount +
+                estateTotalAmount
               ).toLocaleString()}
               원
             </TotalAssetTitleNumber>
@@ -292,7 +319,7 @@ export default function MainPage() {
             />
             <AssetDetailCommon
               type="P2P"
-              price={p2pTotalAmount}
+              price={energyTotalAmount + estateTotalAmount}
               onClick={() => {
                 navigate('/products/held', { state: { initialActive: false } });
               }}

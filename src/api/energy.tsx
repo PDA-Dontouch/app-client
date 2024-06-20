@@ -1,4 +1,5 @@
 import { energyTypes } from '../store/reducers/energy/energy';
+import { WithToken } from '../types/response_product';
 import { energyInstance } from './api';
 
 export const energy_url = `/api/energy`;
@@ -39,6 +40,14 @@ export const energyDisLike = async (data: energyTypes) => {
       data: data,
     });
     return response;
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
+};
+
+export const getHoldingAllEnergy = async (data: string & WithToken) => {
+  try {
   } catch (err) {
     console.error(err);
     return err;

@@ -51,6 +51,7 @@ interface ReorderCombiReq {
 }
 
 type CalendarStockPlansRequestBodyType = {
+  userId: number;
   startDate: Date;
   endDate: Date;
 } & WithToken;
@@ -103,10 +104,12 @@ export const stocksDisLike = async (data: StockDataResultType) => {
 };
 
 export const calendarStockPlans = async (
-  data: CalendarStockPlansRequestBodyType,
+  data: CalendarStockPlansRequestBodyType & WithToken,
 ): PromiseAxiosRes<CalendarStockPlanType[]> => {
   try {
-    const response = await stockInstance.post('/calendar', data);
+    const response = await stockInstance.post('/calendar', data, {
+      params: { token: data.token },
+    });
     return response;
   } catch (err: unknown) {
     console.error(err);

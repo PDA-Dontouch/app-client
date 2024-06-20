@@ -1,19 +1,14 @@
 import {
+  PageSizeType,
   PromiseAxiosRes,
   WithToken,
   WithUserId,
 } from '../types/response_product';
 import {
+  DepositWithDrawalResultType,
   DepositWithDrawalType,
   LoginedUser,
-  UserDetail,
 } from '../types/user_product';
-import {
-  PromiseAxiosRes,
-  WithToken,
-  WithUserId,
-} from '../types/response_product';
-import { DepositWithDrawalType } from '../types/user_product';
 import { authInstance } from './api';
 
 export const tryLogin = async (
@@ -44,10 +39,10 @@ export const depositWithdrawal = async ({
   price,
   token,
 }: DepositWithDrawalType &
-  WithToken): PromiseAxiosRes<DepositWithDrawalType> => {
+  WithToken): PromiseAxiosRes<DepositWithDrawalResultType> => {
   try {
     const response = await authInstance.post(
-      `/bank/cal`,
+      `/account/cal`,
       { userId, price },
       { params: { token: token } },
     );
@@ -61,24 +56,9 @@ export const depositWithdrawal = async ({
 export const getUserAccountAmount = async ({
   userId,
   token,
-}: WithUserId & WithToken): PromiseAxiosRes<{ cash: number }> => {
-  try {
-    const response = await authInstance.get(`bank/${userId}`, {
-      params: {
-        token: token,
-      },
-    });
-    return response;
-  } catch (err) {
-    console.error(err);
-    throw err;
-  }
-};
-
-export const getUserAccountAmount = async ({
-  userId,
-  token,
-}: WithUserId & WithToken): PromiseAxiosRes<{ cash: number }> => {
+}: WithUserId & WithToken): PromiseAxiosRes<{
+  cash: number;
+}> => {
   try {
     const response = await authInstance.get(`bank/${userId}`, {
       params: {

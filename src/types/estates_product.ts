@@ -130,3 +130,6 @@ export const initialEstatesDetail = {
   dealType: '',
   category: '',
 };
+export type WithEstateId = {
+  estateId: number;
+};

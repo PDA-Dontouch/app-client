@@ -1,7 +1,7 @@
 import tw, { styled } from 'twin.macro';
 import { CalendarStockPlanType } from '../../types/stocks_product';
 import { useEffect, useState } from 'react';
-import { calendarStockPlans } from '../../api/stocks';
+import { calendarStockPlans, getExchangeRate } from '../../api/stocks';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 
@@ -59,7 +59,7 @@ const TotalPrice = styled.div`
 
 export default function SalaryPlan({ date }: SalaryPlanProps) {
   const [stockPlans, setStockPlans] = useState<CalendarStockPlanType[]>([]);
-  const token = useSelector((state: RootState) => state.user.token);
+  const user = useSelector((state: RootState) => state.user);
   const newDate = new Date(
     date.getFullYear(),
     date.getMonth(),
@@ -72,11 +72,16 @@ export default function SalaryPlan({ date }: SalaryPlanProps) {
 
   useEffect(() => {
     calendarStockPlans({
-      token: token,
+      token: user.token,
+      userId: user.user.id,
       endDate: newDate,
       startDate: newDate,
     }).then((data) => {
       setStockPlans(data.data.response);
+    });
+
+    getExchangeRate().then((data) => {
+      setExchangeRate(data.data.response.selling);
     });
   }, []);
 

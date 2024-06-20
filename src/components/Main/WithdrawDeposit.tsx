@@ -2,7 +2,7 @@ import tw, { styled } from 'twin.macro';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { depositWithdrawal } from '../../api/auth';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type ModalType = {
   type: 'withdrawal' | 'deposit';
@@ -49,29 +49,31 @@ export default function WithdrawDeposit({ type, setModal }: ModalType) {
   const [price, setPrice] = useState<number>(0);
   const [priceInput, setPriceInput] = useState<string>('');
 
-  function onSubmit() {
-    if (type === 'withdrawal') {
-      setPrice(-1 * price);
-    }
+  function onClick() {
+    const cash = type === 'deposit' ? price : -1 * price;
+
     depositWithdrawal({
       userId: user.user.id,
       token: user.token,
-      price: price,
+      price: cash,
     }).then((data) => {
-      console.log(data.data.response);
+      setModal(false);
     });
-    setModal(false);
+  }
+
+  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    onClick();
   }
 
   function onChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value.replace(/,/g, '');
-
     if (
       ('0' <= value.charAt(value.length - 1) &&
         value.charAt(value.length - 1) <= '9') ||
       value.length === 0
     ) {
-      setPrice(Number(priceInput));
+      setPrice(Number(value));
       const formattedValue = Number(value).toLocaleString();
 
       setPriceInput(formattedValue);
@@ -81,7 +83,7 @@ export default function WithdrawDeposit({ type, setModal }: ModalType) {
   return (
     <Container>
       <Title>{type === 'deposit' ? '입금' : '출금'}</Title>
-      <PriceSection>
+      <PriceSection onSubmit={(e) => onSubmit(e)}>
         <PriceTitle>금액</PriceTitle>
         <PriceNumber>
           <PriceInput
@@ -93,7 +95,7 @@ export default function WithdrawDeposit({ type, setModal }: ModalType) {
           원
         </PriceNumber>
       </PriceSection>
-      <Confirm type={'submit'} onSubmit={onSubmit} onClick={onSubmit}>
+      <Confirm type={'submit'} onClick={onClick}>
         확인
       </Confirm>
     </Container>

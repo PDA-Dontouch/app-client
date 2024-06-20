@@ -1,11 +1,13 @@
 import tw, { css, styled } from 'twin.macro';
 import InfoInBanner from './InfoInBanner';
-import { estatesDetail } from '../../types/estates_product';
+import { EstatesList, EstatesDetail } from '../../types/estates_product';
 import { energyDetail } from '../../types/energy_product';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
 
 interface BannerProps {
   isEstates: boolean;
-  data: estatesDetail | energyDetail;
+  data: EstatesDetail | energyDetail;
 }
 
 const Container = styled.div<{ isEstates: boolean }>`
@@ -44,34 +46,38 @@ const MiniText = styled.span`
 `;
 
 const DetailBanner = ({ isEstates, data }: BannerProps) => {
+  const clickData = useSelector(
+    (state: RootState) => state.estates.clickEstates,
+  );
+
   return (
     <Container isEstates={isEstates}>
       <TopItem>
         <Grade>
           등급{' '}
           {isEstates
-            ? (data as estatesDetail).eightCreditGrade
+            ? clickData.eightCreditGrade
             : (data as energyDetail).creditRating}
         </Grade>
         <MiniText>
           {isEstates
-            ? (data as estatesDetail).startDatetime.slice(0, 10)
+            ? (data as EstatesDetail).startDatetime.slice(0, 10)
             : (data as energyDetail).startPeriod.slice(0, 10)}{' '}
           오픈
         </MiniText>
       </TopItem>
       <MidItem>
-        <MainText>{data.title}</MainText>
+        <MainText>{clickData.title}</MainText>
         <InfoInBanner
-          earningRate={data.earningRate}
+          earningRate={clickData.earningRate}
           length={
             isEstates
-              ? (data as estatesDetail).length
+              ? clickData.length
               : (data as energyDetail).investmentPeriod
           }
           totalAmountInvestments={
             isEstates
-              ? (data as estatesDetail).totalAmountInvestments
+              ? clickData.totalAmountInvestments
               : (data as energyDetail).fundingAmount + '억원'
           }
         />

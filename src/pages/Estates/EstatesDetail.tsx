@@ -24,7 +24,6 @@ import InvestPoint from '../../components/Estates/InvestPoint';
 import ExpertCheck from '../../components/Estates/ExpertCheck';
 import { getHoldingEstates } from '../../store/reducers/estates/holding';
 import { BuyType } from '../../types/estates_product';
-import CollateralStability from '../../components/Estates/CollateralStability';
 
 interface BuyEstatesResponse {
   data: {
@@ -60,6 +59,7 @@ const EstatesDetail = () => {
   const holdingEstates = useSelector(
     (state: RootState) => state.holdingEstates.datas,
   );
+  const userId = useSelector((state: RootState) => state.user.user.id);
   const { EstatesLikeArr, setLikeEstates } = useLike();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [value, setValue] = useState<number>(0);
@@ -75,7 +75,7 @@ const EstatesDetail = () => {
       setError('최소 투자 금액은 5천원입니다.');
     } else {
       const data: BuyType = {
-        userId: 9,
+        userId: userId,
         estateFundId: clickData.id,
         inputCash: value,
         estateName: clickData.title,
@@ -93,9 +93,9 @@ const EstatesDetail = () => {
     }
   };
 
-  const clickCancelBtn = async () => {
+  const clickCancleBtn = async () => {
     const data = {
-      userId: 9,
+      userId: userId,
       estateFundId: clickData.id,
       inputCash: value,
       estateName: clickData.title,
@@ -124,7 +124,7 @@ const EstatesDetail = () => {
 
   return (
     <>
-      <Navbar name="back" type="" onClick={() => navigate('/estates')} />
+      <Navbar name="back" type="" onClick={() => navigate(-1)} />
       <Container>
         <DetailBanner isEstates={true} data={detail} />
         <Dropdown isEstates={true} profit_rate={clickData.earningRate} />
@@ -176,7 +176,7 @@ const EstatesDetail = () => {
                   100
                 }
                 btnType="plain"
-                onClick={clickCancelBtn}
+                onClick={clickCancleBtn}
               />
             ) : (
               <Purchase

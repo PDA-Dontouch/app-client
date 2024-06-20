@@ -6,13 +6,16 @@ const initialState = {
   success: false,
   datas: [
     {
+      createdAt: null,
+      earningRate: 0,
+      estateId: 0,
       id: 0,
-      userId: 0,
-      estateFundId: 0,
       inputCash: 0,
-      estateName: '',
-      estateEarningRate: 0,
-      createAt: null,
+      investmentPeriod: 0,
+      startPeriod: '',
+      title: '',
+      titleImageUrl: '',
+      userId: 0,
     },
   ],
 };

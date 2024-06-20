@@ -67,7 +67,7 @@ const EstatesDetail = () => {
 
   useEffect(() => {
     dispatch(getEstatesData(parseInt(params.estates_id!)));
-    dispatch(getHoldingEstates(13));
+    dispatch(getHoldingEstates(9));
   }, [dispatch, params.estates_id]);
 
   const clickBuyBtn = () => {
@@ -75,7 +75,7 @@ const EstatesDetail = () => {
       setError('최소 투자 금액은 5천원입니다.');
     } else {
       const data: BuyType = {
-        userId: 13,
+        userId: 9,
         estateFundId: clickData.id,
         inputCash: value,
         estateName: clickData.title,
@@ -95,7 +95,7 @@ const EstatesDetail = () => {
 
   const clickCancelBtn = async () => {
     const data = {
-      userId: 13,
+      userId: 9,
       estateFundId: clickData.id,
       inputCash: value,
       estateName: clickData.title,
@@ -114,11 +114,11 @@ const EstatesDetail = () => {
 
   if (holdingEstates && holdingEstates.length > 0) {
     isEstateHeld = holdingEstates.some(
-      (estate) => estate.estateFundId === detail.estateId,
+      (estate) => estate.estateId === detail.estateId,
     );
 
     matchingEstate = holdingEstates.find(
-      (estate) => estate.estateFundId === detail.estateId,
+      (estate) => estate.estateId === detail.estateId,
     );
   }
 

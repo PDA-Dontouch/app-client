@@ -141,11 +141,14 @@ export type BuyType = {
 };
 
 export type HoldingEstatesType = {
+  createdAt: null;
+  earningRate: number;
+  estateId: number;
   id: number;
-  userId: number;
-  estateFundId: number;
   inputCash: number;
-  estateName: string;
-  estateEarningRate: number;
-  createAt: null;
+  investmentPeriod: number;
+  startPeriod: string;
+  title: string;
+  titleImageUrl: string;
+  userId: number;
 };

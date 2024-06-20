@@ -67,9 +67,15 @@ const DetailBanner = ({ isEstates, data }: BannerProps) => {
         </MiniText>
       </TopItem>
       <MidItem>
-        <MainText>{clickData.title}</MainText>
+        <MainText>
+          {isEstates ? clickData.title : (data as energyDetail).title}
+        </MainText>
         <InfoInBanner
-          earningRate={clickData.earningRate}
+          earningRate={
+            isEstates
+              ? clickData.earningRate
+              : (data as energyDetail).earningRate
+          }
           length={
             isEstates
               ? clickData.length

@@ -13,3 +13,15 @@ export const holdingEstates = async (user_id: number) => {
     return err;
   }
 };
+
+export const holdingEnergy = async (user_id: number) => {
+  try {
+    const response = await holdingInstance.get(
+      holding_url + `/allEnergy/${user_id}`,
+    );
+    return response;
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
+};

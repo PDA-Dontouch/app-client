@@ -1,5 +1,5 @@
 import { EstatesTypes } from '../store/reducers/estates/estates';
-import { BuyType } from '../types/estates_product';
+import { EstateBuyType } from '../types/estates_product';
 import { estatesInstance } from './api';
 
 export const estate_url = `/api/estates`;
@@ -46,7 +46,7 @@ export const estatesDisLike = async (data: EstatesTypes) => {
   }
 };
 
-export const estatesBuy = async (data: BuyType) => {
+export const estatesBuy = async (data: EstateBuyType) => {
   try {
     const response = await estatesInstance.post(estate_url + '/buy', data);
     return response;
@@ -56,7 +56,7 @@ export const estatesBuy = async (data: BuyType) => {
   }
 };
 
-export const estatesSell = async (data: BuyType) => {
+export const estatesSell = async (data: EstateBuyType) => {
   try {
     const response = await estatesInstance.post(estate_url + '/sell', data);
     return response;

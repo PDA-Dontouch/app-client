@@ -38,7 +38,7 @@ export default defineConfig(({ mode }) => {
         '/api/energy': {
           target: 'http://localhost:8084',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api\/energy/, ''),
+          // rewrite: (path) => path.replace(/^\/api\/energy/, ''),
         },
         '/api/holding': {
           target: 'http://localhost:8085',

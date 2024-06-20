@@ -4,12 +4,15 @@ import {
   energyLike,
   energyDatas,
   energyData,
+  energyBuy,
+  energySell,
 } from '../../../api/energy';
 import {
   EnergyList,
   energyDetail,
   initialEnergyDetail,
 } from '../../../types/energy_product';
+import { EnergyBuyType } from '../../../types/energy_product';
 
 interface EnergyState {
   energyLike: string[];
@@ -68,6 +71,22 @@ export const delLikeEnergy = createAsyncThunk(
   'energy/like',
   async (data: energyTypes, thunkAPI) => {
     const response = await energyDisLike(data);
+    return response;
+  },
+);
+
+export const buyEnergy = createAsyncThunk(
+  'energy/buyEnergy',
+  async (data: EnergyBuyType) => {
+    const response = await energyBuy(data);
+    return response;
+  },
+);
+
+export const sellEnergy = createAsyncThunk(
+  'energy/sellEnergy',
+  async (data: EnergyBuyType) => {
+    const response = await energySell(data);
     return response;
   },
 );

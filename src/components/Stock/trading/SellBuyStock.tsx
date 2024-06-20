@@ -5,7 +5,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../../store/store';
 import {
   buyLimitOrder,
+  buyMarketOrder,
   sellLimitOrder,
+  sellMarketOrder,
 } from '../../../store/reducers/stocks/trading';
 import { useNavigate } from 'react-router-dom';
 import { leaveRoom } from '../../../store/webSocket/nowPrice';
@@ -141,7 +143,16 @@ const SellBuyStock = ({ isSell }: SellBuyProps) => {
         });
       } else {
         // 시장가
-        console.log('시장가로 사기');
+        const data = {
+          stockName: detail.basic_info.name,
+          stockCode: detail.basic_info.symbol,
+          userId: 9,
+          amount: amount,
+        };
+        dispatch(sellMarketOrder(data)).then(() => {
+          navigate('/result/sell');
+          leaveRoom(selectCode);
+        });
       }
     }
   };
@@ -170,7 +181,16 @@ const SellBuyStock = ({ isSell }: SellBuyProps) => {
         });
       } else {
         // 시장가
-        console.log('시장가로 사기');
+        const data = {
+          stockName: detail.basic_info.name,
+          stockCode: detail.basic_info.symbol,
+          userId: 9,
+          amount: amount,
+        };
+        dispatch(buyMarketOrder(data)).then(() => {
+          navigate('/result/buy');
+          leaveRoom(selectCode);
+        });
       }
     }
   };

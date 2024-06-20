@@ -27,3 +27,10 @@ export type postOrderData = {
   price: number;
   amount: number;
 };
+
+export type postMarketData = {
+  stockName: string;
+  stockCode: string;
+  userId: number;
+  amount: number;
+};

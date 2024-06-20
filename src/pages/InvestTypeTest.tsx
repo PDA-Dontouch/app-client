@@ -95,7 +95,7 @@ const InvestTypeTest = () => {
           name="back"
           type="back"
           onClick={() => {
-            navigate('/');
+            navigate(-1);
           }}
         />
       )}

@@ -24,7 +24,7 @@ const Wrapper = styled.div<{ length: number }>`
 
 const Slide = styled.div<{ length: number }>`
   ${({ length }) =>
-    length === 1 ? 'flex: 0 0 100%' : 'ps-[1rem] flex: 0 0 80%'}
+    length === 1 ? 'flex: 0 0 100%' : 'padding-left: 1rem; flex: 0 0 86%'}
 `;
 
 const SlideItem = styled.img`

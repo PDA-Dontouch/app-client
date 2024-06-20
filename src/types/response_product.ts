@@ -15,5 +15,9 @@ export type WithToken = {
   token: string;
 };
 
+export type WithUserId = {
+  userId: number;
+};
+
 export type AxiosRes<T> = AxiosResponse<ResponseType<T>>;
 export type PromiseAxiosRes<T> = Promise<AxiosRes<T>>;

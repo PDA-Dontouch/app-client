@@ -115,7 +115,11 @@ const EnergyMain = () => {
             </SubText>
           </SelectContainer>
           {isLoading
-            ? [...Array(5)].map((_, index) => <ProductSkeleton />)
+            ? [...Array(5)].map((_, index) => (
+                <div key={index}>
+                  <ProductSkeleton />
+                </div>
+              ))
             : isSelect === 0
               ? renderProducts(ongoingInvestments)
               : renderProducts(completedInvestments)}

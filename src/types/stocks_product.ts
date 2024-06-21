@@ -57,9 +57,24 @@ export type InsertCombiStock = {
   dividend: number
 }
 
-export type AddCombiStockReq = {
+
+export type CombiStockReq = {
   stockId: number,
   exchange: string
+}
+
+export type NewCombiReqType ={
+  combination1:CombiStockReq[];
+  combination2:CombiStockReq[];
+  combination3:CombiStockReq[];
+}
+
+
+export type RequestCombiDistribute = {
+  combination1:CombiStockReq[];
+  combination2:CombiStockReq[];
+  combination3:CombiStockReq[];
+  investmentAmount: number
 }
 
 export type StockCombiType = {

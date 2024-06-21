@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AppDispatch, RootState } from '../../store/store';
 import { useDispatch, useSelector } from 'react-redux';
 import tw, { styled } from 'twin.macro';
 import SearchBar from '../common/Stock/SearchBar';
-import { stocksDatas, combinationDistribute } from '../../api/stocks';
+import { stocksDatas } from '../../api/stocks';
 import logoImg from '../../assets/logo.svg';
-import {InsertCombiStock, StockDataResultType} from '../../types/stocks_product';
-import { addStockToCombination, makeCombiStocks } from '../../store/reducers/stocks/stocks';
+import {StockDataResultType,InsertCombiStock, RequestCombiDistribute} from '../../types/stocks_product';
+import { addCombiStocks } from '../../store/reducers/stocks/stocks';
 
 const Container = styled.div`
   ${tw`w-full h-[450px] flex flex-col items-center p-3 gap-3`}
@@ -57,6 +57,7 @@ const StockOptions: React.FC<StockOptionsProps> = ({ dividendMonth }) => {
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.user);
   const combiStocks = useSelector((state: RootState) => state.stocks);
+  
   const currentCombination = `combination${dividendMonth}` as "combination1" | "combination2" | "combination3";
 
   const [page, setPage] = useState(0);
@@ -75,9 +76,17 @@ const StockOptions: React.FC<StockOptionsProps> = ({ dividendMonth }) => {
     }).then((response)=>{
       setStockList(response.data.response);
     });
-  }, [page]);
+  }, [page, searchTerm]);
 
-  
+  const handleUpdateCombination = (stockId:number, exchange:string):void =>{
+    if(combiStocks[currentCombination].stocks.length >= 2){
+      console.log("최대 2종목까지 추가할 수 있습니다.");
+    }
+    else {
+      dispatch(addCombiStocks({combination:currentCombination,stockId:stockId,exchange:exchange}));
+      
+    }
+  } 
 
   const isKRStock = (symbol: string): boolean => {
     // 모든 문자가 숫자인지 확인
@@ -95,7 +104,7 @@ const StockOptions: React.FC<StockOptionsProps> = ({ dividendMonth }) => {
       <StockItems>
         {stockList.map((stock) => {
           return (
-            <StockInfo key={stock.id} onClick={() => handleInsertStock(stock)}>
+            <StockInfo key={stock.id} onClick={() => {handleUpdateCombination(stock.id, stock.exchange)}}>
               <ItemContainer>
               <StockLogo
                   src={getImageUrl(stock.symbol)}

@@ -10,9 +10,8 @@ import StockCard from '../../components/common/Stock/StockCard';
 import SearchBar from '../../components/common/Stock/SearchBar';
 import NextBtn from '../../components/common/Stock/NextBtn';
 import PersonalInfo from '../../components/common/Stock/PersonalInfo';
-import { stocksDatas, stocksData, stocksLike, stocksDisLike} from '../../api/stocks';
-import {StockCombiType, StockDataResultType,InsertCombiStock} from '../../types/stocks_product';
-import { insertStock, removeStock } from '../../store/reducers/stocks/stocks';
+import { stocksDatas, stocksLike} from '../../api/stocks';
+import {StockDataResultType} from '../../types/stocks_product';
 
 
 const MainContainer = styled.div`

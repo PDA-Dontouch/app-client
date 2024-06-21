@@ -1,6 +1,5 @@
 import { stockInstance } from './api';
 import {
-  AxiosRes,
   PromiseAxiosRes,
   WithToken,
 } from '../types/response_product';
@@ -9,7 +8,7 @@ import {
   StockDataResultType,
   StockDetailType,
   StockCombiType,
-  InsertCombiStock
+  RequestCombiDistribute
 } from '../types/stocks_product';
 import axios, { AxiosResponse } from 'axios';
 
@@ -33,25 +32,6 @@ interface RequestCombiCreate{
   growthScore: number;
   dividendScore: number;
   investmentAmount: number;
-}
-
-interface ReorderCombiReq{
-  exchange11: string | null,
-  stockId11: number | null,
-  exchange12: string | null,
-  stockId12: number | null,
-
-  exchange21: number | null,
-  stockId21: number | null,
-  exchange22: string | null,
-  stockId22: number | null,
-
-  exchange31: number | null,
-  stockId31: number | null,
-  exchange32: string | null,
-  stockId32: number | null,
-
-  investmentAmount: number
 }
 
 type CalendarStockPlansRequestBodyType = {
@@ -161,7 +141,7 @@ export const getStocksCombi = async (
 };
 
 export const combinationDistribute = async(
-  body: ReorderCombiReq,
+  body: RequestCombiDistribute,
 ): PromiseAxiosRes<StockCombiType> => {
   try{
     const response = await stockInstance.post('/combination/distribute',body);

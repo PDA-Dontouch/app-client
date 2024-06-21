@@ -10,8 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { RootState } from '../../store/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../../store/store';
-import { addStockToCombination, removeStockFromCombination } from '../../store/reducers/stocks/stocks';
-import { InsertCombiStock } from '../../types/stocks_product';
+import { removeStockFromCombination } from '../../store/reducers/stocks/stocks';
 
 const Container = styled.div`
   ${tw`h-[calc(100% - 206px)] mt-14 mb-[84px] px-5 py-8 flex flex-col gap-3`}
@@ -64,7 +63,7 @@ const StockDetailPage: React.FC = () => {
     dispatch(removeStockFromCombination({ combination: currentCombination, stockSymbol }));
   };
 
-  const handleAddStock = () => {
+  const handleOpenModal = () => {
     setModalOpen(true);
   };
 
@@ -107,7 +106,7 @@ const StockDetailPage: React.FC = () => {
             </div>
           ))}
         </StockCombination>
-        <AddStock onClick={handleAddStock}>+ 종목 추가하기</AddStock>
+        <AddStock onClick={handleOpenModal}>+ 종목 추가하기</AddStock>
         <Divider />
         <ExpectedDividend>예상 월 배당금 {selectedStocks.totalDividend}원</ExpectedDividend>
         <Wrapper>

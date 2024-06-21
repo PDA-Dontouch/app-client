@@ -2,7 +2,9 @@ import tw, { styled } from "twin.macro";
 import logoImg from '../../assets/logo.svg';
 import Delete from '../../assets/delete.svg';
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setTotalInvestment } from "../../store/reducers/stocks/stocks";
+import { RootState } from "../../store/store";
 
 interface StockProps {
   name: string;
@@ -49,11 +51,9 @@ const MainText = styled.span`${tw`text-base`}`;
 const SubText = styled.span`${tw`text-sm`}`;
 
 const SelectStock = ({ name, price, amount, symbol, onDelete }: StockProps) => {
-  const dispatch = useDispatch();
+
   const [newAmount, setNewAmount] = useState<number>(0);
   const isKr = !isNaN(Number(symbol));
-
-  console.log(amount)
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);

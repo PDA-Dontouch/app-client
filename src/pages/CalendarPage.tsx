@@ -10,6 +10,11 @@ import { calendarStockPlans, getExchangeRate } from '../api/stocks';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { CalendarStockPlanType } from '../types/stocks_product';
+import { CalendarP2PType } from '../types/energy_product';
+import {
+  getHoldingEnergyCalendar,
+  getHoldingEstateCalendar,
+} from '../api/holding';
 
 type ModalType = 'date' | 'plan';
 
@@ -70,6 +75,8 @@ export default function CalendarPage() {
   const [date, setDate] = useState<number>(today.getDate());
   const user = useSelector((state: RootState) => state.user);
   const [stockPlans, setStockPlans] = useState<CalendarStockPlanType[]>([]);
+  const [energyPlans, setEnergyPlans] = useState<CalendarP2PType[]>([]);
+  const [estatePlans, setEstatePlans] = useState<CalendarP2PType[]>([]);
   const [totalSalary, setTotalSalary] = useState<number>(0);
   const startDate = 1 - new Date(year, month, 1).getDay();
   const [exchangeRate, setExchangeRate] = useState<number>(0);
@@ -94,11 +101,12 @@ export default function CalendarPage() {
     calendarStockPlans({
       userId: user.user.id,
       token: user.token,
-      startDate: new Date(year, month, startDate + 1),
-      endDate: new Date(year, month, startDate + datesCount + 1),
+      startDate: new Date(year, month, startDate),
+      endDate: new Date(year, month, startDate + datesCount),
     }).then((data) => {
-      const totalStockSalary = data.data.response.reduce(
-        (accumulator, stock) => {
+      let total = 0;
+      if (data.data.success) {
+        total = data.data.response.reduce((accumulator, stock) => {
           if (new Date(stock.dividendDate).getMonth() === month) {
             if (
               'A' <= stock.symbol.charAt(0) &&
@@ -111,17 +119,61 @@ export default function CalendarPage() {
           } else {
             return accumulator;
           }
-        },
-        0,
-      );
-      setStockPlans(data.data.response);
+        }, 0);
+        setStockPlans(data.data.response);
+      }
 
-      setTotalSalary(totalStockSalary);
+      getEnergyPlans(total);
     });
   }, [year, month, exchangeRate]);
 
-  const expireDate = new Date();
-  expireDate.setTime(expireDate.getTime() + 60 * 60 * 1000);
+  const getEnergyPlans = useCallback(
+    (total: number) => {
+      getHoldingEnergyCalendar({
+        token: user.token,
+        startDate: new Date(year, month, startDate),
+        endDate: new Date(year, month, startDate + datesCount),
+      }).then((data) => {
+        let totalSalary = 0;
+        if (data.data.success) {
+          setEnergyPlans(data.data.response);
+          totalSalary = data.data.response.reduce((accumulator, product) => {
+            if (new Date(product.paymentDate).getMonth() === month) {
+              return accumulator + product.dividendPrice;
+            } else {
+              return accumulator;
+            }
+          }, 0);
+        }
+        getEstatePlans(total + totalSalary);
+      });
+    },
+    [year, month, exchangeRate],
+  );
+
+  const getEstatePlans = useCallback(
+    (total: number) => {
+      getHoldingEstateCalendar({
+        token: user.token,
+        startDate: new Date(year, month, startDate),
+        endDate: new Date(year, month, startDate + datesCount),
+      }).then((data) => {
+        let totalSalary = 0;
+        if (data.data.success) {
+          totalSalary = data.data.response.reduce((accumulator, product) => {
+            if (new Date(product.paymentDate).getMonth() === month) {
+              return accumulator + product.dividendPrice;
+            } else {
+              return accumulator;
+            }
+          }, 0);
+          setEstatePlans(data.data.response);
+        }
+        setTotalSalary(total + totalSalary);
+      });
+    },
+    [year, month, exchangeRate],
+  );
 
   useEffect(() => {
     getPlans();
@@ -151,7 +203,7 @@ export default function CalendarPage() {
         />
       )}
       <CalendarPageContainer>
-        <Navbar name="박유진" type="main" onClick={() => {}} />
+        <Navbar name={user.user.nickname} type="main" onClick={() => {}} />
         <CalendarTitle>
           <YearMonth
             onClick={() => {
@@ -174,6 +226,8 @@ export default function CalendarPage() {
           month={month}
           setDate={setDate}
           stockPlans={stockPlans}
+          energyPlans={energyPlans}
+          estatePlans={estatePlans}
           openModal={() => {
             onOpenModal('plan');
           }}

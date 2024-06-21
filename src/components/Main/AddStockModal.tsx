@@ -106,6 +106,20 @@ export default function AddStockModal({ setModal }: ProductsHeldPageProps) {
     });
   }
 
+  function search(searchTerm: string) {
+    stocksDatas({
+      searchWord: searchTerm,
+      safeScore: user.user.safeScore,
+      dividendScore: user.user.dividendScore,
+      growthScore: user.user.growthScore,
+      dividendMonth: null,
+      page: 0,
+      size: 10,
+    }).then((data) => {
+      setSearchResult(data.data.response);
+    });
+  }
+
   function onClickHandler(code: string, name: string) {
     setStatus('add');
     setSelectedStock({ code, name });
@@ -127,8 +141,8 @@ export default function AddStockModal({ setModal }: ProductsHeldPageProps) {
   }
 
   useEffect(() => {
-    getSearchResult(searchTerm);
-  }, []);
+    search(searchTerm);
+  }, [searchTerm]);
 
   return (
     <>

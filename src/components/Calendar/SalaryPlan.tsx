@@ -4,6 +4,12 @@ import { useEffect, useState } from 'react';
 import { calendarStockPlans, getExchangeRate } from '../../api/stocks';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
+import {
+  getHoldingEnergyCalendar,
+  getHoldingEstateCalendar,
+} from '../../api/holding';
+import { CalendarP2PType } from '../../types/energy_product';
+import Nothing from '../Main/Nothing';
 
 type SalaryPlanProps = {
   date: Date;
@@ -59,6 +65,8 @@ const TotalPrice = styled.div`
 
 export default function SalaryPlan({ date }: SalaryPlanProps) {
   const [stockPlans, setStockPlans] = useState<CalendarStockPlanType[]>([]);
+  const [energyPlans, setEnergyPlans] = useState<CalendarP2PType[]>([]);
+  const [estatePlans, setEstatePlans] = useState<CalendarP2PType[]>([]);
   const user = useSelector((state: RootState) => state.user);
   const newDate = new Date(
     date.getFullYear(),
@@ -67,9 +75,6 @@ export default function SalaryPlan({ date }: SalaryPlanProps) {
   );
   const [exchangeRate, setExchangeRate] = useState<number>(0);
 
-  const expireDate = new Date();
-  expireDate.setTime(expireDate.getTime() + 60 * 60 * 1000);
-
   useEffect(() => {
     calendarStockPlans({
       token: user.token,
@@ -77,11 +82,27 @@ export default function SalaryPlan({ date }: SalaryPlanProps) {
       endDate: newDate,
       startDate: newDate,
     }).then((data) => {
-      setStockPlans(data.data.response);
+      if (data.data.success) setStockPlans(data.data.response);
+    });
+
+    getHoldingEnergyCalendar({
+      token: user.token,
+      endDate: newDate,
+      startDate: newDate,
+    }).then((data) => {
+      if (data.data.success) setEnergyPlans(data.data.response);
+    });
+
+    getHoldingEstateCalendar({
+      token: user.token,
+      endDate: newDate,
+      startDate: newDate,
+    }).then((data) => {
+      if (data.data.success) setEstatePlans(data.data.response);
     });
 
     getExchangeRate().then((data) => {
-      setExchangeRate(data.data.response.selling);
+      if (data.data.success) setExchangeRate(data.data.response.selling);
     });
   }, []);
 
@@ -94,18 +115,52 @@ export default function SalaryPlan({ date }: SalaryPlanProps) {
           {date.getDate()}
         </Today>
         <Plans>
-          {stockPlans.map((plan, idx) => {
+          {stockPlans.length == 0 &&
+          energyPlans.length == 0 &&
+          estatePlans.length == 0 ? (
+            <Nothing />
+          ) : (
+            stockPlans.map((plan, idx) => {
+              return (
+                <Plan key={idx}>
+                  <PlanType>주식</PlanType>
+                  <PlanDetail>
+                    <PlanName>{plan.name}</PlanName>
+                    <PlanPrice>
+                      {Math.floor(
+                        'A' <= plan.symbol.charAt(0) &&
+                          plan.symbol.charAt(0) <= 'Z'
+                          ? plan.dividend * exchangeRate
+                          : plan.dividend,
+                      ).toLocaleString()}
+                      원
+                    </PlanPrice>
+                  </PlanDetail>
+                </Plan>
+              );
+            })
+          )}
+          {energyPlans.map((plan, idx) => {
             return (
               <Plan key={idx}>
-                <PlanType>주식</PlanType>
+                <PlanType>에너지</PlanType>
                 <PlanDetail>
-                  <PlanName>{plan.name}</PlanName>
+                  <PlanName>{plan.title}</PlanName>
                   <PlanPrice>
-                    {'A' <= plan.symbol.charAt(0) &&
-                    plan.symbol.charAt(0) <= 'Z'
-                      ? (plan.dividend * exchangeRate).toLocaleString()
-                      : plan.dividend.toLocaleString()}
-                    원
+                    {Math.floor(plan.dividendPrice).toLocaleString()}원
+                  </PlanPrice>
+                </PlanDetail>
+              </Plan>
+            );
+          })}
+          {estatePlans.map((plan, idx) => {
+            return (
+              <Plan key={idx}>
+                <PlanType>부동산</PlanType>
+                <PlanDetail>
+                  <PlanName>{plan.title}</PlanName>
+                  <PlanPrice>
+                    {Math.floor(plan.dividendPrice).toLocaleString()}원
                   </PlanPrice>
                 </PlanDetail>
               </Plan>
@@ -114,8 +169,8 @@ export default function SalaryPlan({ date }: SalaryPlanProps) {
         </Plans>
         <TotalPrice>
           {'총 '}
-          {stockPlans
-            .reduce((accumulator, stock) => {
+          {Math.floor(
+            stockPlans.reduce((accumulator, stock) => {
               if (
                 'A' <= stock.symbol.charAt(0) &&
                 stock.symbol.charAt(0) <= 'Z'
@@ -124,8 +179,14 @@ export default function SalaryPlan({ date }: SalaryPlanProps) {
               } else {
                 return accumulator + stock.dividend;
               }
-            }, 0)
-            .toLocaleString()}
+            }, 0) +
+              energyPlans.reduce((accumulator, stock) => {
+                return accumulator + stock.dividendPrice;
+              }, 0) +
+              estatePlans.reduce((accumulator, stock) => {
+                return accumulator + stock.dividendPrice;
+              }, 0),
+          ).toLocaleString()}
           {' 원'}
         </TotalPrice>
       </PlanContainer>

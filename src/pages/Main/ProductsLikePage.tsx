@@ -2,10 +2,17 @@ import tw, { styled } from 'twin.macro';
 import GreenBarTitle from '../../components/common/GreenBarTitle';
 import Navbar from '../../components/common/Navbar';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { MyStockProductType } from '../../components/Main/MyStockProduct';
-import { MyP2PProductType } from '../../types/energy_product';
+import { EnergyList } from '../../types/energy_product';
 import Footer from '../../components/common/Footer';
 import StockP2P from '../../components/Main/StockP2P';
+import { StockDataResultType } from '../../types/stocks_product';
+import { useEffect, useState } from 'react';
+import { getLikeStocks } from '../../api/stocks';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
+import { getEnergyLike } from '../../api/energy';
+import { getEstateLike } from '../../api/estates';
+import { EstatesList } from '../../types/estates_product';
 
 interface LocationState {
   initialActive: boolean;
@@ -16,68 +23,45 @@ const ProductsLikePageContainer = styled.div`
   box-sizing: border-box;
 `;
 
-const koreaData: MyStockProductType[] = [
-  {
-    code: '005930',
-    name: '삼성전자',
-    price: 60000,
-    compare: 1.1,
-  },
-  {
-    code: '000080',
-    name: '하이트진로',
-    price: 60000,
-    compare: -1.1,
-  },
-];
-
-const usaData: MyStockProductType[] = [
-  {
-    code: 'TSLA',
-    name: '테슬라',
-    price: 60000,
-    compare: -1.1,
-  },
-];
-
-const energyData: MyP2PProductType[] = [
-  {
-    img: '',
-    name: '디지털복합단지 럭셔리타워 신축 2호 4차',
-    annualRate: 13.0,
-    monthlyDividend: 63800,
-    openDate: new Date(2024, 6, 30),
-  },
-  {
-    img: '',
-    name: '디지털복합단지 럭셔리타워 신축 2호 4차',
-    annualRate: 13.0,
-    monthlyDividend: 63800,
-    openDate: new Date(2024, 4, 30),
-  },
-];
-
-const estateData: MyP2PProductType[] = [
-  {
-    img: '',
-    name: '의성군 외 총 993.40kW 태양광 담보',
-    annualRate: 13.0,
-    monthlyDividend: 270000,
-    openDate: new Date(2024, 6, 30),
-  },
-  {
-    img: '',
-    name: '의성군 외 총 993.40kW 태양광 담보',
-    annualRate: 13.0,
-    monthlyDividend: 63800,
-    openDate: new Date(2024, 4, 30),
-  },
-];
-
 export default function ProductsLikePage() {
   const navigate = useNavigate();
   const location = useLocation();
   const state = location.state as LocationState;
+  const user = useSelector((state: RootState) => state.user);
+  const [koreaData, setKoreaData] = useState<StockDataResultType[]>([]);
+  const [usaData, setUsaData] = useState<StockDataResultType[]>([]);
+  const [energyData, setEnergyData] = useState<EnergyList[]>([]);
+  const [estateData, setEstateData] = useState<EstatesList[]>([]);
+  function getStockData() {
+    getLikeStocks({ userId: user.user.id, token: user.token }).then((data) => {
+      if (data.data.success) {
+        setUsaData(data.data.response.usLikeStocks);
+        setKoreaData(data.data.response.krLikeStocks);
+      }
+    });
+  }
+
+  function getEnergyData() {
+    getEnergyLike({ userId: user.user.id, token: user.token }).then((data) => {
+      if (data.data.success) {
+        setEnergyData(data.data.response);
+      }
+    });
+  }
+
+  function getEstateData() {
+    getEstateLike({ userId: user.user.id, token: user.token }).then((data) => {
+      if (data.data.success) {
+        setEstateData(data.data.response);
+      }
+    });
+  }
+
+  useEffect(() => {
+    getStockData();
+    getEnergyData();
+    getEstateData();
+  }, []);
 
   return (
     <>

@@ -24,7 +24,6 @@ export const postLogin = createAsyncThunk<ActionPayload, string>(
   },
 );
 
-
 const userSlice = createSlice({
   name: 'user',
   initialState: initialState,

@@ -1,6 +1,6 @@
 import tw, { css, styled } from 'twin.macro';
 import { AppDispatch, RootState } from '../../../store/store';
-import { useDispatch,useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { investmentTypeToString } from '../../../utils/investmentType';
 import { getUserAccountAmount } from '../../../api/auth';
 import { useEffect, useState } from 'react';
@@ -11,7 +11,6 @@ import { makeCombiStocks, setTotalInvestment } from '../../../store/reducers/sto
 const PersonalContainer = styled.div`
   ${tw`w-full flex flex-col gap-3`}
 `;
-
 const TopContainer = styled.div`
   ${tw`flex flex-row justify-between`}
 `;
@@ -19,7 +18,6 @@ const TypeContainer = styled.div`
   ${tw`flex flex-col gap-3`}
   width: 6rem;
 `;
-
 const MoneyContainer = styled.div`
   ${tw`flex flex-col gap-3`}
   overflow: hidden;
@@ -30,7 +28,6 @@ const MoneyContainer = styled.div`
 const BtnContainer = styled.div`
   ${tw`flex w-full gap-2 mt-2 justify-end`}
 `;
-
 const Title = styled.span`
   ${tw`text-sm ml-2`}
   ${css`
@@ -40,7 +37,6 @@ const Title = styled.span`
 const PersonData = styled.span`
   ${tw`text-base`}
 `;
-
 const Btn = styled.button`
   ${tw`text-sm w-full`}
   ${({ color }) => {
@@ -50,18 +46,15 @@ const Btn = styled.button`
   border: none;
   box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.15);
 `;
-
 const PersonalInfo: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const state = location.state as number | undefined;
-
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.user);
   const wantInvestmentPrice = useSelector((state:RootState)=> state.stocks.totalInvestment);
 
   const [accountAmount, setAccountAmount] = useState<number>(0);
-
   useEffect(() => {
     if (state) {
       setAccountAmount(state);
@@ -78,7 +71,6 @@ const PersonalInfo: React.FC = () => {
       });
     }
   }, []);
-
   return (
     <PersonalContainer>
       <TopContainer>
@@ -113,5 +105,4 @@ const PersonalInfo: React.FC = () => {
     </PersonalContainer>
   );
 };
-
 export default PersonalInfo;

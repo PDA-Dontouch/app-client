@@ -1,11 +1,12 @@
-import { estatesTypes } from '../store/reducers/estates/estates';
+import { EstatesTypes } from '../store/reducers/estates/estates';
+import { EstateBuyType } from '../types/estates_product';
 import { estatesInstance } from './api';
 
 export const estate_url = `/api/estates`;
 
 export const estatesDatas = async () => {
   try {
-    const response = await estatesInstance.get(estate_url);
+    const response = await estatesInstance.get('');
     return response;
   } catch (err) {
     console.error(err);
@@ -15,7 +16,7 @@ export const estatesDatas = async () => {
 
 export const estatesData = async (estates_id: number) => {
   try {
-    const response = await estatesInstance.get(estate_url + `/${estates_id}`);
+    const response = await estatesInstance.get(`/${estates_id}`);
     return response;
   } catch (err) {
     console.error(err);
@@ -23,9 +24,9 @@ export const estatesData = async (estates_id: number) => {
   }
 };
 
-export const estatesLike = async (data: estatesTypes) => {
+export const estatesLike = async (data: EstatesTypes) => {
   try {
-    const response = await estatesInstance.post(estate_url + '/like', data);
+    const response = await estatesInstance.post('/like', data);
     return response;
   } catch (err) {
     console.error(err);
@@ -33,11 +34,31 @@ export const estatesLike = async (data: estatesTypes) => {
   }
 };
 
-export const estatesDisLike = async (data: estatesTypes) => {
+export const estatesDisLike = async (data: EstatesTypes) => {
   try {
-    const response = await estatesInstance.delete(estate_url + '/like', {
+    const response = await estatesInstance.delete('/like', {
       data: data,
     });
+    return response;
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
+};
+
+export const estatesBuy = async (data: EstateBuyType) => {
+  try {
+    const response = await estatesInstance.post('/buy', data);
+    return response;
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
+};
+
+export const estatesSell = async (data: EstateBuyType) => {
+  try {
+    const response = await estatesInstance.post('/sell', data);
     return response;
   } catch (err) {
     console.error(err);

@@ -1,6 +1,6 @@
-import React, { useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { AppDispatch, RootState } from '../../store/store';
-import { useDispatch,useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import tw, { css, styled } from 'twin.macro';
 import Navbar from '../../components/common/Navbar';
@@ -10,9 +10,18 @@ import StockCard from '../../components/common/Stock/StockCard';
 import SearchBar from '../../components/common/Stock/SearchBar';
 import NextBtn from '../../components/common/Stock/NextBtn';
 import PersonalInfo from '../../components/common/Stock/PersonalInfo';
-import { stocksDatas, stocksLike} from '../../api/stocks';
-import {StockDataResultType} from '../../types/stocks_product';
-
+import {
+  stocksDatas,
+  stocksData,
+  stocksLike,
+  stocksDisLike,
+} from '../../api/stocks';
+import {
+  StockCombiType,
+  StockDataResultType,
+  InsertCombiStock,
+} from '../../types/stocks_product';
+import { insertStock, removeStock } from '../../store/reducers/stocks/stocks';
 
 const MainContainer = styled.div`
   ${tw`flex flex-col min-h-screen`}
@@ -51,13 +60,15 @@ const StockMainPage: React.FC = () => {
   const user = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
 
-  const [activeTab, setActiveTab] = useState<'recommend' | 'individual'>('recommend',);
+  const [activeTab, setActiveTab] = useState<'recommend' | 'individual'>(
+    'recommend',
+  );
   const [likeStocks, setLikeStocks] = useState<number[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [page, setPage] = useState(0);
   const [stockList, setStockList] = useState<StockDataResultType[]>([]);
- 
-  useEffect(()=>{
+
+  useEffect(() => {
     stocksDatas({
       searchWord: searchTerm,
       safeScore: user.user.safeScore,
@@ -66,10 +77,10 @@ const StockMainPage: React.FC = () => {
       dividendMonth: null,
       page: page,
       size: 24,
-    }).then((response)=>{
+    }).then((response) => {
       setStockList(response.data.response);
     });
-  },[]);
+  }, []);
 
   const handleTabClick = (tab: 'recommend' | 'individual') => {
     setActiveTab(tab);
@@ -77,9 +88,9 @@ const StockMainPage: React.FC = () => {
 
   return (
     <MainContainer>
-      <Navbar name={user.user.nickname} type="main" onClick={() => {}}/>
+      <Navbar name={user.user.nickname} type="main" onClick={() => {}} />
       <ContentContainer>
-        <PersonalInfo/>
+        <PersonalInfo />
         {activeTab === 'recommend' ? (
           <div className="flex flex-col space-y-4">
             <SectionHeader>
@@ -90,9 +101,16 @@ const StockMainPage: React.FC = () => {
                 개별 종목
               </SubTab>
             </SectionHeader>
-            <NextBtn content='바로 구매하기' onClick={()=>(navigate('/stocks/buy'))}/>
-            <CombiBoxContainer onClick={()=>{navigate('/stocks/detail')}}>
-              <CombiBox/>
+            <NextBtn
+              content="바로 구매하기"
+              onClick={() => navigate('/stocks/buy')}
+            />
+            <CombiBoxContainer
+              onClick={() => {
+                navigate('/stocks/detail');
+              }}
+            >
+              <CombiBox />
             </CombiBoxContainer>
           </div>
         ) : (

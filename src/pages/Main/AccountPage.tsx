@@ -6,18 +6,24 @@ import GreenBarTitle from '../../components/common/GreenBarTitle';
 import TotalPrice from '../../components/Main/TotalPrice';
 import GreenBtnSet from '../../components/Main/GreenBtnSet';
 import BottomUpModal from '../../components/common/Modal/BottomUpModal';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import WithdrawDeposit from '../../components/Main/WithdrawDeposit';
+import { getUserAccountAmount } from '../../api/auth';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
+import { getUserAccountLog } from '../../api/holding';
+import { AccountLogType } from '../../types/user_product';
 
-type LogType = 'deposit' | 'withdraw';
+type LogType = 'deposit' | 'withdrawal';
 
 type LogProps = {
-  log: LogType;
+  log: number;
 };
 
 const AccountPageContainer = styled.div`
-  ${tw`flex flex-col gap-8 px-5 py-18 w-full`}
+  ${tw`flex flex-col gap-8 px-5 py-18 w-full h-full`}
   box-sizing: border-box;
+  overflow: hidden;
 `;
 
 const AccountDetailSection = styled.div`
@@ -37,38 +43,57 @@ const InOutTitle = styled.div`
 `;
 
 const Logs = styled.div`
-  ${tw`flex flex-col gap-3`}
+  ${tw`flex flex-col gap-4`}
+  overflow-y: scroll;
+  height: calc(100vh - 400px);
 `;
 
 const Log = styled.div`
   ${tw`flex flex-row justify-between p-3`}
 `;
 
+const LogDateContainer = styled.div`
+  ${tw`flex flex-col gap-1`}
+`;
+
 const LogTypeComponent = styled.div<LogProps>`
+  ${tw`text-sm`}
   ${({ log }) => {
-    return log === 'deposit' ? tw`text-red` : tw`text-blue`;
+    return log === 1 ? tw`text-red` : tw`text-blue`;
   }}
+`;
+
+const DateContainer = styled.div`
+  ${tw`text-black40 text-sm`}
+  box-sizing: border-box;
+`;
+
+const LogRightSection = styled.div`
+  ${tw`flex flex-col gap-1 items-end`}
+`;
+
+const LogTitle = styled.div`
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 40vw;
 `;
 
 const NoLog = styled.div`
   ${tw`w-full text-center text-black40`}
 `;
 
-type LogDateType = {
-  type: LogType;
-  price: number;
-};
-
-const logData: LogDateType[] = [
-  { type: 'deposit', price: 50000 },
-  { type: 'withdraw', price: 300000 },
-];
-
 export default function AccountPage() {
   const navigate = useNavigate();
   const [modal, setModal] = useState<boolean>(false);
   const [modalType, setModalType] = useState<LogType>('deposit');
   const [accountAmount, setAccountAmount] = useState<number>(0);
+  const [logData, setLogData] = useState<AccountLogType[]>([]);
+  const [page, setPage] = useState<number>(0);
+  const stdRef = useRef<HTMLDivElement>(null);
+  const logRef = useRef<HTMLDivElement>(null);
+  const [isLast, setIsLast] = useState<boolean>(false);
+  const user = useSelector((state: RootState) => state.user);
 
   function onClickDeposit() {
     setModal(true);
@@ -77,10 +102,56 @@ export default function AccountPage() {
 
   function onClickWithdraw() {
     setModal(true);
-    setModalType('withdraw');
+    setModalType('withdrawal');
   }
 
-  useEffect(() => {}, []);
+  function getUserAccountLogAxios(page: number, reset: boolean) {
+    getUserAccountLog({
+      userId: user.user.id,
+      token: user.token,
+      page: page,
+      size: 8,
+    }).then((data) => {
+      if (data.data.success) {
+        if (reset) {
+          setPage(1);
+          setLogData(data.data.response);
+        } else {
+          setPage(page + 1);
+          setLogData([...logData, ...data.data.response]);
+        }
+      } else {
+        setLogData([...logData]);
+        setIsLast(true);
+      }
+    });
+  }
+
+  function onScroll() {
+    if (!isLast) {
+      if (logRef.current && stdRef.current) {
+        const std = stdRef.current.getBoundingClientRect();
+        const sRef = logRef.current.getBoundingClientRect();
+        if (std.bottom <= sRef.bottom + 20) {
+          getUserAccountLogAxios(page, false);
+        }
+      }
+    }
+  }
+
+  useEffect(() => {
+    getUserAccountAmount({
+      userId: user.user.id,
+      token: user.token,
+    }).then((data) => {
+      if (data.data.response.cash) {
+        setAccountAmount(data.data.response.cash);
+      }
+    });
+    getUserAccountLogAxios(0, true);
+    setIsLast(false);
+    if (logRef.current) logRef.current.scrollTop = 0;
+  }, [modal]);
 
   return (
     <>
@@ -114,21 +185,33 @@ export default function AccountPage() {
         </AccountDetailSection>
         <LogSection>
           <InOutTitle>입출금 내역</InOutTitle>
-          <Logs>
+          <Logs ref={logRef} onScroll={onScroll}>
             {logData.length === 0 ? (
               <NoLog>입출금 내역이 없습니다.</NoLog>
             ) : (
               logData.map((log, idx) => {
                 return (
                   <Log key={idx}>
-                    <LogTypeComponent log={log.type}>
-                      {log.type === 'deposit' ? '입금' : '출금'}
-                    </LogTypeComponent>
-                    <div>{log.price.toLocaleString()} 원</div>
+                    <LogDateContainer>
+                      <LogTypeComponent log={log.inOutType}>
+                        {log.inOutType === 1 ? '입금' : '출금'}
+                      </LogTypeComponent>
+                      <DateContainer>
+                        {new Date(log.inOutTime)
+                          .toISOString()
+                          .replace('T', ' ')
+                          .replace('.000Z', '')}
+                      </DateContainer>
+                    </LogDateContainer>
+                    <LogRightSection>
+                      <div>{log.inOutCash.toLocaleString()}원</div>
+                      <LogTitle>{log.inOutTitle}</LogTitle>
+                    </LogRightSection>
                   </Log>
                 );
               })
             )}
+            <div ref={stdRef}></div>
           </Logs>
         </LogSection>
       </AccountPageContainer>

@@ -3,7 +3,7 @@ import GreenBarTitle from '../../components/common/GreenBarTitle';
 import Navbar from '../../components/common/Navbar';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { MyStockProductType } from '../../components/Main/MyStockProduct';
-import { MyP2PProductType } from '../../components/Main/MyP2PProduct';
+import { MyP2PProductType } from '../../types/energy_product';
 import Footer from '../../components/common/Footer';
 import StockP2P from '../../components/Main/StockP2P';
 

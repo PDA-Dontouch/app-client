@@ -1,16 +1,13 @@
 import tw, { styled } from 'twin.macro';
 import plus from '../../assets/plus.svg';
 import minus from '../../assets/minus.svg';
+import logoImg from '../../assets/logo.svg';
 
-export type AddStockype = {
+export type AddStockType = {
   type: 'add' | 'cancel';
   code: string;
   name: string;
   onClick: (code: string, name: string) => void;
-};
-
-type StockImgProps = {
-  code: string;
 };
 
 type BtnImgProps = {
@@ -29,15 +26,10 @@ const LeftSection = styled.div`
   overflow:hidden;
 `;
 
-const StockImg = styled.div<StockImgProps>`
-  ${({ code }) =>
-    '0' <= code[0] && code[0] <= '9'
-      ? `background-image:url("https://file.alphasquare.co.kr/media/images/stock_logo/kr/${code}.png");`
-      : `background-image:url("https://file.alphasquare.co.kr/media/images/stock_logo/us/${code}.png");`}
-
+const StockImg = styled.img`
+  ${tw`rounded-full`}
   width: 35px;
   height: 35px;
-  border-radius: 20px;
   background-size: contain;
 `;
 
@@ -57,11 +49,16 @@ const AddBtn = styled.button<BtnImgProps>`
   ${tw`w-6 h-6 bg-transparent`}
 `;
 
-export default function AddStock({ type, code, name, onClick }: AddStockype) {
+export default function AddStock({ type, code, name, onClick }: AddStockType) {
   return (
     <AddStockContainer>
       <LeftSection>
-        <StockImg code={code}></StockImg>
+        <StockImg
+          src={`https://file.alphasquare.co.kr/media/images/stock_logo/${'0' <= code.charAt(0) && code.charAt(0) <= '9' ? 'kr' : 'us'}/${code}.png`}
+          onError={(e) => {
+            e.currentTarget.src = logoImg;
+          }}
+        />
         <StockName>{name}</StockName>
       </LeftSection>
       {type === 'add' ? (

@@ -5,7 +5,11 @@ import tw, { css, styled } from 'twin.macro';
 
 import useLike from '../../hooks/useLike';
 import { AppDispatch, RootState } from '../../store/store';
-import { getEstatesData } from '../../store/reducers/estates/estates';
+import {
+  buyEstates,
+  getEstatesData,
+  sellEstates,
+} from '../../store/reducers/estates/estates';
 import DetailBanner from '../../components/Estates/DetailBanner';
 import Navbar from '../../components/common/Navbar';
 import LikeBtn from '../../components/common/LikeBtn';
@@ -18,6 +22,19 @@ import DetailInfo from '../../components/Estates/DetailInfo';
 import BasicInfo from '../../components/Estates/BasicInfo';
 import InvestPoint from '../../components/Estates/InvestPoint';
 import ExpertCheck from '../../components/Estates/ExpertCheck';
+import { getHoldingEstates } from '../../store/reducers/estates/holding';
+import { EstateBuyType } from '../../types/estates_product';
+
+interface BuyEstatesResponse {
+  data: {
+    success: boolean;
+    response: string | boolean;
+    error: {
+      errorMessage: string;
+      httpStatus: string;
+    } | null;
+  };
+}
 
 const Container = styled.div`
   ${tw`mt-14 pb-20 h-full overflow-y-scroll`}
@@ -36,20 +53,81 @@ const EstatesDetail = () => {
   const params = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const detail = useSelector((state: RootState) => state.estates.detail);
-  const { EstatesLikeArr, setLikeEstates, EnergyLikeArr, setLikeEnergy } =
-    useLike();
+  const clickData = useSelector(
+    (state: RootState) => state.estates.clickEstates,
+  );
+  const holdingEstates = useSelector(
+    (state: RootState) => state.holdingEstates.datas,
+  );
+  const userId = useSelector((state: RootState) => state.user.user.id);
+  // const { EstatesLikeArr, setLikeEstates } = useLike({ fundId: clickData.id });
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [value, setValue] = useState<number>(0);
+  const [error, setError] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     dispatch(getEstatesData(parseInt(params.estates_id!)));
-  }, []);
+    dispatch(getHoldingEstates(userId));
+  }, [dispatch, params.estates_id]);
+
+  let isEstateHeld = false;
+  let matchingEstate = null;
+
+  if (holdingEstates && holdingEstates.length > 0) {
+    isEstateHeld = holdingEstates.some(
+      (estate) => estate.estateId === detail.estateId,
+    );
+
+    matchingEstate = holdingEstates.find(
+      (estate) => estate.estateId === detail.estateId,
+    );
+  }
+
+  const clickBuyBtn = () => {
+    if (value < 5000) {
+      setError('최소 투자 금액은 5천원입니다.');
+    } else {
+      const data: EstateBuyType = {
+        userId: userId,
+        estateFundId: clickData.id,
+        inputCash: value,
+        estateName: clickData.title,
+        estateEarningRate: clickData.earningRate,
+      };
+
+      dispatch(buyEstates(data)).then((res) => {
+        if ((res.payload as BuyEstatesResponse).data.success) {
+          navigate('/result/estate');
+        } else {
+          // 임시 에러 처리
+          alert((res.payload as BuyEstatesResponse).data.error?.errorMessage);
+        }
+      });
+    }
+  };
+
+  const clickCancleBtn = async () => {
+    const data = {
+      userId: userId,
+      estateFundId: clickData.id,
+      inputCash: matchingEstate?.inputCash || 0,
+      estateName: clickData.title,
+      estateEarningRate: clickData.earningRate,
+    };
+
+    dispatch(sellEstates(data)).then((res) => {
+      if ((res.payload as BuyEstatesResponse).data.success) {
+        navigate('/result/sell');
+      }
+    });
+  };
 
   return (
     <>
-      <Navbar name="back" type="" onClick={() => navigate('/estates')} />
+      <Navbar name="back" type="" onClick={() => navigate(-1)} />
       <Container>
         <DetailBanner isEstates={true} data={detail} />
-        <Dropdown isEstates={true} profit_rate={detail.earningRate} />
+        <Dropdown isEstates={true} profit_rate={clickData.earningRate} />
         <Hr />
         <InvestPoint data={detail} />
         <Hr />
@@ -57,16 +135,30 @@ const EstatesDetail = () => {
         <Hr />
         <DetailInfo data={detail} />
         <Hr />
+        {/* <CollateralStability data={detail} />
+        <Hr /> */}
         <ExpertCheck data={detail} />
       </Container>
       <BtnContainer>
-        <LikeBtn
-          isLike={EstatesLikeArr.includes(detail.id) ? true : false}
+        {/* <LikeBtn
+          isLike={EstatesLikeArr.includes(detail.id)}
           setIsLike={() => setLikeEstates(detail.id)}
-        />
+        /> */}
         <Button
-          name="구매하기"
-          status="estates"
+          name={
+            isEstateHeld
+              ? '취소하기'
+              : clickData.currentInvest === clickData.totalAmountInvestments
+                ? '모집이 완료되었습니다.'
+                : '구매하기'
+          }
+          status={
+            isEstateHeld
+              ? 'plain'
+              : clickData.currentInvest === clickData.totalAmountInvestments
+                ? 'disabled'
+                : 'estates'
+          }
           onClick={() => setIsOpen(true)}
         />
       </BtnContainer>
@@ -74,14 +166,32 @@ const EstatesDetail = () => {
         <BottomUpModal
           onClose={() => setIsOpen(false)}
           content={
-            <Purchase
-              period={detail.length}
-              profit={200000}
-              btnType="estates"
-            />
+            isEstateHeld ? (
+              <Cancel
+                amount={matchingEstate?.inputCash}
+                period={clickData.length}
+                profit={
+                  ((clickData.earningRate || 0) *
+                    (matchingEstate?.inputCash || 0)) /
+                  100
+                }
+                btnType="plain"
+                onClick={clickCancleBtn}
+              />
+            ) : (
+              <Purchase
+                period={clickData.length}
+                earningRate={clickData.earningRate}
+                btnType={value === 0 ? 'disabled' : 'estates'}
+                onClick={clickBuyBtn}
+                value={value}
+                setValue={setValue}
+                error={error}
+                setError={setError}
+              />
+            )
           }
         />
-        // <BottomUpModal onClose={() => setIsOpen(false)} content={<Cancel amount={5000000} period={6} profit={205100} btnType="plain" />} />
       )}
     </>
   );

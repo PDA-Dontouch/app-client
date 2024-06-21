@@ -4,14 +4,18 @@ import {
   energyLike,
   energyDatas,
   energyData,
+  energyBuy,
+  energySell,
 } from '../../../api/energy';
 import {
   EnergyList,
   energyDetail,
   initialEnergyDetail,
 } from '../../../types/energy_product';
+import { EnergyBuyType } from '../../../types/energy_product';
 
 interface EnergyState {
+  loading: boolean;
   energyLike: string[];
   datas: EnergyList[];
   detail: energyDetail;
@@ -29,15 +33,26 @@ type ActionPayloadDetail = {
   };
 };
 
+type ActionPayloadResult = {
+  data: {
+    success: true;
+    response: {
+      savedLikeEnergyFundId: '';
+    };
+    error: null;
+  };
+};
+
 const initialState: EnergyState = {
+  loading: true,
   energyLike: ['-1'],
   datas: [],
   detail: initialEnergyDetail,
 };
 
 export type energyTypes = {
-  token: string;
-  energy_id: number;
+  userId: number;
+  energyFundId: string;
 };
 
 export const getEnergyDatas = createAsyncThunk<ActionPayload, void>(
@@ -56,18 +71,34 @@ export const getEnergyData = createAsyncThunk<ActionPayloadDetail, string>(
   },
 );
 
-export const addLikeEnergy = createAsyncThunk(
+export const addLikeEnergy = createAsyncThunk<ActionPayloadResult, energyTypes>(
   'energy/like',
   async (data: energyTypes, thunkAPI) => {
     const response = await energyLike(data);
-    return response;
+    return response as ActionPayloadResult;
   },
 );
 
 export const delLikeEnergy = createAsyncThunk(
-  'energy/like',
+  'energy/dislike',
   async (data: energyTypes, thunkAPI) => {
     const response = await energyDisLike(data);
+    return response;
+  },
+);
+
+export const buyEnergy = createAsyncThunk(
+  'energy/buyEnergy',
+  async (data: EnergyBuyType) => {
+    const response = await energyBuy(data);
+    return response;
+  },
+);
+
+export const sellEnergy = createAsyncThunk(
+  'energy/sellEnergy',
+  async (data: EnergyBuyType) => {
+    const response = await energySell(data);
     return response;
   },
 );
@@ -89,6 +120,7 @@ const energySlice = createSlice({
         getEnergyDatas.fulfilled,
         (state, action: PayloadAction<ActionPayload>) => {
           state.datas = action.payload.data.response;
+          state.loading = false;
         },
       )
       .addCase(

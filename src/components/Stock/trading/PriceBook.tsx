@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../store/store';
 import tw, { styled } from 'twin.macro';
 import { PriceType, SocketType } from '../../../types/socket';
+import Noti from '../../../assets/noti.svg';
 
 interface PriceBookProps {
   nowPrice: PriceType;
@@ -27,10 +28,10 @@ const FlexColumn = styled.div<{ isKorea: boolean }>`
   ${({ isKorea }) => (!isKorea ? tw`h-[50%]` : '')}
 `;
 
-const Blur = styled.div`
-  ${tw`w-[100%] h-[100%]`}
+const Blur = styled.div<{ isStart: boolean }>`
+  ${tw`w-[100%] h-[100%] flex flex-col items-center justify-end text-black gap-3`}
   background-color: rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(30px);
+  ${({ isStart }) => (isStart ? tw`justify-end` : tw`justify-start`)}
 `;
 
 const PriceContainer = styled.div<{
@@ -82,7 +83,10 @@ const PriceBook = ({ nowPrice, askPrice, isKorea }: PriceBookProps) => {
             .reverse()
         ) : (
           <PriceContainer backgroundColor="#E7F0FD">
-            <Blur />
+            <Blur isStart={true}>
+              <img src={Noti} />
+              <span>추후 추가될</span>
+            </Blur>
           </PriceContainer>
         )}
       </FlexColumn>
@@ -104,7 +108,7 @@ const PriceBook = ({ nowPrice, askPrice, isKorea }: PriceBookProps) => {
           ))
         ) : (
           <PriceContainer backgroundColor="#FDE8E7">
-            <Blur />
+            <Blur isStart={false}>기능입니다.</Blur>
           </PriceContainer>
         )}
       </FlexColumn>

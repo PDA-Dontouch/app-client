@@ -2,9 +2,10 @@ import tw, { styled } from 'twin.macro';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { depositWithdrawal } from '../../api/auth';
+import { useEffect, useState } from 'react';
 
 type ModalType = {
-  type: 'withdraw' | 'deposit';
+  type: 'withdrawal' | 'deposit';
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
@@ -45,24 +46,56 @@ const Confirm = styled.button`
 
 export default function WithdrawDeposit({ type, setModal }: ModalType) {
   const user = useSelector((state: RootState) => state.user);
-  function getAccountAmount() {
-    // depositWithdrawal({userId: user.user.id, token : user.token, })
+  const [price, setPrice] = useState<number>(0);
+  const [priceInput, setPriceInput] = useState<string>('');
+
+  function onClick() {
+    const cash = type === 'deposit' ? price : -1 * price;
+
+    depositWithdrawal({
+      userId: user.user.id,
+      token: user.token,
+      price: cash,
+    }).then((data) => {
+      setModal(false);
+    });
   }
 
-  function onSubmit() {
-    setModal(false);
+  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    onClick();
+  }
+
+  function onChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value.replace(/,/g, '');
+    if (
+      ('0' <= value.charAt(value.length - 1) &&
+        value.charAt(value.length - 1) <= '9') ||
+      value.length === 0
+    ) {
+      setPrice(Number(value));
+      const formattedValue = Number(value).toLocaleString();
+
+      setPriceInput(formattedValue);
+    }
   }
 
   return (
     <Container>
       <Title>{type === 'deposit' ? '입금' : '출금'}</Title>
-      <PriceSection>
+      <PriceSection onSubmit={(e) => onSubmit(e)}>
         <PriceTitle>금액</PriceTitle>
         <PriceNumber>
-          <PriceInput />원
+          <PriceInput
+            inputMode="decimal"
+            type="text"
+            value={priceInput}
+            onChange={(e) => onChangeHandler(e)}
+          />
+          원
         </PriceNumber>
       </PriceSection>
-      <Confirm type={'submit'} onSubmit={onSubmit} onClick={onSubmit}>
+      <Confirm type={'submit'} onClick={onClick}>
         확인
       </Confirm>
     </Container>

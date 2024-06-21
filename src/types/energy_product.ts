@@ -151,3 +151,18 @@ export type HoldingEnergyType = {
   titleImageUrl: string;
   userId: number;
 };
+
+export type MyP2PProductType = {
+  id: number;
+  userId: number;
+  titleImageUrl: string;
+  title: string;
+  earningRate: number;
+  investmentPeriod: number;
+  inputCash: number;
+  startPeriod: Date;
+  createdAt: Date;
+};
+export type WithEnergyId = {
+  energyId: string;
+};

@@ -93,7 +93,7 @@ export default function AddStockModal({ setModal }: ProductsHeldPageProps) {
 
   function getSearchResult(searchTerm: string) {
     stocksDatas({
-      userInvestmentType: user.user.investmentType,
+      searchWord: searchTerm,
       safeScore: user.user.safeScore,
       dividendScore: user.user.dividendScore,
       growthScore: user.user.growthScore,

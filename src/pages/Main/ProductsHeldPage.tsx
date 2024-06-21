@@ -3,13 +3,21 @@ import GreenBarTitle from '../../components/common/GreenBarTitle';
 import Navbar from '../../components/common/Navbar';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { MyStockProductType } from '../../components/Main/MyStockProduct';
-import { MyP2PProductType } from '../../components/Main/MyP2PProduct';
+import { MyP2PProductType, WithEnergyId } from '../../types/energy_product';
 import Footer from '../../components/common/Footer';
 import StockP2P from '../../components/Main/StockP2P';
 import { useEffect, useState } from 'react';
 import BottomUpModal from '../../components/common/Modal/BottomUpModal';
 import AddStockModal from '../../components/Main/AddStockModal';
-import SearchBar from '../../components/common/Stock/SearchBar';
+import {
+  getUserEnergyProduct,
+  getUserEstateProduct,
+  getUserTotalEnergy,
+  getUserTotalEstate,
+} from '../../api/holding';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
+import { WithEstateId } from '../../types/estates_product';
 
 interface LocationState {
   initialActive: boolean;
@@ -44,45 +52,63 @@ const usaData: MyStockProductType[] = [
   },
 ];
 
-const energyData: MyP2PProductType[] = [
-  {
-    img: '',
-    name: '디지털복합단지 럭셔리타워 신축 2호 4차',
-    annualRate: 13.0,
-    monthlyDividend: 63800,
-    openDate: new Date(2024, 6, 30),
-  },
-  {
-    img: '',
-    name: '디지털복합단지 럭셔리타워 신축 2호 4차',
-    annualRate: 13.0,
-    monthlyDividend: 63800,
-    openDate: new Date(2024, 4, 30),
-  },
-];
-
-const estateData: MyP2PProductType[] = [
-  {
-    img: '',
-    name: '의성군 외 총 993.40kW 태양광 담보',
-    annualRate: 13.0,
-    monthlyDividend: 270000,
-    openDate: new Date(2024, 6, 30),
-  },
-  {
-    img: '',
-    name: '의성군 외 총 993.40kW 태양광 담보',
-    annualRate: 13.0,
-    monthlyDividend: 63800,
-    openDate: new Date(2024, 4, 30),
-  },
-];
-
 export default function ProductsHeldPage() {
   const [modal, setModal] = useState<boolean>(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const [estateTotalPrice, setEstateTotalPrice] = useState<number>(0);
+  const [energyTotalPrice, setEnergyTotalPrice] = useState<number>(0);
+  const [estateData, setEstateData] = useState<
+    (MyP2PProductType & WithEstateId)[]
+  >([]);
+  const [energyData, setEnergyData] = useState<
+    (MyP2PProductType & WithEnergyId)[]
+  >([]);
+
+  const user = useSelector((state: RootState) => state.user);
+
   const state = location.state as LocationState;
+
+  function getEstateDataProps() {
+    getUserEstateProduct({ userId: user.user.id, token: user.token }).then(
+      (data) => {
+        setEstateData(data.data.response);
+        if (!data.data.success) setEstateData([]);
+      },
+    );
+  }
+
+  function getEnergyDataProps() {
+    getUserEnergyProduct({ userId: user.user.id, token: user.token }).then(
+      (data) => {
+        setEnergyData(data.data.response);
+        if (!data.data.success) setEnergyData([]);
+      },
+    );
+  }
+
+  function getEnergyTotalPrice() {
+    getUserTotalEnergy({ userId: user.user.id, token: user.token }).then(
+      (data) => {
+        setEnergyTotalPrice(data.data.response);
+      },
+    );
+  }
+
+  function getEstateTotalPrice() {
+    getUserTotalEstate({ userId: user.user.id, token: user.token }).then(
+      (data) => {
+        setEstateTotalPrice(data.data.response);
+      },
+    );
+  }
+  useEffect(() => {
+    getEstateDataProps();
+    getEnergyDataProps();
+    getEnergyTotalPrice();
+    getEstateTotalPrice();
+  }, []);
+
   return (
     <>
       {modal && (
@@ -114,7 +140,7 @@ export default function ProductsHeldPage() {
             setModal(true);
           }}
           StockTotalPrice={5092000}
-          P2PTotalPrice={20460520}
+          P2PTotalPrice={energyTotalPrice + estateTotalPrice}
         />
       </ProductsHeldPageContainer>
       <Footer />

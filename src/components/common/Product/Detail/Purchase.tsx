@@ -2,6 +2,8 @@ import React, { SetStateAction, useState } from 'react';
 import tw, { styled } from 'twin.macro';
 import ModalItem from '../../Modal/ModalItem';
 import Button, { StatusType } from '../../Button';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../../store/store';
 
 interface PurchaseProps {
   period: number;
@@ -48,6 +50,7 @@ const Purchase = ({
     const inputValue = event.target.value.replace(/,/g, '');
     const numericValue = inputValue.replace(/[^0-9]/g, '');
     const parsedValue = numericValue === '' ? 0 : parseInt(numericValue, 10);
+    // const userAsset = useSelector((state:RootState) => state.)
 
     if (setError !== undefined) {
       if (isNaN(parsedValue)) {

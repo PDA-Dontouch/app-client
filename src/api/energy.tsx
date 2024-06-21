@@ -1,4 +1,7 @@
 import { energyTypes } from '../store/reducers/energy/energy';
+import { WithToken } from '../types/response_product';
+import { EnergyBuyType } from '../types/energy_product';
+import { authInstance, energyInstance } from './api';
 import { EnergyList } from '../types/energy_product';
 import {
   PromiseAxiosRes,
@@ -11,7 +14,7 @@ export const energy_url = `/api/energy`;
 
 export const energyDatas = async () => {
   try {
-    const response = await energyInstance.get(energy_url);
+    const response = await energyInstance.get('');
     return response;
   } catch (err) {
     console.error(err);
@@ -21,7 +24,7 @@ export const energyDatas = async () => {
 
 export const energyData = async (energy_id: string) => {
   try {
-    const response = await energyInstance.get(energy_url + `/${energy_id}`);
+    const response = await energyInstance.get(`/${energy_id}`);
     return response;
   } catch (err) {
     console.error(err);
@@ -31,7 +34,7 @@ export const energyData = async (energy_id: string) => {
 
 export const energyLike = async (data: energyTypes) => {
   try {
-    const response = await energyInstance.post(energy_url + '/like', data);
+    const response = await authInstance.post('/like/energy', data);
     return response;
   } catch (err) {
     console.error(err);
@@ -41,7 +44,7 @@ export const energyLike = async (data: energyTypes) => {
 
 export const energyDisLike = async (data: energyTypes) => {
   try {
-    const response = await energyInstance.delete(energy_url + '/like', {
+    const response = await authInstance.delete('/like/energy', {
       data: data,
     });
     return response;
@@ -51,11 +54,31 @@ export const energyDisLike = async (data: energyTypes) => {
   }
 };
 
+export const energyBuy = async (data: EnergyBuyType) => {
+  try {
+    const response = await energyInstance.post('/buy', data);
+    return response;
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
+};
+
+export const energySell = async (data: EnergyBuyType) => {
+  try {
+    const response = await energyInstance.post('/sell', data);
+    return response;
+  } catch (err) {
+    return err;
+  }
+};
+
 export const getEnergyLike = async ({
   userId,
   token,
 }: WithToken & WithUserId): PromiseAxiosRes<EnergyList[]> => {
   try {
+    return;
     const response = await energyInstance.get(energy_url + '/like', {
       params: {
         token: token,
@@ -66,5 +89,14 @@ export const getEnergyLike = async ({
   } catch (err) {
     console.error(err);
     throw err;
+  }
+};
+
+export const energySell = async (data: EnergyBuyType) => {
+  try {
+    const response = await energyInstance.post('/sell', data);
+    return response;
+  } catch (err) {
+    return err;
   }
 };

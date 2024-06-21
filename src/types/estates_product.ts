@@ -136,7 +136,7 @@ export const clickEstates: EstatesList = {
   currentInvest: 0,
 };
 
-export type BuyType = {
+export type EstateBuyType = {
   userId: number;
   estateFundId: number;
   inputCash: number;

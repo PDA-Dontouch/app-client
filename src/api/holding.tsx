@@ -118,6 +118,16 @@ export const holdingEstates = async (user_id: number) => {
   }
 };
 
+export const holdingEnergy = async (user_id: number) => {
+  try {
+    const response = await holdingInstance.get(`/allEnergy/${user_id}`);
+    return response;
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
+};
+
 export const getHoldingEnergyCalendar = async (
   data: StartDateEndDateType & WithToken,
 ): PromiseAxiosRes<CalendarP2PType[]> => {

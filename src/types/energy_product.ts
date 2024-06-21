@@ -6,6 +6,7 @@ export interface EnergyList {
   investment_period: number;
   fundingAmount: number;
   sumOfInvestmentAndReservation: number;
+  creditRating: string;
 }
 
 export type CalendarP2PType = {
@@ -137,6 +138,28 @@ export const initialEnergyDetail = {
   collateralRecoveryValue3: '',
   collateralRecoveryValue4: '',
 };
+
+export type EnergyBuyType = {
+  userId: number;
+  energyFundId: string;
+  inputCash: number;
+  energyName: string;
+  energyEarningRate: number;
+};
+
+export type HoldingEnergyType = {
+  createdAt: null;
+  earningRate: number;
+  energyId: string;
+  id: number;
+  inputCash: number;
+  investmentPeriod: number;
+  startPeriod: string;
+  title: string;
+  titleImageUrl: string;
+  userId: number;
+};
+
 export type MyP2PProductType = {
   id: number;
   userId: number;

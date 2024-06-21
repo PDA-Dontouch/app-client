@@ -12,7 +12,7 @@ import {
   clickEstates,
   EstatesDetail,
   initialEstatesDetail,
-  BuyType,
+  EstateBuyType,
 } from '../../../types/estates_product';
 
 interface EstatesState {
@@ -76,7 +76,7 @@ export const delLikeEstates = createAsyncThunk(
 
 export const buyEstates = createAsyncThunk(
   'estates/buyEstates',
-  async (data: BuyType) => {
+  async (data: EstateBuyType) => {
     const response = await estatesBuy(data);
     return response;
   },
@@ -84,7 +84,7 @@ export const buyEstates = createAsyncThunk(
 
 export const sellEstates = createAsyncThunk(
   'estates/sellEstates',
-  async (data: BuyType) => {
+  async (data: EstateBuyType) => {
     const response = await estatesSell(data);
     return response;
   },

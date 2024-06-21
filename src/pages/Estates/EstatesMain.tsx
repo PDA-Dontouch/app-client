@@ -54,6 +54,7 @@ const EstatesMain = () => {
   const isLoading = useSelector((state: RootState) => state.estates.loading);
   const [sortByProfit, setSortByProfit] = useState(false);
   const [isSelect, setIsSelect] = useState(0);
+  const [estateId, setEstateId] = useState(0);
 
   useEffect(() => {
     dispatch(getEstatesDatas());
@@ -61,7 +62,7 @@ const EstatesMain = () => {
     // dispatch(getHoldingEstates(userId));
   }, [dispatch]);
 
-  const { EstatesLikeArr, setLikeEstates } = useLike();
+  const { EstatesLikeArr, setLikeEstates } = useLike({ fundId: estateId });
 
   const filterAndSortData = (data: EstatesList[], completed: boolean) => {
     const filteredData = data.filter((estate) =>
@@ -80,7 +81,13 @@ const EstatesMain = () => {
 
   const renderProducts = (data: EstatesList[]) => {
     return data.map((item) => (
-      <div key={item.id} onClick={() => clickEstates(item)}>
+      <div
+        key={item.id}
+        onClick={() => {
+          clickEstates(item);
+          setEstateId(item.id);
+        }}
+      >
         <Product
           isEstates={true}
           data={item}
@@ -123,7 +130,11 @@ const EstatesMain = () => {
             </SubText>
           </SelectContainer>
           {isLoading
-            ? [...Array(5)].map((_, index) => <ProductSkeleton />)
+            ? [...Array(5)].map((_, index) => (
+                <div key={index}>
+                  <ProductSkeleton />
+                </div>
+              ))
             : isSelect === 0
               ? renderProducts(ongoingInvestments)
               : renderProducts(completedInvestments)}

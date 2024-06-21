@@ -14,10 +14,10 @@ const TextContainer = styled.div`
 `;
 
 const MainText = styled.span`
-  ${tw`text-lg font-semibold`}
+  ${tw`text-base font-semibold`}
 `;
 const SubText = styled.span`
-  ${tw`text-base`}
+  ${tw`text-[0.92rem] leading-snug`}
 `;
 
 const renderBorrowerInfo = (title?: string, content?: string) => {

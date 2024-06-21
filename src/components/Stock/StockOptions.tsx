@@ -140,7 +140,7 @@ const StockOptions: React.FC<StockOptionsProps> = ({ dividendMonth }) => {
           );
         })}
       </StockItems>
-      {alertOpen && <AlertModal onClose={handleAlertClose} message='최대 2개의 종목을 추가할 수 있습니다.' />}
+      {alertOpen && <AlertModal type='modal' onClose={handleAlertClose} message='최대 2개의 종목을 추가할 수 있습니다.' />}
     </Container>
   );
 };

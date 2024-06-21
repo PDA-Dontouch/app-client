@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import tw, { styled, css } from 'twin.macro';
+import tw, { styled } from 'twin.macro';
 import SelectStock from '../../components/Stock/SelectStock';
 import Button from '../../components/common/Button';
 import Navbar from '../../components/common/Navbar';
@@ -8,6 +8,7 @@ import { RootState } from '../../store/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../../store/store';
 import { removeCombiStocks } from '../../store/reducers/stocks/stocks';
+import AlertModal from '../../components/common/Stock/AlertModal';
 
 const Container = styled.div`
   ${tw`h-[calc(100% - 190px)] mt-14 mb-[84px] px-5 py-6 flex flex-col gap-6`}
@@ -46,43 +47,56 @@ const BuyPrice = styled.span`
   ${tw`text-base text-right`}
 `;
 
-
 const StockCombiBuyPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
   const combiStocks = useSelector((state: RootState) => state.stocks);
+  const [alertOpen, setAlertOpen] = useState(false);
 
   const handleRemoveStock = (
     stockSymbol: string,
     currentCombination: number,
   ) => {
-    const combinationMap: {
-      [key: number]: 'combination1' | 'combination2' | 'combination3';
-    } = {
-      1: 'combination1',
-      2: 'combination2',
-      3: 'combination3',
-    };
-    const combination = combinationMap[currentCombination];
+    const allStocks = [
+      ...combiStocks.combination1.stocks,
+      ...combiStocks.combination2.stocks,
+      ...combiStocks.combination3.stocks,
+    ];
 
-    dispatch(removeCombiStocks({ combination: combination, stockSymbol }));
+    if (allStocks.length === 1) {
+      setAlertOpen(true);
+    } else {
+      const combinationMap: {
+        [key: number]: 'combination1' | 'combination2' | 'combination3';
+      } = {
+        1: 'combination1',
+        2: 'combination2',
+        3: 'combination3',
+      };
+      const combination = combinationMap[currentCombination];
+      dispatch(removeCombiStocks({ combination: combination, stockSymbol }));
+    }
   };
 
-  const totalPrice = ()=>{
-    let sum=0;
+  const handleAlertClose = () => {
+    setAlertOpen(false);
+  };
+
+  const totalPrice = () => {
+    let sum = 0;
     combiStocks.combination1.stocks.forEach((stock) => {
-        sum= sum+(stock.price * stock.quantity);
+      sum = sum + stock.price * stock.quantity;
     });
     combiStocks.combination2.stocks.forEach((stock) => {
-        sum= sum+(stock.price * stock.quantity);
+      sum = sum + stock.price * stock.quantity;
     });
     combiStocks.combination3.stocks.forEach((stock) => {
-        sum= sum+(stock.price * stock.quantity);
+      sum = sum + stock.price * stock.quantity;
     });
-    
+
     return sum.toLocaleString();
-  }
+  };
 
   return (
     <>
@@ -166,6 +180,13 @@ const StockCombiBuyPage: React.FC = () => {
           onClick={() => navigate('/result/buy')}
         />
       </ButtonContainer>
+      {alertOpen && (
+        <AlertModal
+          type="full"
+          onClose={handleAlertClose}
+          message="적어도 한 종목은 조합에 있어야 합니다."
+        ></AlertModal>
+      )}
     </>
   );
 };

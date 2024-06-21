@@ -3,10 +3,14 @@ import tw, { styled } from "twin.macro";
 interface ModalProps {
     onClose: () => void;
     message: string;
+    type: "modal" | "full";
 }
 
-const BackGround = styled.div`
-  ${tw`fixed rounded-20 inset-0 bg-black bg-opacity-30 flex items-center justify-center`}
+const BackGround = styled.div<{ round?: boolean }>`
+  ${({ round }) => round && tw`rounded-t-20`};
+  ${tw`fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center`}
+  z-index: 50
+  
 `;
 
 const Modal = styled.div`
@@ -22,10 +26,10 @@ const Btn = styled.button`
 
 const Message = styled.span`${tw`text-base items-center`}`;
 
-const AlertModal = ({ onClose, message }: ModalProps) => {
+const AlertModal = ({ onClose, message, type }: ModalProps) => {
   return (
     <>
-      <BackGround>
+      <BackGround round={type === 'modal'}>
       <Modal>
         <Message>{message}</Message>
         <Btn onClick={onClose}>

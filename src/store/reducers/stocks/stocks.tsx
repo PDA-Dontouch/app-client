@@ -82,7 +82,7 @@ export const addCombiStocks = createAsyncThunk<
   },
   { state: RootState }
 >(
-  'stocks/combination/distribute',
+  'stocks/combination/addStock',
   async ({ combination, stockId, exchange }, thunkAPI) => {
     const state = thunkAPI.getState();
     const combiStocks = state.stocks;
@@ -104,6 +104,50 @@ export const addCombiStocks = createAsyncThunk<
   },
 );
 
+export const removeCombiStocks = createAsyncThunk<
+  ActionPayloadCombi,
+  {
+    combination: 'combination1' | 'combination2' | 'combination3';
+    stockSymbol: string;
+  },
+  { state: RootState }
+>(
+  'stocks/combination/removeStock',
+  async ({ combination, stockSymbol }, thunkAPI) => {
+    const state = thunkAPI.getState();
+    const combiStocks = state.stocks;
+    const combinationToUpdate = combiStocks[combination];
+
+    // 새로운 배열을 생성하고 필터링
+    const updatedStocks = combinationToUpdate.stocks.filter(
+      (stock) => stock.symbol !== stockSymbol
+    );
+
+    // 현재 상태에서 각 조합을 변환
+    const transformedCombination1 = transformStocks(
+      combination === 'combination1' ? updatedStocks : combiStocks.combination1.stocks
+    );
+    const transformedCombination2 = transformStocks(
+      combination === 'combination2' ? updatedStocks : combiStocks.combination2.stocks
+    );
+    const transformedCombination3 = transformStocks(
+      combination === 'combination3' ? updatedStocks : combiStocks.combination3.stocks
+    );
+
+    const newCombi: RequestCombiDistribute = {
+      combination1: transformedCombination1,
+      combination2: transformedCombination2,
+      combination3: transformedCombination3,
+      investmentAmount: state.stocks.totalInvestment,
+    };
+
+    const response = await combinationDistribute(newCombi);
+    console.log(response.data);
+    return response as ActionPayloadCombi;
+  }
+);
+
+
 const stocksSlice = createSlice({
   name: 'stocks',
   initialState: initialState,
@@ -113,23 +157,6 @@ const stocksSlice = createSlice({
       action: PayloadAction<number>
     ) => {
       state.totalInvestment = action.payload;
-    },
-    removeStockFromCombination: (
-      state,
-      action: PayloadAction<{
-        combination: 'combination1' | 'combination2' | 'combination3';
-        stockSymbol: string;
-      }>,
-    ) => {
-      const { combination, stockSymbol } = action.payload;
-      const stockToRemove = state[combination].stocks.find(
-        (stock) => stock.symbol === stockSymbol,
-      );
-      if (stockToRemove) {
-        state[combination].stocks = state[combination].stocks.filter(
-          (stock) => stock.symbol !== stockSymbol,
-        );
-      }
     },
   },
   extraReducers: (builder) => {
@@ -143,10 +170,15 @@ const stocksSlice = createSlice({
       state.combination2 = action.payload.data.response.combination2;
       state.combination3 = action.payload.data.response.combination3;
     });
+    builder.addCase(removeCombiStocks.fulfilled, (state, action) => {
+      state.combination1 = action.payload.data.response.combination1;
+      state.combination2 = action.payload.data.response.combination2;
+      state.combination3 = action.payload.data.response.combination3;
+    });
   },
 });
 
-export const {setTotalInvestment,removeStockFromCombination } =
+export const {setTotalInvestment} =
   stocksSlice.actions;
 
 export default stocksSlice.reducer;

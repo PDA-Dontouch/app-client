@@ -31,24 +31,26 @@ const ItemContainer = styled.div`
 `;
 
 const Item = styled.div`
-  ${tw`flex gap-2 items-center`}
+  ${tw`flex gap-3 items-center`}
 `;
 
 const SubItem = styled.div`
-  ${tw`flex flex-col gap-1`}
+  ${tw`flex flex-col gap-2`}
 `;
 
 const Input = styled.input`
-  ${tw`w-[50px] bg-gray-light border-0 border-solid border-b border-gray-dark focus:outline-none text-base text-end`}
+  ${tw`w-[50px] bg-gray-light border-0 border-solid border-b border-gray-dark focus:outline-none text-sm text-end`}
 `;
 
 const Img = styled.img`
   ${tw`w-10 h-10 rounded-full`}
 `;
 
-const MainText = styled.span`${tw`text-base`}`;
+const MainText = styled.span`
+  ${tw`text-sm`}
+`;
 
-const SubText = styled.span`${tw`text-sm`}`;
+const SubText = styled.span`${tw`text-xs`}`;
 
 const SelectStock = ({ name, price, amount, symbol, onDelete }: StockProps) => {
 

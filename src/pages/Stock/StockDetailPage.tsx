@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { RootState } from '../../store/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../../store/store';
-import { removeStockFromCombination } from '../../store/reducers/stocks/stocks';
+import { removeCombiStocks } from '../../store/reducers/stocks/stocks';
 
 const Container = styled.div`
   ${tw`h-[calc(100% - 206px)] mt-14 mb-[84px] px-5 py-8 flex flex-col gap-3`}
@@ -60,7 +60,7 @@ const StockDetailPage: React.FC = () => {
   const selectedStocks = combiStocks[currentCombination];
   
   const handleRemoveStock = (stockSymbol: string) => {
-    dispatch(removeStockFromCombination({ combination: currentCombination, stockSymbol }));
+    dispatch(removeCombiStocks({ combination: currentCombination, stockSymbol }));
   };
 
   const handleOpenModal = () => {
@@ -87,7 +87,7 @@ const StockDetailPage: React.FC = () => {
 
   return (
     <>
-      <Navbar name="" type="close" onClick={() => {navigate(-1)}} />
+      <Navbar name="" type="close" onClick={() => {navigate('/stocks')}} />
       <Container>
         <HeaderText>
           {currentMonth + 1}·{currentMonth + 3}·{currentMonth + 5}·

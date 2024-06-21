@@ -7,12 +7,20 @@ import Empty from '../../../assets/empty-heart.svg';
 import Fill from '../../../assets/fill-heart.svg';
 import { PriceType } from '../../../types/socket';
 import { CaretDownFill, CaretUpFill } from 'react-bootstrap-icons';
-import { getChartDatas } from '../../../store/reducers/stocks/individualStock';
+import {
+  ChartActionPayload,
+  getChartDatas,
+} from '../../../store/reducers/stocks/individualStock';
 import { useParams } from 'react-router-dom';
+import MarketInfoSkeleton from '../../Skeleton/MarketInfoSkeleton';
 
 interface InfoProps {
   nowPrice: PriceType;
 }
+
+type ChartType = {
+  payload: ChartActionPayload;
+};
 
 const NameContainer = styled.div`
   ${tw`w-full px-7 flex justify-between items-center box-border`}
@@ -76,6 +84,9 @@ const MarketInfo = ({ nowPrice }: InfoProps) => {
   const selectExchange = useSelector(
     (state: RootState) => state.trading.selectExchange,
   );
+  const isLoading = useSelector(
+    (state: RootState) => state.individualStock.isLoading,
+  );
   const [isLike, setIsLike] = useState<boolean>(false);
   const [upNum, setUpNum] = useState(0);
   const [nowRate, setNowRate] = useState(0);
@@ -87,26 +98,10 @@ const MarketInfo = ({ nowPrice }: InfoProps) => {
     const data = {
       exchange: selectExchange,
       stockId: parseInt(params.id || ''),
-      month: 30,
-      interval: 5,
+      month: 12,
+      interval: 1,
     };
-    dispatch(getChartDatas(data)).then((res) => {
-      setUpDown(
-        chartData[chartData.length - 1].close -
-          chartData[chartData.length - 2].close,
-      );
-      setClose(
-        chartData[chartData.length - 1].close
-          .toString()
-          .replace(/\B(?=(\d{3})+(?!\d))/g, ','),
-      );
-      setStockRate(
-        ((chartData[chartData.length - 1].close -
-          chartData[chartData.length - 2].close) /
-          chartData[chartData.length - 2].close) *
-          100,
-      );
-    });
+    dispatch(getChartDatas(data)).then((res) => {});
   }, [dispatch]);
 
   useEffect(() => {
@@ -124,6 +119,26 @@ const MarketInfo = ({ nowPrice }: InfoProps) => {
     }
   }, [nowPrice]);
 
+  useEffect(() => {
+    if (isLoading === false) {
+      setUpDown(
+        chartData[chartData.length - 1].close -
+          chartData[chartData.length - 2].close,
+      );
+      setClose(
+        chartData[chartData.length - 1].close
+          .toString()
+          .replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+      );
+      setStockRate(
+        ((chartData[chartData.length - 1].close -
+          chartData[chartData.length - 2].close) /
+          chartData[chartData.length - 2].close) *
+          100,
+      );
+    }
+  }, [isLoading]);
+
   const formatNumber = (num: number): string => {
     if (num >= 1e8) {
       const billion = num / 1e8;
@@ -139,9 +154,11 @@ const MarketInfo = ({ nowPrice }: InfoProps) => {
       <NameContainer>
         <SubName>
           <MainText>{detail.basic_info.name}</MainText>
-          {/* <SubText>{nowPrice.message.close}원</SubText> */}
           <SubText>
-            {nowPrice.message.close !== '' ? (
+            {isLoading ? (
+              <MarketInfoSkeleton />
+            ) : detail.basic_info.exchange === 'KSC' &&
+              nowPrice?.message.close !== '' ? (
               <>
                 <StockFont num={upNum}>
                   {nowPrice?.message.close
@@ -164,7 +181,9 @@ const MarketInfo = ({ nowPrice }: InfoProps) => {
               </>
             ) : (
               <>
-                <StockFont num={upDown}>{close}</StockFont>
+                <StockFont num={upDown}>
+                  {detail.basic_info.exchange === 'KSC' ? close : '$' + close}
+                </StockFont>
                 <StockDiv>
                   {upDown > 0 ? (
                     <CaretUpFill color="#c70606" />
@@ -172,12 +191,16 @@ const MarketInfo = ({ nowPrice }: InfoProps) => {
                     <CaretDownFill color="#0636c7" />
                   ) : null}
                   <StockFont2 num={upDown}>
-                    {upDown.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                    {detail.basic_info.exchange === 'KSC'
+                      ? upDown.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                      : '$' + (upDown / 10).toFixed(2)}
                   </StockFont2>
                   <StockFont2 num={stockRate}>(</StockFont2>
                   {stockRate > 0 && <StockFont2 num={stockRate}>+</StockFont2>}
                   <StockFont2 num={stockRate}>
-                    {stockRate.toFixed(2)}%)
+                    {detail.basic_info.exchange === 'KSC'
+                      ? stockRate.toFixed(2) + '%)'
+                      : (stockRate / 10).toFixed(2) + '%)'}
                   </StockFont2>
                 </StockDiv>
               </>

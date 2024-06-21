@@ -138,7 +138,9 @@ const StockMainPage: React.FC = () => {
                   onClick={() => {
                     dispatch(setSelectCode(item.symbol));
                     dispatch(setSelectExchange(item.exchange));
-                    joinRoom(item.symbol);
+                    if (item.exchange === 'KSC') {
+                      joinRoom(item.symbol);
+                    }
                     navigate(`/stocks/${item.id}`);
                   }}
                 >

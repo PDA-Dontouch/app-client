@@ -54,11 +54,11 @@ const EstatesMain = () => {
   const isLoading = useSelector((state: RootState) => state.estates.loading);
   const [sortByProfit, setSortByProfit] = useState(false);
   const [isSelect, setIsSelect] = useState(0);
+  const userId = useSelector((state: RootState) => state.user.user.id);
 
   useEffect(() => {
     dispatch(getEstatesDatas());
-    dispatch(getHoldingEstates(13));
-    // dispatch(getHoldingEstates(userId));
+    dispatch(getHoldingEstates(userId));
   }, [dispatch]);
 
   const { EstatesLikeArr, setLikeEstates } = useLike();

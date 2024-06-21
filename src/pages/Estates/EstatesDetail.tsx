@@ -67,7 +67,7 @@ const EstatesDetail = () => {
 
   useEffect(() => {
     dispatch(getEstatesData(parseInt(params.estates_id!)));
-    dispatch(getHoldingEstates(9));
+    dispatch(getHoldingEstates(userId));
   }, [dispatch, params.estates_id]);
 
   const clickBuyBtn = () => {

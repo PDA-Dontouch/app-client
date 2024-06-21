@@ -11,6 +11,7 @@ interface TradingProps {
   onClose: () => void;
   nowPrice: PriceType;
   askPrice: SocketType;
+  selectExchange: string;
 }
 
 const Container = styled.div`
@@ -53,6 +54,7 @@ const TradingStock = ({
   onClose,
   nowPrice,
   askPrice,
+  selectExchange,
 }: TradingProps) => {
   const [clickPrice, setClickPrice] = useState<string>('');
   const handlePriceSelect = (price: string) => {
@@ -68,9 +70,13 @@ const TradingStock = ({
         </ItemContainer>
         <Container>
           <ItemBox>
-            <PriceBook nowPrice={nowPrice} askPrice={askPrice} />
+            <PriceBook
+              nowPrice={nowPrice}
+              askPrice={askPrice}
+              isKorea={selectExchange === 'KSC'}
+            />
           </ItemBox>
-          <SellBuyStock isSell={isSell} />
+          <SellBuyStock isSell={isSell} isKorea={selectExchange === 'KSC'} />
         </Container>
       </ModalContainer>
     </>

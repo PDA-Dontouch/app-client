@@ -47,12 +47,6 @@ const useWebSocketConnection = () => {
   // const before = useSelector((state: RootState) => state.trading.selectCode[0]);
   const now = useSelector((state: RootState) => state.trading.selectCode);
 
-  useEffect(() => {
-    // leaveRoom(before);
-    joinRoom(now);
-    // setNowPrice(null);
-  }, [now]);
-
   // useEffect(() => {
   //   leaveRoom(before);
   //   joinRoom(now);

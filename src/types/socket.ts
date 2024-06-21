@@ -34,3 +34,11 @@ export type postMarketData = {
   userId: number;
   amount: number;
 };
+
+export type postMarketDataUs = {
+  stockName: string;
+  stockCode: string;
+  userId: number;
+  amount: number;
+  marketType: string;
+};

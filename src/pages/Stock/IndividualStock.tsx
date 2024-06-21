@@ -74,7 +74,7 @@ const IndividualStock = () => {
         type=""
         onClick={() => {
           leaveRoom(selectCode);
-          navigate('/stocks');
+          navigate(-1);
         }}
       />
       <Container>
@@ -134,6 +134,7 @@ const IndividualStock = () => {
           }}
           nowPrice={nowPrice}
           askPrice={askPrice}
+          selectExchange={selectExchange}
         />
       )}
     </>

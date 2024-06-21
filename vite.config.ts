@@ -45,10 +45,10 @@ export default defineConfig(({ mode }) => {
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api\/energy/, ''),
         },
-        '/api': {
-          target: 'http://localhost:3000',
+        '/api/socket': {
+          target: env.VITE_APP_SOCKET_BASE_URL,
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, ''),
+          rewrite: (path) => path.replace(/^\/api\/socket/, ''),
         },
         '/api/holding': {
           target: env.VITE_APP_HOLDING_BASE_URL,

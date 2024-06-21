@@ -89,6 +89,7 @@ const Purchase = ({
             value === 0
               ? '0원'
               : ((earningRate * value) / 100)
+                  .toFixed(0)
                   .toString()
                   .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',') + '원'
           }

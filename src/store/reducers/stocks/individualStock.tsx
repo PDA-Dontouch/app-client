@@ -3,6 +3,7 @@ import { stocksChart, stocksDetail } from '../../../api/stocks';
 import { ChartPost, GetDetail } from '../../../types/individual_stock';
 
 const initialState = {
+  isLoading: true,
   chartData: {
     exchange: '',
     stock_id: 0,
@@ -65,7 +66,7 @@ interface DetailData {
   stockId: number;
 }
 
-type ActionPayload = {
+export type ChartActionPayload = {
   data: {
     response: ChartData;
   };
@@ -96,7 +97,7 @@ export const getChartDatas = createAsyncThunk(
   'stocks/getChartDatas',
   async (data: ChartPost, thunkAPI) => {
     const response = await stocksChart(data);
-    return response as ActionPayload;
+    return response as ChartActionPayload;
   },
 );
 
@@ -123,6 +124,10 @@ const individualStockSlice = createSlice({
       state.chartData.stock_id = action.payload.data.response.stock_id;
       state.chartData.symbol = action.payload.data.response.symbol;
       state.chartData.prices = action.payload.data.response.prices.reverse();
+      state.isLoading = false;
+    });
+    builder.addCase(getChartDatas.pending, (state, action) => {
+      state.isLoading = true;
     });
     builder.addCase(getDetail.fulfilled, (state, action) => {
       state.detail = action.payload.data.response;

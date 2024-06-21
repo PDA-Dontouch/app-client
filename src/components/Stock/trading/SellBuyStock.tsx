@@ -6,14 +6,17 @@ import { AppDispatch, RootState } from '../../../store/store';
 import {
   buyLimitOrder,
   buyMarketOrder,
+  buyMarketOrderUs,
   sellLimitOrder,
   sellMarketOrder,
+  sellMarketOrderUs,
 } from '../../../store/reducers/stocks/trading';
 import { useNavigate } from 'react-router-dom';
 import { leaveRoom } from '../../../store/webSocket/nowPrice';
 
 interface SellBuyProps {
   isSell: boolean;
+  isKorea: boolean;
 }
 
 const Container = styled.div`
@@ -75,7 +78,7 @@ const SubText = styled.span<{ isError: boolean }>`
   ${({ isError }) => (isError ? tw`text-red` : '')}
 `;
 
-const SellBuyStock = ({ isSell }: SellBuyProps) => {
+const SellBuyStock = ({ isSell, isKorea }: SellBuyProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const [price, setPrice] = useState<number>(0);
@@ -91,6 +94,7 @@ const SellBuyStock = ({ isSell }: SellBuyProps) => {
   const selectCode = useSelector(
     (state: RootState) => state.trading.selectCode,
   );
+  const userId = useSelector((state: RootState) => state.user.user.id);
 
   useEffect(() => {
     setPrice(Number(selectPrice));
@@ -120,76 +124,110 @@ const SellBuyStock = ({ isSell }: SellBuyProps) => {
   };
 
   const onSell = () => {
-    if (isSelect === 0) {
-      if (price === 0 && amount === 0) {
-        setError('가격과 수량을 입력해주세요.');
-      } else if (price === 0) {
-        setError('가격을 입력해주세요.');
-      }
-    } else if (amount === 0) {
-      setError('수량을 입력해주세요.');
-    } else {
+    if (isKorea) {
       if (isSelect === 0) {
-        const data = {
-          stockName: detail.basic_info.name,
-          stockCode: detail.basic_info.symbol,
-          userId: 9,
-          price: price,
-          amount: amount,
-        };
-        dispatch(sellLimitOrder(data)).then(() => {
-          navigate('/result/sell');
-          leaveRoom(selectCode);
-        });
+        if (price === 0 && amount === 0) {
+          setError('가격과 수량을 입력해주세요.');
+        } else if (price === 0) {
+          setError('가격을 입력해주세요.');
+        }
+      } else if (amount === 0) {
+        setError('수량을 입력해주세요.');
       } else {
-        // 시장가
+        if (isSelect === 0) {
+          const data = {
+            stockName: detail.basic_info.name,
+            stockCode: detail.basic_info.symbol,
+            userId: userId,
+            price: price,
+            amount: amount,
+          };
+          dispatch(sellLimitOrder(data)).then(() => {
+            navigate('/result/sell');
+            leaveRoom(selectCode);
+          });
+        } else {
+          // 시장가
+          const data = {
+            stockName: detail.basic_info.name,
+            stockCode: detail.basic_info.symbol,
+            userId: userId,
+            amount: amount,
+          };
+          dispatch(sellMarketOrder(data)).then(() => {
+            navigate('/result/sell');
+            leaveRoom(selectCode);
+          });
+        }
+      }
+    } else {
+      if (amount === 0) {
+        setError('수량을 입력해주세요.');
+      } else {
         const data = {
           stockName: detail.basic_info.name,
           stockCode: detail.basic_info.symbol,
-          userId: 9,
+          userId: userId,
           amount: amount,
+          marketType: detail.basic_info.exchange,
         };
-        dispatch(sellMarketOrder(data)).then(() => {
+        dispatch(sellMarketOrderUs(data)).then(() => {
           navigate('/result/sell');
-          leaveRoom(selectCode);
         });
       }
     }
   };
 
   const onBuy = () => {
-    if (isSelect === 0) {
-      if (price === 0 && amount === 0) {
-        setError('가격과 수량을 입력해주세요.');
-      } else if (price === 0) {
-        setError('가격을 입력해주세요.');
-      }
-    } else if (amount === 0) {
-      setError('수량을 입력해주세요.');
-    } else {
+    if (isKorea) {
       if (isSelect === 0) {
-        const data = {
-          stockName: detail.basic_info.name,
-          stockCode: detail.basic_info.symbol,
-          userId: 9,
-          price: price,
-          amount: amount,
-        };
-        dispatch(buyLimitOrder(data)).then(() => {
-          navigate('/result/pending');
-          leaveRoom(selectCode);
-        });
+        if (price === 0 && amount === 0) {
+          setError('가격과 수량을 입력해주세요.');
+        } else if (price === 0) {
+          setError('가격을 입력해주세요.');
+        }
+      } else if (amount === 0) {
+        setError('수량을 입력해주세요.');
       } else {
-        // 시장가
+        if (isSelect === 0) {
+          const data = {
+            stockName: detail.basic_info.name,
+            stockCode: detail.basic_info.symbol,
+            userId: userId,
+            price: price,
+            amount: amount,
+          };
+          dispatch(buyLimitOrder(data)).then(() => {
+            navigate('/result/pending');
+            leaveRoom(selectCode);
+          });
+        } else {
+          // 시장가
+          const data = {
+            stockName: detail.basic_info.name,
+            stockCode: detail.basic_info.symbol,
+            userId: userId,
+            amount: amount,
+          };
+          dispatch(buyMarketOrder(data)).then(() => {
+            navigate('/result/buy');
+            leaveRoom(selectCode);
+          });
+        }
+      }
+    } else {
+      if (amount === 0) {
+        setError('수량을 입력해주세요.');
+      } else {
         const data = {
           stockName: detail.basic_info.name,
           stockCode: detail.basic_info.symbol,
-          userId: 9,
+          userId: userId,
           amount: amount,
+          marketType: detail.basic_info.exchange,
         };
-        dispatch(buyMarketOrder(data)).then(() => {
+        dispatch(buyMarketOrderUs(data)).then(() => {
           navigate('/result/buy');
-          leaveRoom(selectCode);
         });
       }
     }
@@ -199,35 +237,39 @@ const SellBuyStock = ({ isSell }: SellBuyProps) => {
     <Container>
       <ItemContainer>
         <SubBtnContainer>
-          <Btn
-            isLeft={true}
-            isSelect={isSelect === 0}
-            onClick={() => {
-              setIsSelect(0);
-              setError('');
-            }}
-          >
-            지정가
-          </Btn>
-          <Btn
-            isLeft={false}
-            isSelect={isSelect === 1}
-            onClick={() => {
-              setIsSelect(1);
-              setPrice(0);
-              setError('');
-            }}
-          >
-            시장가
-          </Btn>
+          {isKorea && (
+            <>
+              <Btn
+                isLeft={true}
+                isSelect={isSelect === 0}
+                onClick={() => {
+                  setIsSelect(0);
+                  setError('');
+                }}
+              >
+                지정가
+              </Btn>
+              <Btn
+                isLeft={false}
+                isSelect={isSelect === 1}
+                onClick={() => {
+                  setIsSelect(1);
+                  setPrice(0);
+                  setError('');
+                }}
+              >
+                시장가
+              </Btn>
+            </>
+          )}
         </SubBtnContainer>
         <Item>
           <TagText>가격</TagText>
           <InputContainer>
             <Input
-              disabled={isSelect === 1}
+              disabled={!isKorea ? true : isSelect === 1 ? true : false}
               value={price === 0 ? '' : `${formatNumber(price)}`}
-              placeholder={isSelect === 0 ? '0' : ''}
+              placeholder={!isKorea ? '' : isSelect === 0 ? '0' : ''}
               onChange={handlePriceChange}
             />
             <Suffix>원</Suffix>
@@ -249,7 +291,14 @@ const SellBuyStock = ({ isSell }: SellBuyProps) => {
       <BtnContainer>
         <TextContainer>
           <SubText isError={false}>주문금액</SubText>
-          <MainText>{formatNumber(parseInt(selectPrice) * amount)}원</MainText>
+          <MainText>
+            {!isKorea
+              ? '- '
+              : isSelect === 1
+                ? '- '
+                : formatNumber(parseInt(selectPrice) * amount)}
+            원
+          </MainText>
         </TextContainer>
         <Button
           name={isSell ? '매도' : '매수'}

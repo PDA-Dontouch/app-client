@@ -42,8 +42,9 @@ const SubContainer = styled.div`
   ${tw`flex gap-2`}
 `;
 
-const SubText = styled.span`
+const SubText = styled.span<{ isGrade: boolean }>`
   ${tw`text-base`}
+  ${({ isGrade }) => (isGrade ? tw`text-[#DE8705]` : tw``)}
 `;
 
 const MiniText = styled.span`
@@ -56,9 +57,7 @@ const Product = ({ isEstates, data, isLike, setIsLike }: ProductProps) => {
     if (isEstates) {
       const estatesData = data as EstatesList;
       return (
-        (estatesData.sumOfInvestmentAndReservation /
-          estatesData.totalAmountInvestments) *
-        100
+        (estatesData.currentInvest / estatesData.totalAmountInvestments) * 100
       );
     } else {
       const energyData = data as EnergyList;
@@ -99,17 +98,20 @@ const Product = ({ isEstates, data, isLike, setIsLike }: ProductProps) => {
       <ItemContainer onClick={navigateDetail}>
         <MainText>{data.title}</MainText>
         <SubContainer>
-          <SubText>{data.earningRate}%</SubText>
-          <SubText>
+          <SubText isGrade={false}>{data.earningRate}%</SubText>
+          <SubText isGrade={false}>
             {isEstates
               ? (data as EstatesList).length
               : (data as EnergyList).investment_period}
             개월
           </SubText>
+          <SubText isGrade={true}>
+            {(data as EstatesList).eightCreditGrade + '등급'}
+          </SubText>
         </SubContainer>
         <ProgressBar isEstates={isEstates} percentage={percentage()} />
         <MiniText>
-          {data.sumOfInvestmentAndReservation
+          {(data as EstatesList).currentInvest
             .toString()
             .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
           원 /{' '}

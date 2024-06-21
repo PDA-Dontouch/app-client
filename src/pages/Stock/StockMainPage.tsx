@@ -26,6 +26,7 @@ import {
   setSelectExchange,
 } from '../../store/reducers/stocks/trading';
 import { joinRoom } from '../../store/webSocket/nowPrice';
+// import { insertStock, removeStock } from '../../store/reducers/stocks/stocks';
 
 const MainContainer = styled.div`
   ${tw`flex flex-col min-h-screen`}

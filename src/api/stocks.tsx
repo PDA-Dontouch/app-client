@@ -1,11 +1,8 @@
 import { stockInstance } from './api';
-import {
-  AxiosRes,
-  PromiseAxiosRes,
-  WithToken,
-} from '../types/response_product';
+import { PromiseAxiosRes, WithToken } from '../types/response_product';
 import {
   CalendarStockPlanType,
+  ExchangeRateType,
   StockDataResultType,
   StockDetailType,
   StockCombiType,
@@ -56,23 +53,10 @@ interface ReorderCombiReq {
 }
 
 type CalendarStockPlansRequestBodyType = {
+  userId: number;
   startDate: Date;
   endDate: Date;
 } & WithToken;
-
-type ExchangeRateType = {
-  result: number;
-  cur_unit: string;
-  ttb: string;
-  tts: string;
-  deal_bas_r: string;
-  bkpr: string;
-  yy_efee_r: string;
-  ten_dd_efee_r: string;
-  kftc_bkpr: string;
-  kftc_deal_bas_r: string;
-  cur_nm: string;
-};
 
 export const stocksDatas = async (
   requestData: RequestBodyType,
@@ -147,10 +131,12 @@ export const stocksDetail = async (exchange: string, stockId: number) => {
 };
 
 export const calendarStockPlans = async (
-  data: CalendarStockPlansRequestBodyType,
+  data: CalendarStockPlansRequestBodyType & WithToken,
 ): PromiseAxiosRes<CalendarStockPlanType[]> => {
   try {
-    const response = await stockInstance.post('/calendar', data);
+    const response = await stockInstance.post('/calendar', data, {
+      params: { token: data.token },
+    });
     return response;
   } catch (err: unknown) {
     console.error(err);
@@ -158,17 +144,9 @@ export const calendarStockPlans = async (
   }
 };
 
-export const getExchangeRate = async (): Promise<
-  AxiosResponse<ExchangeRateType[]>
-> => {
+export const getExchangeRate = async (): PromiseAxiosRes<ExchangeRateType> => {
   try {
-    const response = await axios.get('/api/exchangeRate', {
-      params: {
-        authkey: 'kKl92pWdjK2xEOALSjzxo7I3xdawbAlt',
-        searchdate: '20240617',
-        data: 'AP01',
-      },
-    });
+    const response = await stockInstance.get('/exchange/usd');
     return response;
   } catch (err: unknown) {
     console.error(err);

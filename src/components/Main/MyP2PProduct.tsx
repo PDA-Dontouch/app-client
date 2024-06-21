@@ -1,12 +1,8 @@
 import tw, { styled } from 'twin.macro';
-
-export type MyP2PProductType = {
-  img: string;
-  name: string;
-  monthlyDividend: number;
-  annualRate: number;
-  openDate: Date;
-};
+import { MyP2PProductType } from '../../types/energy_product';
+import { WithEnergyId } from '../../types/energy_product';
+import { WithEstateId } from '../../types/estates_product';
+import { useNavigate } from 'react-router-dom';
 
 type P2PImgProps = {
   img: string;
@@ -40,7 +36,7 @@ const P2PName = styled.div`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  width: 12rem;
+  width: 10rem;
 `;
 
 const P2POpenDate = styled.div`
@@ -61,31 +57,41 @@ const AnnualRate = styled.div`
   ${tw`text-xxs`}
 `;
 
-export default function MyP2PProduct({
-  img,
-  name,
-  monthlyDividend,
-  annualRate,
-  openDate,
-}: MyP2PProductType) {
+export default function MyP2PProduct(
+  data: (MyP2PProductType & WithEnergyId) | (MyP2PProductType & WithEstateId),
+) {
+  const navigate = useNavigate();
+
   return (
-    <MyP2PProductContainer>
+    <MyP2PProductContainer
+      onClick={() => {
+        navigate(
+          `/energy/${'energyId' in data ? data.energyId : data.estateId}`,
+        );
+      }}
+    >
       <LeftSection>
-        <P2PImg img={img}></P2PImg>
+        <P2PImg img={data.titleImageUrl}></P2PImg>
         <P2PDetail>
-          <P2PName>{name}</P2PName>
-          {openDate > new Date() && (
+          <P2PName>{data.title}</P2PName>
+          {data.startPeriod > new Date() && (
             <P2POpenDate>
               {'오픈 '}
-              {openDate.getFullYear()}.{openDate.getMonth() < 9 && '0'}
-              {openDate.getMonth() + 1}.{openDate.getDate()}
+              {data.startPeriod.getFullYear()}.
+              {data.startPeriod.getMonth() < 9 && '0'}
+              {data.startPeriod.getMonth() + 1}.{data.startPeriod.getDate()}
             </P2POpenDate>
           )}
         </P2PDetail>
       </LeftSection>
       <RightSection>
-        <MonthlyDividend>{monthlyDividend.toLocaleString()}원</MonthlyDividend>
-        <AnnualRate>{annualRate}%</AnnualRate>
+        <MonthlyDividend>
+          {Math.floor(
+            (data.inputCash * data.earningRate * 0.01) / data.investmentPeriod,
+          ).toLocaleString()}
+          원
+        </MonthlyDividend>
+        <AnnualRate>{data.earningRate}%</AnnualRate>
       </RightSection>
     </MyP2PProductContainer>
   );

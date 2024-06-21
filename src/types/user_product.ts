@@ -4,24 +4,36 @@ export type UserDetail = {
   id: number;
   email: string;
   sns_type: number;
-  birthday: Date;
   nickname: string;
   investmentType: investmentType;
   safeScore: number;
   dividendScore: number;
   growthScore: number;
-}
+};
 
 export type DepositWithDrawalType = {
   userId: number | null;
   price: number;
 };
 
+export type DepositWithDrawalResultType = {
+  userId: number | null;
+  cash: number;
+};
+
 export type LoginedUser = {
   nickname: string;
   email: string;
   snsType: number;
-}
+};
+
+export type AccountLogType = {
+  userId: number;
+  inOutCash: number;
+  inOutType: number;
+  inOutTitle: string;
+  inOutTime: Date;
+};
 
 export const initialUserDetail = {
   id: 1001,

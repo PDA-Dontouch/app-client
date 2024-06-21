@@ -49,32 +49,32 @@ export type StockDetailType = {
 };
 
 export type InsertCombiStock = {
-  stockId: number,
-  name: string,
-  symbol: string,
-  price: number,
-  quantity: number,
-  dividend: number
-}
+  stockId: number;
+  name: string;
+  symbol: string;
+  price: number;
+  quantity: number;
+  dividend: number;
+};
 
 export type AddCombiStockReq = {
-  stockId: number,
-  exchange: string
-}
+  stockId: number;
+  exchange: string;
+};
 
 export type StockCombiType = {
-  combination1:{
-    stocks:InsertCombiStock[],
-    totalDividend: number,
-  },
-  combination2:{
-    stocks:InsertCombiStock[],
-    totalDividend: number,
-  },
-  combination3:{
-    stocks:InsertCombiStock[],
-    totalDividend: number,
-  },
+  combination1: {
+    stocks: InsertCombiStock[];
+    totalDividend: number;
+  };
+  combination2: {
+    stocks: InsertCombiStock[];
+    totalDividend: number;
+  };
+  combination3: {
+    stocks: InsertCombiStock[];
+    totalDividend: number;
+  };
 };
 
 export const initialStockDetail = {
@@ -100,4 +100,10 @@ export const initialStockDetail = {
     fiveYDividendPerShareGrowthPerShare: 0,
     threeYDividendPerShareGrowthPerShare: 0,
   },
+};
+
+export type ExchangeRateType = {
+  currency: string;
+  buying: number;
+  selling: number;
 };

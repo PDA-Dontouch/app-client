@@ -7,17 +7,12 @@ export interface EstatesList {
   title: string;
   titleMainImageUrl: string;
   totalAmountInvestments: number;
+  eightCreditGrade: string;
+  currentInvest: number;
 }
 
-export type estatesDetail = {
+export type EstatesDetail = {
   id: number;
-  title: string;
-  length: number;
-  titleMainImageUrl: string;
-  earningRate: number;
-  totalAmountInvestments: number;
-  sumOfInvestmentAndReservation: number;
-  loanAmountBaseLtv: number;
   estateId: number;
   latitude: number;
   longitude: number;
@@ -70,15 +65,8 @@ export type estatesDetail = {
   category: string;
 };
 
-export const initialEstatesDetail = {
+export const initialEstatesDetail: EstatesDetail = {
   id: 0,
-  title: '',
-  length: 0,
-  titleMainImageUrl: '',
-  earningRate: 0,
-  totalAmountInvestments: 0,
-  sumOfInvestmentAndReservation: 0,
-  loanAmountBaseLtv: 0,
   estateId: 0,
   latitude: 0,
   longitude: 0,
@@ -105,7 +93,7 @@ export const initialEstatesDetail = {
   workStartDate: '',
   repaymentDay: 0,
   isRenewalLoan: false,
-  isRepaymentDayFollowingExecutionDay: false,
+  isRepaymentDayFollowingExecutionDay: true,
   comment: '',
   startDatetime: '',
   state: '',
@@ -129,4 +117,42 @@ export const initialEstatesDetail = {
   complianceNumber: '',
   dealType: '',
   category: '',
+};
+
+export type WithEstateId = {
+  estateId: number;
+};
+
+export const clickEstates: EstatesList = {
+  id: 0,
+  earningRate: 0,
+  length: 0,
+  loanAmountBaseLtv: 0,
+  sumOfInvestmentAndReservation: 0,
+  title: '',
+  titleMainImageUrl: '',
+  totalAmountInvestments: 0,
+  eightCreditGrade: '',
+  currentInvest: 0,
+};
+
+export type BuyType = {
+  userId: number;
+  estateFundId: number;
+  inputCash: number;
+  estateName: string;
+  estateEarningRate: number;
+};
+
+export type HoldingEstatesType = {
+  createdAt: null;
+  earningRate: number;
+  estateId: number;
+  id: number;
+  inputCash: number;
+  investmentPeriod: number;
+  startPeriod: string;
+  title: string;
+  titleImageUrl: string;
+  userId: number;
 };

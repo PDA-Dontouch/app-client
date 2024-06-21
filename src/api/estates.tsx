@@ -76,7 +76,7 @@ export const getEstateLike = async ({
   token,
 }: WithToken & WithUserId): PromiseAxiosRes<EstatesList[]> => {
   try {
-    const response = await estatesInstance.get(estate_url + '/like', {
+    const response = await estatesInstance.get('/like', {
       params: {
         token: token,
         userId: userId,

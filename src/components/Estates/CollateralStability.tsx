@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import tw, { styled } from 'twin.macro';
 import { EstatesDetail } from '../../types/estates_product';
 import { useSelector } from 'react-redux';
@@ -71,10 +71,12 @@ export function formatNumberToKoreanCurrency(num: number): string {
 }
 
 const CollateralStability = ({ data }: DetailProps) => {
-  const clickEstates = useSelector(
-    (state: RootState) => state.estates.clickEstates,
-  );
-  const margin = (clickEstates.loanAmountBaseLtv * data.appraisedValue) / 100;
+  const rate = data.sellingPointsTitle2
+    ? data.sellingPointsTitle2.match(/\d+(\.\d+)?/)?.[0]
+    : '0';
+  const margin = ((100 - parseFloat(rate || '')) * data.appraisedValue) / 100;
+  const leftPriority =
+    data.appraisedValue - data.etcAmount - data.amount - margin;
 
   const chartData = {
     series: [data.priorityAmount, data.amount, margin],
@@ -140,9 +142,7 @@ const CollateralStability = ({ data }: DetailProps) => {
           <Box bgColor="#d3d3d3" />
           <TextContainer>
             <MiniText>선순위 대출 잔액</MiniText>
-            <SubText>
-              {formatNumberToKoreanCurrency(data.priorityAmount)}
-            </SubText>
+            <SubText>{formatNumberToKoreanCurrency(leftPriority)}</SubText>
           </TextContainer>
         </RowContainer>
         <RowContainer>

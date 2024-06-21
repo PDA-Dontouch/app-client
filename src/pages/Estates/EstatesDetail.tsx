@@ -24,6 +24,7 @@ import InvestPoint from '../../components/Estates/InvestPoint';
 import ExpertCheck from '../../components/Estates/ExpertCheck';
 import { getHoldingEstates } from '../../store/reducers/estates/holding';
 import { EstateBuyType } from '../../types/estates_product';
+import CollateralStability from '../../components/Estates/CollateralStability';
 
 interface BuyEstatesResponse {
   data: {
@@ -135,8 +136,8 @@ const EstatesDetail = () => {
         <Hr />
         <DetailInfo data={detail} />
         <Hr />
-        {/* <CollateralStability data={detail} />
-        <Hr /> */}
+        <CollateralStability data={detail} />
+        <Hr />
         <ExpertCheck data={detail} />
       </Container>
       <BtnContainer>

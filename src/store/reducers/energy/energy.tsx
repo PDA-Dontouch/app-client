@@ -15,6 +15,7 @@ import {
 import { EnergyBuyType } from '../../../types/energy_product';
 
 interface EnergyState {
+  loading: boolean;
   energyLike: string[];
   datas: EnergyList[];
   detail: energyDetail;
@@ -43,6 +44,7 @@ type ActionPayloadResult = {
 };
 
 const initialState: EnergyState = {
+  loading: true,
   energyLike: ['-1'],
   datas: [],
   detail: initialEnergyDetail,
@@ -118,6 +120,7 @@ const energySlice = createSlice({
         getEnergyDatas.fulfilled,
         (state, action: PayloadAction<ActionPayload>) => {
           state.datas = action.payload.data.response;
+          state.loading = false;
         },
       )
       .addCase(

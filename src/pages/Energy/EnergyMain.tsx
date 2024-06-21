@@ -12,6 +12,7 @@ import Navbar from '../../components/common/Navbar';
 import SortButton from '../../components/common/SortButton';
 import Product from '../../components/common/Product/Product';
 import { EnergyList } from '../../types/energy_product';
+import ProductSkeleton from '../../components/Skeleton/ProductSkeleton';
 
 const Container = styled.div`
   ${tw`w-[calc(100% - 56px)] mt-14 mb-16 px-7 py-8 flex flex-col gap-5`}
@@ -49,6 +50,7 @@ const EnergyMain = () => {
   const [sortByProfit, setSortByProfit] = useState<boolean>(false);
   const [isSelect, setIsSelect] = useState(0);
   const [energyId, setEnergyId] = useState('');
+  const isLoading = useSelector((state: RootState) => state.energy.loading);
 
   useEffect(() => {
     dispatch(getEnergyDatas());
@@ -112,9 +114,11 @@ const EnergyMain = () => {
               모집 완료
             </SubText>
           </SelectContainer>
-          {isSelect === 0
-            ? renderProducts(ongoingInvestments)
-            : renderProducts(completedInvestments)}
+          {isLoading
+            ? [...Array(5)].map((_, index) => <ProductSkeleton />)
+            : isSelect === 0
+              ? renderProducts(ongoingInvestments)
+              : renderProducts(completedInvestments)}
         </ItemContainer>
       </Container>
       <Footer />

@@ -9,6 +9,7 @@ import individualStockSlice from './reducers/stocks/individualStock';
 import tradingReducer from './reducers/stocks/trading';
 import userReducer from './reducers/auth/auth';
 import holdingEstatesReducer from './reducers/estates/holding';
+import holdingEnergyReducer from './reducers/energy/holding';
 
 const rootPersistConfig = {
   key: 'root',
@@ -26,6 +27,7 @@ const rootReducer = combineReducers({
   trading: tradingReducer,
   stocks: stocksReducer,
   holdingEstates: holdingEstatesReducer,
+  holdingEnergy: holdingEnergyReducer,
 });
 
 const persistedReducer = persistReducer(rootPersistConfig, rootReducer);

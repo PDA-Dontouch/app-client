@@ -23,7 +23,7 @@ import BasicInfo from '../../components/Estates/BasicInfo';
 import InvestPoint from '../../components/Estates/InvestPoint';
 import ExpertCheck from '../../components/Estates/ExpertCheck';
 import { getHoldingEstates } from '../../store/reducers/estates/holding';
-import { BuyType } from '../../types/estates_product';
+import { EstateBuyType } from '../../types/estates_product';
 
 interface BuyEstatesResponse {
   data: {
@@ -60,7 +60,7 @@ const EstatesDetail = () => {
     (state: RootState) => state.holdingEstates.datas,
   );
   const userId = useSelector((state: RootState) => state.user.user.id);
-  const { EstatesLikeArr, setLikeEstates } = useLike();
+  // const { EstatesLikeArr, setLikeEstates } = useLike({ fundId: clickData.id });
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [value, setValue] = useState<number>(0);
   const [error, setError] = useState<string | undefined>(undefined);
@@ -70,11 +70,24 @@ const EstatesDetail = () => {
     dispatch(getHoldingEstates(userId));
   }, [dispatch, params.estates_id]);
 
+  let isEstateHeld = false;
+  let matchingEstate = null;
+
+  if (holdingEstates && holdingEstates.length > 0) {
+    isEstateHeld = holdingEstates.some(
+      (estate) => estate.estateId === detail.estateId,
+    );
+
+    matchingEstate = holdingEstates.find(
+      (estate) => estate.estateId === detail.estateId,
+    );
+  }
+
   const clickBuyBtn = () => {
     if (value < 5000) {
       setError('최소 투자 금액은 5천원입니다.');
     } else {
-      const data: BuyType = {
+      const data: EstateBuyType = {
         userId: userId,
         estateFundId: clickData.id,
         inputCash: value,
@@ -97,7 +110,7 @@ const EstatesDetail = () => {
     const data = {
       userId: userId,
       estateFundId: clickData.id,
-      inputCash: value,
+      inputCash: matchingEstate?.inputCash || 0,
       estateName: clickData.title,
       estateEarningRate: clickData.earningRate,
     };
@@ -108,19 +121,6 @@ const EstatesDetail = () => {
       }
     });
   };
-
-  let isEstateHeld = false;
-  let matchingEstate = null;
-
-  if (holdingEstates && holdingEstates.length > 0) {
-    isEstateHeld = holdingEstates.some(
-      (estate) => estate.estateId === detail.estateId,
-    );
-
-    matchingEstate = holdingEstates.find(
-      (estate) => estate.estateId === detail.estateId,
-    );
-  }
 
   return (
     <>
@@ -140,10 +140,10 @@ const EstatesDetail = () => {
         <ExpertCheck data={detail} />
       </Container>
       <BtnContainer>
-        <LikeBtn
+        {/* <LikeBtn
           isLike={EstatesLikeArr.includes(detail.id)}
           setIsLike={() => setLikeEstates(detail.id)}
-        />
+        /> */}
         <Button
           name={
             isEstateHeld

@@ -1,21 +1,29 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useCallback } from 'react';
-import { RootState } from '../store/store';
+import { AppDispatch, RootState } from '../store/store';
 import {
   delEstatesLike,
   setEstatesLike,
 } from '../store/reducers/estates/estates';
-import { delEnergyLike, setEnergyLike } from '../store/reducers/energy/energy';
-// import { addLikeEstates, delLikeEstates, addLikeEnergy, delLikeEnergy } from '../api';
+import {
+  addLikeEnergy,
+  delEnergyLike,
+  setEnergyLike,
+} from '../store/reducers/energy/energy';
 
-const useLike = () => {
-  const dispatch = useDispatch();
+type likeType = {
+  fundId: string | number;
+};
+
+const useLike = ({ fundId }: likeType) => {
+  const dispatch = useDispatch<AppDispatch>();
   const EstatesLikeArr = useSelector(
     (state: RootState) => state.estates.estatesLike,
   );
   const EnergyLikeArr = useSelector(
     (state: RootState) => state.energy.energyLike,
   );
+  const userId = useSelector((state: RootState) => state.user.user.id);
 
   const setLikeEstates = useCallback(
     (id: number) => {
@@ -48,36 +56,14 @@ const useLike = () => {
     [dispatch, EstatesLikeArr],
   );
 
-  const setLikeEnergy = useCallback(
-    (id: string) => {
-      if (EnergyLikeArr.includes(id)) {
-        dispatch(delEnergyLike(id));
-        // const data = {
-        //   token: "token",
-        //   energy_id: id
-        // }
-        // dispatch(delLikeEnergy(data))
-        //   .then((res) => {
-        //     if (res.payload.success === true) {
-        //       dispatch(delEnergyLike(id));
-        //     }
-        //   })
-      } else {
-        dispatch(setEnergyLike(id));
-        // const data = {
-        //   token: "token",
-        //   energy_id: id
-        // }
-        // dispatch(addLikeEnergy(data))
-        //   .then((res) => {
-        //     if (res.payload.success === true) {
-        //       dispatch(setEnergyLike(id));
-        //     }
-        //   })
-      }
-    },
-    [dispatch, EnergyLikeArr],
-  );
+  const setLikeEnergy = useCallback(() => {
+    const data = {
+      userId: userId,
+      energyFundId: fundId as string,
+    };
+
+    dispatch(addLikeEnergy(data));
+  }, [dispatch]);
 
   return { EstatesLikeArr, setLikeEstates, EnergyLikeArr, setLikeEnergy };
 };

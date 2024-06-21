@@ -5,7 +5,11 @@ import tw, { styled } from 'twin.macro';
 
 import useLike from '../../hooks/useLike';
 import { AppDispatch, RootState } from '../../store/store';
-import { getEnergyData } from '../../store/reducers/energy/energy';
+import {
+  buyEnergy,
+  getEnergyData,
+  sellEnergy,
+} from '../../store/reducers/energy/energy';
 
 import DetailBanner from '../../components/Estates/DetailBanner';
 import Navbar from '../../components/common/Navbar';
@@ -20,6 +24,19 @@ import BusinessInfo from '../../components/Energy/BusinessInfo';
 import ProtectInvestor from '../../components/Energy/ProtectInvestor';
 import Repayment from '../../components/Energy/Repayment';
 import BasicInfo from '../../components/Energy/BasicInfo';
+import { EnergyBuyType } from '../../types/energy_product';
+import { getHoldingEnergy } from '../../store/reducers/energy/holding';
+
+interface BuyEnergyResponse {
+  data: {
+    success: boolean;
+    response: string | boolean;
+    error: {
+      errorMessage: string;
+      httpStatus: string;
+    } | null;
+  };
+}
 
 const Container = styled.div`
   ${tw`mt-14 pb-20 h-full overflow-y-scroll`}
@@ -38,13 +55,71 @@ const EnergyDetail = () => {
   const params = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const detail = useSelector((state: RootState) => state.energy.detail);
-  const { EstatesLikeArr, setLikeEstates, EnergyLikeArr, setLikeEnergy } =
-    useLike();
+  const holdingEnergy = useSelector(
+    (state: RootState) => state.holdingEnergy.datas,
+  );
+  const { EnergyLikeArr, setLikeEnergy } = useLike({ fundId: detail.energyId });
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const userId = useSelector((state: RootState) => state.user.user.id);
+  const [value, setValue] = useState<number>(0);
+  const [error, setError] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     dispatch(getEnergyData(params.energy_id!));
-  }, []);
+    dispatch(getHoldingEnergy(userId));
+  }, [dispatch, params.energy_id]);
+
+  const clickBuyBtn = () => {
+    if (value < 5000) {
+      setError('최소 투자 금액은 5천원입니다.');
+    } else {
+      const data: EnergyBuyType = {
+        userId: 1001,
+        energyFundId: detail.energyId,
+        inputCash: value,
+        energyName: detail.title,
+        energyEarningRate: detail.earningRate,
+      };
+
+      dispatch(buyEnergy(data)).then((res) => {
+        if ((res.payload as BuyEnergyResponse).data.success) {
+          navigate('/result/energy');
+        } else {
+          // 임시 에러 처리
+          alert((res.payload as BuyEnergyResponse).data.error?.errorMessage);
+        }
+      });
+    }
+  };
+
+  const clickCancleBtn = async () => {
+    const data = {
+      userId: userId,
+      energyFundId: detail.energyId,
+      inputCash: value,
+      energyName: detail.title,
+      energyEarningRate: detail.earningRate,
+    };
+
+    dispatch(sellEnergy(data)).then((res) => {
+      if ((res.payload as BuyEnergyResponse).data.success) {
+        navigate('/result/sell');
+      }
+    });
+  };
+
+  let isEnergyHeld = false;
+  let matchingEnergy = null;
+
+  if (holdingEnergy && holdingEnergy.length > 0) {
+    isEnergyHeld = holdingEnergy.some(
+      (energy) => energy.energyId === detail.energyId,
+    );
+
+    matchingEnergy = holdingEnergy.find(
+      (energy) => energy.energyId === detail.energyId,
+    );
+  }
 
   return (
     <>
@@ -65,28 +140,58 @@ const EnergyDetail = () => {
       </Container>
       <BtnContainer>
         <LikeBtn
-          isLike={EnergyLikeArr.includes(detail.energyId) ? true : false}
-          setIsLike={() => setLikeEnergy(detail.energyId)}
+          isLike={EnergyLikeArr.includes(detail.energyId)}
+          setIsLike={() => {}}
         />
         <Button
-          name="구매하기"
-          status="energy"
+          name={
+            isEnergyHeld
+              ? '취소하기'
+              : detail.sumOfInvestmentAndReservation === detail.fundingAmount
+                ? '모집이 완료되었습니다.'
+                : '구매하기'
+          }
+          status={
+            isEnergyHeld
+              ? 'plain'
+              : detail.sumOfInvestmentAndReservation === detail.fundingAmount
+                ? 'disabled'
+                : 'energy'
+          }
           onClick={() => setIsOpen(true)}
         />
       </BtnContainer>
-      {/* {isOpen && (
+      {isOpen && (
         <BottomUpModal
           onClose={() => setIsOpen(false)}
           content={
-            <Purchase
-              period={detail.investmentPeriod}
-              profit={200000}
-              btnType="energy"
-            />
+            isEnergyHeld ? (
+              <Cancel
+                amount={matchingEnergy?.inputCash}
+                period={detail.investmentPeriod}
+                profit={
+                  ((detail.earningRate || 0) *
+                    (matchingEnergy?.inputCash || 0)) /
+                  100
+                }
+                btnType="plain"
+                onClick={clickCancleBtn}
+              />
+            ) : (
+              <Purchase
+                period={detail.investmentPeriod}
+                earningRate={detail.earningRate}
+                btnType={value === 0 ? 'disabled' : 'energy'}
+                onClick={clickBuyBtn}
+                value={value}
+                setValue={setValue}
+                error={error}
+                setError={setError}
+              />
+            )
           }
         />
-        // <BottomUpModal onClose={() => setIsOpen(false)} content={<Cancel amount={5000000} period={6} profit={205100} btnType="plain" />} />
-      )} */}
+      )}
     </>
   );
 };

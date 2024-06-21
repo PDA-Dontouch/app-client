@@ -106,14 +106,20 @@ const Product = ({ isEstates, data, isLike, setIsLike }: ProductProps) => {
             개월
           </SubText>
           <SubText isGrade={true}>
-            {(data as EstatesList).eightCreditGrade + '등급'}
+            {isEstates
+              ? (data as EstatesList).eightCreditGrade + '등급'
+              : (data as EnergyList).creditRating + '등급'}
           </SubText>
         </SubContainer>
         <ProgressBar isEstates={isEstates} percentage={percentage()} />
         <MiniText>
-          {(data as EstatesList).currentInvest
-            .toString()
-            .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
+          {isEstates
+            ? (data as EstatesList).currentInvest
+                .toString()
+                .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
+            : (data as EnergyList).sumOfInvestmentAndReservation
+                .toString()
+                .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
           원 /{' '}
           {isEstates
             ? (data as EstatesList).totalAmountInvestments

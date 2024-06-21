@@ -38,12 +38,10 @@ export default defineConfig(({ mode }) => {
         '/api/estates': {
           target: env.VITE_APP_ESTATE_BASE_URL,
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api\/estates/, ''),
         },
         '/api/energy': {
           target: env.VITE_APP_ENERGY_BASE_URL,
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api\/energy/, ''),
         },
         '/api/socket': {
           target: env.VITE_APP_SOCKET_BASE_URL,

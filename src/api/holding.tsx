@@ -103,3 +103,13 @@ export const getUserAccountLog = async ({
     throw err;
   }
 };
+
+export const holdingEstates = async (user_id: number) => {
+  try {
+    const response = await holdingInstance.get(`/allEstate/${user_id}`);
+    return response;
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
+};

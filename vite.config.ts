@@ -4,7 +4,6 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd());
-  console.log(env);
   return {
     plugins: [
       react({
@@ -17,6 +16,11 @@ export default defineConfig(({ mode }) => {
         inject: {
           data: {
             kakaoAppKey: env.VITE_APP_KAKAO_APP_KEY,
+            userBaseURL: env.VITE_APP_USER_BASE_URL,
+            stocksBaseURL: env.VITE_APP_STOCKS_BASE_URL,
+            estateBaseURL: env.VITE_APP_ESTATE_BASE_URL,
+            energyBaseURL: env.VITE_APP_ENERGY_BASE_URL,
+            holdingBaseURL: env.VITE_APP_HOLDING_BASE_URL,
           },
         },
       }),
@@ -24,32 +28,26 @@ export default defineConfig(({ mode }) => {
     server: {
       proxy: {
         '/api/user': {
-          target: 'http://localhost:8081',
+          target: env.VITE_APP_USER_BASE_URL,
           changeOrigin: true,
         },
         '/api/stocks': {
-          target: 'http://localhost:8082',
+          target: env.VITE_APP_STOCKS_BASE_URL,
           changeOrigin: true,
         },
         '/api/estates': {
-          target: 'http://localhost:8083',
+          target: env.VITE_APP_ESTATE_BASE_URL,
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api\/estates/, ''),
         },
         '/api/energy': {
-          target: 'http://localhost:8084',
+          target: env.VITE_APP_ENERGY_BASE_URL,
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api\/energy/, ''),
         },
         '/api/holding': {
-          target: 'http://localhost:8085',
+          target: env.VITE_APP_HOLDING_BASE_URL,
           changeOrigin: true,
-        },
-        '/api/exchangeRate': {
-          target:
-            'https://www.koreaexim.go.kr/site/program/financial/exchangeJSON',
-          changeOrigin: true,
-          rewrite: (path) => path.replace('/api/exchangeRate', ''),
         },
       },
     },

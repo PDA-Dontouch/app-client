@@ -30,6 +30,7 @@ export default {
         gray30: '#EDEDED',
         gray50: '#E7E7E7',
         gray60: '#E5E5E5',
+        gray70: '#E2E2E2',
 
         // blue
         blue: '#5293D0',

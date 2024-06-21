@@ -48,7 +48,7 @@ const EnergyDetail = () => {
 
   return (
     <>
-      <Navbar name="back" type="" onClick={() => navigate('/energy')} />
+      <Navbar name="back" type="" onClick={() => navigate(-1)} />
       <Container>
         <DetailBanner isEstates={false} data={detail} />
         <Dropdown isEstates={false} profit_rate={detail.earningRate} />

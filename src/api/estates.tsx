@@ -1,5 +1,10 @@
 import { EstatesTypes } from '../store/reducers/estates/estates';
-import { BuyType } from '../types/estates_product';
+import { BuyType, EstatesList } from '../types/estates_product';
+import {
+  PromiseAxiosRes,
+  WithToken,
+  WithUserId,
+} from '../types/response_product';
 import { estatesInstance } from './api';
 
 export const estate_url = `/api/estates`;
@@ -63,5 +68,23 @@ export const estatesSell = async (data: BuyType) => {
   } catch (err) {
     console.error(err);
     return err;
+  }
+};
+
+export const getEstateLike = async ({
+  userId,
+  token,
+}: WithToken & WithUserId): PromiseAxiosRes<EstatesList[]> => {
+  try {
+    const response = await estatesInstance.get(estate_url + '/like', {
+      params: {
+        token: token,
+        userId: userId,
+      },
+    });
+    return response;
+  } catch (err) {
+    console.error(err);
+    throw err;
   }
 };

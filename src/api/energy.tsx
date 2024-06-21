@@ -1,5 +1,10 @@
 import { energyTypes } from '../store/reducers/energy/energy';
-import { WithToken } from '../types/response_product';
+import { EnergyList } from '../types/energy_product';
+import {
+  PromiseAxiosRes,
+  WithToken,
+  WithUserId,
+} from '../types/response_product';
 import { energyInstance } from './api';
 
 export const energy_url = `/api/energy`;
@@ -46,10 +51,20 @@ export const energyDisLike = async (data: energyTypes) => {
   }
 };
 
-export const getHoldingAllEnergy = async (data: string & WithToken) => {
+export const getEnergyLike = async ({
+  userId,
+  token,
+}: WithToken & WithUserId): PromiseAxiosRes<EnergyList[]> => {
   try {
+    const response = await energyInstance.get(energy_url + '/like', {
+      params: {
+        token: token,
+        userId: userId,
+      },
+    });
+    return response;
   } catch (err) {
     console.error(err);
-    return err;
+    throw err;
   }
 };

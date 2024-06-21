@@ -1,4 +1,8 @@
-import { MyP2PProductType, WithEnergyId } from '../types/energy_product';
+import {
+  CalendarP2PType,
+  MyP2PProductType,
+  WithEnergyId,
+} from '../types/energy_product';
 import { WithEstateId } from '../types/estates_product';
 import {
   PageSizeType,
@@ -6,7 +10,7 @@ import {
   WithToken,
   WithUserId,
 } from '../types/response_product';
-import { AccountLogType } from '../types/user_product';
+import { AccountLogType, StartDateEndDateType } from '../types/user_product';
 import { holdingInstance } from './api';
 
 export const getUserEstateProduct = async ({
@@ -111,5 +115,54 @@ export const holdingEstates = async (user_id: number) => {
   } catch (err) {
     console.error(err);
     return err;
+  }
+};
+
+export const getHoldingEnergyCalendar = async (
+  data: StartDateEndDateType & WithToken,
+): PromiseAxiosRes<CalendarP2PType[]> => {
+  try {
+    const response = await holdingInstance.post(
+      `/energy/calendar`,
+      {
+        startDate: data.startDate,
+        endDate: data.endDate,
+      },
+
+      {
+        headers: {
+          Authorization: 'test',
+        },
+        params: { token: data.token },
+      },
+    );
+    return response;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+
+export const getHoldingEstateCalendar = async (
+  data: StartDateEndDateType & WithToken,
+): PromiseAxiosRes<CalendarP2PType[]> => {
+  try {
+    const response = await holdingInstance.post(
+      `/estate/calendar`,
+      {
+        startDate: data.startDate,
+        endDate: data.endDate,
+      },
+      {
+        headers: {
+          Authorization: 'test',
+        },
+        params: { token: data.token },
+      },
+    );
+    return response;
+  } catch (err) {
+    console.error(err);
+    throw err;
   }
 };

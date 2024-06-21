@@ -5,7 +5,7 @@ type ErrorType = {
   errorMessage: string;
 };
 
-type ResponseType<T> = {
+export type ResponseType<T> = {
   success: boolean;
   response: T;
   error: ErrorType;
@@ -17,6 +17,11 @@ export type WithToken = {
 
 export type WithUserId = {
   userId: number;
+};
+
+export type PageSizeType = {
+  page: number;
+  size: number;
 };
 
 export type AxiosRes<T> = AxiosResponse<ResponseType<T>>;

@@ -1,7 +1,11 @@
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getStocksCombi } from "../../../api/stocks";
-import { StockCombiType, InsertCombiStock, AddCombiStockReq} from "../../../types/stocks_product";
-import { RootState } from "../../store";
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { getStocksCombi } from '../../../api/stocks';
+import {
+  StockCombiType,
+  InsertCombiStock,
+  AddCombiStockReq,
+} from '../../../types/stocks_product';
+import { RootState } from '../../store';
 
 type ActionPayloadCombi = {
   data: {
@@ -12,54 +16,55 @@ type ActionPayloadCombi = {
 const initialState: StockCombiType = {
   combination1: {
     stocks: [],
-    totalDividend: 0
+    totalDividend: 0,
   },
   combination2: {
     stocks: [],
-    totalDividend: 0
+    totalDividend: 0,
   },
   combination3: {
     stocks: [],
-    totalDividend: 0
-  }
+    totalDividend: 0,
+  },
 };
 
-interface RequestCombiCreate{
+interface RequestCombiCreate {
   safeScore: number;
   growthScore: number;
   dividendScore: number;
   investmentAmount: number;
 }
 
-export const makeCombiStocks = createAsyncThunk<ActionPayloadCombi, number, { state: RootState }>(
-  "stocks/combination/create",
-  async (investmentAmount: number, thunkAPI) => {
-    const state = thunkAPI.getState();
-    const user = state.user;
+export const makeCombiStocks = createAsyncThunk<
+  ActionPayloadCombi,
+  number,
+  { state: RootState }
+>('stocks/combination/create', async (investmentAmount: number, thunkAPI) => {
+  const state = thunkAPI.getState();
+  const user = state.user;
 
-    const requestData: RequestCombiCreate = {
-      safeScore: user.user.safeScore,
-      growthScore: user.user.growthScore,
-      dividendScore: user.user.dividendScore,
-      investmentAmount: investmentAmount,
-    };
+  const requestData: RequestCombiCreate = {
+    safeScore: user.user.safeScore,
+    growthScore: user.user.growthScore,
+    dividendScore: user.user.dividendScore,
+    investmentAmount: investmentAmount,
+  };
 
-    const response = await getStocksCombi(requestData);
-    console.log(response.data.response);
-    return response as ActionPayloadCombi;
-  }
-);
+  const response = await getStocksCombi(requestData);
+  console.log(response.data.response);
+  return response as ActionPayloadCombi;
+});
 
 const stocksSlice = createSlice({
-  name: "stocks",
+  name: 'stocks',
   initialState: initialState,
   reducers: {
     addStockToCombination: (
       state,
       action: PayloadAction<{
-        combination: "combination1" | "combination2" | "combination3";
+        combination: 'combination1' | 'combination2' | 'combination3';
         stock: InsertCombiStock;
-      }>
+      }>,
     ) => {
       const { combination, stock } = action.payload;
       state[combination].stocks.push(stock);
@@ -67,23 +72,27 @@ const stocksSlice = createSlice({
     removeStockFromCombination: (
       state,
       action: PayloadAction<{
-        combination: "combination1" | "combination2" | "combination3";
+        combination: 'combination1' | 'combination2' | 'combination3';
         stockSymbol: string;
-      }>
+      }>,
     ) => {
       const { combination, stockSymbol } = action.payload;
-      const stockToRemove = state[combination].stocks.find(stock => stock.symbol === stockSymbol);
+      const stockToRemove = state[combination].stocks.find(
+        (stock) => stock.symbol === stockSymbol,
+      );
       if (stockToRemove) {
-        state[combination].stocks = state[combination].stocks.filter(stock => stock.symbol !== stockSymbol);
+        state[combination].stocks = state[combination].stocks.filter(
+          (stock) => stock.symbol !== stockSymbol,
+        );
       }
     },
     updateStockQuantity: (
       state,
       action: PayloadAction<{
-        combination: "combination1" | "combination2" | "combination3";
+        combination: 'combination1' | 'combination2' | 'combination3';
         index: number;
         newAmount: number;
-      }>
+      }>,
     ) => {
       const { combination, index, newAmount } = action.payload;
       const stock = state[combination].stocks[index];
@@ -101,6 +110,10 @@ const stocksSlice = createSlice({
   },
 });
 
-export const { addStockToCombination,removeStockFromCombination,updateStockQuantity } = stocksSlice.actions;
+export const {
+  addStockToCombination,
+  removeStockFromCombination,
+  updateStockQuantity,
+} = stocksSlice.actions;
 
 export default stocksSlice.reducer;

@@ -119,6 +119,10 @@ export const initialEstatesDetail: EstatesDetail = {
   category: '',
 };
 
+export type WithEstateId = {
+  estateId: number;
+};
+
 export const clickEstates: EstatesList = {
   id: 0,
   earningRate: 0,

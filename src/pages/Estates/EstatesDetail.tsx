@@ -60,7 +60,7 @@ const EstatesDetail = () => {
     (state: RootState) => state.holdingEstates.datas,
   );
   const userId = useSelector((state: RootState) => state.user.user.id);
-  const { EstatesLikeArr, setLikeEstates } = useLike();
+  // const { EstatesLikeArr, setLikeEstates } = useLike({ fundId: clickData.id });
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [value, setValue] = useState<number>(0);
   const [error, setError] = useState<string | undefined>(undefined);
@@ -140,10 +140,10 @@ const EstatesDetail = () => {
         <ExpertCheck data={detail} />
       </Container>
       <BtnContainer>
-        <LikeBtn
+        {/* <LikeBtn
           isLike={EstatesLikeArr.includes(detail.id)}
           setIsLike={() => setLikeEstates(detail.id)}
-        />
+        /> */}
         <Button
           name={
             isEstateHeld

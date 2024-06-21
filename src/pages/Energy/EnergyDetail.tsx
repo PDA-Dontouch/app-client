@@ -58,7 +58,7 @@ const EnergyDetail = () => {
   const holdingEnergy = useSelector(
     (state: RootState) => state.holdingEnergy.datas,
   );
-  const { EnergyLikeArr, setLikeEnergy } = useLike();
+  const { EnergyLikeArr, setLikeEnergy } = useLike({ fundId: detail.energyId });
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const userId = useSelector((state: RootState) => state.user.user.id);
   const [value, setValue] = useState<number>(0);
@@ -141,7 +141,7 @@ const EnergyDetail = () => {
       <BtnContainer>
         <LikeBtn
           isLike={EnergyLikeArr.includes(detail.energyId)}
-          setIsLike={() => setLikeEnergy(detail.energyId)}
+          setIsLike={() => {}}
         />
         <Button
           name={

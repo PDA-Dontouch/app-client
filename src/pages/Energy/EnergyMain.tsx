@@ -48,13 +48,14 @@ const EnergyMain = () => {
   const energyDatas = useSelector((state: RootState) => state.energy.datas);
   const [sortByProfit, setSortByProfit] = useState<boolean>(false);
   const [isSelect, setIsSelect] = useState(0);
+  const [energyId, setEnergyId] = useState('');
 
   useEffect(() => {
     dispatch(getEnergyDatas());
   }, []);
 
   const { EstatesLikeArr, setLikeEstates, EnergyLikeArr, setLikeEnergy } =
-    useLike();
+    useLike({ fundId: energyId });
 
   const filterAndSortData = (data: EnergyList[], completed: boolean) => {
     const filteredData = data.filter((energy) =>
@@ -74,7 +75,7 @@ const EnergyMain = () => {
           isEstates={false}
           data={item}
           isLike={EnergyLikeArr.includes(item.energyId)}
-          setIsLike={() => setLikeEnergy(item.energyId)}
+          setIsLike={() => {}}
         />
       </div>
     ));

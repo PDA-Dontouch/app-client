@@ -32,6 +32,16 @@ type ActionPayloadDetail = {
   };
 };
 
+type ActionPayloadResult = {
+  data: {
+    success: true;
+    response: {
+      savedLikeEnergyFundId: '';
+    };
+    error: null;
+  };
+};
+
 const initialState: EnergyState = {
   energyLike: ['-1'],
   datas: [],
@@ -39,8 +49,8 @@ const initialState: EnergyState = {
 };
 
 export type energyTypes = {
-  token: string;
-  energy_id: number;
+  userId: number;
+  energyFundId: string;
 };
 
 export const getEnergyDatas = createAsyncThunk<ActionPayload, void>(
@@ -59,16 +69,16 @@ export const getEnergyData = createAsyncThunk<ActionPayloadDetail, string>(
   },
 );
 
-export const addLikeEnergy = createAsyncThunk(
+export const addLikeEnergy = createAsyncThunk<ActionPayloadResult, energyTypes>(
   'energy/like',
   async (data: energyTypes, thunkAPI) => {
     const response = await energyLike(data);
-    return response;
+    return response as ActionPayloadResult;
   },
 );
 
 export const delLikeEnergy = createAsyncThunk(
-  'energy/like',
+  'energy/dislike',
   async (data: energyTypes, thunkAPI) => {
     const response = await energyDisLike(data);
     return response;

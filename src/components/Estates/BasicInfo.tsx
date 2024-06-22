@@ -45,8 +45,6 @@ const BasicInfo = ({ data }: BasicProps) => {
     ? data.sellingPointsTitle2.match(/\d+(\.\d+)?/)?.[0]
     : '0';
 
-  console.log(rate);
-
   return (
     <Container>
       <MainText>상품 개요</MainText>

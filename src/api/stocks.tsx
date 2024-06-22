@@ -1,4 +1,4 @@
-import { stockInstance } from './api';
+import { socketInstance, stockInstance } from './api';
 import {
   PromiseAxiosRes,
   WithToken,
@@ -13,7 +13,11 @@ import {
   GetHoldingStockType,
 } from '../types/stocks_product';
 import axios, { AxiosResponse } from 'axios';
-import { ChartPost } from '../types/individual_stock';
+import {
+  KrChartPost,
+  UsChartPost,
+  UsYearChartPost,
+} from '../types/individual_stock';
 
 interface RequestBodyType {
   searchWord: string | null;
@@ -111,9 +115,19 @@ export const stocksDisLike = async (data: StockDataResultType) => {
   }
 };
 
-export const stocksChart = async (data: ChartPost) => {
+export const stocksChartKr = async (data: KrChartPost) => {
   try {
-    const response = await stockInstance.post('/chart', data);
+    const response = await socketInstance.post('/api/graph/graphDataKr', data);
+    return response;
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
+};
+
+export const stocksChartUs = async (data: UsChartPost) => {
+  try {
+    const response = await socketInstance.post('/api/graph/graphDataUs', data);
     return response;
   } catch (err) {
     console.error(err);

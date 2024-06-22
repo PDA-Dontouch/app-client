@@ -1,8 +1,8 @@
-import tw, { styled } from "twin.macro";
+import tw, { styled } from 'twin.macro';
 import logoImg from '../../assets/logo.svg';
 import Delete from '../../assets/delete.svg';
-import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 interface StockProps {
   name: string;
@@ -44,16 +44,18 @@ const Img = styled.img`
   ${tw`w-10 h-10 rounded-full`}
 `;
 
-const MainText = styled.span`${tw`text-base`}`;
+const MainText = styled.span`
+  ${tw`text-base`}
+`;
 
-const SubText = styled.span`${tw`text-sm`}`;
+const SubText = styled.span`
+  ${tw`text-sm`}
+`;
 
 const SelectStock = ({ name, price, amount, symbol, onDelete }: StockProps) => {
   const dispatch = useDispatch();
   const [newAmount, setNewAmount] = useState<number>(0);
   const isKr = !isNaN(Number(symbol));
-
-  console.log(amount)
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
@@ -64,8 +66,7 @@ const SelectStock = ({ name, price, amount, symbol, onDelete }: StockProps) => {
 
   useEffect(() => {
     setNewAmount(amount);
-  }, [amount])
-
+  }, [amount]);
 
   return (
     <Wrapper>
@@ -73,17 +74,19 @@ const SelectStock = ({ name, price, amount, symbol, onDelete }: StockProps) => {
       <Container>
         <ItemContainer>
           <Item>
-            <Img src={`https://file.alphasquare.co.kr/media/images/stock_logo/${isKr ? 'kr' : 'us'}/${symbol}.png`}
-                  onError={(e) => {
-                    e.currentTarget.src = logoImg;
-                  }} />
+            <Img
+              src={`https://file.alphasquare.co.kr/media/images/stock_logo/${isKr ? 'kr' : 'us'}/${symbol}.png`}
+              onError={(e) => {
+                e.currentTarget.src = logoImg;
+              }}
+            />
             <SubItem>
               <MainText>{name}</MainText>
               <SubText>{price}원</SubText>
             </SubItem>
           </Item>
           <Item>
-            <Input value={newAmount} onChange={handleAmountChange}/>
+            <Input value={newAmount} onChange={handleAmountChange} />
             <MainText>주</MainText>
           </Item>
         </ItemContainer>

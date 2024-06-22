@@ -22,6 +22,7 @@ interface TradingState {
   isNew: boolean;
   selectCode: string;
   selectExchange: string;
+  selectName: string;
 }
 
 const initialState: TradingState = {
@@ -33,6 +34,7 @@ const initialState: TradingState = {
   isNew: false,
   selectCode: '',
   selectExchange: '',
+  selectName: '',
 };
 
 export const buyLimitOrder = createAsyncThunk(
@@ -108,6 +110,9 @@ const tradingSlice = createSlice({
     setSelectExchange(state, action: PayloadAction<string>) {
       state.selectExchange = action.payload;
     },
+    setSelectName(state, action: PayloadAction<string>) {
+      state.selectName = action.payload;
+    },
   },
   extraReducers: (builder) => {},
 });
@@ -120,6 +125,7 @@ export const {
   setSelectedQuantity,
   setSelectCode,
   setSelectExchange,
+  setSelectName,
 } = tradingSlice.actions;
 
 export default tradingSlice.reducer;

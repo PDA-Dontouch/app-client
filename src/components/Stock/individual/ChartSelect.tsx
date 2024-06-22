@@ -7,12 +7,16 @@ import Line from '../../../assets/chart/line.svg';
 import LineDisable from '../../../assets/chart/line-disable.svg';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../../store/store';
-import { getChartDatas } from '../../../store/reducers/stocks/individualStock';
+import {
+  getKrChartDatas,
+  getUsChartDatas,
+} from '../../../store/reducers/stocks/individualStock';
 
 interface SelectProps {
   isCandle: boolean;
   setIsCandle: React.Dispatch<SetStateAction<boolean>>;
-  stockId?: number;
+  stockCode: string;
+  num: number;
 }
 
 const Container = styled.div`
@@ -28,20 +32,60 @@ const Img = styled.img<{ isCandle: boolean }>`
   ${({ isCandle }) => (isCandle ? tw`bg-white` : ``)}
 `;
 
-const ChartSelect = ({ isCandle, setIsCandle, stockId }: SelectProps) => {
+const ChartSelect = ({
+  isCandle,
+  setIsCandle,
+  stockCode,
+  num,
+}: SelectProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const selectExchange = useSelector(
     (state: RootState) => state.trading.selectExchange,
   );
 
-  const newData = () => {
-    const data = {
-      exchange: selectExchange,
-      stockId: stockId || 0,
-      month: 120,
-      interval: 7,
-    };
-    dispatch(getChartDatas(data));
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+
+  const formattedDate = `${year}${month}${day}`;
+
+  const newCandleData = () => {
+    if (selectExchange === 'KSC') {
+      const data = {
+        timeFormat: num === 0 ? 'D' : num === 1 ? 'W' : num === 2 ? 'M' : 'Y',
+        stockCode: stockCode,
+        endDate: '20240620',
+      };
+      dispatch(getKrChartDatas(data));
+    } else {
+      const data = {
+        timeFormat: num === 0 ? 0 : num === 1 ? 1 : 2,
+        stockCode: stockCode,
+        endDate: formattedDate,
+        marketType: selectExchange === 'NASDAQ' ? 'BAQ' : 'BAY',
+      };
+      dispatch(getUsChartDatas(data));
+    }
+  };
+
+  const newLineData = () => {
+    if (selectExchange === 'KSC') {
+      const data = {
+        timeFormat: num === 0 ? 'D' : num === 1 ? 'W' : num === 2 ? 'M' : 'Y',
+        stockCode: stockCode,
+        endDate: '20240620',
+      };
+      dispatch(getKrChartDatas(data));
+    } else {
+      const data = {
+        timeFormat: num === 0 ? 0 : num === 1 ? 1 : 2,
+        stockCode: stockCode,
+        endDate: formattedDate,
+        marketType: selectExchange === 'NASDAQ' ? 'BAQ' : 'BAY',
+      };
+      dispatch(getUsChartDatas(data));
+    }
   };
 
   return (
@@ -52,7 +96,7 @@ const ChartSelect = ({ isCandle, setIsCandle, stockId }: SelectProps) => {
           isCandle={isCandle}
           onClick={() => {
             setIsCandle(true);
-            newData();
+            newCandleData();
           }}
         />
         <Img
@@ -60,7 +104,7 @@ const ChartSelect = ({ isCandle, setIsCandle, stockId }: SelectProps) => {
           isCandle={!isCandle}
           onClick={() => {
             setIsCandle(false);
-            newData();
+            newLineData();
           }}
         />
       </Item>

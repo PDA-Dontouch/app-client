@@ -7,10 +7,7 @@ import Empty from '../../../assets/empty-heart.svg';
 import Fill from '../../../assets/fill-heart.svg';
 import { PriceType } from '../../../types/socket';
 import { CaretDownFill, CaretUpFill } from 'react-bootstrap-icons';
-import {
-  ChartActionPayload,
-  getChartDatas,
-} from '../../../store/reducers/stocks/individualStock';
+import { ChartActionPayload } from '../../../store/reducers/stocks/individualStock';
 import { useParams } from 'react-router-dom';
 import MarketInfoSkeleton from '../../Skeleton/MarketInfoSkeleton';
 
@@ -79,7 +76,7 @@ const MarketInfo = ({ nowPrice }: InfoProps) => {
     (state: RootState) => state.individualStock.detail,
   );
   const chartData = useSelector(
-    (state: RootState) => state.individualStock.chartData.prices,
+    (state: RootState) => state.individualStock.chartData,
   );
   const selectExchange = useSelector(
     (state: RootState) => state.trading.selectExchange,
@@ -90,54 +87,32 @@ const MarketInfo = ({ nowPrice }: InfoProps) => {
   const [isLike, setIsLike] = useState<boolean>(false);
   const [upNum, setUpNum] = useState(0);
   const [nowRate, setNowRate] = useState(0);
-  const [upDown, setUpDown] = useState(0);
-  const [close, setClose] = useState('');
-  const [stockRate, setStockRate] = useState(0);
+  const upDown = useSelector(
+    (state: RootState) => state.individualStock.upDown,
+  );
+  const stockRate = useSelector(
+    (state: RootState) => state.individualStock.stockRate,
+  );
+  const closePrice = useSelector(
+    (state: RootState) => state.individualStock.close,
+  );
 
   useEffect(() => {
-    const data = {
-      exchange: selectExchange,
-      stockId: parseInt(params.id || ''),
-      month: 12,
-      interval: 1,
-    };
-    dispatch(getChartDatas(data)).then((res) => {});
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (chartData.length > 1) {
-      setUpNum(
-        parseFloat(nowPrice.message.close) -
-          chartData[chartData.length - 2].close,
-      );
-      setNowRate(
-        ((parseFloat(nowPrice.message.close) -
-          chartData[chartData.length - 2].close) /
-          chartData[chartData.length - 2].close) *
-          100,
-      );
+    if (nowPrice.message.close !== '') {
+      if (chartData.length > 1) {
+        setUpNum(
+          parseFloat(nowPrice.message.close) -
+            chartData[chartData.length - 2].close,
+        );
+        setNowRate(
+          ((parseFloat(nowPrice.message.close) -
+            chartData[chartData.length - 2].close) /
+            chartData[chartData.length - 2].close) *
+            100,
+        );
+      }
     }
   }, [nowPrice]);
-
-  useEffect(() => {
-    if (isLoading === false) {
-      setUpDown(
-        chartData[chartData.length - 1].close -
-          chartData[chartData.length - 2].close,
-      );
-      setClose(
-        chartData[chartData.length - 1].close
-          .toString()
-          .replace(/\B(?=(\d{3})+(?!\d))/g, ','),
-      );
-      setStockRate(
-        ((chartData[chartData.length - 1].close -
-          chartData[chartData.length - 2].close) /
-          chartData[chartData.length - 2].close) *
-          100,
-      );
-    }
-  }, [isLoading]);
 
   const formatNumber = (num: number): string => {
     if (num >= 1e8) {
@@ -182,7 +157,9 @@ const MarketInfo = ({ nowPrice }: InfoProps) => {
             ) : (
               <>
                 <StockFont num={upDown}>
-                  {detail.basic_info.exchange === 'KSC' ? close : '$' + close}
+                  {detail.basic_info.exchange === 'KSC'
+                    ? closePrice
+                    : '$' + closePrice}
                 </StockFont>
                 <StockDiv>
                   {upDown > 0 ? (
@@ -193,14 +170,14 @@ const MarketInfo = ({ nowPrice }: InfoProps) => {
                   <StockFont2 num={upDown}>
                     {detail.basic_info.exchange === 'KSC'
                       ? upDown.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                      : '$' + (upDown / 10).toFixed(2)}
+                      : '$' + upDown.toFixed(2)}
                   </StockFont2>
                   <StockFont2 num={stockRate}>(</StockFont2>
                   {stockRate > 0 && <StockFont2 num={stockRate}>+</StockFont2>}
                   <StockFont2 num={stockRate}>
                     {detail.basic_info.exchange === 'KSC'
                       ? stockRate.toFixed(2) + '%)'
-                      : (stockRate / 10).toFixed(2) + '%)'}
+                      : stockRate.toFixed(2) + '%)'}
                   </StockFont2>
                 </StockDiv>
               </>

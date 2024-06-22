@@ -1,13 +1,19 @@
-import { useEffect, useState } from 'react';
+import { SetStateAction, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import tw, { styled } from 'twin.macro';
 import { AppDispatch, RootState } from '../../../store/store';
-import { getChartDatas } from '../../../store/reducers/stocks/individualStock';
+import {
+  getKrChartDatas,
+  getUsChartDatas,
+} from '../../../store/reducers/stocks/individualStock';
+import { useParams } from 'react-router-dom';
 
 interface UnitProps {
   selects: string[];
   isCandle: boolean;
-  stockId?: number;
+  stockCode: string;
+  num: number;
+  setNum: React.Dispatch<SetStateAction<number>>;
 }
 
 const Container = styled.div`
@@ -20,34 +26,64 @@ const Button = styled.div<{ isSelect: boolean }>`
     isSelect ? tw`text-black bg-gray30 font-semibold` : tw`text-gray-dark`}
 `;
 
-const UnitSelect = ({ selects, isCandle, stockId }: UnitProps) => {
+const UnitSelect = ({
+  selects,
+  isCandle,
+  stockCode,
+  num,
+  setNum,
+}: UnitProps) => {
   const dispatch = useDispatch<AppDispatch>();
+  const params = useParams();
   const selectExchange = useSelector(
     (state: RootState) => state.trading.selectExchange,
   );
-  const [num, setNum] = useState<number>(0);
+
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+
+  const formattedDate = `${year}${month}${day}`;
 
   useEffect(() => {
-    if (isCandle) {
-      //
+    getNewData(num);
+  }, [num]);
+
+  const getNewData = (idx: number) => {
+    if (selectExchange === 'KSC') {
+      const data = {
+        timeFormat: idx === 0 ? 'D' : idx === 1 ? 'W' : idx === 2 ? 'M' : 'Y',
+        stockCode: stockCode,
+        endDate: formattedDate,
+      };
+      dispatch(getKrChartDatas(data));
     } else {
-      if (num === 0) {
+      if (idx !== 3) {
+        const data = {
+          timeFormat: idx === 0 ? 0 : idx === 1 ? 1 : 2,
+          stockCode: stockCode,
+          endDate: formattedDate,
+          marketType: selectExchange === 'NASDAQ' ? 'BAQ' : 'BAY',
+        };
+        dispatch(getUsChartDatas(data));
+      } else {
         //
       }
-      const data = {
-        exchange: selectExchange,
-        stockId: stockId || 0,
-        month: num === 1 ? 120 : num === 2 ? 60 : 24,
-        interval: num === 1 ? 90 : num === 2 ? 30 : 7,
-      };
-      dispatch(getChartDatas(data));
     }
-  }, [isCandle, num, dispatch, stockId, selectExchange]);
+  };
 
   return (
     <Container>
       {selects.map((text, idx) => (
-        <Button isSelect={idx === num} key={idx} onClick={() => setNum(idx)}>
+        <Button
+          isSelect={idx === num}
+          key={idx}
+          onClick={() => {
+            setNum(idx);
+            getNewData(idx);
+          }}
+        >
           {text}
         </Button>
       ))}

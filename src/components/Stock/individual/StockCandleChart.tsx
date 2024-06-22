@@ -13,36 +13,34 @@ import {
   EdgeIndicator,
   MouseCoordinateX,
   MouseCoordinateY,
+  HoverTooltip,
 } from 'react-financial-charts';
 import { ChartData } from '../../../types/individual_stock';
 import { useEffect, useState } from 'react';
 import { PriceType } from '../../../types/socket';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../../store/store';
-import {
-  getChartDatas,
-  setLiveData,
-} from '../../../store/reducers/stocks/individualStock';
+import { setLiveData } from '../../../store/reducers/stocks/individualStock';
 
 interface ChartProps {
   nowPrice: PriceType;
 }
 
-const StockChart = ({ nowPrice }: ChartProps) => {
+const StockCandleChart = ({ nowPrice }: ChartProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const chartData = useSelector(
-    (state: RootState) => state.individualStock.chartData.prices,
+    (state: RootState) => state.individualStock.chartData,
   );
 
   useEffect(() => {
     const today = new Date();
     const formattedDate = today.toISOString().slice(0, 10).replace(/-/g, '');
-
-    if (nowPrice) {
+    if (nowPrice.message.close !== '') {
       nowPrice.message['time'] = formattedDate;
       const liveData = {
         data: {
           response: {
+            code: '',
             date: nowPrice.message.time,
             open: parseInt(nowPrice.message.open),
             high: parseInt(nowPrice.message.high),
@@ -58,7 +56,11 @@ const StockChart = ({ nowPrice }: ChartProps) => {
 
   const ScaleProvider =
     discontinuousTimeScaleProviderBuilder().inputDateAccessor((d) => {
-      return new Date(d.date);
+      const year = d?.date?.substr(0, 4);
+      const month = d?.date?.substr(4, 2);
+      const day = d?.date?.substr(6, 2);
+      const nDate = `${year}-${month}-${day}`;
+      return new Date(nDate);
     });
 
   const height = 300;
@@ -67,11 +69,11 @@ const StockChart = ({ nowPrice }: ChartProps) => {
 
   const { data, xScale, xAccessor, displayXAccessor } =
     ScaleProvider(chartData);
-  const pricesDisplayFormat = format('.2f');
+  const pricesDisplayFormat = format(',');
 
   const start = xAccessor(data[data.length - 1]);
   const end = xAccessor(data[data.length - 31]);
-  const xExtents = [start, end];
+  const xExtents = [start, data.length < 31 ? xAccessor(data[0]) : end];
 
   const gridHeight = height - margin.top - margin.bottom;
 
@@ -89,6 +91,9 @@ const StockChart = ({ nowPrice }: ChartProps) => {
   };
   const dateTimeFormat = '%Y/%m';
   const timeDisplayFormat = timeFormat(dateTimeFormat);
+
+  const hoverTimeFormat = '%Y년 %m월 %d일';
+  const HoverDisplayFormat = timeFormat(hoverTimeFormat);
 
   const barChartExtents = (data: ChartData) => {
     return data.volume;
@@ -116,6 +121,38 @@ const StockChart = ({ nowPrice }: ChartProps) => {
     return data?.close > data?.open ? '#ef5350' : '#26a69a';
   };
 
+  function tooltipContent() {
+    return ({ currentItem, xAccessor }) => {
+      return {
+        x: HoverDisplayFormat(xAccessor(currentItem)),
+        y: [
+          {
+            label: '시가',
+            value: currentItem?.open && pricesDisplayFormat(currentItem?.open),
+          },
+          {
+            label: '종가',
+            value:
+              currentItem?.close && pricesDisplayFormat(currentItem?.close),
+          },
+          {
+            label: '고가',
+            value: currentItem?.high && pricesDisplayFormat(currentItem?.high),
+          },
+          {
+            label: '저가',
+            value: currentItem?.low && pricesDisplayFormat(currentItem?.low),
+          },
+          {
+            label: '거래량',
+            value:
+              currentItem?.volume && pricesDisplayFormat(currentItem?.volume),
+          },
+        ],
+      };
+    };
+  }
+
   return chartData?.length > 0 ? (
     <>
       <ChartCanvas
@@ -130,51 +167,36 @@ const StockChart = ({ nowPrice }: ChartProps) => {
         xAccessor={xAccessor}
         xExtents={xExtents}
         zoomAnchor={lastVisibleItemBasedZoomAnchor}
-        mouseMoveEvent={true}
       >
-        <Chart
-          id={2}
-          height={barChartHeight}
-          origin={barChartOrigin}
-          yExtents={barChartExtents}
-          padding={{ top: 10, bottom: 0 }}
-        >
-          <XAxis
-            showGridLines
-            showTickLabel={true}
-            showTicks={true}
-            tickFormat={timeDisplayFormat}
-            tickStrokeStyle="#BABABA"
-            strokeStyle="#BABABA"
-          />
-          <YAxis
-            ticks={4}
-            tickFormat={pricesDisplayFormat}
-            tickLabelFill="#BABABA"
-            tickStrokeStyle="#BABABA"
-            strokeStyle="#BABABA"
-          />
-          <BarSeries fillStyle={volumeColor} yAccessor={volumeSeries} />
-        </Chart>
-
         <Chart
           id={1}
           height={chartHeight}
           yExtents={candleChartExtents}
           padding={20}
         >
+          <HoverTooltip
+            tooltip={{ content: tooltipContent() }}
+            fontSize={14}
+            toolTipStrokeStyle="#fca57e"
+            toolTipFillStyle="#fff"
+            background={{
+              fillStyle: 'rgba(255, 227, 215, 0.3)',
+              strokeStyle: 'ShortDash2',
+            }}
+            yAccessor={(d) => d.volume}
+          />
           <XAxis
             showGridLines
             showTickLabel={false}
-            showTicks={false}
+            tickStrokeStyle="#BABABA"
             strokeStyle="#BABABA"
           />
           <YAxis
             showGridLines
             tickFormat={pricesDisplayFormat}
-            tickLabelFill="#BABABA"
             tickStrokeStyle="#BABABA"
             strokeStyle="#BABABA"
+            tickLabelFill="#BABABA"
           />
           <CandlestickSeries fill={openCloseColor} />
           <MouseCoordinateX displayFormat={timeDisplayFormat} />
@@ -192,10 +214,31 @@ const StockChart = ({ nowPrice }: ChartProps) => {
             fullWidth={true}
           />
         </Chart>
+        <Chart
+          id={2}
+          height={barChartHeight}
+          origin={barChartOrigin}
+          yExtents={barChartExtents}
+          padding={{ top: 10, bottom: 0 }}
+        >
+          <XAxis
+            showGridLines
+            tickStrokeStyle="#BABABA"
+            strokeStyle="#BABABA"
+          />
+          <YAxis
+            ticks={4}
+            tickFormat={pricesDisplayFormat}
+            tickLabelFill="#BABABA"
+            tickStrokeStyle="#BABABA"
+            strokeStyle="#BABABA"
+          />
+          <BarSeries fillStyle={volumeColor} yAccessor={volumeSeries} />
+        </Chart>
         <CrossHairCursor />
       </ChartCanvas>
     </>
   ) : null;
 };
 
-export default StockChart;
+export default StockCandleChart;

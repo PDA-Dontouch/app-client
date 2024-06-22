@@ -1,7 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../../store/store';
 import { useEffect } from 'react';
-import { getChartDatas } from '../../../store/reducers/stocks/individualStock';
 import {
   Chart,
   ChartCanvas,
@@ -17,7 +16,7 @@ import { timeFormat } from 'd3-time-format';
 
 const StockLineChart = () => {
   const chartData = useSelector(
-    (state: RootState) => state.individualStock.chartData.prices,
+    (state: RootState) => state.individualStock.chartData,
   );
 
   const ScaleProvider =

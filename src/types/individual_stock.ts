@@ -1,8 +1,19 @@
-export type ChartPost = {
+export type KrChartPost = {
+  timeFormat: string;
+  stockCode: string;
+  endDate: string;
+};
+
+export type UsChartPost = {
+  timeFormat: number;
+  stockCode: string;
+  endDate: string;
+  marketType: string;
+};
+
+export type UsYearChartPost = {
   exchange: string;
   stockId: number;
-  month: number;
-  interval: number;
 };
 
 export type GetDetail = {

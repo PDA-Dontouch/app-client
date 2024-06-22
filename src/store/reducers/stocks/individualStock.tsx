@@ -1,24 +1,21 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { stocksChart, stocksDetail } from '../../../api/stocks';
-import { ChartPost, GetDetail } from '../../../types/individual_stock';
+import {
+  stocksChartKr,
+  stocksChartUs,
+  stocksDetail,
+} from '../../../api/stocks';
+import {
+  GetDetail,
+  KrChartPost,
+  UsChartPost,
+} from '../../../types/individual_stock';
 
 const initialState = {
   isLoading: true,
-  chartData: {
-    exchange: '',
-    stock_id: 0,
-    symbol: '',
-    prices: [
-      {
-        date: '',
-        open: 0,
-        high: 0,
-        low: 0,
-        close: 0,
-        volume: 0,
-      },
-    ],
-  },
+  upDown: 0,
+  stockRate: 0,
+  close: 0,
+  chartData: [],
   detail: {
     basic_info: {
       id: 0,
@@ -46,19 +43,13 @@ const initialState = {
 };
 
 interface ChartData {
-  exchange: '';
-  stock_id: 0;
-  symbol: '';
-  prices: [
-    {
-      date: '';
-      open: 0;
-      high: 0;
-      low: 0;
-      close: 0;
-      volume: 0;
-    },
-  ];
+  code: string;
+  open: number;
+  close: number;
+  high: number;
+  low: number;
+  volume: number;
+  date: string;
 }
 
 interface DetailData {
@@ -67,21 +58,20 @@ interface DetailData {
 }
 
 export type ChartActionPayload = {
-  data: {
-    response: ChartData;
-  };
+  data: ChartData[];
 };
 
 type ActionType = {
   payload: {
     data: {
       response: {
-        date: string;
+        code: string;
         open: number;
+        close: number;
         high: number;
         low: number;
-        close: number;
         volume: number;
+        date: string;
       };
     };
   };
@@ -93,10 +83,18 @@ type ActionDetailPayload = {
   };
 };
 
-export const getChartDatas = createAsyncThunk(
-  'stocks/getChartDatas',
-  async (data: ChartPost, thunkAPI) => {
-    const response = await stocksChart(data);
+export const getKrChartDatas = createAsyncThunk(
+  'stocks/getKrChartDatas',
+  async (data: KrChartPost, thunkAPI) => {
+    const response = await stocksChartKr(data);
+    return response as ChartActionPayload;
+  },
+);
+
+export const getUsChartDatas = createAsyncThunk(
+  'stocks/getUsChartDatas',
+  async (data: UsChartPost, thunkAPI) => {
+    const response = await stocksChartUs(data);
     return response as ChartActionPayload;
   },
 );
@@ -114,19 +112,36 @@ const individualStockSlice = createSlice({
   initialState: initialState,
   reducers: {
     setLiveData(state, action: ActionType) {
-      state.chartData.prices.pop();
-      state.chartData.prices.push(action.payload.data.response);
+      state.chartData.pop();
+      state.chartData.push(action.payload.data.response);
+    },
+    setUpDown(state, action) {
+      state.upDown = action.payload;
+    },
+    setStockRate(state, action) {
+      state.stockRate = action.payload;
+    },
+    setClose(state, action) {
+      state.close = action.payload;
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(getChartDatas.fulfilled, (state, action) => {
-      state.chartData.exchange = action.payload.data.response.exchange;
-      state.chartData.stock_id = action.payload.data.response.stock_id;
-      state.chartData.symbol = action.payload.data.response.symbol;
-      state.chartData.prices = action.payload.data.response.prices.reverse();
+    builder.addCase(getKrChartDatas.fulfilled, (state, action) => {
+      state.chartData = action.payload.data
+        .filter((d) => d.open !== null && d.close !== null)
+        .reverse();
       state.isLoading = false;
     });
-    builder.addCase(getChartDatas.pending, (state, action) => {
+    builder.addCase(getKrChartDatas.pending, (state, action) => {
+      state.isLoading = true;
+    });
+    builder.addCase(getUsChartDatas.fulfilled, (state, action) => {
+      state.chartData = action.payload.data
+        .filter((d) => d.open !== null && d.close !== null)
+        .reverse();
+      state.isLoading = false;
+    });
+    builder.addCase(getUsChartDatas.pending, (state, action) => {
       state.isLoading = true;
     });
     builder.addCase(getDetail.fulfilled, (state, action) => {
@@ -135,6 +150,7 @@ const individualStockSlice = createSlice({
   },
 });
 
-export const { setLiveData } = individualStockSlice.actions;
+export const { setLiveData, setUpDown, setStockRate, setClose } =
+  individualStockSlice.actions;
 
 export default individualStockSlice.reducer;

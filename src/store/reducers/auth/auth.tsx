@@ -1,6 +1,11 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { getUser } from '../../../api/auth';
-import { UserDetail, initialUserDetail } from '../../../types/user_product';
+import { getUser, updateInvestmentType } from '../../../api/auth';
+import {
+  UserDetail,
+  initialUserDetail,
+  InvestmentType,
+} from '../../../types/user_product';
+import { WithToken, WithUserId } from '../../../types/response_product';
 
 const initialState = {
   user: initialUserDetail,
@@ -24,6 +29,15 @@ export const postLogin = createAsyncThunk<ActionPayload, string>(
   },
 );
 
+export const postType = createAsyncThunk(
+  'user/type',
+  async (data: WithToken & WithUserId & { totalScore: number }) => {
+    const response = await updateInvestmentType(data);
+    console.log(response.data.response);
+    return response.data.response as InvestmentType;
+  },
+);
+
 const userSlice = createSlice({
   name: 'user',
   initialState: initialState,
@@ -36,6 +50,9 @@ const userSlice = createSlice({
         state.token = action.payload.data.response.token;
       },
     );
+    builder.addCase(postType.fulfilled, (state, action) => {
+      state.user.investmentType = action.payload;
+    });
   },
 });
 

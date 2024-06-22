@@ -1,6 +1,6 @@
-import { investmentType } from '../types/user_product';
+import { InvestmentType } from '../types/user_product';
 
-export function investmentTypeToString(type: investmentType): string {
+export function investmentTypeToString(type: InvestmentType): string {
   switch (type) {
     case 1:
       return '안정형';

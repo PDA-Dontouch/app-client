@@ -1,11 +1,11 @@
-export type investmentType = 1 | 2 | 3 | 4 | 5;
+export type InvestmentType = 1 | 2 | 3 | 4 | 5;
 
 export type UserDetail = {
   id: number;
   email: string;
   sns_type: number;
   nickname: string;
-  investmentType: investmentType;
+  investmentType: InvestmentType;
   safeScore: number;
   dividendScore: number;
   growthScore: number;
@@ -39,9 +39,8 @@ export const initialUserDetail = {
   id: 1001,
   email: 'gkstmf616@naver.com',
   sns_type: 1,
-  birthday: new Date(),
   nickname: '이한슬',
-  investmentType: 1 as investmentType,
+  investmentType: 1 as InvestmentType,
   safeScore: 40,
   dividendScore: 35,
   growthScore: 25,

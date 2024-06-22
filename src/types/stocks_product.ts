@@ -57,25 +57,23 @@ export type InsertCombiStock = {
   dividend: number;
 };
 
-
 export type CombiStockReq = {
-  stockId: number,
-  exchange: string
-}
+  stockId: number;
+  exchange: string;
+};
 
-export type NewCombiReqType ={
-  combination1:CombiStockReq[];
-  combination2:CombiStockReq[];
-  combination3:CombiStockReq[];
-}
-
+export type NewCombiReqType = {
+  combination1: CombiStockReq[];
+  combination2: CombiStockReq[];
+  combination3: CombiStockReq[];
+};
 
 export type RequestCombiDistribute = {
-  combination1:CombiStockReq[];
-  combination2:CombiStockReq[];
-  combination3:CombiStockReq[];
-  investmentAmount: number
-}
+  combination1: CombiStockReq[];
+  combination2: CombiStockReq[];
+  combination3: CombiStockReq[];
+  investmentAmount: number;
+};
 
 export type StockCombiType = {
   combination1: {
@@ -150,4 +148,15 @@ export type GetHoldingStockType = {
   usHoldingStocks: HoldingStockType[];
   usTotalPurchase: number;
   totalPurchase: number;
+};
+
+export type StocksLikeTypes = {
+  userId: number;
+  exchange: string;
+  stockId: number;
+};
+
+export type StockLike = {
+  exchange: string;
+  stockId: number;
 };

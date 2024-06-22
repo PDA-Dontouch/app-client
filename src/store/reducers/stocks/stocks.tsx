@@ -1,9 +1,17 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { getStocksCombi, combinationDistribute } from '../../../api/stocks';
+import {
+  getStocksCombi,
+  combinationDistribute,
+  getStocksLike,
+  stocksLike,
+  stocksDisLike,
+} from '../../../api/stocks';
 import {
   StockCombiType,
   RequestCombiDistribute,
-  InsertCombiStock
+  InsertCombiStock,
+  StocksLikeTypes,
+  StockLike,
 } from '../../../types/stocks_product';
 import { AppDispatch, RootState } from '../../store';
 
@@ -13,7 +21,9 @@ type ActionPayloadCombi = {
   };
 };
 
-const initialState: StockCombiType & { totalInvestment: number } = {
+const initialState: StockCombiType & { totalInvestment: number } & {
+  stocksLike: StockLike[];
+} = {
   combination1: {
     stocks: [],
     totalDividend: 0,
@@ -27,6 +37,7 @@ const initialState: StockCombiType & { totalInvestment: number } = {
     totalDividend: 0,
   },
   totalInvestment: 0, // 전체 투자 금액
+  stocksLike: [],
 };
 
 interface RequestCombiCreate {
@@ -36,9 +47,15 @@ interface RequestCombiCreate {
   investmentAmount: number;
 }
 
-type TransformedStock  = {
+type TransformedStock = {
   stockId: number;
   exchange: string;
+};
+
+type ActionPayload<T> = {
+  data: {
+    response: T;
+  };
 };
 
 export const makeCombiStocks = createAsyncThunk<
@@ -69,8 +86,8 @@ const determineExchange = (stock: InsertCombiStock): TransformedStock => {
   };
 };
 
-const transformStocks = (stocks: InsertCombiStock[]):TransformedStock[] => {
-  return stocks.map(stock => determineExchange(stock));
+const transformStocks = (stocks: InsertCombiStock[]): TransformedStock[] => {
+  return stocks.map((stock) => determineExchange(stock));
 };
 
 export const addCombiStocks = createAsyncThunk<
@@ -86,9 +103,15 @@ export const addCombiStocks = createAsyncThunk<
   async ({ combination, stockId, exchange }, thunkAPI) => {
     const state = thunkAPI.getState();
     const combiStocks = state.stocks;
-    const transformedCombination1 = transformStocks(combiStocks.combination1.stocks);
-    const transformedCombination2 = transformStocks(combiStocks.combination2.stocks);
-    const transformedCombination3 = transformStocks(combiStocks.combination3.stocks);
+    const transformedCombination1 = transformStocks(
+      combiStocks.combination1.stocks,
+    );
+    const transformedCombination2 = transformStocks(
+      combiStocks.combination2.stocks,
+    );
+    const transformedCombination3 = transformStocks(
+      combiStocks.combination3.stocks,
+    );
 
     const newCombi: RequestCombiDistribute = {
       combination1: transformedCombination1,
@@ -120,18 +143,24 @@ export const removeCombiStocks = createAsyncThunk<
 
     // 새로운 배열을 생성하고 필터링
     const updatedStocks = combinationToUpdate.stocks.filter(
-      (stock) => stock.symbol !== stockSymbol
+      (stock) => stock.symbol !== stockSymbol,
     );
 
     // 현재 상태에서 각 조합을 변환
     const transformedCombination1 = transformStocks(
-      combination === 'combination1' ? updatedStocks : combiStocks.combination1.stocks
+      combination === 'combination1'
+        ? updatedStocks
+        : combiStocks.combination1.stocks,
     );
     const transformedCombination2 = transformStocks(
-      combination === 'combination2' ? updatedStocks : combiStocks.combination2.stocks
+      combination === 'combination2'
+        ? updatedStocks
+        : combiStocks.combination2.stocks,
     );
     const transformedCombination3 = transformStocks(
-      combination === 'combination3' ? updatedStocks : combiStocks.combination3.stocks
+      combination === 'combination3'
+        ? updatedStocks
+        : combiStocks.combination3.stocks,
     );
 
     const newCombi: RequestCombiDistribute = {
@@ -144,19 +173,50 @@ export const removeCombiStocks = createAsyncThunk<
     const response = await combinationDistribute(newCombi);
     console.log(response.data);
     return response as ActionPayloadCombi;
-  }
+  },
 );
 
+export const getLikeStocks = createAsyncThunk(
+  'stocks/getLike',
+  async (data: number) => {
+    const response = await getStocksLike(data);
+    return response;
+  },
+);
+
+export const addLikeStocks = createAsyncThunk(
+  'stocks/like',
+  async (data: StocksLikeTypes) => {
+    const response = await stocksLike(data);
+    return response;
+  },
+);
+
+export const delLikeStocks = createAsyncThunk(
+  'stocks/dislike',
+  async (data: StocksLikeTypes) => {
+    const response = await stocksDisLike(data);
+    return response;
+  },
+);
 
 const stocksSlice = createSlice({
   name: 'stocks',
   initialState: initialState,
   reducers: {
-    setTotalInvestment: (
-      state,
-      action: PayloadAction<number>
-    ) => {
+    setTotalInvestment: (state, action: PayloadAction<number>) => {
       state.totalInvestment = action.payload;
+    },
+    setLikeStocks(state, action: PayloadAction<StockLike[]>) {
+      state.stocksLike = action.payload;
+    },
+    addLikeStock(state, action: PayloadAction<StockLike>) {
+      state.stocksLike.push(action.payload);
+    },
+    removeLikeStock(state, action: PayloadAction<StockLike>) {
+      state.stocksLike = state.stocksLike.filter(
+        (el) => el.stockId !== action.payload.stockId,
+      );
     },
   },
   extraReducers: (builder) => {
@@ -175,10 +235,20 @@ const stocksSlice = createSlice({
       state.combination2 = action.payload.data.response.combination2;
       state.combination3 = action.payload.data.response.combination3;
     });
+    builder.addCase(
+      getLikeStocks.fulfilled,
+      (state, action: PayloadAction<ActionPayload<StockLike[]>>) => {
+        state.stocksLike = action.payload.data.response;
+      },
+    );
   },
 });
 
-export const {setTotalInvestment} =
-  stocksSlice.actions;
+export const {
+  setTotalInvestment,
+  setLikeStocks,
+  addLikeStock,
+  removeLikeStock,
+} = stocksSlice.actions;
 
 export default stocksSlice.reducer;

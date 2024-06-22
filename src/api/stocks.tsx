@@ -1,4 +1,4 @@
-import { socketInstance, stockInstance } from './api';
+import { authInstance, socketInstance, stockInstance } from './api';
 import {
   PromiseAxiosRes,
   WithToken,
@@ -12,6 +12,7 @@ import {
   StockCombiType,
   GetHoldingStockType,
   RequestCombiDistribute,
+  StocksLikeTypes,
 } from '../types/stocks_product';
 import axios, { AxiosResponse } from 'axios';
 import {
@@ -70,30 +71,6 @@ export const stocksData = async (
   } catch (err) {
     console.error(err);
     throw err;
-  }
-};
-
-export const stocksLike = async (data: StockDataResultType) => {
-  const baseUrl = `/like`;
-  try {
-    const response = await stockInstance.post('/like', data);
-    return response;
-  } catch (err) {
-    console.error(err);
-    return err;
-  }
-};
-
-export const stocksDisLike = async (data: StockDataResultType) => {
-  const baseUrl = `/like`;
-  try {
-    const response = await stockInstance.delete('/like', {
-      data: data,
-    });
-    return response;
-  } catch (err) {
-    console.error(err);
-    return err;
   }
 };
 
@@ -166,7 +143,7 @@ export const getStocksCombi = async (
   }
 };
 
-export const combinationDistribute = async(
+export const combinationDistribute = async (
   body: RequestCombiDistribute,
 ): PromiseAxiosRes<StockCombiType> => {
   try {
@@ -212,5 +189,37 @@ export const getLikeStocks = async ({
   } catch (err) {
     console.error(err);
     throw err;
+  }
+};
+
+export const getStocksLike = async (userId: number) => {
+  try {
+    const response = await authInstance.get(`/like/stocks?userId=${userId}`);
+    return response;
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
+};
+
+export const stocksLike = async (data: StocksLikeTypes) => {
+  try {
+    const response = await authInstance.post('/like/stocks', data);
+    return response;
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
+};
+
+export const stocksDisLike = async (data: StocksLikeTypes) => {
+  try {
+    const response = await authInstance.delete('/like/stocks', {
+      data: data,
+    });
+    return response;
+  } catch (err) {
+    console.error(err);
+    return err;
   }
 };

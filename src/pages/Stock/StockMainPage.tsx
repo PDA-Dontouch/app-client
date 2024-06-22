@@ -26,6 +26,13 @@ import {
   setSelectExchange,
 } from '../../store/reducers/stocks/trading';
 import { joinRoom } from '../../store/webSocket/nowPrice';
+import {
+  addLikeStock,
+  addLikeStocks,
+  delLikeStocks,
+  getLikeStocks,
+  removeLikeStock,
+} from '../../store/reducers/stocks/stocks';
 // import { insertStock, removeStock } from '../../store/reducers/stocks/stocks';
 
 const MainContainer = styled.div`
@@ -69,10 +76,11 @@ const StockMainPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'recommend' | 'individual'>(
     'recommend',
   );
-  const [likeStocks, setLikeStocks] = useState<number[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [page, setPage] = useState(0);
   const [stockList, setStockList] = useState<StockDataResultType[]>([]);
+  const userId = useSelector((state: RootState) => state.user.user.id);
+  const likeArr = useSelector((state: RootState) => state.stocks.stocksLike);
 
   useEffect(() => {
     stocksDatas({
@@ -86,10 +94,33 @@ const StockMainPage: React.FC = () => {
     }).then((response) => {
       setStockList(response.data.response);
     });
+    dispatch(getLikeStocks(userId));
   }, []);
 
   const handleTabClick = (tab: 'recommend' | 'individual') => {
     setActiveTab(tab);
+  };
+
+  const handleLikeToggle = async (item: StockDataResultType) => {
+    const data = {
+      userId: userId,
+      exchange: item.exchange,
+      stockId: item.id,
+    };
+
+    const isLiked = likeArr.some((el) => el.stockId === item.id);
+
+    const checked = {
+      exchange: item.exchange,
+      stockId: item.id,
+    };
+    if (isLiked) {
+      dispatch(removeLikeStock(checked));
+      await dispatch(delLikeStocks(data));
+    } else {
+      dispatch(addLikeStock(checked));
+      await dispatch(addLikeStocks(data));
+    }
   };
 
   return (
@@ -146,8 +177,8 @@ const StockMainPage: React.FC = () => {
                 >
                   <StockCard
                     data={item}
-                    isLike={likeStocks.includes(item.id) ? true : false}
-                    setIsLike={() => stocksLike(item)}
+                    isLike={likeArr.some((el) => el.stockId === item.id)}
+                    setIsLike={() => handleLikeToggle(item)}
                   />
                 </div>
               ))}

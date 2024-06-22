@@ -11,7 +11,11 @@ import {
   StockDetailType,
   StockCombiType,
   GetHoldingStockType,
+  UsStockSocketType,
+  HoldingUsStockSocketResponseType,
+  HoldingKrStockSocketResponseType,
 } from '../types/stocks_product';
+import axios, { AxiosResponse } from 'axios';
 
 interface RequestBodyType {
   searchWord: string | null;
@@ -184,6 +188,48 @@ export const getLikeStocks = async ({
         token: token,
       },
     });
+
+    return response;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+
+export const getKRStockPrice = async ({
+  stockList,
+}: {
+  stockList: string[];
+}): Promise<string[]> => {
+  try {
+    const response = await axios
+      .post(`/api/myPage/krStock`, { stockList })
+      .then((data: AxiosResponse<HoldingKrStockSocketResponseType[]>) => {
+        return data.data.map((items) => {
+          return items.price;
+        });
+      });
+
+    return response;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+
+export const getUSStockPrice = async ({
+  stockList,
+}: {
+  stockList: UsStockSocketType[];
+}): Promise<number[]> => {
+  try {
+    const response = await axios
+      .post(`/api/myPage/usStock`, { stockList })
+      .then((data: AxiosResponse<HoldingUsStockSocketResponseType[]>) => {
+        return data.data.map((items) => {
+          return items.price;
+        });
+      });
 
     return response;
   } catch (err) {

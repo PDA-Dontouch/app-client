@@ -84,7 +84,12 @@ const InvestTypeTest = () => {
       0,
     );
     setTotalScore(totalPoints);
+
+    // if(state.nav){
+
+    // }else{
     navigate('/asset-input', { state: { totalScore: totalPoints } });
+    // }
   };
 
   return (

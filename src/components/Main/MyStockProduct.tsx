@@ -66,7 +66,7 @@ export default function MyStockProduct({
   return (
     <MyStockProductContainer
       onClick={() => {
-        `/stocks/${code}`;
+        navigate(`/stocks/${code}`);
       }}
     >
       <LeftSection>
@@ -82,8 +82,8 @@ export default function MyStockProduct({
         <Price>{price}</Price>
         {compare && (
           <Compare compare={compare}>
-            {compare > 0 ? '+' : '-'}
-            {compare}원
+            {compare > 0 ? '+' : null}
+            {compare.toLocaleString()}원
           </Compare>
         )}
       </RightSection>

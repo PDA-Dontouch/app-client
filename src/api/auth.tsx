@@ -71,3 +71,29 @@ export const getUserAccountAmount = async ({
     throw err;
   }
 };
+
+export const updateInvestmentType = async ({
+  userId,
+  token,
+  totalScore,
+}: WithToken &
+  WithUserId & { totalScore: number }): PromiseAxiosRes<number> => {
+  try {
+    const response = await authInstance.post(
+      '/type',
+      {
+        userId: userId,
+        totalScore: totalScore,
+      },
+      {
+        params: {
+          token: token,
+        },
+      },
+    );
+    return response;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};

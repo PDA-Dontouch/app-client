@@ -136,3 +136,18 @@ export type GetHoldingStockType = {
   usTotalPurchase: number;
   totalPurchase: number;
 };
+
+export type UsStockSocketType = {
+  stockCode: string;
+  marketType: string;
+};
+
+export type HoldingUsStockSocketResponseType = {
+  price: number;
+  rate: string;
+};
+
+export type HoldingKrStockSocketResponseType = {
+  price: string;
+  rate: string;
+};

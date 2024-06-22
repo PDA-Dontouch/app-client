@@ -42,9 +42,9 @@ export const initialUserDetail = {
   birthday: new Date(),
   nickname: '이한슬',
   investmentType: 1 as investmentType,
-  safeScore: 50,
-  dividendScore: 30,
-  growthScore: 20,
+  safeScore: 40,
+  dividendScore: 35,
+  growthScore: 25,
 };
 
 export type StartDateEndDateType = {

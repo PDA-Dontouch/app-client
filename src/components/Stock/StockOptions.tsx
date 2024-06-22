@@ -1,12 +1,13 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AppDispatch, RootState } from '../../store/store';
 import { useDispatch, useSelector } from 'react-redux';
 import tw, { styled } from 'twin.macro';
 import SearchBar from '../common/Stock/SearchBar';
-import { stocksDatas, combinationDistribute } from '../../api/stocks';
+import { stocksDatas } from '../../api/stocks';
 import logoImg from '../../assets/logo.svg';
-import {InsertCombiStock, StockDataResultType} from '../../types/stocks_product';
-import { addStockToCombination, makeCombiStocks } from '../../store/reducers/stocks/stocks';
+import { StockDataResultType } from '../../types/stocks_product';
+import { addCombiStocks } from '../../store/reducers/stocks/stocks';
+import AlertModal from '../common/Stock/AlertModal';
 
 const Container = styled.div`
   ${tw`w-full h-[450px] flex flex-col items-center p-3 gap-3`}
@@ -32,6 +33,10 @@ const MainText = styled.span`
 
 const InfoContainer = styled.div`
   ${tw`flex flex-col content-between ml-3`}
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 9rem;
 `;
 
 const SubContainer = styled.div`
@@ -57,11 +62,14 @@ const StockOptions: React.FC<StockOptionsProps> = ({ dividendMonth }) => {
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.user);
   const combiStocks = useSelector((state: RootState) => state.stocks);
+  
   const currentCombination = `combination${dividendMonth}` as "combination1" | "combination2" | "combination3";
 
   const [page, setPage] = useState(0);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [stockList, setStockList] = useState<StockDataResultType[]>([]);
+
+  const [alertOpen, setAlertOpen] = useState(false);
 
   useEffect(() => {
     stocksDatas({
@@ -75,9 +83,21 @@ const StockOptions: React.FC<StockOptionsProps> = ({ dividendMonth }) => {
     }).then((response)=>{
       setStockList(response.data.response);
     });
-  }, [page]);
+  }, [page, searchTerm]);
 
-  
+  const handleUpdateCombination = (stockId:number, exchange:string):void =>{
+    if(combiStocks[currentCombination].stocks.length >= 2){
+      setAlertOpen(true);
+    }
+    else {
+      dispatch(addCombiStocks({combination:currentCombination,stockId:stockId,exchange:exchange}));
+      
+    }
+  } 
+
+  const handleAlertClose = () => {
+    setAlertOpen(false);
+  };
 
   const isKRStock = (symbol: string): boolean => {
     // 모든 문자가 숫자인지 확인
@@ -95,7 +115,7 @@ const StockOptions: React.FC<StockOptionsProps> = ({ dividendMonth }) => {
       <StockItems>
         {stockList.map((stock) => {
           return (
-            <StockInfo key={stock.id} onClick={() => handleInsertStock(stock)}>
+            <StockInfo key={stock.id} onClick={() => {handleUpdateCombination(stock.id, stock.exchange)}}>
               <ItemContainer>
               <StockLogo
                   src={getImageUrl(stock.symbol)}
@@ -113,16 +133,14 @@ const StockOptions: React.FC<StockOptionsProps> = ({ dividendMonth }) => {
               </ItemContainer>
               <PriceContainer>
                 <PriceText>
-                  {isKRStock(stock.symbol)
-                    ? `${stock.dividendYieldTtm.toFixed(2)} 원`
-                    : `$${stock.dividendYieldTtm.toFixed(2)}`}
-                  ({stock.dividendYieldTtm.toFixed(2)}%)
+                  배당률 {stock.dividendYieldTtm.toFixed(2)}%
                 </PriceText>
               </PriceContainer>
             </StockInfo>
           );
         })}
       </StockItems>
+      {alertOpen && <AlertModal type='modal' onClose={handleAlertClose} message='최대 2개의 종목을 추가할 수 있습니다.' />}
     </Container>
   );
 };

@@ -94,7 +94,6 @@ const InvestTypeTest = () => {
 
   return (
     <>
-      {' '}
       {state.nav && (
         <Navbar
           name="back"

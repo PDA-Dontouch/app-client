@@ -53,6 +53,7 @@ const SmallButton = styled.button`
 const AssetInput = () => {
   const navigate = useNavigate();
   const user = useSelector((state: RootState) => state.user);
+
   const [totalAssetNum, setTotalAssetNum] = useState<number>(0);
   const [totalAsset, setTotalAsset] = useState<string>('');
 

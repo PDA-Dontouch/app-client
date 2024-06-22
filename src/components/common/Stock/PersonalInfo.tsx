@@ -5,7 +5,9 @@ import { investmentTypeToString } from '../../../utils/investmentType';
 import { getUserAccountAmount } from '../../../api/auth';
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { makeCombiStocks } from '../../../store/reducers/stocks/stocks';
+import { makeCombiStocks, setTotalInvestment } from '../../../store/reducers/stocks/stocks';
+
+
 const PersonalContainer = styled.div`
   ${tw`w-full flex flex-col gap-3`}
 `;
@@ -50,10 +52,13 @@ const PersonalInfo: React.FC = () => {
   const state = location.state as number | undefined;
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.user);
+  const wantInvestmentPrice = useSelector((state:RootState)=> state.stocks.totalInvestment);
+
   const [accountAmount, setAccountAmount] = useState<number>(0);
   useEffect(() => {
     if (state) {
       setAccountAmount(state);
+      dispatch(setTotalInvestment(state));
       dispatch(makeCombiStocks(state));
     } else {
       getUserAccountAmount({
@@ -61,6 +66,7 @@ const PersonalInfo: React.FC = () => {
         userId: user.user.id,
       }).then((response) => {
         setAccountAmount(response.data.response.cash);
+        dispatch(setTotalInvestment(response.data.response.cash));
         dispatch(makeCombiStocks(response.data.response.cash));
       });
     }
@@ -94,7 +100,7 @@ const PersonalInfo: React.FC = () => {
       </TopContainer>
       <MoneyContainer>
         <Title>투자 금액</Title>
-        <PersonData>{accountAmount.toLocaleString()} 원</PersonData>
+        <PersonData>{wantInvestmentPrice.toLocaleString()} 원</PersonData>
       </MoneyContainer>
     </PersonalContainer>
   );

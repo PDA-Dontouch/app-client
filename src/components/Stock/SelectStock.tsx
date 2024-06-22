@@ -2,7 +2,9 @@ import tw, { styled } from "twin.macro";
 import logoImg from '../../assets/logo.svg';
 import Delete from '../../assets/delete.svg';
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setTotalInvestment } from "../../store/reducers/stocks/stocks";
+import { RootState } from "../../store/store";
 
 interface StockProps {
   name: string;
@@ -29,31 +31,31 @@ const ItemContainer = styled.div`
 `;
 
 const Item = styled.div`
-  ${tw`flex gap-2 items-center`}
+  ${tw`flex gap-3 items-center`}
 `;
 
 const SubItem = styled.div`
-  ${tw`flex flex-col gap-1`}
+  ${tw`flex flex-col gap-2`}
 `;
 
 const Input = styled.input`
-  ${tw`w-[50px] bg-gray-light border-0 border-solid border-b border-gray-dark focus:outline-none text-base text-end`}
+  ${tw`w-[50px] bg-gray-light border-0 border-solid border-b border-gray-dark focus:outline-none text-sm text-end`}
 `;
 
 const Img = styled.img`
   ${tw`w-10 h-10 rounded-full`}
 `;
 
-const MainText = styled.span`${tw`text-base`}`;
+const MainText = styled.span`
+  ${tw`text-sm`}
+`;
 
-const SubText = styled.span`${tw`text-sm`}`;
+const SubText = styled.span`${tw`text-xs`}`;
 
 const SelectStock = ({ name, price, amount, symbol, onDelete }: StockProps) => {
-  const dispatch = useDispatch();
+
   const [newAmount, setNewAmount] = useState<number>(0);
   const isKr = !isNaN(Number(symbol));
-
-  console.log(amount)
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);

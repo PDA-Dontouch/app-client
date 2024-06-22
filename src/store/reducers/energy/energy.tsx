@@ -6,6 +6,7 @@ import {
   energyData,
   energyBuy,
   energySell,
+  getEnergysLike,
 } from '../../../api/energy';
 import {
   EnergyList,
@@ -21,9 +22,9 @@ interface EnergyState {
   detail: energyDetail;
 }
 
-type ActionPayload = {
+type ActionPayload<T> = {
   data: {
-    response: EnergyList[];
+    response: T;
   };
 };
 
@@ -55,13 +56,13 @@ export type energyTypes = {
   energyFundId: string;
 };
 
-export const getEnergyDatas = createAsyncThunk<ActionPayload, void>(
-  'energy/getDatas',
-  async (data, thunkAPI) => {
-    const response = await energyDatas();
-    return response as ActionPayload;
-  },
-);
+export const getEnergyDatas = createAsyncThunk<
+  ActionPayload<EnergyList[]>,
+  void
+>('energy/getDatas', async (data, thunkAPI) => {
+  const response = await energyDatas();
+  return response as ActionPayload<EnergyList[]>;
+});
 
 export const getEnergyData = createAsyncThunk<ActionPayloadDetail, string>(
   'energy/getData',
@@ -71,15 +72,23 @@ export const getEnergyData = createAsyncThunk<ActionPayloadDetail, string>(
   },
 );
 
-export const addLikeEnergy = createAsyncThunk<ActionPayloadResult, energyTypes>(
-  'energy/like',
-  async (data: energyTypes, thunkAPI) => {
-    const response = await energyLike(data);
-    return response as ActionPayloadResult;
+export const getLikeEnergys = createAsyncThunk(
+  'energy/getLike',
+  async (data: number) => {
+    const response = await getEnergysLike(data);
+    return response;
   },
 );
 
-export const delLikeEnergy = createAsyncThunk(
+export const addLikeEnergys = createAsyncThunk<
+  ActionPayloadResult,
+  energyTypes
+>('energy/like', async (data: energyTypes, thunkAPI) => {
+  const response = await energyLike(data);
+  return response as ActionPayloadResult;
+});
+
+export const delLikeEnergys = createAsyncThunk(
   'energy/dislike',
   async (data: energyTypes, thunkAPI) => {
     const response = await energyDisLike(data);
@@ -107,31 +116,40 @@ const energySlice = createSlice({
   name: 'energy',
   initialState: initialState,
   reducers: {
-    setEnergyLike: (state, action) => {
+    setLikeEnergy(state, action: PayloadAction<string[]>) {
+      state.energyLike = action.payload;
+    },
+    addLikeEnergy(state, action: PayloadAction<string>) {
       state.energyLike.push(action.payload);
     },
-    delEnergyLike: (state, action) => {
-      state.energyLike = state.energyLike.filter((el) => el !== action.payload);
+    removeLikeEnergy(state, action: PayloadAction<string>) {
+      state.energyLike = state.energyLike.filter((id) => id !== action.payload);
     },
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(
-        getEnergyDatas.fulfilled,
-        (state, action: PayloadAction<ActionPayload>) => {
-          state.datas = action.payload.data.response;
-          state.loading = false;
-        },
-      )
-      .addCase(
-        getEnergyData.fulfilled,
-        (state, action: PayloadAction<ActionPayloadDetail>) => {
-          state.detail = action.payload.data.response;
-        },
-      );
+    builder.addCase(
+      getEnergyDatas.fulfilled,
+      (state, action: PayloadAction<ActionPayload<EnergyList[]>>) => {
+        state.datas = action.payload.data.response;
+        state.loading = false;
+      },
+    );
+    builder.addCase(
+      getEnergyData.fulfilled,
+      (state, action: PayloadAction<ActionPayloadDetail>) => {
+        state.detail = action.payload.data.response;
+      },
+    );
+    builder.addCase(
+      getLikeEnergys.fulfilled,
+      (state, action: PayloadAction<ActionPayload<[]>>) => {
+        state.energyLike = action.payload.data.response;
+      },
+    );
   },
 });
 
-export const { setEnergyLike, delEnergyLike } = energySlice.actions;
+export const { setLikeEnergy, addLikeEnergy, removeLikeEnergy } =
+  energySlice.actions;
 
 export default energySlice.reducer;

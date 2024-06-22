@@ -4,15 +4,22 @@ import { useNavigate } from 'react-router-dom';
 import tw, { css, styled } from 'twin.macro';
 
 import { AppDispatch, RootState } from '../../store/store';
-import useLike from '../../hooks/useLike';
-import { getEnergyDatas } from '../../store/reducers/energy/energy';
+import {
+  addLikeEnergy,
+  addLikeEnergys,
+  delLikeEnergys,
+  getEnergyDatas,
+  getLikeEnergys,
+  removeLikeEnergy,
+} from '../../store/reducers/energy/energy';
 
 import Footer from '../../components/common/Footer';
 import Navbar from '../../components/common/Navbar';
 import SortButton from '../../components/common/SortButton';
 import Product from '../../components/common/Product/Product';
-import { EnergyList } from '../../types/energy_product';
+import { EnergyList, energyDetail } from '../../types/energy_product';
 import ProductSkeleton from '../../components/Skeleton/ProductSkeleton';
+import { getHoldingEnergy } from '../../store/reducers/energy/holding';
 
 const Container = styled.div`
   ${tw`w-[calc(100% - 56px)] mt-14 mb-16 px-7 py-8 flex flex-col gap-5`}
@@ -51,13 +58,14 @@ const EnergyMain = () => {
   const [isSelect, setIsSelect] = useState(0);
   const [energyId, setEnergyId] = useState('');
   const isLoading = useSelector((state: RootState) => state.energy.loading);
+  const likeArr = useSelector((state: RootState) => state.energy.energyLike);
+  const userId = useSelector((state: RootState) => state.user.user.id);
 
   useEffect(() => {
     dispatch(getEnergyDatas());
+    dispatch(getHoldingEnergy(userId));
+    dispatch(getLikeEnergys(userId));
   }, []);
-
-  const { EstatesLikeArr, setLikeEstates, EnergyLikeArr, setLikeEnergy } =
-    useLike({ fundId: energyId });
 
   const filterAndSortData = (data: EnergyList[], completed: boolean) => {
     const filteredData = data.filter((energy) =>
@@ -70,14 +78,31 @@ const EnergyMain = () => {
       : filteredData;
   };
 
+  const handleLikeToggle = async (item: EnergyList) => {
+    const data = {
+      userId: userId,
+      energyFundId: item.energyId,
+    };
+
+    const isLiked = likeArr.includes(item.energyId);
+
+    if (isLiked) {
+      dispatch(removeLikeEnergy(item.energyId));
+      await dispatch(delLikeEnergys(data));
+    } else {
+      dispatch(addLikeEnergy(item.energyId));
+      await dispatch(addLikeEnergys(data));
+    }
+  };
+
   const renderProducts = (data: EnergyList[]) => {
     return data.map((item) => (
       <div key={item.energyId}>
         <Product
           isEstates={false}
           data={item}
-          isLike={EnergyLikeArr.includes(item.energyId)}
-          setIsLike={() => {}}
+          isLike={likeArr.includes(item.energyId)}
+          setIsLike={() => handleLikeToggle(item)}
         />
       </div>
     ));

@@ -10,10 +10,14 @@ import { AppDispatch, RootState } from '../../store/store';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
+  addLikeEstate,
+  addLikeEstates,
+  delLikeEstates,
   getEstatesDatas,
+  getLikeEstates,
+  removeLikeEstate,
   setClickEstates,
 } from '../../store/reducers/estates/estates';
-import useLike from '../../hooks/useLike';
 import { EstatesList } from '../../types/estates_product';
 import ProductSkeleton from '../../components/Skeleton/ProductSkeleton';
 import { getHoldingEstates } from '../../store/reducers/estates/holding';
@@ -55,14 +59,14 @@ const EstatesMain = () => {
   const [sortByProfit, setSortByProfit] = useState(false);
   const [isSelect, setIsSelect] = useState(0);
   const userId = useSelector((state: RootState) => state.user.user.id);
+  const likeArr = useSelector((state: RootState) => state.estates.estatesLike);
   const [estateId, setEstateId] = useState(0);
 
   useEffect(() => {
     dispatch(getEstatesDatas());
     dispatch(getHoldingEstates(userId));
+    dispatch(getLikeEstates(userId));
   }, [dispatch]);
-
-  const { EstatesLikeArr, setLikeEstates } = useLike({ fundId: estateId });
 
   const filterAndSortData = (data: EstatesList[], completed: boolean) => {
     const filteredData = data.filter((estate) =>
@@ -79,6 +83,23 @@ const EstatesMain = () => {
     dispatch(setClickEstates(data));
   };
 
+  const handleLikeToggle = async (item: EstatesList) => {
+    const data = {
+      userId: userId,
+      estateFundId: item.id,
+    };
+
+    const isLiked = likeArr.includes(item.id);
+
+    if (isLiked) {
+      dispatch(removeLikeEstate(item.id));
+      await dispatch(delLikeEstates(data));
+    } else {
+      dispatch(addLikeEstate(item.id));
+      await dispatch(addLikeEstates(data));
+    }
+  };
+
   const renderProducts = (data: EstatesList[]) => {
     return data.map((item) => (
       <div
@@ -91,8 +112,8 @@ const EstatesMain = () => {
         <Product
           isEstates={true}
           data={item}
-          isLike={EstatesLikeArr.includes(item.id)}
-          setIsLike={() => setLikeEstates(item.id)}
+          isLike={likeArr.includes(item.id)}
+          setIsLike={() => handleLikeToggle(item)}
         />
       </div>
     ));

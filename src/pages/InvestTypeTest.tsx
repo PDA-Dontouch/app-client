@@ -150,7 +150,7 @@ const InvestTypeTest = () => {
             />
           ) : currentQuestion === 6 ? (
             <Button
-              name="내 계좌 연동하기"
+              name={state.nav ? '투자 성향 테스트 완료' : '내 계좌 연동하기'}
               status={answers[currentQuestion] === -1 ? 'disabled' : 'active'}
               onClick={handleSubmit}
             />

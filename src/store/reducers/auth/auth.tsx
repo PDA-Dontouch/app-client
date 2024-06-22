@@ -33,8 +33,7 @@ export const postType = createAsyncThunk(
   'user/type',
   async (data: WithToken & WithUserId & { totalScore: number }) => {
     const response = await updateInvestmentType(data);
-    console.log(response.data.response);
-    return response.data.response as InvestmentType;
+    return response.data.response as UserDetail;
   },
 );
 
@@ -51,7 +50,7 @@ const userSlice = createSlice({
       },
     );
     builder.addCase(postType.fulfilled, (state, action) => {
-      state.user.investmentType = action.payload;
+      state.user = action.payload;
     });
   },
 });

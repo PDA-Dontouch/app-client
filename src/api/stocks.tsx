@@ -15,6 +15,7 @@ import {
   UsStockSocketType,
   HoldingUsStockSocketResponseType,
   HoldingKrStockSocketResponseType,
+  CombinationPurchasedType,
 } from '../types/stocks_product';
 import axios, { AxiosResponse } from 'axios';
 
@@ -213,6 +214,24 @@ export const getUSStockPrice = async ({
         });
       });
 
+    return response;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+
+export const getCombinationPurchased = async ({
+  userId,
+  token,
+}: WithToken & WithUserId): PromiseAxiosRes<CombinationPurchasedType[]> => {
+  try {
+    const response = await stockInstance.get(`/combination/purchased`, {
+      params: {
+        userId: userId,
+        token: token,
+      },
+    });
     return response;
   } catch (err) {
     console.error(err);

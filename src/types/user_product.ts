@@ -50,3 +50,10 @@ export type StartDateEndDateType = {
   startDate: Date;
   endDate: Date;
 };
+
+export type PostStockType = {
+  userId: number;
+  stockCode: string;
+  stockPrice: number;
+  stockAmount: number;
+};

@@ -168,12 +168,12 @@ export default function ProductsHeldPage() {
     getEnergyTotalPrice();
     getEstateTotalPrice();
     getStocksDataProps();
-  }, []);
+  }, [modal]);
 
   useEffect(() => {
     calcKoreaTotal();
     calcUsTotal();
-  }, [koreaData, usaData, realTimeKoreaPrice, realTimeUsPrice]);
+  }, [koreaData, usaData, realTimeKoreaPrice, realTimeUsPrice, modal]);
 
   useEffect(() => {
     sendKoreaSocketAxios(koreaData);
@@ -186,7 +186,7 @@ export default function ProductsHeldPage() {
       clearInterval(intervalUS);
       clearInterval(intervalKR);
     };
-  }, [koreaData, usaData]);
+  }, [koreaData, usaData, modal]);
 
   return (
     <>

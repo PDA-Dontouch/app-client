@@ -9,6 +9,7 @@ import {
   DepositWithDrawalType,
   LoginedUser,
   InvestmentType,
+  UserDetail,
 } from '../types/user_product';
 import { authInstance } from './api';
 
@@ -78,7 +79,7 @@ export const updateInvestmentType = async ({
   token,
   totalScore,
 }: WithToken &
-  WithUserId & { totalScore: number }): PromiseAxiosRes<InvestmentType> => {
+  WithUserId & { totalScore: number }): PromiseAxiosRes<UserDetail> => {
   try {
     const response = await authInstance.post(
       '/type',

@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { stocksDatas } from '../../api/stocks';
 import { StockDataResultType } from '../../types/stocks_product';
+import { postHeldKRStock, postHeldUSStock } from '../../api/holding';
 
 type ProductsHeldPageProps = {
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -37,7 +38,7 @@ const AddStatusContainer = styled.div`
   box-sizing: border-box;
 `;
 
-const Inputs = styled.div`
+const Inputs = styled.form`
   ${tw`flex flex-col gap-3`}
 `;
 
@@ -77,8 +78,8 @@ const CancelConfirmBtn = styled.button<CancelConfirmBtnProps>`
 export default function AddStockModal({ setModal }: ProductsHeldPageProps) {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [status, setStatus] = useState<'search' | 'add'>('search');
-  const [price, setPrice] = useState<number>();
-  const [amount, setAmount] = useState<number>();
+  const [price, setPrice] = useState<string>('');
+  const [amount, setAmount] = useState<string>('');
   const [page, setPage] = useState<number>(0);
   const [selectedStock, setSelectedStock] = useState<SelectedStockType>({
     code: '',
@@ -126,6 +127,22 @@ export default function AddStockModal({ setModal }: ProductsHeldPageProps) {
   }
 
   function onConfirmHandler() {
+    const request = {
+      userId: user.user.id,
+      stockCode: selectedStock.code,
+      stockPrice: Number(price),
+      stockAmount: Number(amount),
+      token: user.token,
+    };
+
+    if (
+      '0' <= selectedStock.code.charAt(0) &&
+      selectedStock.code.charAt(0) <= '9'
+    ) {
+      postHeldKRStock(request);
+    } else {
+      postHeldUSStock(request);
+    }
     setModal(false);
   }
 
@@ -140,9 +157,16 @@ export default function AddStockModal({ setModal }: ProductsHeldPageProps) {
     }
   }
 
+  function onChange(
+    e: React.ChangeEvent<HTMLInputElement>,
+    setValue: React.Dispatch<React.SetStateAction<string>>,
+  ) {
+    setValue(e.currentTarget.value);
+  }
+
   useEffect(() => {
     search(searchTerm);
-  }, [searchTerm]);
+  }, [searchTerm, status]);
 
   return (
     <>
@@ -175,14 +199,29 @@ export default function AddStockModal({ setModal }: ProductsHeldPageProps) {
               setStatus('search');
             }}
           />
-          <Inputs>
+          <Inputs
+            onSubmit={(e) => {
+              e.preventDefault();
+              onConfirmHandler();
+            }}
+          >
             <InputContainer>
               <InputLabel>체결가</InputLabel>
-              <Input value={price} />
+              <Input
+                inputMode="decimal"
+                type="number"
+                value={price}
+                onChange={(e) => onChange(e, setPrice)}
+              />
             </InputContainer>
             <InputContainer>
               <InputLabel>보유 수량</InputLabel>
-              <Input value={amount} />
+              <Input
+                inputMode="numeric"
+                type="number"
+                value={amount}
+                onChange={(e) => onChange(e, setAmount)}
+              />
             </InputContainer>
           </Inputs>
           <CancelConfirm>

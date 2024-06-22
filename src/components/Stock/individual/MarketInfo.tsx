@@ -1,23 +1,15 @@
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import tw, { styled } from 'twin.macro';
-import { AppDispatch, RootState } from '../../../store/store';
+import { RootState } from '../../../store/store';
 
-import Empty from '../../../assets/empty-heart.svg';
-import Fill from '../../../assets/fill-heart.svg';
 import { PriceType } from '../../../types/socket';
 import { CaretDownFill, CaretUpFill } from 'react-bootstrap-icons';
-import { ChartActionPayload } from '../../../store/reducers/stocks/individualStock';
-import { useParams } from 'react-router-dom';
 import MarketInfoSkeleton from '../../Skeleton/MarketInfoSkeleton';
 
 interface InfoProps {
   nowPrice: PriceType;
 }
-
-type ChartType = {
-  payload: ChartActionPayload;
-};
 
 const NameContainer = styled.div`
   ${tw`w-full px-7 flex justify-between items-center box-border`}
@@ -69,22 +61,20 @@ const StockFont2 = styled.span<{ num: number }>`
     props.num > 0 ? '#c70606' : props.num < 0 ? '#0636c7' : '#000'};
 `;
 
+const Heart = styled.img`
+  ${tw`ml-2 w-6 h-6 cursor-pointer`}
+`;
+
 const MarketInfo = ({ nowPrice }: InfoProps) => {
-  const params = useParams();
-  const dispatch = useDispatch<AppDispatch>();
   const detail = useSelector(
     (state: RootState) => state.individualStock.detail,
   );
   const chartData = useSelector(
     (state: RootState) => state.individualStock.chartData,
   );
-  const selectExchange = useSelector(
-    (state: RootState) => state.trading.selectExchange,
-  );
   const isLoading = useSelector(
     (state: RootState) => state.individualStock.isLoading,
   );
-  const [isLike, setIsLike] = useState<boolean>(false);
   const [upNum, setUpNum] = useState(0);
   const [nowRate, setNowRate] = useState(0);
   const upDown = useSelector(
@@ -184,10 +174,6 @@ const MarketInfo = ({ nowPrice }: InfoProps) => {
             )}
           </SubText>
         </SubName>
-        <Img
-          src={isLike ? Fill : Empty}
-          onClick={() => setIsLike((prev) => !prev)}
-        />
       </NameContainer>
       <ItemContainer>
         <Item isCol={true} isTwo={true}>

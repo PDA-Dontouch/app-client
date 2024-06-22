@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { MyP2PProductType, WithEnergyId } from '../../types/energy_product';
 import Footer from '../../components/common/Footer';
 import StockP2P from '../../components/Main/StockP2P';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import BottomUpModal from '../../components/common/Modal/BottomUpModal';
 import AddStockModal from '../../components/Main/AddStockModal';
 import {
@@ -17,8 +17,15 @@ import {
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { WithEstateId } from '../../types/estates_product';
-import { HoldingStockType } from '../../types/stocks_product';
-import { getHoldingStocks } from '../../api/stocks';
+import {
+  HoldingStockType,
+  UsStockSocketType,
+} from '../../types/stocks_product';
+import {
+  getHoldingStocks,
+  getKRStockPrice,
+  getUSStockPrice,
+} from '../../api/stocks';
 
 interface LocationState {
   initialActive: boolean;
@@ -51,14 +58,67 @@ export default function ProductsHeldPage() {
 
   const state = location.state as LocationState;
 
+  const [realTimeKoreaPrice, setRealTimeKoreaPrice] = useState<string[]>([]);
+  const [realTimeUsPrice, setRealTimeUsPrice] = useState<number[]>([]);
+
+  async function getKoreaSocket(korea: HoldingStockType[]) {
+    const koreaRequest = korea.map((stock) => {
+      return stock.stock.symbol;
+    });
+
+    return koreaRequest;
+  }
+
+  async function getUsSocket(us: HoldingStockType[]) {
+    const usaRequest = us.map((stock) => {
+      return {
+        stockCode: stock.stock.symbol,
+        marketType: stock.stock.symbol === 'NYSE' ? 'BAY' : 'BAQ',
+      };
+    });
+
+    return usaRequest as UsStockSocketType[];
+  }
+
+  function sendKoreaSocketAxios(korea: HoldingStockType[]) {
+    getKoreaSocket(korea).then((res) => {
+      getKRStockPrice({ stockList: res }).then((data) => {
+        setRealTimeKoreaPrice(data);
+      });
+    });
+  }
+
+  function sendUsSocketAxios(us: HoldingStockType[]) {
+    getUsSocket(us).then((res) => {
+      getUSStockPrice({ stockList: res }).then((data) => {
+        setRealTimeUsPrice(data);
+      });
+    });
+  }
+
+  const calcKoreaTotal = useCallback(async () => {
+    const res = koreaData.reduce((accumulator, stock, idx) => {
+      return (
+        accumulator +
+        stock.purchaseInfo.quantity * Number(realTimeKoreaPrice[idx])
+      );
+    }, 0);
+    setKoreaStockTotalPrice(res);
+  }, [realTimeKoreaPrice, koreaData]);
+
+  const calcUsTotal = useCallback(async () => {
+    const res = usaData.reduce((accumulator, stock, idx) => {
+      return accumulator + stock.purchaseInfo.quantity * realTimeUsPrice[idx];
+    }, 0);
+    setUsaStockTotalPrice(res);
+  }, [realTimeUsPrice, usaData]);
+
   function getStocksDataProps() {
     getHoldingStocks({ userId: user.user.id, token: user.token }).then(
-      (data) => {
+      async (data) => {
         if (data.data.success) {
           setKoreaData(data.data.response.krHoldingStocks);
           setUsaData(data.data.response.usHoldingStocks);
-          setKoreaStockTotalPrice(data.data.response.krTotalPurchase);
-          setUsaStockTotalPrice(data.data.response.usTotalPurchase);
         }
       },
     );
@@ -108,7 +168,25 @@ export default function ProductsHeldPage() {
     getEnergyTotalPrice();
     getEstateTotalPrice();
     getStocksDataProps();
-  }, []);
+  }, [modal]);
+
+  useEffect(() => {
+    calcKoreaTotal();
+    calcUsTotal();
+  }, [koreaData, usaData, realTimeKoreaPrice, realTimeUsPrice, modal]);
+
+  useEffect(() => {
+    sendKoreaSocketAxios(koreaData);
+    sendUsSocketAxios(usaData);
+
+    const intervalKR = setInterval(() => sendKoreaSocketAxios(koreaData), 5000);
+    const intervalUS = setInterval(() => sendUsSocketAxios(usaData), 5000);
+
+    return () => {
+      clearInterval(intervalUS);
+      clearInterval(intervalKR);
+    };
+  }, [koreaData, usaData, modal]);
 
   return (
     <>
@@ -142,6 +220,8 @@ export default function ProductsHeldPage() {
           }}
           StockTotalPrice={koreaStockTotalPrice + usaStockTotalPrice}
           P2PTotalPrice={energyTotalPrice + estateTotalPrice}
+          realTimeKoreaPice={realTimeKoreaPrice}
+          realTimeUsPrice={realTimeUsPrice}
         />
       </ProductsHeldPageContainer>
       <Footer />

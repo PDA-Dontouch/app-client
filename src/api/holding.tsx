@@ -10,7 +10,11 @@ import {
   WithToken,
   WithUserId,
 } from '../types/response_product';
-import { AccountLogType, StartDateEndDateType } from '../types/user_product';
+import {
+  AccountLogType,
+  PostStockType,
+  StartDateEndDateType,
+} from '../types/user_product';
 import { holdingInstance } from './api';
 
 export const getUserEstateProduct = async ({
@@ -168,6 +172,56 @@ export const getHoldingEstateCalendar = async (
           Authorization: 'test',
         },
         params: { token: data.token },
+      },
+    );
+    return response;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+
+export const postHeldUSStock = async (
+  data: PostStockType & WithToken,
+): PromiseAxiosRes<string> => {
+  try {
+    const response = await holdingInstance.post(
+      `/usStock/hold`,
+      {
+        userId: data.userId,
+        stockCode: data.stockCode,
+        stockPrice: data.stockPrice,
+        stockAmount: data.stockAmount,
+      },
+      {
+        params: {
+          token: data.token,
+        },
+      },
+    );
+    return response;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+
+export const postHeldKRStock = async (
+  data: PostStockType & WithToken,
+): PromiseAxiosRes<string> => {
+  try {
+    const response = await holdingInstance.post(
+      `/krStock/hold`,
+      {
+        userId: data.userId,
+        stockCode: data.stockCode,
+        stockPrice: data.stockPrice,
+        stockAmount: data.stockAmount,
+      },
+      {
+        params: {
+          token: data.token,
+        },
       },
     );
     return response;

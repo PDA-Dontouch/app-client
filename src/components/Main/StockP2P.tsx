@@ -1,6 +1,6 @@
 import tw, { styled } from 'twin.macro';
 import SelectStockP2P from './SelectStockP2P';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import MyStock from './MyStock';
 import MyP2P from './MyP2P';
 import {
@@ -32,6 +32,8 @@ type StockP2PProps = {
   setModal?: () => void;
   StockTotalPrice?: number;
   P2PTotalPrice?: number;
+  realTimeKoreaPice?: string[];
+  realTimeUsPrice?: number[];
 };
 
 export default function StockP2P({
@@ -44,6 +46,8 @@ export default function StockP2P({
   setModal,
   StockTotalPrice,
   P2PTotalPrice,
+  realTimeKoreaPice,
+  realTimeUsPrice,
 }: StockP2PProps) {
   const [active, setActive] = useState<boolean>(initialActive);
   const navigate = useNavigate();
@@ -64,7 +68,12 @@ export default function StockP2P({
           <P2PHeldContent totalPrice={P2PTotalPrice} />
         ))}
       {active ? (
-        <MyStock koreaData={koreaData} usaData={usaData} />
+        <MyStock
+          koreaData={koreaData}
+          usaData={usaData}
+          realTimeKoreaPrice={realTimeKoreaPice}
+          realTimeUsPrice={realTimeUsPrice}
+        />
       ) : (
         <MyP2P energyData={energyData} estateData={estateData}></MyP2P>
       )}

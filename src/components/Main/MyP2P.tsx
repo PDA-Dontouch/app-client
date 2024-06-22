@@ -1,12 +1,16 @@
 import tw, { styled } from 'twin.macro';
 import MyP2PProduct from './MyP2PProduct';
-import { MyP2PProductType, WithEnergyId } from '../../types/energy_product';
+import {
+  EnergyList,
+  MyP2PProductType,
+  WithEnergyId,
+} from '../../types/energy_product';
 import Nothing from './Nothing';
-import { WithEstateId } from '../../types/estates_product';
+import { EstatesList, WithEstateId } from '../../types/estates_product';
 
 type MyP2PProps = {
-  energyData: (MyP2PProductType & WithEnergyId)[];
-  estateData: (MyP2PProductType & WithEstateId)[];
+  energyData: (MyP2PProductType & WithEnergyId)[] | EnergyList[];
+  estateData: (MyP2PProductType & WithEstateId)[] | EstatesList[];
 };
 
 const MyP2PContainer = styled.div`

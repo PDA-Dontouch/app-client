@@ -1,11 +1,16 @@
 import { stockInstance } from './api';
-import { PromiseAxiosRes, WithToken } from '../types/response_product';
+import {
+  PromiseAxiosRes,
+  WithToken,
+  WithUserId,
+} from '../types/response_product';
 import {
   CalendarStockPlanType,
   ExchangeRateType,
   StockDataResultType,
   StockDetailType,
   StockCombiType,
+  GetHoldingStockType,
   RequestCombiDistribute,
 } from '../types/stocks_product';
 
@@ -127,6 +132,43 @@ export const combinationDistribute = async(
     const response = await stockInstance.post('/combination/distribute', body);
     return response;
   } catch (err: unknown) {
+    console.error(err);
+    throw err;
+  }
+};
+
+export const getHoldingStocks = async ({
+  userId,
+  token,
+}: WithToken & WithUserId): PromiseAxiosRes<GetHoldingStockType> => {
+  try {
+    const response = await stockInstance.get(`/holding`, {
+      params: { token: token, userId: userId },
+    });
+    return response;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+
+export const getLikeStocks = async ({
+  userId,
+  token,
+}: WithToken & WithUserId): PromiseAxiosRes<{
+  krLikeStocks: StockDataResultType[];
+  usLikeStocks: StockDataResultType[];
+}> => {
+  try {
+    const response = await stockInstance.get(`/like`, {
+      params: {
+        userId: userId,
+        token: token,
+      },
+    });
+
+    return response;
+  } catch (err) {
     console.error(err);
     throw err;
   }

@@ -2,7 +2,6 @@ import tw, { styled } from 'twin.macro';
 import GreenBarTitle from '../../components/common/GreenBarTitle';
 import Navbar from '../../components/common/Navbar';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { MyStockProductType } from '../../components/Main/MyStockProduct';
 import { MyP2PProductType, WithEnergyId } from '../../types/energy_product';
 import Footer from '../../components/common/Footer';
 import StockP2P from '../../components/Main/StockP2P';
@@ -18,6 +17,8 @@ import {
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { WithEstateId } from '../../types/estates_product';
+import { HoldingStockType } from '../../types/stocks_product';
+import { getHoldingStocks } from '../../api/stocks';
 
 interface LocationState {
   initialActive: boolean;
@@ -28,36 +29,17 @@ const ProductsHeldPageContainer = styled.div`
   box-sizing: border-box;
 `;
 
-const koreaData: MyStockProductType[] = [
-  {
-    code: '005930',
-    name: '삼성전자',
-    price: 60000,
-    compare: 1.1,
-  },
-  {
-    code: '000080',
-    name: '하이트진로',
-    price: 60000,
-    compare: -1.1,
-  },
-];
-
-const usaData: MyStockProductType[] = [
-  {
-    code: 'TSLA',
-    name: '테슬라',
-    price: 60000,
-    compare: -1.1,
-  },
-];
-
 export default function ProductsHeldPage() {
   const [modal, setModal] = useState<boolean>(false);
   const navigate = useNavigate();
   const location = useLocation();
+
   const [estateTotalPrice, setEstateTotalPrice] = useState<number>(0);
   const [energyTotalPrice, setEnergyTotalPrice] = useState<number>(0);
+  const [koreaStockTotalPrice, setKoreaStockTotalPrice] = useState<number>(0);
+  const [usaStockTotalPrice, setUsaStockTotalPrice] = useState<number>(0);
+  const [koreaData, setKoreaData] = useState<HoldingStockType[]>([]);
+  const [usaData, setUsaData] = useState<HoldingStockType[]>([]);
   const [estateData, setEstateData] = useState<
     (MyP2PProductType & WithEstateId)[]
   >([]);
@@ -69,11 +51,25 @@ export default function ProductsHeldPage() {
 
   const state = location.state as LocationState;
 
+  function getStocksDataProps() {
+    getHoldingStocks({ userId: user.user.id, token: user.token }).then(
+      (data) => {
+        if (data.data.success) {
+          setKoreaData(data.data.response.krHoldingStocks);
+          setUsaData(data.data.response.usHoldingStocks);
+          setKoreaStockTotalPrice(data.data.response.krTotalPurchase);
+          setUsaStockTotalPrice(data.data.response.usTotalPurchase);
+        }
+      },
+    );
+  }
+
   function getEstateDataProps() {
     getUserEstateProduct({ userId: user.user.id, token: user.token }).then(
       (data) => {
-        setEstateData(data.data.response);
-        if (!data.data.success) setEstateData([]);
+        if (data.data.success) {
+          setEstateData(data.data.response);
+        }
       },
     );
   }
@@ -81,8 +77,9 @@ export default function ProductsHeldPage() {
   function getEnergyDataProps() {
     getUserEnergyProduct({ userId: user.user.id, token: user.token }).then(
       (data) => {
-        setEnergyData(data.data.response);
-        if (!data.data.success) setEnergyData([]);
+        if (data.data.success) {
+          setEnergyData(data.data.response);
+        }
       },
     );
   }
@@ -90,7 +87,9 @@ export default function ProductsHeldPage() {
   function getEnergyTotalPrice() {
     getUserTotalEnergy({ userId: user.user.id, token: user.token }).then(
       (data) => {
-        setEnergyTotalPrice(data.data.response);
+        if (data.data.success) {
+          setEnergyTotalPrice(data.data.response);
+        }
       },
     );
   }
@@ -98,15 +97,17 @@ export default function ProductsHeldPage() {
   function getEstateTotalPrice() {
     getUserTotalEstate({ userId: user.user.id, token: user.token }).then(
       (data) => {
-        setEstateTotalPrice(data.data.response);
+        if (data.data.success) setEstateTotalPrice(data.data.response);
       },
     );
   }
+
   useEffect(() => {
     getEstateDataProps();
     getEnergyDataProps();
     getEnergyTotalPrice();
     getEstateTotalPrice();
+    getStocksDataProps();
   }, []);
 
   return (
@@ -139,7 +140,7 @@ export default function ProductsHeldPage() {
           setModal={() => {
             setModal(true);
           }}
-          StockTotalPrice={5092000}
+          StockTotalPrice={koreaStockTotalPrice + usaStockTotalPrice}
           P2PTotalPrice={energyTotalPrice + estateTotalPrice}
         />
       </ProductsHeldPageContainer>

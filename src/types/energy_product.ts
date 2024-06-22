@@ -9,6 +9,14 @@ export interface EnergyList {
   creditRating: string;
 }
 
+export type CalendarP2PType = {
+  id: string;
+  title: string;
+  titleImageUrl: string;
+  dividendPrice: number;
+  paymentDate: Date;
+};
+
 export type energyDetail = {
   energyId: string;
   title: string;

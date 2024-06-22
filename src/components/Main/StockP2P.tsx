@@ -3,12 +3,19 @@ import SelectStockP2P from './SelectStockP2P';
 import { useEffect, useState } from 'react';
 import MyStock from './MyStock';
 import MyP2P from './MyP2P';
-import { MyP2PProductType, WithEnergyId } from '../../types/energy_product';
-import { MyStockProductType } from './MyStockProduct';
+import {
+  EnergyList,
+  MyP2PProductType,
+  WithEnergyId,
+} from '../../types/energy_product';
 import StocksHeldContent from './StocksHeldContent';
 import { useNavigate } from 'react-router-dom';
 import P2PHeldContent from './P2PHeldContent';
-import { WithEstateId } from '../../types/estates_product';
+import { EstatesList, WithEstateId } from '../../types/estates_product';
+import {
+  HoldingStockType,
+  StockDataResultType,
+} from '../../types/stocks_product';
 
 const StockP2PContainer = styled.div`
   ${tw`flex flex-col gap-6 px-2`}
@@ -17,10 +24,10 @@ const StockP2PContainer = styled.div`
 
 type StockP2PProps = {
   type: 'held' | 'like';
-  koreaData: MyStockProductType[];
-  usaData: MyStockProductType[];
-  energyData: (MyP2PProductType & WithEnergyId)[];
-  estateData: (MyP2PProductType & WithEstateId)[];
+  koreaData: HoldingStockType[] | StockDataResultType[];
+  usaData: HoldingStockType[] | StockDataResultType[];
+  energyData: (MyP2PProductType & WithEnergyId)[] | EnergyList[];
+  estateData: (MyP2PProductType & WithEstateId)[] | EstatesList[];
   initialActive: boolean;
   setModal?: () => void;
   StockTotalPrice?: number;

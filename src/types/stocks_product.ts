@@ -122,3 +122,32 @@ export type ExchangeRateType = {
   buying: number;
   selling: number;
 };
+
+type PurchaseInfoType = {
+  symbol: string;
+  quantity: number;
+  totalPurchasePrice: number;
+};
+
+export type StockInHoldingStockType = {
+  id: number;
+  symbol: string;
+  name: string;
+  type: string;
+  exchange: string;
+  dividendMonth: number;
+  dividendYieldTtm: number;
+};
+
+export type HoldingStockType = {
+  purchaseInfo: PurchaseInfoType;
+  stock: StockInHoldingStockType;
+};
+
+export type GetHoldingStockType = {
+  krHoldingStocks: HoldingStockType[];
+  krTotalPurchase: number;
+  usHoldingStocks: HoldingStockType[];
+  usTotalPurchase: number;
+  totalPurchase: number;
+};

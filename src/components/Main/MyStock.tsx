@@ -1,9 +1,14 @@
 import tw, { styled } from 'twin.macro';
-import MyStockProduct, { MyStockProductType } from './MyStockProduct';
+import MyStockProduct from './MyStockProduct';
+import {
+  HoldingStockType,
+  StockDataResultType,
+} from '../../types/stocks_product';
+import Nothing from './Nothing';
 
 type MyStockProps = {
-  koreaData: MyStockProductType[];
-  usaData: MyStockProductType[];
+  koreaData: HoldingStockType[] | StockDataResultType[];
+  usaData: HoldingStockType[] | StockDataResultType[];
 };
 
 const Stocks = styled.div`
@@ -19,33 +24,63 @@ export default function MyStock({ koreaData, usaData }: MyStockProps) {
     <>
       <Stocks>
         <StocksCountry>국내</StocksCountry>{' '}
-        {koreaData.map((stock, idx) => {
-          return (
-            <div key={idx}>
-              <MyStockProduct
-                code={stock.code}
-                name={stock.name}
-                price={stock.price}
-                compare={stock.compare}
-              />
-            </div>
-          );
-        })}
+        {koreaData.length === 0 ? (
+          <Nothing />
+        ) : (
+          koreaData.map((stock, idx) => {
+            return (
+              <div key={idx}>
+                <MyStockProduct
+                  code={'stock' in stock ? stock.stock.symbol : stock.symbol}
+                  name={'stock' in stock ? stock.stock.name : stock.name}
+                  price={
+                    'stock' in stock
+                      ? stock.purchaseInfo.totalPurchasePrice.toLocaleString() +
+                        '원'
+                      : '배당률 ' +
+                        (stock.dividendYieldTtm * 100).toFixed(2) +
+                        '%'
+                  } // 실시간 가격
+                  compare={
+                    'stock' in stock
+                      ? stock.purchaseInfo.totalPurchasePrice
+                      : null
+                  } // 수익률: 현재실시간 가격 - 현재까지 돈
+                />
+              </div>
+            );
+          })
+        )}
       </Stocks>
       <Stocks>
         <StocksCountry>해외</StocksCountry>{' '}
-        {usaData.map((stock, idx) => {
-          return (
-            <div key={idx}>
-              <MyStockProduct
-                code={stock.code}
-                name={stock.name}
-                price={stock.price}
-                compare={stock.compare}
-              />
-            </div>
-          );
-        })}
+        {usaData.length === 0 ? (
+          <Nothing />
+        ) : (
+          usaData.map((stock, idx) => {
+            return (
+              <div key={idx}>
+                <MyStockProduct
+                  code={'stock' in stock ? stock.stock.symbol : stock.symbol}
+                  name={'stock' in stock ? stock.stock.name : stock.name}
+                  price={
+                    'stock' in stock
+                      ? stock.purchaseInfo.totalPurchasePrice.toLocaleString() +
+                        '원'
+                      : '배당률 ' +
+                        (stock.dividendYieldTtm * 100).toFixed(2) +
+                        '%'
+                  } // 실시간 가격
+                  compare={
+                    'stock' in stock
+                      ? stock.purchaseInfo.totalPurchasePrice
+                      : null
+                  } // 수익률: 현재실시간 가격 - 현재까지 돈
+                />
+              </div>
+            );
+          })
+        )}
       </Stocks>
     </>
   );

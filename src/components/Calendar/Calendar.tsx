@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import tw, { styled } from 'twin.macro';
 import { CalendarStockPlanType } from '../../types/stocks_product';
+import { CalendarP2PType } from '../../types/energy_product';
 
 type CalendarProps = {
   startDate: number;
@@ -9,6 +10,8 @@ type CalendarProps = {
   month: number;
   setDate: React.Dispatch<React.SetStateAction<number>> | null;
   stockPlans: CalendarStockPlanType[];
+  energyPlans: CalendarP2PType[];
+  estatePlans: CalendarP2PType[];
   openModal: () => void;
 };
 
@@ -88,6 +91,8 @@ export default function Calendar({
   month,
   setDate,
   stockPlans,
+  energyPlans,
+  estatePlans,
   openModal,
 }: CalendarProps) {
   const days = ['일', '월', '화', '수', '목', '금', '토'];
@@ -130,6 +135,22 @@ export default function Calendar({
                 dividendDate.getDate() === date.getDate()
               )
                 return <SalaryPlan key={i} type={'주식'}></SalaryPlan>;
+            })}
+            {energyPlans.map((plan, i) => {
+              const dividendDate = new Date(plan.paymentDate);
+              if (
+                dividendDate.getMonth() === date.getMonth() &&
+                dividendDate.getDate() === date.getDate()
+              )
+                return <SalaryPlan key={i} type={'에너지'}></SalaryPlan>;
+            })}
+            {estatePlans.map((plan, i) => {
+              const dividendDate = new Date(plan.paymentDate);
+              if (
+                dividendDate.getMonth() === date.getMonth() &&
+                dividendDate.getDate() === date.getDate()
+              )
+                return <SalaryPlan key={i} type={'부동산'}></SalaryPlan>;
             })}
           </DateCell>
         );

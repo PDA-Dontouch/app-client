@@ -60,6 +60,7 @@ const IndividualStock = () => {
   const [isCandle, setIsCandle] = useState<boolean>(true);
   const [isComplete, setIsComplete] = useState<boolean>(false);
   const detail = ['일', '주', '월', '년'];
+  const usDetail = ['일', '주', '월'];
   const [num, setNum] = useState<number>(0);
 
   const today = new Date();
@@ -162,7 +163,7 @@ const IndividualStock = () => {
             <StockLineChart />
           )}
           <UnitSelect
-            selects={detail}
+            selects={selectExchange === 'KSC' ? detail : usDetail}
             isCandle={isCandle}
             stockCode={selectCode}
             num={num}

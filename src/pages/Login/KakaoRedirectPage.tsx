@@ -1,41 +1,35 @@
-import React, {useEffect} from 'react';
-import {useLocation, useNavigate} from 'react-router-dom';
-import { tryLogin } from '../../api/auth';
+import {useEffect} from 'react';
+import {useLocation} from 'react-router-dom';
 import axios from 'axios';
 
-const KakaoRedirectPage = () => {
+const KakaoRedirectedPage = () => {
     const location = useLocation();
-    const navigate = useNavigate();
-
-    const handleOAuthKakao = async (code:string) => {
-        try {
-            //카카오로부터 받아온 code를 서버에 전달하여 카카오로 회원가입 & 로그인한다
-            const response = await tryLogin('kakao', code);
-            const loginUser = response.data; // 응답 데이터 -> user data 들어와야함
-            console.log(loginUser);
-            navigate("/");
-        } catch (err) {
-            if(axios.isAxiosError(err) && err.response && err.response.status === 500)
-                navigate("/");
-            else
-                navigate("/fail");
-        }
-    };
-
+  
     useEffect(() => {
-        const searchParams = new URLSearchParams(location.search);
-        const code = searchParams.get('code');  // 카카오는 Redirect 시키면서 code를 쿼리 스트링으로 준다.
+      const fetchToken = async () => {
+        const urlParams = new URLSearchParams(location.search);
+        const code = urlParams.get('code');
+  
         if (code) {
-            //alert("CODE = " + code)
-            handleOAuthKakao(code);
+          try {
+            const response = await axios.get(`http://8081/api/oauth/kakao/callback?code=${code}`);
+            const token = response.data.data; // ApiUtils.success(token)로 반환된 토큰
+            console.log(token);
+            //localStorage.setItem('jwtToken', token);
+  
+            // Redirect to the desired page after login
+            window.location.href = '/';
+          } catch (error) {
+            console.error('로그인 실패:', error);
+            // 로그인 실패 처리
+          }
         }
+      };
+  
+      fetchToken();
     }, [location]);
-
-    return (
-        <div>
-            <div>Processing...</div>
-        </div>
-    );
+  
+    return <div>로그인 중...</div>;
 };
 
-export default KakaoRedirectPage;
+export default KakaoRedirectedPage;

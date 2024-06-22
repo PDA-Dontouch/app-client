@@ -12,11 +12,10 @@ import {
 import { authInstance } from './api';
 
 export const tryLogin = async (
-  sns: string,
   code: string,
 ): PromiseAxiosRes<LoginedUser> => {
   try {
-    const response = await authInstance.get(`oauth/login/${sns}?code=${code}`);
+    const response = await authInstance.get(`api/oauth/kakao/callback?code=${code}`);
     return response;
   } catch (err) {
     console.error(err);

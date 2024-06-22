@@ -1,13 +1,10 @@
 import tw, { styled } from "twin.macro";
-import { useDispatch } from "react-redux";
-import { postLogin } from "../store/reducers/auth/auth";
 import SocialLogin from "../components/Login/SocialLogin";
 
 import Logo from '../assets/logo.svg';
 import Kakao from '../assets/kakao.svg';
 import Naver from '../assets/naver.svg';
 import Google from '../assets/google.svg';
-import { AppDispatch } from "../store/store";
 
 
 const Container = styled.div`

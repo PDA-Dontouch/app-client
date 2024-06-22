@@ -1,14 +1,12 @@
 import tw, { styled } from 'twin.macro';
+import logoImg from '../../assets/logo.svg';
+import { useNavigate } from 'react-router-dom';
 
-export type MyStockProductType = {
+type HoldingStockType = {
   code: string;
   name: string;
-  price: number;
-  compare: number;
-};
-
-type StockImgProps = {
-  code: string;
+  price: string;
+  compare: number | null;
 };
 
 type CompareProps = {
@@ -25,15 +23,10 @@ const LeftSection = styled.div`
   overflow:hidden;
 `;
 
-const StockImg = styled.div<StockImgProps>`
-  ${({ code }) =>
-    '0' <= code[0] && code[0] <= '9'
-      ? `background-image:url("https://file.alphasquare.co.kr/media/images/stock_logo/kr/${code}.png");`
-      : `background-image:url("https://file.alphasquare.co.kr/media/images/stock_logo/us/${code}.png");`}
-
+const StockImg = styled.img`
+  ${tw`rounded-full`}
   width: 35px;
   height: 35px;
-  border-radius: 20px;
   background-size: contain;
 `;
 
@@ -42,7 +35,7 @@ const StockName = styled.div`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  width: 12rem;
+  width: 9rem;
 `;
 
 const RightSection = styled.div`
@@ -67,19 +60,32 @@ export default function MyStockProduct({
   name,
   price,
   compare,
-}: MyStockProductType) {
+}: HoldingStockType) {
+  const navigate = useNavigate();
+
   return (
-    <MyStockProductContainer>
+    <MyStockProductContainer
+      onClick={() => {
+        `/stocks/${code}`;
+      }}
+    >
       <LeftSection>
-        <StockImg code={code}></StockImg>
+        <StockImg
+          src={`https://file.alphasquare.co.kr/media/images/stock_logo/${'0' <= code.charAt(0) && code.charAt(0) <= '9' ? 'kr' : 'us'}/${code}.png`}
+          onError={(e) => {
+            e.currentTarget.src = logoImg;
+          }}
+        />
         <StockName>{name}</StockName>
       </LeftSection>
       <RightSection>
-        <Price>{price.toLocaleString()}원</Price>
-        <Compare compare={compare}>
-          어제보다{compare > 0 ? '+' : null}
-          {compare}%
-        </Compare>
+        <Price>{price}</Price>
+        {compare && (
+          <Compare compare={compare}>
+            {compare > 0 ? '+' : '-'}
+            {compare}원
+          </Compare>
+        )}
       </RightSection>
     </MyStockProductContainer>
   );

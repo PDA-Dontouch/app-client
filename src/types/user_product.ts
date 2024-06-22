@@ -46,3 +46,8 @@ export const initialUserDetail = {
   dividendScore: 30,
   growthScore: 20,
 };
+
+export type StartDateEndDateType = {
+  startDate: Date;
+  endDate: Date;
+};

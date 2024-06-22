@@ -12,10 +12,20 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { CalendarStockPlanType } from '../../types/stocks_product';
 import SalaryPlan from '../../components/Calendar/SalaryPlan';
-import { calendarStockPlans, getExchangeRate } from '../../api/stocks';
+import {
+  calendarStockPlans,
+  getExchangeRate,
+  getHoldingStocks,
+} from '../../api/stocks';
 import { investmentTypeToString } from '../../utils/investmentType';
 import { getUserAccountAmount } from '../../api/auth';
-import { getUserTotalEnergy, getUserTotalEstate } from '../../api/holding';
+import {
+  getHoldingEnergyCalendar,
+  getHoldingEstateCalendar,
+  getUserTotalEnergy,
+  getUserTotalEstate,
+} from '../../api/holding';
+import { CalendarP2PType } from '../../types/energy_product';
 
 type TitleNameProps = {
   type: 'name' | 'nim';
@@ -152,12 +162,15 @@ export default function MainPage() {
   const [date, setDate] = useState<number>(today.getDate());
   const [modal, setModal] = useState<boolean>(false);
   const [stockPlans, setStockPlans] = useState<CalendarStockPlanType[]>([]);
+  const [energyPlans, setEnergyPlans] = useState<CalendarP2PType[]>([]);
+  const [estatePlans, setEstatePlans] = useState<CalendarP2PType[]>([]);
   const [totalSalary, setTotalSalary] = useState<number>(0);
   const [exchangeRate, setExchangeRate] = useState<number>(0);
   const [accountAmount, setAccountAmount] = useState<number>(0);
-  const [stockTotalAmount, setStockTotalAmount] = useState<number>(0);
   const [energyTotalAmount, setEnergyTotalAmount] = useState<number>(0);
   const [estateTotalAmount, setEstateTotalAmount] = useState<number>(0);
+  const [koreaStockTotalPrice, setKoreaStockTotalPrice] = useState<number>(0);
+  const [usaStockTotalPrice, setUsaStockTotalPrice] = useState<number>(0);
   const user = useSelector((state: RootState) => state.user);
 
   const navigate = useNavigate();
@@ -171,8 +184,9 @@ export default function MainPage() {
       startDate: new Date(today.getFullYear(), today.getMonth(), 1),
       endDate: new Date(today.getFullYear(), today.getMonth() + 1, 1),
     }).then((data) => {
-      setTotalSalary(
-        data.data.response.reduce((accumulator, stock) => {
+      let total = 0;
+      if (data.data.success) {
+        total = data.data.response.reduce((accumulator, stock) => {
           if (new Date(stock.dividendDate).getMonth() === today.getMonth()) {
             if (
               'A' <= stock.symbol.charAt(0) &&
@@ -185,15 +199,62 @@ export default function MainPage() {
           } else {
             return accumulator;
           }
-        }, 0),
-      );
+        }, 0);
+
+        setStockPlans(data.data.response);
+      }
+
+      getEnergyPlans(total);
     });
   }, [exchangeRate]);
+
+  const getEnergyPlans = useCallback((total: number) => {
+    getHoldingEnergyCalendar({
+      token: user.token,
+      startDate: new Date(today.getFullYear(), today.getMonth(), 1),
+      endDate: new Date(today.getFullYear(), today.getMonth() + 1, 1),
+    }).then((data) => {
+      let totalSalary = 0;
+      if (data.data.success) {
+        setEnergyPlans(data.data.response);
+        totalSalary = data.data.response.reduce((accumulator, product) => {
+          if (new Date(product.paymentDate).getMonth() === today.getMonth()) {
+            return accumulator + product.dividendPrice;
+          } else {
+            return accumulator;
+          }
+        }, 0);
+      }
+
+      getEstatePlans(total + totalSalary);
+    });
+  }, []);
+
+  const getEstatePlans = useCallback((total: number) => {
+    getHoldingEstateCalendar({
+      token: user.token,
+      startDate: new Date(today.getFullYear(), today.getMonth(), 1),
+      endDate: new Date(today.getFullYear(), today.getMonth() + 1, 1),
+    }).then((data) => {
+      let totalSalary = 0;
+      if (data.data.success) {
+        totalSalary = data.data.response.reduce((accumulator, product) => {
+          if (new Date(product.paymentDate).getMonth() === today.getMonth()) {
+            return accumulator + product.dividendPrice;
+          } else {
+            return accumulator;
+          }
+        }, 0);
+        setEstatePlans(data.data.response);
+      }
+      setTotalSalary(total + totalSalary);
+    });
+  }, []);
 
   const getAccountAmount = useCallback(() => {
     getUserAccountAmount({ userId: user.user.id, token: user.token }).then(
       (data) => {
-        if (data.data.response.cash) {
+        if (data.data.success && data.data.response.cash) {
           setAccountAmount(data.data.response.cash);
         }
       },
@@ -203,7 +264,7 @@ export default function MainPage() {
   const getUserTotalEnergyPrice = useCallback(() => {
     getUserTotalEnergy({ userId: user.user.id, token: user.token }).then(
       (data) => {
-        if (data.data.response) {
+        if (data.data.success && data.data.response) {
           setEnergyTotalAmount(data.data.response);
         }
       },
@@ -213,12 +274,23 @@ export default function MainPage() {
   const getUserTotalEstatePrice = useCallback(() => {
     getUserTotalEstate({ userId: user.user.id, token: user.token }).then(
       (data) => {
-        if (data.data.response) {
+        if (data.data.success && data.data.response) {
           setEstateTotalAmount(data.data.response);
         }
       },
     );
   }, []);
+
+  function getStocksDataProps() {
+    getHoldingStocks({ userId: user.user.id, token: user.token }).then(
+      (data) => {
+        if (data.data.success) {
+          setKoreaStockTotalPrice(data.data.response.krTotalPurchase);
+          setUsaStockTotalPrice(data.data.response.usTotalPurchase);
+        }
+      },
+    );
+  }
 
   useEffect(() => {
     calendarStockPlans({
@@ -227,7 +299,7 @@ export default function MainPage() {
       startDate: new Date(today.getFullYear(), today.getMonth(), startDate + 1),
       endDate: new Date(today.getFullYear(), today.getMonth(), startDate + 8),
     }).then((data) => {
-      setStockPlans(data.data.response);
+      if (data.data.success) setStockPlans(data.data.response);
     });
 
     getAccountAmount();
@@ -237,6 +309,7 @@ export default function MainPage() {
     });
     getUserTotalEnergyPrice();
     getUserTotalEstatePrice();
+    getStocksDataProps();
   }, [exchangeRate]);
 
   return (
@@ -286,6 +359,8 @@ export default function MainPage() {
             month={today.getMonth()}
             setDate={setDate}
             stockPlans={stockPlans}
+            estatePlans={estatePlans}
+            energyPlans={energyPlans}
             openModal={() => setModal(true)}
           ></Calendar>
         </CalendarContainer>
@@ -295,7 +370,8 @@ export default function MainPage() {
             <TotalAssetTitleNumber>
               {(
                 accountAmount +
-                stockTotalAmount +
+                usaStockTotalPrice +
+                koreaStockTotalPrice +
                 energyTotalAmount +
                 estateTotalAmount
               ).toLocaleString()}
@@ -312,7 +388,7 @@ export default function MainPage() {
             />
             <AssetDetailCommon
               type="주식"
-              price={stockTotalAmount}
+              price={koreaStockTotalPrice + usaStockTotalPrice}
               onClick={() => {
                 navigate('/products/held', { state: { initialActive: true } });
               }}

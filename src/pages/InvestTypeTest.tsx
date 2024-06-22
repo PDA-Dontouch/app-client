@@ -5,6 +5,9 @@ import SelectButton from '../components/StockTest/SelectButton';
 import Button from '../components/common/Button';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Navbar from '../components/common/Navbar';
+import { postType } from '../store/reducers/auth/auth';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../store/store';
 
 interface LocationState {
   nav?: boolean;
@@ -56,6 +59,9 @@ const InvestTypeTest = () => {
   const location = useLocation();
   const state = location.state as LocationState;
 
+  const user = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch<AppDispatch>();
+
   const handleAnswerSelect = (index: number) => {
     const newAnswers = [...answers];
     newAnswers[currentQuestion] = index;
@@ -84,7 +90,21 @@ const InvestTypeTest = () => {
       0,
     );
     setTotalScore(totalPoints);
-    navigate('/asset-input', { state: { totalScore: totalPoints } });
+
+    if (state.nav) {
+      dispatch(
+        postType({
+          token: user.token,
+          userId: user.user.id,
+          totalScore: totalPoints,
+        }),
+      ).catch((err: unknown) => {
+        console.error(err);
+      });
+      navigate('/');
+    } else {
+      navigate('/asset-input', { state: { totalScore: totalPoints } });
+    }
   };
 
   return (
@@ -130,7 +150,7 @@ const InvestTypeTest = () => {
             />
           ) : currentQuestion === 6 ? (
             <Button
-              name="내 계좌 연동하기"
+              name={state.nav ? '투자 성향 테스트 완료' : '내 계좌 연동하기'}
               status={answers[currentQuestion] === -1 ? 'disabled' : 'active'}
               onClick={handleSubmit}
             />

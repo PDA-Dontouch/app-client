@@ -35,10 +35,6 @@ const StockImg = styled.img`
 
 const StockName = styled.div`
   ${tw`text-sm`}
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  width: 12rem;
 `;
 
 const AddBtn = styled.button<BtnImgProps>`

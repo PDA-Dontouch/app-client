@@ -14,12 +14,20 @@ import {
   RequestCombiDistribute,
   StocksLikeTypes,
 } from '../types/stocks_product';
-import axios, { AxiosResponse } from 'axios';
+
 import {
   KrChartPost,
   UsChartPost,
   UsYearChartPost,
 } from '../types/individual_stock';
+
+import {
+  UsStockSocketType,
+  HoldingUsStockSocketResponseType,
+  HoldingKrStockSocketResponseType,
+  CombinationPurchasedType,
+} from '../types/stocks_product';
+import axios, { AxiosResponse } from 'axios';
 
 interface RequestBodyType {
   searchWord: string | null;
@@ -221,5 +229,65 @@ export const stocksDisLike = async (data: StocksLikeTypes) => {
   } catch (err) {
     console.error(err);
     return err;
+  }
+};
+
+export const getKRStockPrice = async ({
+  stockList,
+}: {
+  stockList: string[];
+}): Promise<string[]> => {
+  try {
+    const response = await axios
+      .post(`/api/myPage/krStock`, { stockList })
+      .then((data: AxiosResponse<HoldingKrStockSocketResponseType[]>) => {
+        return data.data.map((items) => {
+          return items.price;
+        });
+      });
+
+    return response;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+
+export const getUSStockPrice = async ({
+  stockList,
+}: {
+  stockList: UsStockSocketType[];
+}): Promise<number[]> => {
+  try {
+    const response = await axios
+      .post(`/api/myPage/usStock`, { stockList })
+      .then((data: AxiosResponse<HoldingUsStockSocketResponseType[]>) => {
+        return data.data.map((items) => {
+          return items.price;
+        });
+      });
+
+    return response;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+
+export const getCombinationPurchased = async ({
+  userId,
+  token,
+}: WithToken & WithUserId): PromiseAxiosRes<CombinationPurchasedType[]> => {
+  try {
+    const response = await stockInstance.get(`/combination/purchased`, {
+      params: {
+        userId: userId,
+        token: token,
+      },
+    });
+    return response;
+  } catch (err) {
+    console.error(err);
+    throw err;
   }
 };

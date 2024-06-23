@@ -9,6 +9,8 @@ import Nothing from './Nothing';
 type MyStockProps = {
   koreaData: HoldingStockType[] | StockDataResultType[];
   usaData: HoldingStockType[] | StockDataResultType[];
+  realTimeKoreaPrice?: string[];
+  realTimeUsPrice?: number[];
 };
 
 const Stocks = styled.div`
@@ -19,7 +21,12 @@ const StocksCountry = styled.div`
   ${tw`text-xs`}
 `;
 
-export default function MyStock({ koreaData, usaData }: MyStockProps) {
+export default function MyStock({
+  koreaData,
+  usaData,
+  realTimeKoreaPrice,
+  realTimeUsPrice,
+}: MyStockProps) {
   return (
     <>
       <Stocks>
@@ -35,15 +42,23 @@ export default function MyStock({ koreaData, usaData }: MyStockProps) {
                   name={'stock' in stock ? stock.stock.name : stock.name}
                   price={
                     'stock' in stock
-                      ? stock.purchaseInfo.totalPurchasePrice.toLocaleString() +
-                        '원'
+                      ? (
+                          stock.purchaseInfo.quantity *
+                          (realTimeKoreaPrice
+                            ? Number(realTimeKoreaPrice[idx])
+                            : 1)
+                        ).toLocaleString() + '원'
                       : '배당률 ' +
                         (stock.dividendYieldTtm * 100).toFixed(2) +
                         '%'
                   } // 실시간 가격
                   compare={
                     'stock' in stock
-                      ? stock.purchaseInfo.totalPurchasePrice
+                      ? stock.purchaseInfo.quantity *
+                          (realTimeKoreaPrice
+                            ? Number(realTimeKoreaPrice[idx])
+                            : 1) -
+                        stock.purchaseInfo.totalPurchasePrice
                       : null
                   } // 수익률: 현재실시간 가격 - 현재까지 돈
                 />
@@ -65,15 +80,19 @@ export default function MyStock({ koreaData, usaData }: MyStockProps) {
                   name={'stock' in stock ? stock.stock.name : stock.name}
                   price={
                     'stock' in stock
-                      ? stock.purchaseInfo.totalPurchasePrice.toLocaleString() +
-                        '원'
+                      ? (
+                          stock.purchaseInfo.quantity *
+                          (realTimeUsPrice ? realTimeUsPrice[idx] : 1)
+                        ).toLocaleString() + '원'
                       : '배당률 ' +
                         (stock.dividendYieldTtm * 100).toFixed(2) +
                         '%'
                   } // 실시간 가격
                   compare={
                     'stock' in stock
-                      ? stock.purchaseInfo.totalPurchasePrice
+                      ? stock.purchaseInfo.quantity *
+                          (realTimeUsPrice ? realTimeUsPrice[idx] : 1) -
+                        stock.purchaseInfo.totalPurchasePrice
                       : null
                   } // 수익률: 현재실시간 가격 - 현재까지 돈
                 />

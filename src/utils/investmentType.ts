@@ -1,6 +1,6 @@
-import { investmentType } from '../types/user_product';
+import { InvestmentType } from '../types/user_product';
 
-export function investmentTypeToString(type: investmentType): string {
+export function investmentTypeToString(type: InvestmentType): string {
   switch (type) {
     case 1:
       return '안정형';
@@ -12,9 +12,9 @@ export function investmentTypeToString(type: investmentType): string {
       return '위험중립형';
 
     case 4:
-      return '적극 투자형';
+      return '적극투자형';
 
     case 5:
-      return '공격 투자형';
+      return '공격투자형';
   }
 }

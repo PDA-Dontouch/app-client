@@ -8,6 +8,8 @@ import {
   DepositWithDrawalResultType,
   DepositWithDrawalType,
   LoginedUser,
+  InvestmentType,
+  UserDetail,
 } from '../types/user_product';
 import { authInstance } from './api';
 
@@ -65,6 +67,32 @@ export const getUserAccountAmount = async ({
         token: token,
       },
     });
+    return response;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+
+export const updateInvestmentType = async ({
+  userId,
+  token,
+  totalScore,
+}: WithToken &
+  WithUserId & { totalScore: number }): PromiseAxiosRes<UserDetail> => {
+  try {
+    const response = await authInstance.post(
+      '/type',
+      {
+        userId: userId,
+        totalScore: totalScore,
+      },
+      {
+        params: {
+          token: token,
+        },
+      },
+    );
     return response;
   } catch (err) {
     console.error(err);

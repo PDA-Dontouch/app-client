@@ -160,3 +160,32 @@ export type StockLike = {
   exchange: string;
   stockId: number;
 };
+
+export type UsStockSocketType = {
+  stockCode: string;
+  marketType: string;
+};
+
+export type HoldingUsStockSocketResponseType = {
+  price: number;
+  rate: string;
+};
+
+export type HoldingKrStockSocketResponseType = {
+  price: string;
+  rate: string;
+};
+
+export type CombinationPurChasedProductType = {
+  stockId: number;
+  name: string;
+  symbol: string;
+  quantity: number;
+};
+
+export type CombinationPurchasedType = {
+  date: Date;
+  combination1: CombinationPurChasedProductType[];
+  combination2: CombinationPurChasedProductType[];
+  combination3: CombinationPurChasedProductType[];
+};

@@ -42,14 +42,9 @@ const BtnContainer = styled.div`
   ${tw`w-full flex px-8 justify-between gap-3 fixed left-0 bottom-6 box-border`}
 `;
 
-const Hr = styled.div`
-  ${tw`w-full h-1 bg-gray-light`}
-`;
-
 const IndividualStock = () => {
   const params = useParams();
   const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate();
   const selectCode = useSelector(
     (state: RootState) => state.trading.selectCode,
   );

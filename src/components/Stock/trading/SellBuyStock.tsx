@@ -17,6 +17,7 @@ import { leaveRoom } from '../../../store/webSocket/nowPrice';
 interface SellBuyProps {
   isSell: boolean;
   isKorea: boolean;
+  totalAccount: number;
 }
 
 const Container = styled.div`
@@ -79,7 +80,7 @@ const SubText = styled.span<{ isError: number }>`
     isError === 0 ? tw`` : isError === 1 ? tw`text-blue` : tw`text-red`}
 `;
 
-const SellBuyStock = ({ isSell, isKorea }: SellBuyProps) => {
+const SellBuyStock = ({ isSell, isKorea, totalAccount }: SellBuyProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const [price, setPrice] = useState<number>(0);
@@ -129,7 +130,6 @@ const SellBuyStock = ({ isSell, isKorea }: SellBuyProps) => {
       setAmount(numericValue);
     }
   };
-  console.log(usHolding);
 
   const onSell = () => {
     if (isKorea) {
@@ -204,6 +204,8 @@ const SellBuyStock = ({ isSell, isKorea }: SellBuyProps) => {
         }
       } else if (amount === 0) {
         setError('수량을 입력해주세요.');
+      } else if (price * amount > totalAccount) {
+        setError('총자산을 초과한 금액입니다.');
       } else {
         if (isSelect === 0) {
           const data = {

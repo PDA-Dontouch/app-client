@@ -2,11 +2,14 @@ import tw, { css, styled } from 'twin.macro';
 import SellBuyStock from './trading/SellBuyStock';
 
 import Close from '../../assets/close.svg';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import PriceBook from './trading/PriceBook';
 import { PriceType, SocketType } from '../../types/socket';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
+import { getUserAccountAmount } from '../../api/auth';
+import { getUserTotalEnergy, getUserTotalEstate } from '../../api/holding';
+import { getHoldingStocks } from '../../api/stocks';
 
 interface TradingProps {
   isSell: boolean;
@@ -62,6 +65,60 @@ const TradingStock = ({
   const handlePriceSelect = (price: string) => {
     setClickPrice(price);
   };
+  const [accountAmount, setAccountAmount] = useState<number>(0);
+  const [energyTotalAmount, setEnergyTotalAmount] = useState<number>(0);
+  const [estateTotalAmount, setEstateTotalAmount] = useState<number>(0);
+  const [koreaStockTotalPrice, setKoreaStockTotalPrice] = useState<number>(0);
+  const [usaStockTotalPrice, setUsaStockTotalPrice] = useState<number>(0);
+  const user = useSelector((state: RootState) => state.user);
+
+  const getAccountAmount = useCallback(() => {
+    getUserAccountAmount({ userId: user.user.id, token: user.token }).then(
+      (data) => {
+        if (data.data.success && data.data.response.cash) {
+          setAccountAmount(data.data.response.cash);
+        }
+      },
+    );
+  }, []);
+
+  const getUserTotalEnergyPrice = useCallback(() => {
+    getUserTotalEnergy({ userId: user.user.id, token: user.token }).then(
+      (data) => {
+        if (data.data.success && data.data.response) {
+          setEnergyTotalAmount(data.data.response);
+        }
+      },
+    );
+  }, []);
+
+  const getUserTotalEstatePrice = useCallback(() => {
+    getUserTotalEstate({ userId: user.user.id, token: user.token }).then(
+      (data) => {
+        if (data.data.success && data.data.response) {
+          setEstateTotalAmount(data.data.response);
+        }
+      },
+    );
+  }, []);
+
+  function getStocksDataProps() {
+    getHoldingStocks({ userId: user.user.id, token: user.token }).then(
+      (data) => {
+        if (data.data.success) {
+          setKoreaStockTotalPrice(data.data.response.krTotalPurchase);
+          setUsaStockTotalPrice(data.data.response.usTotalPurchase);
+        }
+      },
+    );
+  }
+
+  useEffect(() => {
+    getAccountAmount();
+    getUserTotalEnergyPrice();
+    getUserTotalEstatePrice();
+    getStocksDataProps();
+  }, []);
 
   return (
     <>
@@ -78,7 +135,17 @@ const TradingStock = ({
               isKorea={selectExchange === 'KSC'}
             />
           </ItemBox>
-          <SellBuyStock isSell={isSell} isKorea={selectExchange === 'KSC'} />
+          <SellBuyStock
+            isSell={isSell}
+            isKorea={selectExchange === 'KSC'}
+            totalAccount={
+              accountAmount +
+              usaStockTotalPrice +
+              koreaStockTotalPrice +
+              energyTotalAmount +
+              estateTotalAmount
+            }
+          />
         </Container>
       </ModalContainer>
     </>

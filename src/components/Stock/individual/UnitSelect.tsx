@@ -17,7 +17,7 @@ interface UnitProps {
 }
 
 const Container = styled.div`
-  ${tw`flex px-8 py-6 justify-between`}
+  ${tw`flex px-8 py-4 justify-between`}
 `;
 
 const Button = styled.div<{ isSelect: boolean }>`

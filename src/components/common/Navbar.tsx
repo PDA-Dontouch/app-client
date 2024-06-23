@@ -5,7 +5,7 @@ import MyPage from '../../assets/mypage.svg';
 import Logout from '../../assets/logout.svg';
 import Close from '../../assets/close.svg';
 import Back from '../../assets/back.svg';
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 interface NavbarProps {
   name: string;
@@ -44,7 +44,10 @@ const Navbar = ({ name, type, onClick }: NavbarProps) => {
         <>
           <Img src={Logo} onClick={() => navigate('/')} />
           <Item>
-            <Img src={name === '로그아웃' ? Logout : MyPage} onClick={onClick} />
+            <Img
+              src={name === '로그아웃' ? Logout : MyPage}
+              onClick={onClick}
+            />
             <Text>{name}</Text>
           </Item>
         </>

@@ -79,6 +79,7 @@ export default function CalendarPage() {
   const [estatePlans, setEstatePlans] = useState<CalendarP2PType[]>([]);
   const [totalSalary, setTotalSalary] = useState<number>(0);
   const startDate = 1 - new Date(year, month, 1).getDay();
+  const [exchangeRate, setExchangeRate] = useState<number>(0);
 
   const datesCount =
     new Date(year, month + 1, 0).getDate() +
@@ -96,39 +97,35 @@ export default function CalendarPage() {
     setModal(true);
   }
 
-  async function getExchange() {}
-
   const getPlans = useCallback(() => {
     calendarStockPlans({
       userId: user.user.id,
       token: user.token,
       startDate: new Date(year, month, startDate),
       endDate: new Date(year, month, startDate + datesCount),
-    }).then(async (data) => {
+    }).then((data) => {
       let total = 0;
       if (data.data.success) {
-        await getExchangeRate().then((res) => {
-          total = data.data.response.reduce((accumulator, stock) => {
-            if (new Date(stock.dividendDate).getMonth() === month) {
-              if (
-                'A' <= stock.symbol.charAt(0) &&
-                stock.symbol.charAt(0) <= 'Z'
-              ) {
-                return accumulator + stock.dividend * res.data.response.selling;
-              } else {
-                return accumulator + stock.dividend;
-              }
+        total = data.data.response.reduce((accumulator, stock) => {
+          if (new Date(stock.dividendDate).getMonth() === month) {
+            if (
+              'A' <= stock.symbol.charAt(0) &&
+              stock.symbol.charAt(0) <= 'Z'
+            ) {
+              return accumulator + stock.dividend * exchangeRate;
             } else {
-              return accumulator;
+              return accumulator + stock.dividend;
             }
-          }, 0);
-        });
+          } else {
+            return accumulator;
+          }
+        }, 0);
         setStockPlans(data.data.response);
       }
 
       getEnergyPlans(total);
     });
-  }, [year, month]);
+  }, [year, month, exchangeRate]);
 
   const getEnergyPlans = useCallback(
     (total: number) => {
@@ -151,7 +148,7 @@ export default function CalendarPage() {
         getEstatePlans(total + totalSalary);
       });
     },
-    [year, month],
+    [year, month, exchangeRate],
   );
 
   const getEstatePlans = useCallback(
@@ -175,12 +172,15 @@ export default function CalendarPage() {
         setTotalSalary(total + totalSalary);
       });
     },
-    [year, month],
+    [year, month, exchangeRate],
   );
 
   useEffect(() => {
     getPlans();
-  }, [year, month]);
+    getExchangeRate().then((data) => {
+      setExchangeRate(data.data.response.selling);
+    });
+  }, [year, month, exchangeRate]);
 
   return (
     <>

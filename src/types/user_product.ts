@@ -3,7 +3,6 @@ export type InvestmentType = 1 | 2 | 3 | 4 | 5;
 export type UserDetail = {
   id: number;
   email: string;
-  birthday: Date | null;
   sns_type: number;
   nickname: string;
   investmentType: InvestmentType;
@@ -39,7 +38,6 @@ export type AccountLogType = {
 export const initialUserDetail = {
   id: 1001,
   email: 'gkstmf616@naver.com',
-  birthday: null,
   sns_type: 1,
   nickname: '이한슬',
   investmentType: 1 as InvestmentType,

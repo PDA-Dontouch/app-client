@@ -10,6 +10,7 @@ import tradingReducer from './reducers/stocks/trading';
 import userReducer from './reducers/auth/auth';
 import holdingEstatesReducer from './reducers/estates/holding';
 import holdingEnergyReducer from './reducers/energy/holding';
+import holdingStocksReducer from './reducers/stocks/holding';
 
 const StockPersistConfig = {
   key: 'individualStock',
@@ -40,6 +41,7 @@ const rootReducer = combineReducers({
   stocks: stocksReducer,
   holdingEstates: holdingEstatesReducer,
   holdingEnergy: holdingEnergyReducer,
+  holdingStocks: holdingStocksReducer,
 });
 
 const persistedReducer = persistReducer(rootPersistConfig, rootReducer);

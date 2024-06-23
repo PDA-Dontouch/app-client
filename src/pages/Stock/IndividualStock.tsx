@@ -26,6 +26,7 @@ import StockCandleChart from '../../components/Stock/individual/StockCandleChart
 import StockLineChart from '../../components/Stock/individual/StockLineChart';
 import { ChartData } from '../../types/individual_stock';
 import StockSkeleton from '../../components/Skeleton/StockSkeleton';
+import { getHoldingStocks } from '../../store/reducers/stocks/holding';
 
 interface ApiResponse {
   data: ChartData[];
@@ -53,6 +54,7 @@ const IndividualStock = () => {
   const selectExchange = useSelector(
     (state: RootState) => state.trading.selectExchange,
   );
+  const userId = useSelector((state: RootState) => state.user.user.id);
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isSell, setIsSell] = useState<boolean>(false);
@@ -86,9 +88,17 @@ const IndividualStock = () => {
   }, []);
 
   useEffect(() => {
+    const data = {
+      userId: userId,
+      getPrice: true,
+    };
+    dispatch(getHoldingStocks(data));
+  }, []);
+
+  useEffect(() => {
     if (selectExchange === 'KSC') {
       const data = {
-        timeFormat: 'D',
+        timeFormat: num === 0 ? 'D' : num === 1 ? 'W' : num === 2 ? 'M' : 'Y',
         stockCode: selectCode,
         endDate: formattedDate,
       };
@@ -109,7 +119,7 @@ const IndividualStock = () => {
       });
     } else {
       const data = {
-        timeFormat: 0,
+        timeFormat: num,
         stockCode: selectCode,
         endDate: formattedDate,
         marketType: selectExchange === 'NASDAQ' ? 'BAQ' : 'BAY',
@@ -142,7 +152,7 @@ const IndividualStock = () => {
         type=""
         onClick={() => {
           leaveRoom(selectCode);
-          navigate(-1);
+          window.history.back();
         }}
       />
       {!isComplete ? (
@@ -169,8 +179,6 @@ const IndividualStock = () => {
             num={num}
             setNum={setNum}
           />
-          {/* <Hr />
-        <HoldingStatus /> */}
         </Container>
       )}
       {isActive ? (

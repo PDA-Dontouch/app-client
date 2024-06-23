@@ -5,6 +5,8 @@ import Close from '../../assets/close.svg';
 import { useState } from 'react';
 import PriceBook from './trading/PriceBook';
 import { PriceType, SocketType } from '../../types/socket';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
 
 interface TradingProps {
   isSell: boolean;

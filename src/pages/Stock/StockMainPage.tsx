@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { AppDispatch, RootState } from '../../store/store';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import tw, { css, styled } from 'twin.macro';
 import Navbar from '../../components/common/Navbar';
 import Footer from '../../components/common/Footer';
@@ -72,6 +72,7 @@ const StockMainPage: React.FC = () => {
   const user = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
+  const location = useLocation();
 
   const [activeTab, setActiveTab] = useState<'recommend' | 'individual'>(
     'recommend',
@@ -81,6 +82,16 @@ const StockMainPage: React.FC = () => {
   const [stockList, setStockList] = useState<StockDataResultType[]>([]);
   const userId = useSelector((state: RootState) => state.user.user.id);
   const likeArr = useSelector((state: RootState) => state.stocks.stocksLike);
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const tab = queryParams.get('tab');
+    if (tab === 'individual') {
+      setActiveTab('individual');
+    } else {
+      setActiveTab('recommend');
+    }
+  }, [location.search]);
 
   useEffect(() => {
     stocksDatas({
@@ -99,6 +110,7 @@ const StockMainPage: React.FC = () => {
 
   const handleTabClick = (tab: 'recommend' | 'individual') => {
     setActiveTab(tab);
+    navigate(`?tab=${tab}`);
   };
 
   const handleLikeToggle = async (item: StockDataResultType) => {

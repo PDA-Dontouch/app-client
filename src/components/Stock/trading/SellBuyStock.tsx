@@ -73,9 +73,10 @@ const MainText = styled.span`
   ${tw`text-base font-semibold`}
 `;
 
-const SubText = styled.span<{ isError: boolean }>`
+const SubText = styled.span<{ isError: number }>`
   ${tw`text-sm text-end`}
-  ${({ isError }) => (isError ? tw`text-red` : '')}
+  ${({ isError }) =>
+    isError === 0 ? tw`` : isError === 1 ? tw`text-blue` : tw`text-red`}
 `;
 
 const SellBuyStock = ({ isSell, isKorea }: SellBuyProps) => {
@@ -95,6 +96,12 @@ const SellBuyStock = ({ isSell, isKorea }: SellBuyProps) => {
     (state: RootState) => state.trading.selectCode,
   );
   const userId = useSelector((state: RootState) => state.user.user.id);
+  const krHolding = useSelector(
+    (state: RootState) => state.holdingStocks.response.krSymbols,
+  );
+  const usHolding = useSelector(
+    (state: RootState) => state.holdingStocks.response.usSymbols,
+  );
 
   useEffect(() => {
     setPrice(Number(selectPrice));
@@ -122,6 +129,7 @@ const SellBuyStock = ({ isSell, isKorea }: SellBuyProps) => {
       setAmount(numericValue);
     }
   };
+  console.log(usHolding);
 
   const onSell = () => {
     if (isKorea) {
@@ -133,6 +141,10 @@ const SellBuyStock = ({ isSell, isKorea }: SellBuyProps) => {
         }
       } else if (amount === 0) {
         setError('수량을 입력해주세요.');
+      } else if (
+        amount > krHolding.find((stock) => stock.symbol === selectCode).quantity
+      ) {
+        setError('보유 수량을 초과하였습니다.');
       } else {
         if (isSelect === 0) {
           const data = {
@@ -163,6 +175,10 @@ const SellBuyStock = ({ isSell, isKorea }: SellBuyProps) => {
     } else {
       if (amount === 0) {
         setError('수량을 입력해주세요.');
+      } else if (
+        amount > usHolding.find((stock) => stock.symbol === selectCode).quantity
+      ) {
+        setError('보유 수량을 초과하였습니다.');
       } else {
         const data = {
           stockName: detail.basic_info.name,
@@ -286,11 +302,29 @@ const SellBuyStock = ({ isSell, isKorea }: SellBuyProps) => {
             <Suffix>주</Suffix>
           </InputContainer>
         </Item>
-        {error && <SubText isError={true}>{error}</SubText>}
+        {isKorea ? (
+          krHolding?.some((item) => item.symbol === selectCode) ? (
+            <SubText isError={1}>
+              현재 보유 수량:{' '}
+              {krHolding.find((stock) => stock.symbol === selectCode).quantity}
+              주
+            </SubText>
+          ) : (
+            <></>
+          )
+        ) : usHolding?.some((item) => item.symbol === selectCode) ? (
+          <SubText isError={1}>
+            현재 보유 수량:{' '}
+            {usHolding.find((stock) => stock.symbol === selectCode).quantity}주
+          </SubText>
+        ) : (
+          <></>
+        )}
       </ItemContainer>
       <BtnContainer>
+        {error && <SubText isError={2}>{error}</SubText>}
         <TextContainer>
-          <SubText isError={false}>주문금액</SubText>
+          <SubText isError={0}>주문금액</SubText>
           <MainText>
             {!isKorea
               ? '- '
@@ -301,8 +335,28 @@ const SellBuyStock = ({ isSell, isKorea }: SellBuyProps) => {
           </MainText>
         </TextContainer>
         <Button
-          name={isSell ? '매도' : '매수'}
-          status={isSell ? 'stock_sell' : 'stock_purchase'}
+          name={
+            isSell
+              ? isKorea
+                ? krHolding?.some((item) => item.symbol === selectCode)
+                  ? '매도'
+                  : '보유하지 않은 주식'
+                : usHolding?.some((item) => item.symbol === selectCode)
+                  ? '매도'
+                  : '보유하지 않은 주식'
+              : '매수'
+          }
+          status={
+            isSell
+              ? isKorea
+                ? krHolding?.some((item) => item.symbol === selectCode)
+                  ? 'stock_sell'
+                  : 'disabled'
+                : usHolding?.some((item) => item.symbol === selectCode)
+                  ? 'stock_sell'
+                  : 'disabled'
+              : 'stock_purchase'
+          }
           onClick={isSell ? onSell : onBuy}
         />
       </BtnContainer>

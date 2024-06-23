@@ -14,6 +14,7 @@ import {
   AccountLogType,
   PostStockType,
   StartDateEndDateType,
+  getHoldingType,
 } from '../types/user_product';
 import { holdingInstance } from './api';
 
@@ -228,5 +229,17 @@ export const postHeldKRStock = async (
   } catch (err) {
     console.error(err);
     throw err;
+  }
+};
+
+export const holdingStocks = async (data: getHoldingType) => {
+  try {
+    const response = await holdingInstance.get(
+      `/stocks?userId=${data.userId}&getPrice=${data.getPrice}`,
+    );
+    return response;
+  } catch (err) {
+    console.error(err);
+    return err;
   }
 };

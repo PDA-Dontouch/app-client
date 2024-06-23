@@ -23,9 +23,9 @@ const Container = styled.div<{ isKorea: boolean }>`
   ${({ isKorea }) => (!isKorea ? tw`h-[100vh]` : '')}
 `;
 
-const FlexColumn = styled.div<{ isKorea: boolean }>`
+const FlexColumn = styled.div<{ isOpen: boolean }>`
   ${tw`flex flex-col`}
-  ${({ isKorea }) => (!isKorea ? tw`h-[50%]` : '')}
+  ${({ isOpen }) => (!isOpen ? tw`h-[50%]` : '')}
 `;
 
 const Blur = styled.div<{ isStart: boolean }>`
@@ -63,55 +63,85 @@ const PriceBook = ({ nowPrice, askPrice, isKorea }: PriceBookProps) => {
   };
 
   return (
-    <Container ref={containerRef} onScroll={handleScroll} isKorea={isKorea}>
-      <FlexColumn isKorea={isKorea}>
-        {isKorea ? (
-          askPrice?.message?.sellPrice
-            .map((price: string, index: number) => (
-              <div key={uuidv4()}>
-                <PriceItem
-                  price={price}
-                  amount={askPrice?.message?.sellAmount[index]}
-                  backgroundColor="#E7F0FD"
-                  textColor="#015FFF"
-                  nowPrice={nowPrice?.message?.close}
-                  onPriceSelect={handlePriceSelect}
-                  selectedPrice={selectedPrice}
-                />
-              </div>
-            ))
-            .reverse()
+    <Container
+      ref={containerRef}
+      onScroll={handleScroll}
+      isKorea={
+        askPrice?.message?.sellPrice.length > 0 &&
+        askPrice?.message?.buyPrice.length > 0
+      }
+    >
+      {isKorea ? (
+        askPrice?.message?.sellPrice.length > 0 ? (
+          <FlexColumn isOpen={true}>
+            {askPrice?.message?.sellPrice
+              .map((price: string, index: number) => (
+                <div key={uuidv4()}>
+                  <PriceItem
+                    price={price}
+                    amount={askPrice?.message?.sellAmount[index]}
+                    backgroundColor="#E7F0FD"
+                    textColor="#015FFF"
+                    nowPrice={nowPrice?.message?.close}
+                    onPriceSelect={handlePriceSelect}
+                    selectedPrice={selectedPrice}
+                  />
+                </div>
+              ))
+              .reverse()}
+          </FlexColumn>
         ) : (
+          <FlexColumn isOpen={false}>
+            <PriceContainer backgroundColor="#E7F0FD">
+              <Blur isStart={true}>
+                <img src={Noti} />
+                <span>현재 장 시간이</span>
+              </Blur>
+            </PriceContainer>
+          </FlexColumn>
+        )
+      ) : (
+        <FlexColumn isOpen={false}>
           <PriceContainer backgroundColor="#E7F0FD">
             <Blur isStart={true}>
               <img src={Noti} />
               <span>추후 추가될</span>
             </Blur>
           </PriceContainer>
-        )}
-      </FlexColumn>
+        </FlexColumn>
+      )}
 
-      <FlexColumn isKorea={isKorea}>
-        {isKorea ? (
-          askPrice?.message?.buyPrice.map((price: string, index: number) => (
-            <div key={uuidv4()}>
-              <PriceItem
-                price={price}
-                amount={askPrice?.message?.buyAmount[index]}
-                backgroundColor="#FDE8E7"
-                textColor="red"
-                nowPrice={nowPrice?.message?.close}
-                onPriceSelect={handlePriceSelect}
-                selectedPrice={selectedPrice}
-              />
-            </div>
-          ))
+      {isKorea ? (
+        askPrice?.message?.buyPrice.length > 0 ? (
+          <FlexColumn isOpen={true}>
+            {askPrice?.message?.buyPrice?.map((price, index) => (
+              <div key={uuidv4()}>
+                <PriceItem
+                  price={price}
+                  amount={askPrice?.message?.buyAmount[index]}
+                  backgroundColor="#FDE8E7"
+                  textColor="red"
+                  nowPrice={nowPrice?.message?.close}
+                  onPriceSelect={handlePriceSelect}
+                  selectedPrice={selectedPrice}
+                />
+              </div>
+            ))}
+          </FlexColumn>
         ) : (
+          <FlexColumn isOpen={false}>
+            <PriceContainer backgroundColor="#FDE8E7">
+              <Blur isStart={false}>아닙니다.</Blur>
+            </PriceContainer>
+          </FlexColumn>
+        )
+      ) : (
+        <FlexColumn isOpen={false}>
           <PriceContainer backgroundColor="#FDE8E7">
             <Blur isStart={false}>기능입니다.</Blur>
           </PriceContainer>
-        )}
-      </FlexColumn>
+        </FlexColumn>
+      )}
     </Container>
   );
 };

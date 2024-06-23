@@ -34,7 +34,7 @@ const TopContainer = styled.div`
 `;
 
 const BtnContainer = styled.div`
-  ${tw`flex w-full h-fit justify-end gap-3`}
+  ${tw`flex w-full h-fit justify-end gap-3 mt-6`}
 `;
 
 const MainText = styled.span`

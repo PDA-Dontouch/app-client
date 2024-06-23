@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useEffect, useLayoutEffect, useState } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import tw, { css, styled } from 'twin.macro';
 
@@ -46,7 +46,7 @@ interface BuyEstatesResponse {
 }
 
 const Container = styled.div`
-  ${tw`mt-14 pb-20 h-full overflow-y-scroll`}
+  ${tw`w-full pt-14 pb-20`}
 `;
 
 const BtnContainer = styled.div`
@@ -151,7 +151,7 @@ const EstatesDetail = () => {
 
   return (
     <>
-      <Navbar name="back" type="" onClick={() => navigate(-1)} />
+      <Navbar name="back" type="" onClick={() => window.history.back()} />
       <Container>
         <DetailBanner isEstates={true} data={detail} />
         <Dropdown isEstates={true} profit_rate={clickData.earningRate} />

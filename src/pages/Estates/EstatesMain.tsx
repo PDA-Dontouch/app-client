@@ -21,9 +21,16 @@ import {
 import { EstatesList } from '../../types/estates_product';
 import ProductSkeleton from '../../components/Skeleton/ProductSkeleton';
 import { getHoldingEstates } from '../../store/reducers/estates/holding';
+import Question from '../../assets/question.svg';
+import BasicModal2 from '../../components/common/Modal/BasicModal2';
+import InvestmentDescription from '../../components/common/InvestmentDescription';
 
 const Container = styled.div`
   ${tw`w-[calc(100% - 56px)] mt-14 mb-16 px-7 py-8 flex flex-col gap-5`}
+`;
+
+const TopContainer = styled.div`
+  ${tw`flex items-start gap-2`}
 `;
 
 const BtnContainer = styled.div`
@@ -57,15 +64,19 @@ const EstatesMain = () => {
   const estatesDatas = useSelector((state: RootState) => state.estates.datas);
   const isLoading = useSelector((state: RootState) => state.estates.loading);
   const [sortByProfit, setSortByProfit] = useState(false);
-  const [isSelect, setIsSelect] = useState(0);
-  const userId = useSelector((state: RootState) => state.user.user.id);
+  const [isSelect, setIsSelect] = useState<number>(() => {
+    const params = new URLSearchParams(location.search);
+    return params.get('tab') === '1' ? 1 : 0;
+  });
+  const user = useSelector((state: RootState) => state.user.user);
   const likeArr = useSelector((state: RootState) => state.estates.estatesLike);
   const [estateId, setEstateId] = useState(0);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   useEffect(() => {
     dispatch(getEstatesDatas());
-    dispatch(getHoldingEstates(userId));
-    dispatch(getLikeEstates(userId));
+    dispatch(getHoldingEstates(user.id));
+    dispatch(getLikeEstates(user.id));
   }, [dispatch]);
 
   const filterAndSortData = (data: EstatesList[], completed: boolean) => {
@@ -85,7 +96,7 @@ const EstatesMain = () => {
 
   const handleLikeToggle = async (item: EstatesList) => {
     const data = {
-      userId: userId,
+      userId: user.id,
       estateFundId: item.id,
     };
 
@@ -122,11 +133,19 @@ const EstatesMain = () => {
   const ongoingInvestments = filterAndSortData(estatesDatas, false);
   const completedInvestments = filterAndSortData(estatesDatas, true);
 
+  const handleTabClick = (tabIndex: number) => {
+    setIsSelect(tabIndex);
+    navigate(`?tab=${tabIndex}`);
+  };
+
   return (
     <>
-      <Navbar name="박유진" type="main" onClick={() => {}} />
+      <Navbar name={user.nickname} type="main" onClick={() => {}} />
       <Container>
-        <MainText>부동산·법인·SCF</MainText>
+        <TopContainer>
+          <MainText>부동산·법인·SCF</MainText>
+          <img src={Question} onClick={() => setIsOpen(true)} />
+        </TopContainer>
         <BtnContainer>
           <SortButton
             isEstates={true}
@@ -143,10 +162,16 @@ const EstatesMain = () => {
         </BtnContainer>
         <ItemContainer>
           <SelectContainer>
-            <SubText isSelect={isSelect === 0} onClick={() => setIsSelect(0)}>
+            <SubText
+              isSelect={isSelect === 0}
+              onClick={() => handleTabClick(0)}
+            >
               모집 중
             </SubText>
-            <SubText isSelect={isSelect === 1} onClick={() => setIsSelect(1)}>
+            <SubText
+              isSelect={isSelect === 1}
+              onClick={() => handleTabClick(1)}
+            >
               모집 완료
             </SubText>
           </SelectContainer>
@@ -162,6 +187,12 @@ const EstatesMain = () => {
         </ItemContainer>
       </Container>
       <Footer />
+      {isOpen && (
+        <BasicModal2
+          content={<InvestmentDescription isEstates={true} />}
+          onClose={() => setIsOpen(false)}
+        />
+      )}
     </>
   );
 };

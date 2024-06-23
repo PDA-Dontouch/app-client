@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import tw, { styled } from 'twin.macro';
@@ -47,7 +47,7 @@ interface BuyEnergyResponse {
 }
 
 const Container = styled.div`
-  ${tw`mt-14 pb-20 h-full overflow-y-scroll`}
+  ${tw`w-full pt-14 pb-20`}
 `;
 
 const BtnContainer = styled.div`
@@ -147,10 +147,16 @@ const EnergyDetail = () => {
     }
   };
 
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+  }, []);
+
   return (
     <>
-      <Navbar name="back" type="" onClick={() => navigate(-1)} />
-      <Container>
+      <Navbar name="back" type="" onClick={() => window.history.back()} />
+      <Container ref={scrollRef}>
         <DetailBanner isEstates={false} data={detail} />
         <Dropdown isEstates={false} profit_rate={detail.earningRate} />
         <Hr />

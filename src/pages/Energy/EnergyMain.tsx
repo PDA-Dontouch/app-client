@@ -20,9 +20,16 @@ import Product from '../../components/common/Product/Product';
 import { EnergyList, energyDetail } from '../../types/energy_product';
 import ProductSkeleton from '../../components/Skeleton/ProductSkeleton';
 import { getHoldingEnergy } from '../../store/reducers/energy/holding';
+import Question from '../../assets/question.svg';
+import BasicModal2 from '../../components/common/Modal/BasicModal2';
+import InvestmentDescription from '../../components/common/InvestmentDescription';
 
 const Container = styled.div`
   ${tw`w-[calc(100% - 56px)] mt-14 mb-16 px-7 py-8 flex flex-col gap-5`}
+`;
+
+const TopContainer = styled.div`
+  ${tw`flex items-start gap-2`}
 `;
 
 const BtnContainer = styled.div`
@@ -55,16 +62,19 @@ const EnergyMain = () => {
   const navigate = useNavigate();
   const energyDatas = useSelector((state: RootState) => state.energy.datas);
   const [sortByProfit, setSortByProfit] = useState<boolean>(false);
-  const [isSelect, setIsSelect] = useState(0);
-  const [energyId, setEnergyId] = useState('');
+  const [isSelect, setIsSelect] = useState<number>(() => {
+    const params = new URLSearchParams(location.search);
+    return params.get('tab') === '1' ? 1 : 0;
+  });
   const isLoading = useSelector((state: RootState) => state.energy.loading);
   const likeArr = useSelector((state: RootState) => state.energy.energyLike);
-  const userId = useSelector((state: RootState) => state.user.user.id);
+  const user = useSelector((state: RootState) => state.user.user);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   useEffect(() => {
     dispatch(getEnergyDatas());
-    dispatch(getHoldingEnergy(userId));
-    dispatch(getLikeEnergys(userId));
+    dispatch(getHoldingEnergy(user.id));
+    dispatch(getLikeEnergys(user.id));
   }, []);
 
   const filterAndSortData = (data: EnergyList[], completed: boolean) => {
@@ -80,7 +90,7 @@ const EnergyMain = () => {
 
   const handleLikeToggle = async (item: EnergyList) => {
     const data = {
-      userId: userId,
+      userId: user.id,
       energyFundId: item.energyId,
     };
 
@@ -111,11 +121,19 @@ const EnergyMain = () => {
   const ongoingInvestments = filterAndSortData(energyDatas, false);
   const completedInvestments = filterAndSortData(energyDatas, true);
 
+  const handleTabClick = (tabIndex: number) => {
+    setIsSelect(tabIndex);
+    navigate(`?tab=${tabIndex}`);
+  };
+
   return (
     <>
-      <Navbar name="박유진" type="main" onClick={() => {}} />
+      <Navbar name={user.nickname} type="main" onClick={() => {}} />
       <Container>
-        <MainText>신재생에너지</MainText>
+        <TopContainer>
+          <MainText>신재생에너지</MainText>
+          <img src={Question} onClick={() => setIsOpen(true)} />
+        </TopContainer>
         <BtnContainer>
           <SortButton
             isEstates={false}
@@ -132,10 +150,16 @@ const EnergyMain = () => {
         </BtnContainer>
         <ItemContainer>
           <SelectContainer>
-            <SubText isSelect={isSelect === 0} onClick={() => setIsSelect(0)}>
+            <SubText
+              isSelect={isSelect === 0}
+              onClick={() => handleTabClick(0)}
+            >
               모집 중
             </SubText>
-            <SubText isSelect={isSelect === 1} onClick={() => setIsSelect(1)}>
+            <SubText
+              isSelect={isSelect === 1}
+              onClick={() => handleTabClick(1)}
+            >
               모집 완료
             </SubText>
           </SelectContainer>
@@ -151,6 +175,12 @@ const EnergyMain = () => {
         </ItemContainer>
       </Container>
       <Footer />
+      {isOpen && (
+        <BasicModal2
+          content={<InvestmentDescription isEstates={false} />}
+          onClose={() => setIsOpen(false)}
+        />
+      )}
     </>
   );
 };

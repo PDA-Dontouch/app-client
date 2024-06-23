@@ -3,7 +3,7 @@ export interface EnergyList {
   title: string;
   titleImageUrl: string;
   earningRate: number;
-  investment_period: number;
+  investmentPeriod: number;
   fundingAmount: number;
   sumOfInvestmentAndReservation: number;
   creditRating: string;

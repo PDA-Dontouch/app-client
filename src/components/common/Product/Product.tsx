@@ -102,7 +102,7 @@ const Product = ({ isEstates, data, isLike, setIsLike }: ProductProps) => {
           <SubText isGrade={false}>
             {isEstates
               ? (data as EstatesList).length
-              : (data as EnergyList).investment_period}
+              : (data as EnergyList).investmentPeriod}
             개월
           </SubText>
           <SubText isGrade={true}>

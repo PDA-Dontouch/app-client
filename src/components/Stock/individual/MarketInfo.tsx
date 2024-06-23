@@ -6,9 +6,11 @@ import { RootState } from '../../../store/store';
 import { PriceType } from '../../../types/socket';
 import { CaretDownFill, CaretUpFill } from 'react-bootstrap-icons';
 import MarketInfoSkeleton from '../../Skeleton/MarketInfoSkeleton';
+import Question from '../../../assets/question.svg';
 
 interface InfoProps {
   nowPrice: PriceType;
+  setIsDescription: () => void;
 }
 
 const NameContainer = styled.div`
@@ -28,11 +30,15 @@ const SubText = styled.div`
 `;
 
 const Img = styled.img`
-  ${tw`h-8 w-8 fill-black`}
+  ${tw`h-5 w-5`}
+`;
+
+const ItemWrapper = styled.div`
+  ${tw`flex flex-col pb-6 px-7 items-end gap-2`}
 `;
 
 const ItemContainer = styled.div`
-  ${tw`flex flex-wrap gap-2 py-6 px-7`}
+  ${tw`flex flex-wrap gap-2`}
 `;
 
 const Item = styled.div<{ isCol: boolean; isTwo: boolean }>`
@@ -65,7 +71,7 @@ const Heart = styled.img`
   ${tw`ml-2 w-6 h-6 cursor-pointer`}
 `;
 
-const MarketInfo = ({ nowPrice }: InfoProps) => {
+const MarketInfo = ({ nowPrice, setIsDescription }: InfoProps) => {
   const detail = useSelector(
     (state: RootState) => state.individualStock.detail,
   );
@@ -175,29 +181,34 @@ const MarketInfo = ({ nowPrice }: InfoProps) => {
           </SubText>
         </SubName>
       </NameContainer>
-      <ItemContainer>
-        <Item isCol={true} isTwo={true}>
-          <ItemText>시가총액</ItemText>
-          <ItemText>{formatNumber(detail.detail_info.marketCap)}</ItemText>
-        </Item>
-        <Item isCol={true} isTwo={true}>
-          <ItemText>배당 지급월</ItemText>
-          <ItemText>
-            {detail.basic_info.dividendMonth}•
-            {detail.basic_info.dividendMonth + 3}•
-            {detail.basic_info.dividendMonth + 6}•
-            {detail.basic_info.dividendMonth + 9}월
-          </ItemText>
-        </Item>
-        <Item isCol={false} isTwo={true}>
-          <ItemText>PER</ItemText>
-          <ItemText>{detail.detail_info.peRatioTtm.toFixed(2)}배</ItemText>
-        </Item>
-        <Item isCol={false} isTwo={true}>
-          <ItemText>배당 수익률</ItemText>
-          <ItemText>{detail.basic_info.dividendYieldTtm.toFixed(3)}%</ItemText>
-        </Item>
-      </ItemContainer>
+      <ItemWrapper>
+        <Img src={Question} onClick={setIsDescription} />
+        <ItemContainer>
+          <Item isCol={true} isTwo={true}>
+            <ItemText>시가총액</ItemText>
+            <ItemText>{formatNumber(detail.detail_info.marketCap)}</ItemText>
+          </Item>
+          <Item isCol={true} isTwo={true}>
+            <ItemText>배당 지급월</ItemText>
+            <ItemText>
+              {detail.basic_info.dividendMonth}•
+              {detail.basic_info.dividendMonth + 3}•
+              {detail.basic_info.dividendMonth + 6}•
+              {detail.basic_info.dividendMonth + 9}월
+            </ItemText>
+          </Item>
+          <Item isCol={false} isTwo={true}>
+            <ItemText>PER</ItemText>
+            <ItemText>{detail.detail_info.peRatioTtm.toFixed(2)}배</ItemText>
+          </Item>
+          <Item isCol={false} isTwo={true}>
+            <ItemText>배당 수익률</ItemText>
+            <ItemText>
+              {detail.basic_info.dividendYieldTtm.toFixed(3)}%
+            </ItemText>
+          </Item>
+        </ItemContainer>
+      </ItemWrapper>
     </>
   );
 };

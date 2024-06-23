@@ -27,6 +27,8 @@ import StockLineChart from '../../components/Stock/individual/StockLineChart';
 import { ChartData } from '../../types/individual_stock';
 import StockSkeleton from '../../components/Skeleton/StockSkeleton';
 import { getHoldingStocks } from '../../store/reducers/stocks/holding';
+import BasicModal2 from '../../components/common/Modal/BasicModal2';
+import StockDescription from '../../components/common/StockDescription';
 
 interface ApiResponse {
   data: ChartData[];
@@ -57,6 +59,7 @@ const IndividualStock = () => {
   const userId = useSelector((state: RootState) => state.user.user.id);
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isDescription, setIsDescription] = useState<boolean>(false);
   const [isSell, setIsSell] = useState<boolean>(false);
   const [isActive, setIsActive] = useState<boolean>(true);
   const [isCandle, setIsCandle] = useState<boolean>(true);
@@ -159,7 +162,12 @@ const IndividualStock = () => {
         <StockSkeleton />
       ) : (
         <Container>
-          {isComplete && <MarketInfo nowPrice={nowPrice} />}
+          {isComplete && (
+            <MarketInfo
+              nowPrice={nowPrice}
+              setIsDescription={() => setIsDescription(true)}
+            />
+          )}
 
           <ChartSelect
             isCandle={isCandle}
@@ -219,6 +227,12 @@ const IndividualStock = () => {
           nowPrice={nowPrice}
           askPrice={askPrice}
           selectExchange={selectExchange}
+        />
+      )}
+      {isDescription && (
+        <BasicModal2
+          content={<StockDescription />}
+          onClose={() => setIsDescription(false)}
         />
       )}
     </>

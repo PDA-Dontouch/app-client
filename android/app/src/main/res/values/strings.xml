@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">dontouch</string>
+    <string name="title_activity_main">dontouch</string>
+    <string name="package_name">com.pda.dontouch</string>
+    <string name="custom_url_scheme">com.pda.dontouch</string>
+</resources>

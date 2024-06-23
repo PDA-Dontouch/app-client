@@ -1,8 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import tw, { styled } from 'twin.macro';
 import chatImg from '../../assets/chat.png';
 import micImg from '../../assets/mic.svg';
 import exitImg from '../../assets/closeWhite.svg';
+import {
+  VoiceRecorder,
+  VoiceRecorderPlugin,
+  RecordingData,
+  GenericResponse,
+  CurrentRecordingStatus,
+} from 'capacitor-voice-recorder';
 
 const ChatBotContainer = styled.img`
   ${tw`flex items-center justify-center w-20 h-20 rounded-full`}
@@ -101,12 +108,46 @@ export default function ChatbotBtn() {
   }
 
   function onMicClickHandler() {
-    setStatus('녹음중');
+    VoiceRecorder.startRecording()
+      .then(() => {
+        setStatus('녹음중');
+      })
+      .catch((error) => console.error(error));
   }
 
   function onSpinnerClickHandler() {
-    setStatus('녹음준비');
+    VoiceRecorder.stopRecording()
+      .then((result: RecordingData) => {
+        setStatus('녹음완료');
+      })
+      .catch((error) => console.error(error));
   }
+
+  useEffect(() => {
+    const canRecord = VoiceRecorder.canDeviceVoiceRecord();
+    canRecord.then((data: GenericResponse) => {
+      if (!data.value) {
+        alert('녹음을 할 수 없는 기기입니다.');
+        setIsRunning(false);
+      } else {
+        VoiceRecorder.hasAudioRecordingPermission().then(
+          (result: GenericResponse) => {
+            if (!result.value) {
+              VoiceRecorder.requestAudioRecordingPermission().then(
+                (request) => {
+                  if (!request.value) {
+                    alert('녹음을 허용해주세요.');
+                    setIsRunning(false);
+                  }
+                },
+              );
+            }
+          },
+        );
+      }
+    });
+  }, []);
+
   return (
     <>
       {isRunning ? (

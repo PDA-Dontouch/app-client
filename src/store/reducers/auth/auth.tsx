@@ -11,6 +11,7 @@ import { WithToken, WithUserId } from '../../../types/response_product';
 const initialState = {
   user: initialUserDetail,
   token: 'test',
+  isAuthenticated: false
 };
 
 type ActionPayload = {
@@ -18,6 +19,7 @@ type ActionPayload = {
     response: {
       user: UserDetail;
       token: string;
+      isAuthenticated: boolean
     };
   };
 };
@@ -40,6 +42,15 @@ export const postType = createAsyncThunk(
     return response.data.response as UserDetail;
   },
 );
+
+export const validateToken = createAsyncThunk(
+  'user/valid', 
+  async (token: string) => {
+  const response = await axios.get('/api/auth/validate-token', {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+});
 
 const userSlice = createSlice({
   name: 'user',

@@ -19,6 +19,7 @@ import AssetInput from './pages/AssetInput';
 import StockDetailPage from './pages/Stock/StockDetailPage';
 import NaverRedirectPage from './pages/Login/NaverRedirectPage';
 import StockCombiBuyPage from './pages/Stock/StockCombiBuyPage';
+import PrivateRoute from './components/Login/PrivateRoute';
 
 
 export default function Routers() {
@@ -39,7 +40,7 @@ export default function Routers() {
       <Route path="/result/:type" element={<TransactionResult />} />
       <Route path="/asset-input" element={<AssetInput />} />
       <Route path="/asset/reset" element={<ChangeMoney />} />
-      <Route path="/" element={<MainPage />} />
+      <Route path="/" element={<PrivateRoute component={MainPage} />} />
       <Route path="/account" element={<AccountPage />} />
       <Route path="/products/held" element={<ProductsHeldPage />} />
       <Route path="/products/like" element={<ProductsLikePage />} />

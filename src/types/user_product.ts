@@ -24,6 +24,7 @@ export type DepositWithDrawalResultType = {
 export type LoginedUser = {
   user: UserDetail;
   token: string;
+  isAuthenticated: boolean;
 };
 
 export type AccountLogType = {

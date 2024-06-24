@@ -76,23 +76,20 @@ export const getUserAccountAmount = async ({
 };
 
 export const updateInvestmentType = async ({
-  userId,
-  // token,
+  token,
   totalScore,
-}: WithToken &
-  WithUserId & { totalScore: number }): PromiseAxiosRes<UserDetail> => {
+}: WithToken & { totalScore: number }): PromiseAxiosRes<UserDetail> => {
   try {
     const response = await authInstance.post(
       '/type',
       {
-        userId: userId,
         totalScore: totalScore,
       },
-      // {
-      //   params: {
-      //     token: token,
-      //   },
-      // },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
     return response;
   } catch (err) {
@@ -114,6 +111,25 @@ export const saveAsset = async ({
         userId: userId,
         cash: cash,
       },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+
+export const isValidToken = async ({
+  token,
+}: WithToken & { cash: number }): PromiseAxiosRes<boolean> => {
+  try {
+    const response = await authInstance.get(
+      '/valid',
       {
         headers: {
           Authorization: `Bearer ${token}`,

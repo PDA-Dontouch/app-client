@@ -4,7 +4,6 @@ import SocialLogin from '../../components/Login/SocialLogin';
 import Logo from '../../assets/logo.svg';
 import Kakao from '../../assets/kakao.svg';
 import Naver from '../../assets/naver.svg';
-import Google from '../../assets/google.svg';
 
 
 const Container = styled.div`
@@ -20,8 +19,7 @@ const ItemContainer = styled.div`
 `;
 
 const LoginPage = () => {
-  //const dispatch = useDispatch<AppDispatch>();
-  //const googleAuthUrl = import.meta.env.VITE_GOOGLE_AUTH_URL as string;
+
   const naverAuthUrl = import.meta.env.VITE_NAVER_AUTH_URL as string;
   const kakaoAuthUrl = import.meta.env.VITE_KAKAO_AUTH_URL as string;
   
@@ -38,7 +36,6 @@ const LoginPage = () => {
       <ItemContainer>
         <SocialLogin url={Kakao} name="Kakao" onClick={(e: React.MouseEvent<HTMLElement, MouseEvent>) => onLogin(e, kakaoAuthUrl)} />
         <SocialLogin url={Naver} name="Naver" onClick={(e: React.MouseEvent<HTMLElement, MouseEvent>) => onLogin(e,naverAuthUrl)} />
-        {/* <SocialLogin url={Google} name="Google" onClick={(e: React.MouseEvent<HTMLElement, MouseEvent>) => onLogin(e,googleAuthUrl)} /> */}
       </ItemContainer>
     </Container>
   );

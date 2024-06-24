@@ -21,7 +21,6 @@ import {
   StockDataResultType,
   InsertCombiStock,
 } from '../../types/stocks_product';
-import { insertStock, removeStock } from '../../store/reducers/stocks/stocks';
 
 const MainContainer = styled.div`
   ${tw`flex flex-col min-h-screen`}

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import testData from '../assets/testData';
 import tw, { styled } from 'twin.macro';
 import SelectButton from '../components/StockTest/SelectButton';
@@ -8,6 +8,7 @@ import Navbar from '../components/common/Navbar';
 import { postType } from '../store/reducers/auth/auth';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
+import BasicModal from '../components/common/Modal/BasicModal';
 
 interface LocationState {
   nav?: boolean;
@@ -49,6 +50,7 @@ const Title = styled.span`
   ${tw`text-[1rem]`}
 `;
 
+
 const InvestTypeTest = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<number[]>(
@@ -61,6 +63,16 @@ const InvestTypeTest = () => {
 
   const user = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch<AppDispatch>();
+  const [showModal, setShowModal] =  useState<boolean>(false);
+
+  useEffect(()=>{
+    if(user.user.growthScore === 0 && user.user.safeScore===0 && user.user.dividendScore===0){
+      return;
+    }
+    else
+      navigate('/');
+
+  },[])
 
   const handleAnswerSelect = (index: number) => {
     const newAnswers = [...answers];
@@ -91,6 +103,7 @@ const InvestTypeTest = () => {
     );
     setTotalScore(totalPoints);
 
+   
     if (state.nav) {
       dispatch(
         postType({
@@ -101,7 +114,7 @@ const InvestTypeTest = () => {
       ).catch((err: unknown) => {
         console.error(err);
       });
-      navigate('/');
+      setShowModal(true);
     } else {
       navigate('/asset-input', { state: { totalScore: totalPoints } });
     }
@@ -117,6 +130,16 @@ const InvestTypeTest = () => {
             navigate(-1);
           }}
         />
+      )}
+      {showModal && (
+        <div
+          style={{
+            zIndex: 10,
+            position: 'fixed',
+          }}
+        >
+          <BasicModal type={user.user.investmentType} onClick={() => navigate('/')} />
+        </div>
       )}
       <Container>
         <ItemContainer>

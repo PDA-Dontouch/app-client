@@ -25,7 +25,7 @@ type ActionPayloadCombi = {
 
 const initialState: StockCombiType & { totalInvestment: number } & {
   stocksLike: StockLike[];
-} = {
+} & { loading: boolean } = {
   combination1: {
     stocks: [],
     totalDividend: 0,
@@ -40,6 +40,7 @@ const initialState: StockCombiType & { totalInvestment: number } & {
   },
   totalInvestment: 0, // 전체 투자 금액
   stocksLike: [],
+  loading: true,
 };
 
 interface RequestCombiCreate {
@@ -227,10 +228,14 @@ const stocksSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(makeCombiStocks.pending, (state, action) => {
+      state.loading = true;
+    });
     builder.addCase(makeCombiStocks.fulfilled, (state, action) => {
       state.combination1 = action.payload.data.response.combination1;
       state.combination2 = action.payload.data.response.combination2;
       state.combination3 = action.payload.data.response.combination3;
+      state.loading = false;
     });
     builder.addCase(addCombiStocks.fulfilled, (state, action) => {
       state.combination1 = action.payload.data.response.combination1;

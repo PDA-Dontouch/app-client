@@ -34,6 +34,7 @@ import {
   removeLikeStock,
 } from '../../store/reducers/stocks/stocks';
 import ScrollToTop from '../../hooks/ScrollToTop';
+import Loading from '../../assets/loading.gif';
 
 const MainContainer = styled.div`
   ${tw`flex flex-col min-h-screen`}
@@ -68,6 +69,18 @@ const SortType = styled.span`
   ${tw`text-sm my-5 mx-2 text-right block`}
 `;
 
+const LoadingContainer = styled.div`
+  ${tw`flex flex-col h-[100vh] w-full items-center justify-center`}
+`;
+
+const LoadingImg = styled.img`
+  ${tw`h-[6rem]`}
+`;
+
+const LoadingText = styled.span`
+  ${tw`text-xl`}
+`;
+
 const StockMainPage: React.FC = () => {
   const user = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
@@ -82,6 +95,15 @@ const StockMainPage: React.FC = () => {
   const [stockList, setStockList] = useState<StockDataResultType[]>([]);
   const userId = useSelector((state: RootState) => state.user.user.id);
   const likeArr = useSelector((state: RootState) => state.stocks.stocksLike);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -133,10 +155,16 @@ const StockMainPage: React.FC = () => {
     }
   };
 
-  return (
+  return loading && activeTab === 'recommend' ? (
+    <LoadingContainer>
+      <LoadingImg src={Loading} alt="Loading" />
+      <LoadingText>추천 조합 생성 중</LoadingText>
+    </LoadingContainer>
+  ) : (
     <MainContainer>
       <Navbar name={user.user.nickname} type="main" onClick={() => {}} />
       <ScrollToTop />
+
       <ContentContainer>
         <PersonalInfo />
         {activeTab === 'recommend' ? (

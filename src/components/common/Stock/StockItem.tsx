@@ -8,7 +8,7 @@ interface ItemProps {
 }
 
 const StockLogo = styled.img`
-  ${tw`w-10 h-10 rounded-full`}
+  ${tw`w-9 h-9 rounded-full`}
 `;
 
 const Container = styled.div`
@@ -24,10 +24,16 @@ const Item = styled.div`
 
 const MainText = styled.span`
   ${tw`text-sm`}
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `;
 
 const SubText = styled.span`
   ${tw`text-xs`}
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `;
 
 const Sub = styled.div`

@@ -21,29 +21,25 @@ const ColContainer = styled.div`
 `;
 
 const TypeContainer = styled.div`
-  ${tw`flex flex-col gap-2`}
+  ${tw`flex gap-2 items-end`}
 `;
 
 const MoneyContainer = styled.div`
-  ${tw`flex flex-col gap-2`}
+  ${tw`flex gap-2 items-end`}
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 `;
 
 const Title = styled.span`
-  ${tw`text-sm flex gap-1 items-end`}
+  ${tw`text-[0.9rem] flex gap-1 items-end`}
   ${css`
-    color: rgba(0, 0, 0, 0.4);
+    color: rgba(0, 0, 0, 0.8);
   `}
 `;
 
 const PersonData = styled.span`
-  ${tw`text-[1.2rem]`}
-`;
-
-const Img = styled.img`
-  ${tw`w-[80px]`}
+  ${tw`text-[1.3rem] text-green font-semibold`}
 `;
 
 const Icon = styled.img`
@@ -81,25 +77,22 @@ const PersonalInfo: React.FC = () => {
     <PersonalContainer>
       <ColContainer>
         <TypeContainer>
-          <Title>투자 성향</Title>
           <PersonData>
             {investmentTypeToString(user.user.investmentType)}
           </PersonData>
+          <Title>인 당신이</Title>
         </TypeContainer>
         <MoneyContainer>
-          <Title>
-            투자 금액
-            <Icon
-              src={Edit}
-              onClick={() => {
-                navigate('/asset/reset');
-              }}
-            />
-          </Title>
           <PersonData>{wantInvestmentPrice.toLocaleString()} 원</PersonData>
+          <Icon
+            src={Edit}
+            onClick={() => {
+              navigate('/asset/reset');
+            }}
+          />
+          <Title>을 투자하면,</Title>
         </MoneyContainer>
       </ColContainer>
-      <Img src={Chart} />
     </PersonalContainer>
   );
 };

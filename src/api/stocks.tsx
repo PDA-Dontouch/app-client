@@ -272,13 +272,15 @@ export const getUSStockPrice = async ({
 
 export const getCombinationPurchased = async ({
   userId,
-  token,
-}: WithToken & WithUserId): PromiseAxiosRes<CombinationPurchasedType[]> => {
+  page,
+  size,
+}): PromiseAxiosRes<CombinationPurchasedType[]> => {
   try {
     const response = await stockInstance.get(`/combination/purchased`, {
       params: {
         userId: userId,
-        token: token,
+        page: page,
+        size: size,
       },
     });
     return response;

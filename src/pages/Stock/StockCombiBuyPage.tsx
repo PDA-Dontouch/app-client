@@ -11,7 +11,7 @@ import { removeCombiStocks } from '../../store/reducers/stocks/stocks';
 import AlertModal from '../../components/common/Stock/AlertModal';
 
 const Container = styled.div`
-  ${tw`h-[calc(100% - 190px)] mt-14 mb-[84px] px-5 py-6 flex flex-col gap-8`}
+  ${tw`mt-14 mb-22 px-5 py-6 flex flex-col gap-8`}
 `;
 
 const HeaderText = styled.span`
@@ -40,11 +40,11 @@ const StockCombination = styled.div`
 `;
 
 const ButtonContainer = styled.div`
-  ${tw`bg-white px-5 h-22 fixed left-0 right-0 bottom-0 flex justify-center items-start gap-7`}
+  ${tw`bg-white px-5 pb-6 pt-2 fixed left-0 right-0 bottom-0 flex justify-center items-start gap-7`}
 `;
 
 const BuyPrice = styled.span`
-  ${tw`text-base text-right`}
+  ${tw`text-[1rem] text-right`}
 `;
 
 const StockCombiBuyPage: React.FC = () => {

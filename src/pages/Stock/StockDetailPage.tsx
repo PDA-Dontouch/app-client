@@ -25,11 +25,11 @@ const HeaderText = styled.span`
 `;
 
 const AddStock = styled.div`
-  ${tw`flex justify-center items-center text-xs text-black mt-2 cursor-pointer`}
+  ${tw`flex justify-center items-center text-[0.8rem] text-black mt-2 cursor-pointer`}
 `;
 
 const ExpectedDividend = styled.div`
-  ${tw`text-right text-base text-sm mb-2`}
+  ${tw`text-right text-[0.9rem] mb-2`}
 `;
 
 const Divider = styled.div`
@@ -109,7 +109,7 @@ const StockDetailPage: React.FC = () => {
             <div key={idx}>
               <SelectStock
                 name={stock.name}
-                price={stock.price}
+                price={stock.price.toString()}
                 amount={stock.quantity}
                 symbol={stock.symbol}
                 onDelete={() => handleRemoveStock(stock.symbol)}
@@ -126,7 +126,7 @@ const StockDetailPage: React.FC = () => {
             .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
           원
         </ExpectedDividend>
-        <Wrapper>
+        {/* <Wrapper>
           <ReasonTitle>추천 이유</ReasonTitle>
           <StockRecommend
             title="# 높은 안정성"
@@ -140,7 +140,7 @@ const StockDetailPage: React.FC = () => {
             title="# 추후 api를 통해 받아올 수 있게"
             description="안정형 투자성향을 가진 OOO님께 추천을 어쩌구저쩌구저쩌구어쩌구..."
           />
-        </Wrapper>
+        </Wrapper> */}
         {isModalOpen && (
           <BottomUpModal
             onClose={handleCloseModal}

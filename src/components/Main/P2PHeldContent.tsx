@@ -6,9 +6,10 @@ type P2PHeldContentProps = {
 };
 
 export default function P2PHeldContent({ totalPrice }: P2PHeldContentProps) {
+  console.log(totalPrice);
   return (
     <>
-      <P2PProgressBar totalPrice={totalPrice && totalPrice / 10000} />
+      <P2PProgressBar totalPrice={totalPrice} />
       <TotalPrice text="보유 상품 총액" price={totalPrice} />
     </>
   );

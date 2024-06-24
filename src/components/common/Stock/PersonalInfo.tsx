@@ -13,19 +13,19 @@ import Chart from '../../../assets/chartIcon.svg';
 import Edit from '../../../assets/edit.svg';
 
 const PersonalContainer = styled.div`
-  ${tw`w-full flex ps-3 py-4 justify-between items-end box-border`}
+  ${tw`w-full flex px-3 py-4 justify-between items-end box-border`}
 `;
+
 const ColContainer = styled.div`
   ${tw`flex flex-col gap-4`}
 `;
-const TopContainer = styled.div`
-  ${tw`flex justify-between`}
-`;
+
 const TypeContainer = styled.div`
-  ${tw`flex flex-col gap-3`}
+  ${tw`flex flex-col gap-2`}
 `;
+
 const MoneyContainer = styled.div`
-  ${tw`flex flex-col gap-3`}
+  ${tw`flex flex-col gap-2`}
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -37,12 +37,13 @@ const Title = styled.span`
     color: rgba(0, 0, 0, 0.4);
   `}
 `;
+
 const PersonData = styled.span`
   ${tw`text-xl`}
 `;
 
 const Img = styled.img`
-  ${tw`w-[100px]`}
+  ${tw`w-[80px]`}
 `;
 
 const Icon = styled.img`

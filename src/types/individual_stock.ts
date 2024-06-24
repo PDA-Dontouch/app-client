@@ -43,6 +43,7 @@ export type GetDetail = {
 };
 
 export type ChartData = {
+  code: string;
   date: string;
   open: number;
   low: number;

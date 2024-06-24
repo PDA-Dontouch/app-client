@@ -22,13 +22,13 @@ type CancelConfirmBtnProps = {
 };
 
 const AddStockModalContainer = styled.div`
-  ${tw`flex flex-col w-full gap-7 p-5`}
+  ${tw`flex flex-col w-full gap-7 py-2`}
   box-sizing: border-box;
 `;
 
 const SearchResult = styled.div`
   ${tw`flex flex-col w-full gap-3 px-1`}
-  height:250px;
+  height:280px;
   overflow-y: scroll;
   box-sizing: border-box;
 `;

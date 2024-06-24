@@ -22,7 +22,7 @@ const SubName = styled.div`
 `;
 
 const MainText = styled.span`
-  ${tw`text-xl font-semibold`}
+  ${tw`text-[1.3rem] font-semibold`}
 `;
 
 const SubText = styled.div`
@@ -78,32 +78,35 @@ const MarketInfo = ({ nowPrice, setIsDescription }: InfoProps) => {
   const chartData = useSelector(
     (state: RootState) => state.individualStock.chartData,
   );
+  const fixedData = useSelector(
+    (state: RootState) => state.individualStock.fixedChart,
+  );
   const isLoading = useSelector(
     (state: RootState) => state.individualStock.isLoading,
   );
   const [upNum, setUpNum] = useState(0);
   const [nowRate, setNowRate] = useState(0);
-  const upDown = useSelector(
-    (state: RootState) => state.individualStock.upDown,
-  );
-  const stockRate = useSelector(
-    (state: RootState) => state.individualStock.stockRate,
-  );
-  const closePrice = useSelector(
-    (state: RootState) => state.individualStock.close,
-  );
+  const [upDown, setUpDown] = useState(0);
+  const [stockRate, setStockRate] = useState(0);
+  const [close, setClose] = useState(0);
+
+  useEffect(() => {
+    setUpDown(fixedData[0].close - fixedData[1].close);
+    setStockRate(
+      ((fixedData[0].close - fixedData[1].close) / fixedData[1].close) * 100,
+    );
+    setClose(
+      fixedData[0].close.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+    );
+  }, [detail.basic_info.symbol]);
 
   useEffect(() => {
     if (nowPrice.message.close !== '') {
-      if (chartData.length > 1) {
-        setUpNum(
-          parseFloat(nowPrice.message.close) -
-            chartData[chartData.length - 2].close,
-        );
+      if (fixedData.length > 1) {
+        setUpNum(parseFloat(nowPrice.message.close) - fixedData[1].close);
         setNowRate(
-          ((parseFloat(nowPrice.message.close) -
-            chartData[chartData.length - 2].close) /
-            chartData[chartData.length - 2].close) *
+          ((parseFloat(nowPrice.message.close) - fixedData[1].close) /
+            fixedData[1].close) *
             100,
         );
       }
@@ -153,9 +156,7 @@ const MarketInfo = ({ nowPrice, setIsDescription }: InfoProps) => {
             ) : (
               <>
                 <StockFont num={upDown}>
-                  {detail.basic_info.exchange === 'KSC'
-                    ? closePrice
-                    : '$' + closePrice}
+                  {detail.basic_info.exchange === 'KSC' ? close : '$' + close}
                 </StockFont>
                 <StockDiv>
                   {upDown > 0 ? (

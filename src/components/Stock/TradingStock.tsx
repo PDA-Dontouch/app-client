@@ -24,7 +24,7 @@ const Container = styled.div`
 `;
 
 const ItemBox = styled.div`
-  ${tw`flex flex-col h-[600px]`}
+  ${tw`flex flex-col h-[32rem]`}
 `;
 
 const BackDrop = styled.div`

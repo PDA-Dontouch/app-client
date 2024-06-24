@@ -15,7 +15,7 @@ import holdingStocksReducer from './reducers/stocks/holding';
 const StockPersistConfig = {
   key: 'individualStock',
   storage: storage,
-  whiteList: ['upDown', 'stockRate', 'close', 'detail'],
+  whiteList: ['detail'],
 };
 
 const TradingPersistConfig = {

@@ -54,7 +54,7 @@ export default defineConfig(({ mode }) => {
           changeOrigin: true,
         },
         '/api/myPage': {
-          target: env.VITE_APP_SOCKET_PRICE,
+          target: env.VITE_APP_SOCKET_BASE_URL,
           changeOrigin: true,
         },
       },

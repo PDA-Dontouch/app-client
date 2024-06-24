@@ -65,7 +65,7 @@ const ItemContainer = styled.div`
 `;
 
 const SortType = styled.span`
-  ${tw`text-sm mt-5 mb-5 text-right block`}
+  ${tw`text-sm my-5 mx-2 text-right block`}
 `;
 
 const StockMainPage: React.FC = () => {

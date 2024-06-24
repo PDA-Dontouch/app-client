@@ -16,6 +16,7 @@ const initialState = {
   stockRate: 0,
   close: 0,
   chartData: [],
+  fixedChart: [],
   detail: {
     basic_info: {
       id: 0,
@@ -77,6 +78,10 @@ type ActionType = {
   };
 };
 
+type ActionType2 = {
+  payload: ChartData[];
+};
+
 type ActionDetailPayload = {
   data: {
     response: GetDetail;
@@ -111,9 +116,12 @@ const individualStockSlice = createSlice({
   name: 'individual_stocks',
   initialState: initialState,
   reducers: {
+    setFixedData(state, action: ActionType2) {
+      state.fixedChart = action.payload;
+    },
     setLiveData(state, action: ActionType) {
-      state.chartData.pop();
       state.chartData.push(action.payload.data.response);
+      state.chartData.pop();
     },
     setUpDown(state, action) {
       state.upDown = action.payload;
@@ -150,7 +158,7 @@ const individualStockSlice = createSlice({
   },
 });
 
-export const { setLiveData, setUpDown, setStockRate, setClose } =
+export const { setFixedData, setLiveData, setUpDown, setStockRate, setClose } =
   individualStockSlice.actions;
 
 export default individualStockSlice.reducer;

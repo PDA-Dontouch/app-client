@@ -11,6 +11,7 @@ import {
   getKrChartDatas,
   getUsChartDatas,
   setClose,
+  setFixedData,
   setStockRate,
   setUpDown,
 } from '../../store/reducers/stocks/individualStock';
@@ -35,11 +36,11 @@ interface ApiResponse {
 }
 
 const Container = styled.div`
-  ${tw`py-6 mt-14 mb-4`}
+  ${tw`pt-6 pb-20 mt-14`}
 `;
 
 const BtnContainer = styled.div`
-  ${tw`w-full flex px-8 justify-between gap-3 fixed left-0 bottom-6 box-border`}
+  ${tw`w-full flex px-8 justify-between gap-3 box-border z-[99] fixed bottom-0 bg-white pb-6 pt-2`}
 `;
 
 const IndividualStock = () => {
@@ -95,49 +96,45 @@ const IndividualStock = () => {
 
   useEffect(() => {
     if (selectExchange === 'KSC') {
-      const data = {
-        timeFormat: num === 0 ? 'D' : num === 1 ? 'W' : num === 2 ? 'M' : 'Y',
-        stockCode: selectCode,
-        endDate: formattedDate,
-      };
-      dispatch(getKrChartDatas(data)).then((res) => {
-        const datas = (res.payload as ApiResponse).data;
-        setIsComplete(true);
-        dispatch(setUpDown(datas[0].close - datas[1].close));
-        dispatch(
-          setStockRate(
-            ((datas[0].close - datas[1].close) / datas[1].close) * 100,
-          ),
-        );
-        dispatch(
-          setClose(
-            datas[0].close.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','),
-          ),
-        );
-      });
+      if (num === 0) {
+        const data = {
+          timeFormat: 'D',
+          stockCode: selectCode,
+          endDate: formattedDate,
+        };
+        dispatch(getKrChartDatas(data)).then((res) => {
+          dispatch(setFixedData((res.payload as ApiResponse).data));
+          setIsComplete(true);
+        });
+      } else {
+        const data = {
+          timeFormat: num === 1 ? 'W' : num === 2 ? 'M' : 'Y',
+          stockCode: selectCode,
+          endDate: formattedDate,
+        };
+        dispatch(getKrChartDatas(data)).then((res) => setIsComplete(true));
+      }
     } else {
-      const data = {
-        timeFormat: num,
-        stockCode: selectCode,
-        endDate: formattedDate,
-        marketType: selectExchange === 'NASDAQ' ? 'BAQ' : 'BAY',
-      };
-      dispatch(getUsChartDatas(data)).then((res) => {
-        setIsComplete(true);
-        const chartData = (res.payload as ApiResponse).data;
-        dispatch(setUpDown(chartData[0].close - chartData[1].close));
-        dispatch(
-          setStockRate(
-            ((chartData[0].close - chartData[1].close) / chartData[1].close) *
-              100,
-          ),
-        );
-        dispatch(
-          setClose(
-            chartData[0].close.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','),
-          ),
-        );
-      });
+      if (num === 0) {
+        const data = {
+          timeFormat: num,
+          stockCode: selectCode,
+          endDate: formattedDate,
+          marketType: selectExchange === 'NASDAQ' ? 'BAQ' : 'BAY',
+        };
+        dispatch(getUsChartDatas(data)).then((res) => {
+          dispatch(setFixedData((res.payload as ApiResponse).data));
+          setIsComplete(true);
+        });
+      } else {
+        const data = {
+          timeFormat: num,
+          stockCode: selectCode,
+          endDate: formattedDate,
+          marketType: selectExchange === 'NASDAQ' ? 'BAQ' : 'BAY',
+        };
+        dispatch(getUsChartDatas(data)).then((res) => setIsComplete(true));
+      }
     }
   }, []);
 

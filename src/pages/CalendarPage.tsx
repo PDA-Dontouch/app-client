@@ -31,12 +31,12 @@ const CalendarTitle = styled.div`
   flex-direction: row;
   justify-content: space-between;
   width: 100%;
-  ${tw`px-6 py-10`};
+  ${tw`px-6 py-8`};
   box-sizing: border-box;
 `;
 
 const YearMonth = styled.div`
-  ${tw`text-3xl flex gap-2 items-center`}
+  ${tw`text-[1.4rem] flex gap-2 items-center`}
 `;
 
 const SalaryContainer = styled.div`
@@ -47,7 +47,7 @@ const SalaryContainer = styled.div`
 `;
 
 const SalaryText = styled.div`
-  ${tw`text-sm leading-7`}
+  ${tw`text-[0.8rem]`}
   ${css`
     box-shadow: inset 0 -10px 0 rgba(82, 147, 208, 0.5);
     line-height: 26px;

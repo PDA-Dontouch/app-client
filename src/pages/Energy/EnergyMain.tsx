@@ -38,7 +38,7 @@ const BtnContainer = styled.div`
 `;
 
 const MainText = styled.div`
-  ${tw`w-fit text-xl`}
+  ${tw`w-fit text-[1.2rem]`}
   ${css`
     box-shadow: inset 0 -10px 0 rgba(26, 167, 110, 0.4);
     line-height: 26px;
@@ -46,7 +46,7 @@ const MainText = styled.div`
 `;
 
 const SubText = styled.span<{ isSelect: boolean }>`
-  ${tw`text-lg`}
+  ${tw`text-[1rem]`}
   ${({ isSelect }) => (isSelect ? tw`text-black` : tw`text-gray70`)}
 `;
 

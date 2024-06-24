@@ -14,7 +14,7 @@ interface LocationState {
 }
 
 const Container = styled.div`
-  ${tw`h-[100%] px-7 py-22 box-border`}
+  ${tw`h-[100%] px-[2rem] pt-[5rem] pb-[4rem] box-border`}
 `;
 
 const ItemContainer = styled.div`
@@ -22,7 +22,7 @@ const ItemContainer = styled.div`
 `;
 
 const Wrapper = styled.div`
-  ${tw`w-full flex flex-col gap-9`}
+  ${tw`w-full flex flex-col gap-[1.5rem]`}
 `;
 
 const BtnWrapper = styled.div`
@@ -38,15 +38,15 @@ const TextItem = styled.div`
 `;
 
 const XLargeText = styled.span`
-  ${tw`text-4xl`}
+  ${tw`text-[1.6rem]`}
 `;
 
 const LargeText = styled.span`
-  ${tw`text-xl`}
+  ${tw`text-[1rem]`}
 `;
 
 const Title = styled.span`
-  ${tw`text-lg`}
+  ${tw`text-[1rem]`}
 `;
 
 const InvestTypeTest = () => {

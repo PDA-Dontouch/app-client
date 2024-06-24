@@ -43,20 +43,19 @@ const MyPageContainer = styled.div`
 `;
 
 const TitleNameContainer = styled.div`
-  ${tw`flex flex-row items-end px-2 w-full`}
+  ${tw`flex flex-row items-end ps-[0.2rem] w-full`}
   box-sizing: border-box;
 `;
 
 const TitleName = styled.div<TitleNameProps>`
-  ${({ type }) => (type === 'name' ? tw`text-xl` : tw`text-base`)}
+  ${({ type }) => (type === 'name' ? tw`text-[1.2rem]` : tw`text-[1rem]`)}
   ${tw`flex flex-col h-full`}
 `;
 
 const TitleInvestmentType = styled.div`
-  ${tw`text-xl`}
+  ${tw`text-[1.2rem]`}
   ${css`
     box-shadow: inset 0 -10px 0 rgba(82, 147, 208, 0.5);
-    line-height: 26px;
   `}
 `;
 
@@ -68,11 +67,11 @@ const ThisMonthSalaryContainer = styled.div`
 `;
 
 const ThisMonthSalaryTitle = styled.div`
-  ${tw`text-sm`}
+  ${tw`text-[0.8rem]`}
 `;
 
 const ThisMonthSalaryNumber = styled.div`
-  font-size: 26px;
+  font-size: 1.4rem;
   font-weight: 500;
 `;
 

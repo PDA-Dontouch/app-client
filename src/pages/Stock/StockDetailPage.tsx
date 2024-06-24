@@ -45,7 +45,7 @@ const StockCombination = styled.div`
 `;
 
 const AbsoluteButtonContainer = styled.div`
-  ${tw`bg-white px-5 h-22 fixed left-0 right-0 bottom-0 flex justify-center items-start gap-7`}
+  ${tw`bg-white w-full px-6 pb-6 gap-4 box-border fixed left-0 right-0 bottom-0 flex justify-between items-start`}
 `;
 
 const StockDetailPage: React.FC = () => {
@@ -126,25 +126,15 @@ const StockDetailPage: React.FC = () => {
             .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
           원
         </ExpectedDividend>
-        {/* <Wrapper>
-          <ReasonTitle>추천 이유</ReasonTitle>
-          <StockRecommend
-            title="# 높은 안정성"
-            description="안정형 투자성향을 가진 OOO님께 어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구"
-          />
-          <StockRecommend
-            title="# 높은 안정성"
-            description="안정형 투자성향을 가진 OOO님께 어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구"
-          />
-          <StockRecommend
-            title="# 추후 api를 통해 받아올 수 있게"
-            description="안정형 투자성향을 가진 OOO님께 추천을 어쩌구저쩌구저쩌구어쩌구..."
-          />
-        </Wrapper> */}
         {isModalOpen && (
           <BottomUpModal
             onClose={handleCloseModal}
-            content={<StockOptions dividendMonth={currentMonth + 1} />}
+            content={
+              <StockOptions
+                dividendMonth={currentMonth + 1}
+                onClose={handleCloseModal}
+              />
+            }
           />
         )}
       </Container>

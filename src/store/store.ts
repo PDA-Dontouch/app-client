@@ -27,7 +27,7 @@ const TradingPersistConfig = {
 const rootPersistConfig = {
   key: 'root',
   storage: storage,
-  whitelist: ['estates'],
+  whitelist: ['estates', 'user'],
 };
 
 const myMiddlewares = [logger];

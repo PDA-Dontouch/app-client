@@ -5,7 +5,7 @@ import Button from '../components/common/Button';
 import tw, { styled } from 'twin.macro';
 
 const Container = styled.div`
-  ${tw`flex flex-col [height:90%] justify-center mb-8`}
+  ${tw`flex flex-col h-[100vh] justify-center py-8 box-border`}
 `;
 
 const ButtonContainer = styled.div`

@@ -5,6 +5,11 @@ import {
   StockDataResultType,
 } from '../../types/stocks_product';
 import Nothing from './Nothing';
+import { dispatch } from 'd3';
+import {
+  setSelectCode,
+  setSelectExchange,
+} from '../../store/reducers/stocks/trading';
 
 type MyStockProps = {
   koreaData: HoldingStockType[] | StockDataResultType[];
@@ -27,6 +32,7 @@ export default function MyStock({
   realTimeKoreaPrice,
   realTimeUsPrice,
 }: MyStockProps) {
+  console.log(koreaData);
   return (
     <>
       <Stocks>
@@ -39,6 +45,10 @@ export default function MyStock({
               <div key={idx}>
                 <MyStockProduct
                   code={'stock' in stock ? stock.stock.symbol : stock.symbol}
+                  id={'stock' in stock ? stock.stock.id : stock.id}
+                  exchange={
+                    'stock' in stock ? stock.stock.exchange : stock.exchange
+                  }
                   name={'stock' in stock ? stock.stock.name : stock.name}
                   price={
                     'stock' in stock
@@ -77,6 +87,10 @@ export default function MyStock({
               <div key={idx}>
                 <MyStockProduct
                   code={'stock' in stock ? stock.stock.symbol : stock.symbol}
+                  id={'stock' in stock ? stock.stock.id : stock.id}
+                  exchange={
+                    'stock' in stock ? stock.stock.exchange : stock.exchange
+                  }
                   name={'stock' in stock ? stock.stock.name : stock.name}
                   price={
                     'stock' in stock

@@ -1,42 +1,40 @@
-import tw, { styled } from "twin.macro";
+import tw, { styled } from 'twin.macro';
 
 interface ModalProps {
-    onClose: () => void;
-    message: string;
-    type: "modal" | "full";
+  onClose: () => void;
+  message: string;
+  type: 'modal' | 'full';
 }
 
 const BackGround = styled.div<{ round?: boolean }>`
   ${({ round }) => round && tw`rounded-t-20`};
   ${tw`fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center`}
   z-index: 50
-  
 `;
 
 const Modal = styled.div`
   ${tw`bg-white p-5 rounded-20 shadow-lg flex flex-col items-center`}
- 
 `;
 
 const Btn = styled.button`
-  ${tw`mt-3 px-4 py-2 rounded-full`}
-  background-color: #1aa76e66;
+  ${tw`mt-3 px-4 py-2 rounded-full text-white`}
+  background-color: #457BC3;
   border: none;
 `;
 
-const Message = styled.span`${tw`text-base items-center`}`;
+const Message = styled.span`
+  ${tw`text-base items-center`}
+`;
 
 const AlertModal = ({ onClose, message, type }: ModalProps) => {
   return (
     <>
       <BackGround round={type === 'modal'}>
-      <Modal>
-        <Message>{message}</Message>
-        <Btn onClick={onClose}>
-          닫기
-        </Btn>
-      </Modal>
-    </BackGround>
+        <Modal>
+          <Message>{message}</Message>
+          <Btn onClick={onClose}>닫기</Btn>
+        </Modal>
+      </BackGround>
     </>
   );
 };

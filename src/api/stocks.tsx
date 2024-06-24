@@ -13,6 +13,7 @@ import {
   GetHoldingStockType,
   RequestCombiDistribute,
   StocksLikeTypes,
+  PostCombiData,
 } from '../types/stocks_product';
 
 import {
@@ -283,6 +284,19 @@ export const getCombinationPurchased = async ({
         size: size,
       },
     });
+    return response;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+
+export const purchaseCombination = async (data: PostCombiData) => {
+  try {
+    const response = await socketInstance.post(
+      `/api/pendingOrder/buyCombinationStock`,
+      data,
+    );
     return response;
   } catch (err) {
     console.error(err);

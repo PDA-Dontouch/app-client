@@ -7,8 +7,17 @@ import { useNavigate } from 'react-router-dom';
 import { RootState } from '../../store/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../../store/store';
-import { removeCombiStocks } from '../../store/reducers/stocks/stocks';
+import {
+  purchasedCombination,
+  removeCombiStocks,
+} from '../../store/reducers/stocks/stocks';
 import AlertModal from '../../components/common/Stock/AlertModal';
+
+type ResponsePayload = {
+  data: {
+    success: boolean;
+  };
+};
 
 const Container = styled.div`
   ${tw`mt-14 mb-22 px-5 py-6 flex flex-col gap-8`}
@@ -40,7 +49,7 @@ const StockCombination = styled.div`
 `;
 
 const ButtonContainer = styled.div`
-  ${tw`bg-white px-5 pb-6 pt-2 fixed left-0 right-0 bottom-0 flex justify-center items-start gap-7`}
+  ${tw`bg-white w-full px-6 pt-2 pb-6 gap-4 box-border fixed left-0 right-0 bottom-0 flex justify-between items-start`}
 `;
 
 const BuyPrice = styled.span`
@@ -53,6 +62,7 @@ const StockCombiBuyPage: React.FC = () => {
 
   const combiStocks = useSelector((state: RootState) => state.stocks);
   const [alertOpen, setAlertOpen] = useState(false);
+  const user = useSelector((state: RootState) => state.user.user);
 
   const handleRemoveStock = (
     stockSymbol: string,
@@ -96,6 +106,45 @@ const StockCombiBuyPage: React.FC = () => {
     });
 
     return sum.toLocaleString();
+  };
+
+  console.log(combiStocks);
+  const submitCombi = () => {
+    const stockList = [];
+    combiStocks.combination1.stocks.map((item, idx) =>
+      stockList.push({
+        stockName: item.name,
+        stockCode: item.symbol,
+        amount: item.quantity,
+        marketType: item.exchange,
+      }),
+    );
+    combiStocks.combination2.stocks.map((item, idx) =>
+      stockList.push({
+        stockName: item.name,
+        stockCode: item.symbol,
+        amount: item.quantity,
+        marketType: item.exchange,
+      }),
+    );
+    combiStocks.combination3.stocks.map((item, idx) =>
+      stockList.push({
+        stockName: item.name,
+        stockCode: item.symbol,
+        amount: item.quantity,
+        marketType: item.exchange,
+      }),
+    );
+
+    const data = {
+      userId: user.id,
+      stockList: stockList,
+    };
+    dispatch(purchasedCombination(data)).then((res) => {
+      if ((res.payload as ResponsePayload).data.success) {
+        navigate('/result/buy');
+      }
+    });
   };
 
   return (
@@ -189,16 +238,12 @@ const StockCombiBuyPage: React.FC = () => {
         </StockCombination>
         <Divider />
         <BuyPrice>
-          총 구매금액 {totalPrice().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} 원
+          총 구매 금액 {totalPrice().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} 원
         </BuyPrice>
       </Container>
       <ButtonContainer>
         <Button name="이전" status="plain" onClick={() => navigate(-1)} />
-        <Button
-          name="구매하기"
-          status={'active'}
-          onClick={() => navigate('/result/buy')}
-        />
+        <Button name="구매하기" status={'active'} onClick={submitCombi} />
       </ButtonContainer>
       {alertOpen && (
         <AlertModal

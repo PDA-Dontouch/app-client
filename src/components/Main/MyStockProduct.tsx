@@ -1,9 +1,17 @@
 import tw, { styled } from 'twin.macro';
 import logoImg from '../../assets/logo.svg';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../store/store';
+import {
+  setSelectCode,
+  setSelectExchange,
+} from '../../store/reducers/stocks/trading';
 
 type HoldingStockType = {
   code: string;
+  id: number;
+  exchange: string;
   name: string;
   price: string;
   compare: number | null;
@@ -57,16 +65,20 @@ const Compare = styled.div<CompareProps>`
 
 export default function MyStockProduct({
   code,
+  id,
+  exchange,
   name,
   price,
   compare,
 }: HoldingStockType) {
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
 
   return (
     <MyStockProductContainer
       onClick={() => {
-        navigate(`/stocks/${code}`);
+        dispatch(setSelectExchange(exchange));
+        navigate(`/stocks/${id}`);
       }}
     >
       <LeftSection>

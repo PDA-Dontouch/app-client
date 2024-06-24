@@ -10,7 +10,7 @@ import { addCombiStocks } from '../../store/reducers/stocks/stocks';
 import AlertModal from '../common/Stock/AlertModal';
 
 const Container = styled.div`
-  ${tw`w-full h-[450px] flex flex-col items-center p-3 gap-3`}
+  ${tw`w-full h-[450px] flex flex-col items-center py-3 gap-3`}
 `;
 const StockItems = styled.div`
   ${tw`w-full flex-col flex flex-1 overflow-y-auto gap-2`}
@@ -24,7 +24,7 @@ const StockLogo = styled.img`
 `;
 
 const ItemContainer = styled.div`
-  ${tw`flex flex-row justify-between`}
+  ${tw`flex flex-row justify-between items-center`}
 `;
 
 const MainText = styled.span`
@@ -56,9 +56,13 @@ const PriceText = styled.span`
 
 interface StockOptionsProps {
   dividendMonth: number;
+  onClose: () => void;
 }
 
-const StockOptions: React.FC<StockOptionsProps> = ({ dividendMonth }) => {
+const StockOptions: React.FC<StockOptionsProps> = ({
+  dividendMonth,
+  onClose,
+}) => {
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.user);
   const combiStocks = useSelector((state: RootState) => state.stocks);

@@ -5,6 +5,7 @@ import {
   getStocksLike,
   stocksLike,
   stocksDisLike,
+  purchaseCombination,
 } from '../../../api/stocks';
 import {
   StockCombiType,
@@ -12,6 +13,7 @@ import {
   InsertCombiStock,
   StocksLikeTypes,
   StockLike,
+  PostCombiData,
 } from '../../../types/stocks_product';
 import { AppDispatch, RootState } from '../../store';
 
@@ -118,7 +120,7 @@ export const addCombiStocks = createAsyncThunk<
     newCombi[combination].push({ stockId, exchange });
 
     const response = await combinationDistribute(newCombi);
-    console.log(response.data);
+    console.log('here', response.data);
     return response as ActionPayloadCombi;
   },
 );
@@ -192,6 +194,14 @@ export const delLikeStocks = createAsyncThunk(
   'stocks/dislike',
   async (data: StocksLikeTypes) => {
     const response = await stocksDisLike(data);
+    return response;
+  },
+);
+
+export const purchasedCombination = createAsyncThunk(
+  'stocks/purchaseCombination',
+  async (data: PostCombiData) => {
+    const response = await purchaseCombination(data);
     return response;
   },
 );

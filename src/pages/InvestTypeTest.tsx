@@ -15,7 +15,7 @@ interface LocationState {
 }
 
 const Container = styled.div`
-  ${tw`h-[100%] px-[2rem] pt-[5rem] pb-[4rem] box-border`}
+  ${tw`h-[100vh] px-[2rem] pt-[5rem] pb-[4rem] box-border`}
 `;
 
 const ItemContainer = styled.div`
@@ -50,7 +50,6 @@ const Title = styled.span`
   ${tw`text-[1rem]`}
 `;
 
-
 const InvestTypeTest = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<number[]>(
@@ -63,16 +62,17 @@ const InvestTypeTest = () => {
 
   const user = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch<AppDispatch>();
-  const [showModal, setShowModal] =  useState<boolean>(false);
+  const [showModal, setShowModal] = useState<boolean>(false);
 
-  useEffect(()=>{
-    if(user.user.growthScore === 0 && user.user.safeScore===0 && user.user.dividendScore===0){
+  useEffect(() => {
+    if (
+      user.user.growthScore === 0 &&
+      user.user.safeScore === 0 &&
+      user.user.dividendScore === 0
+    ) {
       return;
-    }
-    else
-      navigate('/');
-
-  },[])
+    } else navigate('/');
+  }, []);
 
   const handleAnswerSelect = (index: number) => {
     const newAnswers = [...answers];
@@ -103,7 +103,6 @@ const InvestTypeTest = () => {
     );
     setTotalScore(totalPoints);
 
-   
     if (state.nav) {
       dispatch(
         postType({
@@ -138,7 +137,10 @@ const InvestTypeTest = () => {
             position: 'fixed',
           }}
         >
-          <BasicModal type={user.user.investmentType} onClick={() => navigate('/')} />
+          <BasicModal
+            type={user.user.investmentType}
+            onClick={() => navigate('/')}
+          />
         </div>
       )}
       <Container>

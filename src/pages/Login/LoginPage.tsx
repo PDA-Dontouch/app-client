@@ -28,7 +28,6 @@ const LoginPage = () => {
   
   const onLogin = (e: React.MouseEvent<HTMLElement, MouseEvent>, url: string) => {
     e.preventDefault();
-    console.log("url ===== ",url);
     window.location.href = url;
   };
 

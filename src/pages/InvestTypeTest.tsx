@@ -8,6 +8,7 @@ import Navbar from '../components/common/Navbar';
 import { postType } from '../store/reducers/auth/auth';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
+import BasicModal from '../components/common/Modal/BasicModal';
 
 interface LocationState {
   nav?: boolean;
@@ -61,6 +62,7 @@ const InvestTypeTest = () => {
 
   const user = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch<AppDispatch>();
+  const [showModal, setShowModal] =  useState<boolean>(false);
 
   const handleAnswerSelect = (index: number) => {
     const newAnswers = [...answers];
@@ -101,7 +103,7 @@ const InvestTypeTest = () => {
       ).catch((err: unknown) => {
         console.error(err);
       });
-      navigate('/');
+      setShowModal(true);
     } else {
       navigate('/asset-input', { state: { totalScore: totalPoints } });
     }
@@ -117,6 +119,16 @@ const InvestTypeTest = () => {
             navigate(-1);
           }}
         />
+      )}
+      {showModal && (
+        <div
+          style={{
+            zIndex: 10,
+            position: 'fixed',
+          }}
+        >
+          <BasicModal type={user.user.investmentType} onClick={() => navigate('/')} retry={state.nav} />
+        </div>
       )}
       <Container>
         <ItemContainer>

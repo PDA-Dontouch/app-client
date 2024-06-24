@@ -77,7 +77,7 @@ export const getUserAccountAmount = async ({
 
 export const updateInvestmentType = async ({
   userId,
-  token,
+  // token,
   totalScore,
 }: WithToken &
   WithUserId & { totalScore: number }): PromiseAxiosRes<UserDetail> => {
@@ -88,11 +88,11 @@ export const updateInvestmentType = async ({
         userId: userId,
         totalScore: totalScore,
       },
-      {
-        params: {
-          token: token,
-        },
-      },
+      // {
+      //   params: {
+      //     token: token,
+      //   },
+      // },
     );
     return response;
   } catch (err) {

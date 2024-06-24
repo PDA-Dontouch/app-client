@@ -4,7 +4,8 @@ import Graph from '../../../assets/graph.svg';
 import Button from "../Button";
 
 interface ModalProps {
-  type: string;
+  type: number;
+  retry: boolean;
   onClick: () => void;
 }
 
@@ -41,7 +42,19 @@ const BoldText = styled.span`
 
 const PlainText = styled.span`${tw`text-base`}`;
 
-const BasicModal = ({ type, onClick }: ModalProps) => {
+const typeDescriptions: { [key: number]: string } = {
+  1: '안정형',
+  2: '안정추구형',
+  3: '위험중립형',
+  4: '적극투자형',
+  5: '공격투자형',
+};
+
+const BasicModal = ({ retry,type, onClick }: ModalProps) => {
+
+  const typeName = typeDescriptions[type] || '알 수 없음';
+  const buttonText = retry ? "메인페이지로" : "내 계좌 연동하기";
+
   return (
     <>
       <BackDrop />
@@ -51,15 +64,15 @@ const BasicModal = ({ type, onClick }: ModalProps) => {
         </ItemContainer>
         <TextContainer>
           <MainText>당신은</MainText>
-          <BoldText>{type}형</BoldText>
+          <BoldText>{typeName}</BoldText>
           <MainText>투자자!</MainText>
         </TextContainer>
         <TextContainer>
           <PlainText>
-            {type}형인 당신을 위해 어떤 추천이 기다리고 있을지 궁금하시다면 지금 바로!
+            {typeName}인 당신을 위해 어떤 추천이 기다리고 있을지 궁금하시다면 지금 바로!
           </PlainText>
         </TextContainer>
-        <Button name="내 계좌 연동하기" status="active" onClick={onClick} />
+        <Button name={buttonText} status="active" onClick={onClick} />
       </ModalContainer>
     </>
   );

@@ -40,9 +40,9 @@ export const initialUserDetail = {
   sns_type: 1,
   nickname: '이한슬',
   investmentType: 1 as InvestmentType,
-  safeScore: 40,
-  dividendScore: 35,
-  growthScore: 25,
+  safeScore: 0,
+  dividendScore: 0,
+  growthScore: 0,
 };
 
 export type StartDateEndDateType = {

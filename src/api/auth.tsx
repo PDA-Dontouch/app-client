@@ -100,3 +100,29 @@ export const updateInvestmentType = async ({
     throw err;
   }
 };
+
+export const saveAsset = async ({
+  userId,
+  cash,
+  token,
+}: WithToken &
+  WithUserId & { cash: number }): PromiseAxiosRes<string> => {
+  try {
+    const response = await authInstance.post(
+      '/bank/new',
+      {
+        userId: userId,
+        cash: cash,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};

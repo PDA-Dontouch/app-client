@@ -56,3 +56,8 @@ export type PostStockType = {
   stockPrice: number;
   stockAmount: number;
 };
+
+export type getHoldingType = {
+  userId: number;
+  getPrice: boolean;
+};

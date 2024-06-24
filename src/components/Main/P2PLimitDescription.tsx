@@ -1,11 +1,11 @@
 import tw, { styled } from 'twin.macro';
 
 const DescriptionContainer = styled.div`
-  ${tw`flex flex-col gap-4 pt-5 pb-9`}
+  ${tw`flex flex-col gap-4 pt-5 pb-22`}
 `;
 
 const Description = styled.div`
-  ${tw`text-gray-dark w-full`}
+  ${tw`text-gray-dark w-full text-[0.95rem]`}
 `;
 
 export default function P2PLimitDescription() {

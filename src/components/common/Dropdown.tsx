@@ -67,7 +67,7 @@ const SubText = styled.span<{ isEstates: boolean }>`
           box-shadow: inset 0 -4px 0 rgba(230, 182, 55, 0.5);
         `
       : css`
-          box-shadow: inset 0 -4px 0 rgba(82, 147, 208, 0.5);
+          box-shadow: inset 0 -4px 0 rgba(26, 167, 110, 0.5);
         `}
 `;
 

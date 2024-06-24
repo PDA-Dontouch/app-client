@@ -10,7 +10,7 @@ import { addCombiStocks } from '../../store/reducers/stocks/stocks';
 import AlertModal from '../common/Stock/AlertModal';
 
 const Container = styled.div`
-  ${tw`w-full h-[450px] flex flex-col items-center p-3 gap-3`}
+  ${tw`w-full h-[450px] flex flex-col items-center py-3 gap-3`}
 `;
 const StockItems = styled.div`
   ${tw`w-full flex-col flex flex-1 overflow-y-auto gap-2`}
@@ -24,7 +24,7 @@ const StockLogo = styled.img`
 `;
 
 const ItemContainer = styled.div`
-  ${tw`flex flex-row justify-between`}
+  ${tw`flex flex-row justify-between items-center`}
 `;
 
 const MainText = styled.span`
@@ -56,14 +56,21 @@ const PriceText = styled.span`
 
 interface StockOptionsProps {
   dividendMonth: number;
+  onClose: () => void;
 }
 
-const StockOptions: React.FC<StockOptionsProps> = ({ dividendMonth }) => {
+const StockOptions: React.FC<StockOptionsProps> = ({
+  dividendMonth,
+  onClose,
+}) => {
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.user);
   const combiStocks = useSelector((state: RootState) => state.stocks);
-  
-  const currentCombination = `combination${dividendMonth}` as "combination1" | "combination2" | "combination3";
+
+  const currentCombination = `combination${dividendMonth}` as
+    | 'combination1'
+    | 'combination2'
+    | 'combination3';
 
   const [page, setPage] = useState(0);
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -74,26 +81,28 @@ const StockOptions: React.FC<StockOptionsProps> = ({ dividendMonth }) => {
   useEffect(() => {
     stocksDatas({
       searchWord: searchTerm,
-      safeScore: user.user.safeScore,
-      dividendScore: user.user.dividendScore,
-      growthScore: user.user.growthScore,
+      userId: user.user.id,
       dividendMonth: dividendMonth,
       page: page,
       size: 24,
-    }).then((response)=>{
+    }).then((response) => {
       setStockList(response.data.response);
     });
   }, [page, searchTerm]);
 
-  const handleUpdateCombination = (stockId:number, exchange:string):void =>{
-    if(combiStocks[currentCombination].stocks.length >= 2){
+  const handleUpdateCombination = (stockId: number, exchange: string): void => {
+    if (combiStocks[currentCombination].stocks.length >= 2) {
       setAlertOpen(true);
+    } else {
+      dispatch(
+        addCombiStocks({
+          combination: currentCombination,
+          stockId: stockId,
+          exchange: exchange === 'KSC' ? 'KSC' : 'OTHER',
+        }),
+      );
     }
-    else {
-      dispatch(addCombiStocks({combination:currentCombination,stockId:stockId,exchange:exchange}));
-      
-    }
-  } 
+  };
 
   const handleAlertClose = () => {
     setAlertOpen(false);
@@ -115,9 +124,14 @@ const StockOptions: React.FC<StockOptionsProps> = ({ dividendMonth }) => {
       <StockItems>
         {stockList.map((stock) => {
           return (
-            <StockInfo key={stock.id} onClick={() => {handleUpdateCombination(stock.id, stock.exchange)}}>
+            <StockInfo
+              key={stock.id}
+              onClick={() => {
+                handleUpdateCombination(stock.id, stock.exchange);
+              }}
+            >
               <ItemContainer>
-              <StockLogo
+                <StockLogo
                   src={getImageUrl(stock.symbol)}
                   onError={(e) => {
                     e.currentTarget.src = logoImg;
@@ -140,7 +154,13 @@ const StockOptions: React.FC<StockOptionsProps> = ({ dividendMonth }) => {
           );
         })}
       </StockItems>
-      {alertOpen && <AlertModal type='modal' onClose={handleAlertClose} message='최대 2개의 종목을 추가할 수 있습니다.' />}
+      {alertOpen && (
+        <AlertModal
+          type="modal"
+          onClose={handleAlertClose}
+          message="최대 2개의 종목을 추가할 수 있습니다."
+        />
+      )}
     </Container>
   );
 };

@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 
 const Container = styled.div`
-  ${tw`h-[100%] px-7 py-40 box-border`}
+  ${tw`h-[100vh] px-7 py-[8rem] box-border`}
 `;
 
 const ItemContainer = styled.div`
@@ -24,7 +24,7 @@ const InputWrapper = styled.div`
 `;
 
 const Input = styled.input`
-  ${tw`w-11/12 py-2 text-3xl focus:outline-none border-b border-black`}
+  ${tw`w-11/12 py-2 text-[1.3rem] focus:outline-none border-b border-black text-end`}
   border-top: none;
   border-left: none;
   border-right: none;
@@ -36,11 +36,11 @@ const Input = styled.input`
 `;
 
 const Title = styled.span`
-  ${tw`text-2xl block mb-2`}
+  ${tw`text-[1.3rem] block mb-2`}
 `;
 
 const Unit = styled.span`
-  ${tw`text-3xl ml-1`}
+  ${tw`text-[1.3rem] ml-1`}
 `;
 
 const SmallButton = styled.button`

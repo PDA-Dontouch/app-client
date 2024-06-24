@@ -56,8 +56,10 @@ const Cancel = ({
         <ModalItem
           title="기대 수익"
           content={
-            profit?.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',') +
-            '원'
+            profit
+              ?.toFixed(0)
+              .toString()
+              .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',') + '원'
           }
           isModify={false}
           isStock={false}

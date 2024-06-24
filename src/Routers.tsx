@@ -16,25 +16,32 @@ import ProductsLikePage from './pages/Main/ProductsLikePage';
 import CombinationLogPage from './pages/Main/CombinationLogPage';
 import ChangeMoney from './pages/Stock/ChangeMoney';
 import AssetInput from './pages/AssetInput';
+import IndividualStock from './pages/Stock/IndividualStock';
 import StockDetailPage from './pages/Stock/StockDetailPage';
 import NaverRedirectPage from './pages/Login/NaverRedirectPage';
 import StockCombiBuyPage from './pages/Stock/StockCombiBuyPage';
-
 
 export default function Routers() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/login/oauth2/code/kakao" element={<KakaoRedirectPage />}></Route>
-      <Route path="/login/oauth2/code/naver" element={<NaverRedirectPage />}></Route>
+      <Route
+        path="/login/oauth2/code/kakao"
+        element={<KakaoRedirectPage />}
+      ></Route>
+      <Route
+        path="/login/oauth2/code/naver"
+        element={<NaverRedirectPage />}
+      ></Route>
       <Route path="/typetest" element={<InvestTypeTest />} />
       <Route path="/energy" element={<EnergyMain />} />
       <Route path="/energy/:energy_id" element={<EnergyDetail />} />
       <Route path="/estates" element={<EstatesMain />} />
       <Route path="/estates/:estates_id" element={<EstatesDetail />} />
       <Route path="/stocks" element={<StockMainPage />} />
-      <Route path="/stocks/detail" element={<StockDetailPage/>}/>
-      <Route path="/stocks/buy" element={<StockCombiBuyPage/>}/>
+      <Route path="/stocks/:id" element={<IndividualStock />} />
+      <Route path="/stocks/detail" element={<StockDetailPage />} />
+      <Route path="/stocks/buy" element={<StockCombiBuyPage />} />
       <Route path="/calendar" element={<CalendarPage />} />
       <Route path="/result/:type" element={<TransactionResult />} />
       <Route path="/asset-input" element={<AssetInput />} />

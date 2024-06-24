@@ -3,9 +3,8 @@ import StockContainer from './StockContainer';
 import { RootState } from '../../../store/store';
 import { useSelector } from 'react-redux';
 
-
 const Wrapper = styled.div`
-  ${tw`bg-gray-light px-5 py-5 rounded-16 shadow-[4px_4px_6px_0_rgba(0,0,0,0.15)]`}
+  ${tw`bg-gray-light px-5 py-5 rounded-16 shadow-[2px_2px_4px_0_rgba(0,0,0,0.05)]`}
 `;
 
 const Container = styled.div`
@@ -21,17 +20,17 @@ const MainText = styled.span`
 `;
 
 const Line = styled.hr`
-  ${tw`w-full h-[3px] bg-gray30 border-none`}
+  ${tw`w-full h-[1px] bg-gray30 border-none`}
 `;
 
 const InfoText = styled.div`
-  ${tw` text-sm text-green`}
+  ${tw`text-sm text-green ps-2`}
 `;
 
 const CombiBox: React.FC = () => {
   const combiStocks = useSelector((state: RootState) => state.stocks);
 
-  const areAllCombinationsFilled = 
+  const areAllCombinationsFilled =
     combiStocks.combination1.stocks.length > 0 &&
     combiStocks.combination2.stocks.length > 0 &&
     combiStocks.combination3.stocks.length > 0;

@@ -32,7 +32,7 @@ interface LocationState {
 }
 
 const ProductsHeldPageContainer = styled.div`
-  ${tw`flex flex-col gap-8 px-5 py-18 w-full`}
+  ${tw`flex flex-col gap-8 px-5 py-22 w-full`}
   box-sizing: border-box;
 `;
 

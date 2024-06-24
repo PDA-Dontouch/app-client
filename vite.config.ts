@@ -44,12 +44,16 @@ export default defineConfig(({ mode }) => {
           target: env.VITE_APP_ENERGY_BASE_URL,
           changeOrigin: true,
         },
+        '/api/trading': {
+          target: env.VITE_APP_SOCKET_BASE_URL,
+          changeOrigin: true,
+        },
         '/api/holding': {
           target: env.VITE_APP_HOLDING_BASE_URL,
           changeOrigin: true,
         },
         '/api/myPage': {
-          target: env.VITE_APP_SOCKET_PRICE,
+          target: env.VITE_APP_SOCKET_BASE_URL,
           changeOrigin: true,
         },
       },

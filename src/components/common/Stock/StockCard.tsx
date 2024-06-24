@@ -6,7 +6,7 @@ import logoImg from '../../../assets/logo.svg';
 import { useNavigate } from 'react-router-dom';
 
 type StockType = {
-  id:number;
+  id: number;
   symbol: string;
   name: string;
   type: string;
@@ -24,7 +24,6 @@ interface StockProps {
 const Container = styled.div`
   ${tw`flex items-center p-3 border rounded-lg shadow-md mb-1 justify-between`}
   height: 60px
-
 `;
 
 const StockLogo = styled.img`
@@ -32,7 +31,7 @@ const StockLogo = styled.img`
 `;
 
 const ItemContainer = styled.div`
-  ${tw`flex flex-row ml-1 justify-between`}
+  ${tw`flex flex-row ml-1 justify-between items-center`}
 `;
 
 const MainText = styled.span`
@@ -78,11 +77,13 @@ const StockCard = ({ data, isLike, setIsLike }: StockProps) => {
 
   return (
     <Container onClick={navigateDetail}>
-      <ItemContainer >
-        <StockLogo src={`https://file.alphasquare.co.kr/media/images/stock_logo/${isKRStock(data.symbol) ? 'kr' : 'us'}/${data.symbol}.png`}
-                  onError={(e) => {
-                    e.currentTarget.src = logoImg;
-                  }} />
+      <ItemContainer>
+        <StockLogo
+          src={`https://file.alphasquare.co.kr/media/images/stock_logo/${isKRStock(data.symbol) ? 'kr' : 'us'}/${data.symbol}.png`}
+          onError={(e) => {
+            e.currentTarget.src = logoImg;
+          }}
+        />
         <InfoContainer>
           <MainText>{data.name}</MainText>
           <SubContainer>
@@ -94,10 +95,10 @@ const StockCard = ({ data, isLike, setIsLike }: StockProps) => {
 
       <PriceContainer>
         <PriceText>
-        {isKRStock(data.symbol)
-                    ? `${data.dividendMonth.toFixed(2)} 원`
-                    : `$${data.dividendMonth.toFixed(2)}`}
-                  ({data.dividendYieldTtm.toFixed(2)}%)
+          {isKRStock(data.symbol)
+            ? `${data.dividendMonth.toFixed(2)} 원`
+            : `$${data.dividendMonth.toFixed(2)}`}
+          ({data.dividendYieldTtm.toFixed(2)}%)
         </PriceText>
         <Heart src={isLike ? Fill : Empty} onClick={handleHeartClick} />
       </PriceContainer>

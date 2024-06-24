@@ -20,7 +20,7 @@ const Container = styled.div`
 `;
 
 const Btn = styled.button<BtnProps>`
-  ${tw`px-3 py-4 text-sm`}
+  ${tw`w-full px-3 py-4 text-sm`}
   ${({ color }) => {
     return color == 'green' ? tw`bg-green text-white` : tw`bg-white text-green`;
   }}

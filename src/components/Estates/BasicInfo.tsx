@@ -41,6 +41,10 @@ const BasicInfo = ({ data }: BasicProps) => {
     (state: RootState) => state.estates.clickEstates,
   );
 
+  const rate = data.sellingPointsTitle2
+    ? data.sellingPointsTitle2.match(/\d+(\.\d+)?/)?.[0]
+    : '0';
+
   return (
     <Container>
       <MainText>상품 개요</MainText>
@@ -64,7 +68,7 @@ const BasicInfo = ({ data }: BasicProps) => {
         </TextContainer>
         <TextContainer>
           <MiniText>유효담보비율</MiniText>
-          <SubText>{clickData.loanAmountBaseLtv.toFixed(2)}%</SubText>
+          <SubText>{parseFloat(rate || '').toFixed(2)}%</SubText>
         </TextContainer>
         <TextContainer>
           <MiniText>감정가</MiniText>

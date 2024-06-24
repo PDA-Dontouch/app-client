@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import tw, { styled } from 'twin.macro';
+import React, { useEffect, useState } from 'react';
+import tw, { css, styled } from 'twin.macro';
 import { CalendarStockPlanType } from '../../types/stocks_product';
 import { CalendarP2PType } from '../../types/energy_product';
 
@@ -21,6 +21,7 @@ type DayProps = {
 
 type DateCellProps = {
   inThisMonth: boolean;
+  height: number;
 };
 
 type DateTextProps = {
@@ -37,11 +38,15 @@ const CalendarContainer = styled.div`
   width: 100%;
 `;
 
-const Day = styled.div<DayProps>`W
+const Day = styled.div<DayProps>`
   width: 100%;
   height: 20px;
   ${({ day }) =>
-    day === '일' ? tw`text-red` : day === '토' ? tw`text-blue` : tw`text-black`}
+    day === '일'
+      ? tw`text-red`
+      : day === '토'
+        ? tw`text-green`
+        : tw`text-black`}
   padding: 0px 5px;
   border-top-style: solid;
   border-top-width: 0.5px;
@@ -57,9 +62,13 @@ const DateCell = styled.div<DateCellProps>`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 120px;
-  border-style: solid;
-  border-width: 0.5px;
+  height: 112px;
+  border-left-style: solid;
+  border-left-width: 0.5px;
+  border-right-style: solid;
+  border-right-width: 0.5px;
+  border-bottom-style: solid;
+  border-bottom-width: 0.5px;
   box-sizing: border-box;
   ${tw`border-black10`}
   ${({ inThisMonth }) => (inThisMonth ? null : 'opacity: 0.3;')}
@@ -68,7 +77,7 @@ const DateCell = styled.div<DateCellProps>`
 
 const DateText = styled.div<DateTextProps>`
   ${({ day }) =>
-    day === 0 ? tw`text-red` : day === 6 ? tw`text-blue` : tw`text-black`}
+    day === 0 ? tw`text-red` : day === 6 ? tw`text-green` : tw`text-black`}
   padding: 5px;
   box-sizing: border-box;
 `;
@@ -76,10 +85,10 @@ const DateText = styled.div<DateTextProps>`
 const SalaryPlan = styled.div<SalaryPlanProps>`
   ${({ type }) =>
     type === '주식'
-      ? 'background-color: #E9F1D6;'
+      ? 'background-color: rgba(69, 123, 195, 0.3);'
       : type === '부동산'
-        ? 'background-color: #A4C3B2;'
-        : 'background-color: #AFDBD1;'}
+        ? 'background-color: rgba(230, 182, 55, 0.3);'
+        : 'background-color: rgba(26, 167, 110, 0.5);'}
   ${tw`h-3`}
   width: 100%;
 `;
@@ -118,6 +127,7 @@ export default function Calendar({
           <DateCell
             key={idx}
             inThisMonth={date.getMonth() === month ? true : false}
+            height={dates.length / days.length}
             onClick={
               date.getMonth() === month && setDate
                 ? () => {

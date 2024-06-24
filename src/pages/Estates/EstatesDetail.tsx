@@ -1,13 +1,17 @@
-import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useEffect, useLayoutEffect, useState } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import tw, { css, styled } from 'twin.macro';
 
-import useLike from '../../hooks/useLike';
 import { AppDispatch, RootState } from '../../store/store';
 import {
+  addLikeEstate,
+  addLikeEstates,
   buyEstates,
+  delLikeEstates,
   getEstatesData,
+  getLikeEstates,
+  removeLikeEstate,
   sellEstates,
 } from '../../store/reducers/estates/estates';
 import DetailBanner from '../../components/Estates/DetailBanner';
@@ -23,7 +27,13 @@ import BasicInfo from '../../components/Estates/BasicInfo';
 import InvestPoint from '../../components/Estates/InvestPoint';
 import ExpertCheck from '../../components/Estates/ExpertCheck';
 import { getHoldingEstates } from '../../store/reducers/estates/holding';
-import { EstateBuyType } from '../../types/estates_product';
+import {
+  EstateBuyType,
+  EstatesList,
+  clickEstates,
+} from '../../types/estates_product';
+import CollateralStability from '../../components/Estates/CollateralStability';
+import ScrollToTop from '../../hooks/ScrollToTop';
 
 interface BuyEstatesResponse {
   data: {
@@ -37,11 +47,11 @@ interface BuyEstatesResponse {
 }
 
 const Container = styled.div`
-  ${tw`mt-14 pb-20 h-full overflow-y-scroll`}
+  ${tw`w-full pt-14 pb-20`}
 `;
 
 const BtnContainer = styled.div`
-  ${tw`w-[100%] h-[56px] flex gap-4 px-6 fixed bottom-7 box-border z-[99]`}
+  ${tw`w-[100%] h-[56px] flex gap-4 px-6 fixed bottom-4 box-border z-[99]`}
 `;
 
 const Hr = styled.div`
@@ -60,14 +70,15 @@ const EstatesDetail = () => {
     (state: RootState) => state.holdingEstates.datas,
   );
   const userId = useSelector((state: RootState) => state.user.user.id);
-  // const { EstatesLikeArr, setLikeEstates } = useLike({ fundId: clickData.id });
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [value, setValue] = useState<number>(0);
   const [error, setError] = useState<string | undefined>(undefined);
+  const likeArr = useSelector((state: RootState) => state.estates.estatesLike);
 
   useEffect(() => {
     dispatch(getEstatesData(parseInt(params.estates_id!)));
     dispatch(getHoldingEstates(userId));
+    dispatch(getLikeEstates(userId));
   }, [dispatch, params.estates_id]);
 
   let isEstateHeld = false;
@@ -122,9 +133,27 @@ const EstatesDetail = () => {
     });
   };
 
+  const handleLikeToggle = async (item: EstatesList) => {
+    const data = {
+      userId: userId,
+      estateFundId: item.id,
+    };
+
+    const isLiked = likeArr.includes(item.id);
+
+    if (isLiked) {
+      dispatch(removeLikeEstate(item.id));
+      await dispatch(delLikeEstates(data));
+    } else {
+      dispatch(addLikeEstate(item.id));
+      await dispatch(addLikeEstates(data));
+    }
+  };
+
   return (
     <>
-      <Navbar name="back" type="" onClick={() => navigate(-1)} />
+      <Navbar name="back" type="" onClick={() => window.history.back()} />
+      <ScrollToTop />
       <Container>
         <DetailBanner isEstates={true} data={detail} />
         <Dropdown isEstates={true} profit_rate={clickData.earningRate} />
@@ -135,15 +164,15 @@ const EstatesDetail = () => {
         <Hr />
         <DetailInfo data={detail} />
         <Hr />
-        {/* <CollateralStability data={detail} />
-        <Hr /> */}
+        <CollateralStability data={detail} />
+        <Hr />
         <ExpertCheck data={detail} />
       </Container>
       <BtnContainer>
-        {/* <LikeBtn
-          isLike={EstatesLikeArr.includes(detail.id)}
-          setIsLike={() => setLikeEstates(detail.id)}
-        /> */}
+        <LikeBtn
+          isLike={likeArr.includes(detail.estateId)}
+          setIsLike={() => handleLikeToggle(clickData)}
+        />
         <Button
           name={
             isEstateHeld

@@ -92,7 +92,7 @@ const CancelConfirmContainer = styled.div`
 `;
 
 const ConfirmBtn = styled.button`
-  ${tw`text-[red] w-fit`}
+  ${tw`text-green w-fit text-base`}
   background-color: transparent;
   border: none;
 `;

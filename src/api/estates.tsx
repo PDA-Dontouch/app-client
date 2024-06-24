@@ -1,11 +1,11 @@
-import { EstatesTypes } from '../store/reducers/estates/estates';
+import { EstatesLikeTypes } from '../store/reducers/estates/estates';
 import { EstateBuyType, EstatesList } from '../types/estates_product';
 import {
   PromiseAxiosRes,
   WithToken,
   WithUserId,
 } from '../types/response_product';
-import { estatesInstance } from './api';
+import { authInstance, estatesInstance } from './api';
 
 export const estate_url = `/api/estates`;
 
@@ -29,9 +29,9 @@ export const estatesData = async (estates_id: number) => {
   }
 };
 
-export const estatesLike = async (data: EstatesTypes) => {
+export const getEstatesLike = async (userId: number) => {
   try {
-    const response = await estatesInstance.post('/like', data);
+    const response = await authInstance.get(`/like/estate?userId=${userId}`);
     return response;
   } catch (err) {
     console.error(err);
@@ -39,9 +39,19 @@ export const estatesLike = async (data: EstatesTypes) => {
   }
 };
 
-export const estatesDisLike = async (data: EstatesTypes) => {
+export const estatesLike = async (data: EstatesLikeTypes) => {
   try {
-    const response = await estatesInstance.delete('/like', {
+    const response = await authInstance.post('/like/estate', data);
+    return response;
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
+};
+
+export const estatesDisLike = async (data: EstatesLikeTypes) => {
+  try {
+    const response = await authInstance.delete('/like/estate', {
       data: data,
     });
     return response;

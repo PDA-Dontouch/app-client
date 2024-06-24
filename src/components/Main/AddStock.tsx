@@ -16,7 +16,7 @@ type BtnImgProps = {
 
 const AddStockContainer = styled.div`
   ${tw`flex flex-row p-3 w-full justify-between items-center bg-white`}
-  box-shadow: 2px 2px 4px 0px rgb(0,0,0,0.15);
+  box-shadow: 1px 1px 2px 0px rgb(0,0,0,0.05);
   border-radius: 12px;
   box-sizing: border-box;
 `;

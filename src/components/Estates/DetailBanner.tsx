@@ -18,7 +18,7 @@ const Container = styled.div<{ isEstates: boolean }>`
           background-image: linear-gradient(#f1cd6d, #e6b637);
         `
       : css`
-          background-image: linear-gradient(#90c0ec, #5293d0);
+          background-image: linear-gradient(#a0d8c1, #1aa76e);
         `}
 `;
 
@@ -34,11 +34,11 @@ const Grade = styled.div`
 `;
 
 const MidItem = styled.div`
-  ${tw`flex flex-col gap-10`}
+  ${tw`flex flex-col gap-6`}
 `;
 
 const MainText = styled.span`
-  ${tw`text-xl font-semibold text-white`}
+  ${tw`text-[1.2rem] font-semibold text-white`}
 `;
 
 const MiniText = styled.span`

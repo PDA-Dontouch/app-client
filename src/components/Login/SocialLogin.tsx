@@ -1,4 +1,4 @@
-import tw, { styled } from "twin.macro";
+import tw, { styled } from 'twin.macro';
 
 interface LoginProps {
   url: string;
@@ -7,11 +7,11 @@ interface LoginProps {
 }
 
 const Btn = styled.div`
-  ${tw`flex bg-white px-4 py-5 rounded-12 justify-center items-center gap-4 shadow-[2px_2px_12px_0_rgba(0,0,0,0.2)]`}
+  ${tw`flex py-5 box-border rounded-12 justify-center items-center gap-4 shadow-[1px_1px_4px_0_rgba(0,0,0,0.1)]`}
 `;
 
 const Font = styled.span`
-  ${tw`w-[86px] text-xl text-center`}
+  ${tw`text-[1.2rem] text-center`}
 `;
 
 const SocialLogin = ({ url, name, onClick }: LoginProps) => {

@@ -18,7 +18,7 @@ const TabDiv = styled.div`
 
 const TabText = styled.span<{ isSelect: boolean }>`
   ${tw`text-xxs`}
-  color: ${({ isSelect }) => (isSelect ? '#1aa76e' : '#222222')};
+  color: ${({ isSelect }) => (isSelect ? '#457BC3' : '#222222')};
 `;
 
 const Footer = () => {

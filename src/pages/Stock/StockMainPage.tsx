@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { AppDispatch, RootState } from '../../store/store';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import tw, { css, styled } from 'twin.macro';
 import Navbar from '../../components/common/Navbar';
 import Footer from '../../components/common/Footer';
@@ -21,7 +21,19 @@ import {
   StockDataResultType,
   InsertCombiStock,
 } from '../../types/stocks_product';
-import { insertStock, removeStock } from '../../store/reducers/stocks/stocks';
+import {
+  setSelectCode,
+  setSelectExchange,
+} from '../../store/reducers/stocks/trading';
+import { joinRoom } from '../../store/webSocket/nowPrice';
+import {
+  addLikeStock,
+  addLikeStocks,
+  delLikeStocks,
+  getLikeStocks,
+  removeLikeStock,
+} from '../../store/reducers/stocks/stocks';
+import ScrollToTop from '../../hooks/ScrollToTop';
 
 const MainContainer = styled.div`
   ${tw`flex flex-col min-h-screen`}
@@ -32,11 +44,11 @@ const ContentContainer = styled.div`
 `;
 
 const SectionHeader = styled.div`
-  ${tw`flex gap-4 my-4 pl-2 mt-6`}
+  ${tw`flex gap-4 pl-2 mt-6 mb-4`}
 `;
 
 const MainTab = styled.span`
-  ${tw` text-lg cursor-pointer`}
+  ${tw` text-[1rem] cursor-pointer`}
 `;
 const SubTab = styled(MainTab)`
   ${css`
@@ -45,7 +57,7 @@ const SubTab = styled(MainTab)`
 `;
 
 const CombiBoxContainer = styled.div`
-  ${tw`mt-3 p-2`}
+  ${tw`mt-2 p-2`}
 `;
 
 const ItemContainer = styled.div`
@@ -53,42 +65,78 @@ const ItemContainer = styled.div`
 `;
 
 const SortType = styled.span`
-  ${tw`text-sm mt-5 mb-5 text-right block`}
+  ${tw`text-sm my-5 mx-2 text-right block`}
 `;
 
 const StockMainPage: React.FC = () => {
   const user = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+  const location = useLocation();
 
   const [activeTab, setActiveTab] = useState<'recommend' | 'individual'>(
     'recommend',
   );
-  const [likeStocks, setLikeStocks] = useState<number[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [page, setPage] = useState(0);
   const [stockList, setStockList] = useState<StockDataResultType[]>([]);
+  const userId = useSelector((state: RootState) => state.user.user.id);
+  const likeArr = useSelector((state: RootState) => state.stocks.stocksLike);
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const tab = queryParams.get('tab');
+    if (tab === 'individual') {
+      setActiveTab('individual');
+    } else {
+      setActiveTab('recommend');
+    }
+  }, [location.search]);
 
   useEffect(() => {
     stocksDatas({
       searchWord: searchTerm,
-      safeScore: user.user.safeScore,
-      dividendScore: user.user.dividendScore,
-      growthScore: user.user.growthScore,
+      userId: user.user.id,
       dividendMonth: null,
       page: page,
       size: 24,
     }).then((response) => {
       setStockList(response.data.response);
     });
-  }, []);
+    dispatch(getLikeStocks(userId));
+  }, [searchTerm]);
 
   const handleTabClick = (tab: 'recommend' | 'individual') => {
     setActiveTab(tab);
+    navigate(`?tab=${tab}`);
+  };
+
+  const handleLikeToggle = async (item: StockDataResultType) => {
+    const data = {
+      userId: userId,
+      exchange: item.exchange,
+      stockId: item.id,
+    };
+
+    const isLiked = likeArr.some((el) => el.stockId === item.id);
+
+    const checked = {
+      exchange: item.exchange,
+      stockId: item.id,
+    };
+    if (isLiked) {
+      dispatch(removeLikeStock(checked));
+      await dispatch(delLikeStocks(data));
+    } else {
+      dispatch(addLikeStock(checked));
+      await dispatch(addLikeStocks(data));
+    }
   };
 
   return (
     <MainContainer>
       <Navbar name={user.user.nickname} type="main" onClick={() => {}} />
+      <ScrollToTop />
       <ContentContainer>
         <PersonalInfo />
         {activeTab === 'recommend' ? (
@@ -127,11 +175,21 @@ const StockMainPage: React.FC = () => {
             <SortType>추천 종목순</SortType>
             <ItemContainer>
               {stockList.map((item, idx) => (
-                <div key={idx}>
+                <div
+                  key={idx}
+                  onClick={() => {
+                    dispatch(setSelectCode(item.symbol));
+                    dispatch(setSelectExchange(item.exchange));
+                    if (item.exchange === 'KSC') {
+                      joinRoom(item.symbol);
+                    }
+                    navigate(`/stocks/${item.id}`);
+                  }}
+                >
                   <StockCard
                     data={item}
-                    isLike={likeStocks.includes(item.id) ? true : false}
-                    setIsLike={() => stocksLike(item)}
+                    isLike={likeArr.some((el) => el.stockId === item.id)}
+                    setIsLike={() => handleLikeToggle(item)}
                   />
                 </div>
               ))}

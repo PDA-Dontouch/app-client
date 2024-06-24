@@ -25,11 +25,11 @@ const HeaderText = styled.span`
 `;
 
 const AddStock = styled.div`
-  ${tw`flex justify-center items-center text-xs text-black mt-2 cursor-pointer`}
+  ${tw`flex justify-center items-center text-[0.8rem] text-black mt-2 cursor-pointer`}
 `;
 
 const ExpectedDividend = styled.div`
-  ${tw`text-right text-base text-sm mb-2`}
+  ${tw`text-right text-[0.9rem] mb-2`}
 `;
 
 const Divider = styled.div`
@@ -45,7 +45,7 @@ const StockCombination = styled.div`
 `;
 
 const AbsoluteButtonContainer = styled.div`
-  ${tw`bg-white px-5 h-22 fixed left-0 right-0 bottom-0 flex justify-center items-start gap-7`}
+  ${tw`bg-white w-full px-6 pb-6 gap-4 box-border fixed left-0 right-0 bottom-0 flex justify-between items-start`}
 `;
 
 const StockDetailPage: React.FC = () => {
@@ -56,11 +56,17 @@ const StockDetailPage: React.FC = () => {
 
   const combiStocks = useSelector((state: RootState) => state.stocks);
 
-  const currentCombination = `combination${currentMonth + 1}` as "combination1" | "combination2" | "combination3";
+  const currentCombination = `combination${currentMonth + 1}` as
+    | 'combination1'
+    | 'combination2'
+    | 'combination3';
   const selectedStocks = combiStocks[currentCombination];
-  
+  console.log('getCombi', combiStocks);
+
   const handleRemoveStock = (stockSymbol: string) => {
-    dispatch(removeCombiStocks({ combination: currentCombination, stockSymbol }));
+    dispatch(
+      removeCombiStocks({ combination: currentCombination, stockSymbol }),
+    );
   };
 
   const handleOpenModal = () => {
@@ -82,23 +88,29 @@ const StockDetailPage: React.FC = () => {
     }
   };
   const handleBuyBtn = () => {
-    navigate('/stocks/buy')
+    navigate('/stocks/buy');
   };
 
   return (
     <>
-      <Navbar name="" type="close" onClick={() => {navigate('/stocks')}} />
+      <Navbar
+        name=""
+        type="close"
+        onClick={() => {
+          navigate('/stocks');
+        }}
+      />
       <Container>
         <HeaderText>
-          {currentMonth + 1}·{currentMonth + 3}·{currentMonth + 5}·
-          {currentMonth + 7}월 추천 배당주
+          {currentMonth + 1}·{currentMonth + 4}·{currentMonth + 7}·
+          {currentMonth + 10}월 추천 배당주
         </HeaderText>
         <StockCombination>
           {selectedStocks.stocks.map((stock, idx) => (
             <div key={idx}>
               <SelectStock
                 name={stock.name}
-                price={stock.price}
+                price={stock.price.toString()}
                 amount={stock.quantity}
                 symbol={stock.symbol}
                 onDelete={() => handleRemoveStock(stock.symbol)}
@@ -108,26 +120,22 @@ const StockDetailPage: React.FC = () => {
         </StockCombination>
         <AddStock onClick={handleOpenModal}>+ 종목 추가하기</AddStock>
         <Divider />
-        <ExpectedDividend>예상 월 배당금 {selectedStocks.totalDividend}원</ExpectedDividend>
-        <Wrapper>
-          <ReasonTitle>추천 이유</ReasonTitle>
-          <StockRecommend
-            title="# 높은 안정성"
-            description="안정형 투자성향을 가진 OOO님께 어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구"
-          />
-          <StockRecommend
-            title="# 높은 안정성"
-            description="안정형 투자성향을 가진 OOO님께 어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구"
-          />
-          <StockRecommend
-            title="# 추후 api를 통해 받아올 수 있게"
-            description="안정형 투자성향을 가진 OOO님께 추천을 어쩌구저쩌구저쩌구어쩌구..."
-          />
-        </Wrapper>
+        <ExpectedDividend>
+          예상 월 배당금{' '}
+          {selectedStocks.totalDividend
+            .toString()
+            .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+          원
+        </ExpectedDividend>
         {isModalOpen && (
           <BottomUpModal
             onClose={handleCloseModal}
-            content={<StockOptions dividendMonth={currentMonth + 1} />}
+            content={
+              <StockOptions
+                dividendMonth={currentMonth + 1}
+                onClose={handleCloseModal}
+              />
+            }
           />
         )}
       </Container>

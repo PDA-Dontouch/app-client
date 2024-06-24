@@ -30,6 +30,16 @@ export const energyData = async (energy_id: string) => {
   }
 };
 
+export const getEnergysLike = async (userId: number) => {
+  try {
+    const response = await authInstance.get(`/like/energy?userId=${userId}`);
+    return response;
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
+};
+
 export const energyLike = async (data: energyTypes) => {
   try {
     const response = await authInstance.post('/like/energy', data);

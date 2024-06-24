@@ -7,11 +7,20 @@ import { useNavigate } from 'react-router-dom';
 import { RootState } from '../../store/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../../store/store';
-import { removeCombiStocks } from '../../store/reducers/stocks/stocks';
+import {
+  purchasedCombination,
+  removeCombiStocks,
+} from '../../store/reducers/stocks/stocks';
 import AlertModal from '../../components/common/Stock/AlertModal';
 
+type ResponsePayload = {
+  data: {
+    success: boolean;
+  };
+};
+
 const Container = styled.div`
-  ${tw`h-[calc(100% - 190px)] mt-14 mb-[84px] px-5 py-6 flex flex-col gap-6`}
+  ${tw`mt-14 mb-22 px-5 py-6 flex flex-col gap-8`}
 `;
 
 const HeaderText = styled.span`
@@ -27,12 +36,12 @@ const SemiTitle = styled.span`
 `;
 
 const ExpectedDividend = styled.span`
-  ${tw`flex text-sm`}
-  color: rgba(0, 0, 0, 0.4);
+  ${tw`flex text-xs`}
+  color: rgba(0, 0, 0, 0.6);
 `;
 
 const Divider = styled.div`
-  ${tw`w-full h-1 bg-gray-light my-3`}
+  ${tw`w-full h-1 bg-gray-light`}
 `;
 
 const StockCombination = styled.div`
@@ -40,11 +49,15 @@ const StockCombination = styled.div`
 `;
 
 const ButtonContainer = styled.div`
-  ${tw`bg-white px-5 h-22 fixed left-0 right-0 bottom-0 flex justify-center items-start gap-7`}
+  ${tw`bg-white w-full px-6 pt-2 pb-6 gap-4 box-border fixed left-0 right-0 bottom-0 flex justify-between items-start`}
 `;
 
 const BuyPrice = styled.span`
-  ${tw`text-base text-right`}
+  ${tw`text-[1rem] text-right`}
+`;
+
+const ErrorText = styled.span`
+  ${tw`text-[0.9rem] text-red text-end`}
 `;
 
 const StockCombiBuyPage: React.FC = () => {
@@ -53,6 +66,11 @@ const StockCombiBuyPage: React.FC = () => {
 
   const combiStocks = useSelector((state: RootState) => state.stocks);
   const [alertOpen, setAlertOpen] = useState(false);
+  const user = useSelector((state: RootState) => state.user.user);
+  const wantInvestmentPrice = useSelector(
+    (state: RootState) => state.stocks.totalInvestment,
+  );
+  const [error, setError] = useState<boolean>(false);
 
   const handleRemoveStock = (
     stockSymbol: string,
@@ -81,6 +99,7 @@ const StockCombiBuyPage: React.FC = () => {
 
   const handleAlertClose = () => {
     setAlertOpen(false);
+    setError(false);
   };
 
   const totalPrice = () => {
@@ -95,7 +114,67 @@ const StockCombiBuyPage: React.FC = () => {
       sum = sum + stock.price * stock.quantity;
     });
 
-    return sum.toLocaleString();
+    return sum;
+  };
+
+  console.log(combiStocks);
+  const submitCombi = () => {
+    console.log(wantInvestmentPrice);
+    if (totalPrice() > wantInvestmentPrice) {
+      setError(true);
+    } else {
+      const stockList = [];
+      combiStocks.combination1.stocks.map((item, idx) =>
+        stockList.push({
+          stockName: item.name,
+          stockCode: item.symbol,
+          amount: item.quantity,
+          marketType:
+            item.exchange === 'KSC'
+              ? 'KSC'
+              : item.exchange === 'NASDAQ'
+                ? 'BAQ'
+                : 'BAY',
+        }),
+      );
+      combiStocks.combination2.stocks.map((item, idx) =>
+        stockList.push({
+          stockName: item.name,
+          stockCode: item.symbol,
+          amount: item.quantity,
+          marketType:
+            item.exchange === 'KSC'
+              ? 'KSC'
+              : item.exchange === 'NASDAQ'
+                ? 'BAQ'
+                : 'BAY',
+        }),
+      );
+      combiStocks.combination3.stocks.map((item, idx) =>
+        stockList.push({
+          stockName: item.name,
+          stockCode: item.symbol,
+          amount: item.quantity,
+          marketType:
+            item.exchange === 'KSC'
+              ? 'KSC'
+              : item.exchange === 'NASDAQ'
+                ? 'BAQ'
+                : 'BAY',
+        }),
+      );
+
+      const data = {
+        userId: user.id,
+        stockList: stockList,
+      };
+      console.log(data);
+      dispatch(purchasedCombination(data)).then((res) => {
+        if ((res.payload as ResponsePayload).data.success) {
+          navigate('/result/buy');
+        }
+      });
+    }
   };
 
   return (
@@ -113,7 +192,11 @@ const StockCombiBuyPage: React.FC = () => {
           <Info>
             <SemiTitle>1·4·7·10월 추천 배당주</SemiTitle>
             <ExpectedDividend>
-              예상 월 배당금 {combiStocks.combination1.totalDividend}원
+              예상 월 배당금{' '}
+              {combiStocks.combination1.totalDividend
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              원
             </ExpectedDividend>
           </Info>
 
@@ -121,7 +204,9 @@ const StockCombiBuyPage: React.FC = () => {
             <div key={idx}>
               <SelectStock
                 name={stock.name}
-                price={stock.price}
+                price={stock.price
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                 amount={stock.quantity}
                 symbol={stock.symbol}
                 onDelete={() => handleRemoveStock(stock.symbol, 1)}
@@ -133,7 +218,11 @@ const StockCombiBuyPage: React.FC = () => {
           <Info>
             <SemiTitle>2·5·8·11월 추천 배당주</SemiTitle>
             <ExpectedDividend>
-              예상 월 배당금 {combiStocks.combination2.totalDividend}원
+              예상 월 배당금{' '}
+              {combiStocks.combination2.totalDividend
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              원
             </ExpectedDividend>
           </Info>
 
@@ -141,7 +230,9 @@ const StockCombiBuyPage: React.FC = () => {
             <div key={idx}>
               <SelectStock
                 name={stock.name}
-                price={stock.price}
+                price={stock.price
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                 amount={stock.quantity}
                 symbol={stock.symbol}
                 onDelete={() => handleRemoveStock(stock.symbol, 2)}
@@ -153,7 +244,11 @@ const StockCombiBuyPage: React.FC = () => {
           <Info>
             <SemiTitle>3·6·9·12월 추천 배당주</SemiTitle>
             <ExpectedDividend>
-              예상 월 배당금 {combiStocks.combination3.totalDividend}원
+              예상 월 배당금{' '}
+              {combiStocks.combination3.totalDividend
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              원
             </ExpectedDividend>
           </Info>
 
@@ -161,7 +256,9 @@ const StockCombiBuyPage: React.FC = () => {
             <div key={idx}>
               <SelectStock
                 name={stock.name}
-                price={stock.price}
+                price={stock.price
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                 amount={stock.quantity}
                 symbol={stock.symbol}
                 onDelete={() => handleRemoveStock(stock.symbol, 3)}
@@ -170,21 +267,30 @@ const StockCombiBuyPage: React.FC = () => {
           ))}
         </StockCombination>
         <Divider />
-        <BuyPrice>총 구매금액 {totalPrice()} 원</BuyPrice>
+        <BuyPrice>
+          총 구매 금액{' '}
+          {totalPrice()
+            .toString()
+            .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{' '}
+          원
+        </BuyPrice>
       </Container>
       <ButtonContainer>
         <Button name="이전" status="plain" onClick={() => navigate(-1)} />
-        <Button
-          name="구매하기"
-          status={'active'}
-          onClick={() => navigate('/result/buy')}
-        />
+        <Button name="구매하기" status={'active'} onClick={submitCombi} />
       </ButtonContainer>
       {alertOpen && (
         <AlertModal
           type="full"
           onClose={handleAlertClose}
           message="적어도 한 종목은 조합에 있어야 합니다."
+        ></AlertModal>
+      )}
+      {error && (
+        <AlertModal
+          type="full"
+          onClose={handleAlertClose}
+          message="투자 가능 금액을 초과했습니다."
         ></AlertModal>
       )}
     </>

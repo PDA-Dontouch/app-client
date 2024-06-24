@@ -9,7 +9,7 @@ type P2PHeldContentProps = {
 };
 
 type ProgressStatusProps = {
-  status?: number;
+  percentage?: number;
 };
 
 const ProgressBar = styled.div`
@@ -28,9 +28,7 @@ const BarContainer = styled.div`
 const ProgressStatus = styled.div<ProgressStatusProps>`
   ${tw`bg-green h-full`}
   border-radius:12px;
-  ${({ status }) => {
-    return `width:calc(${status} * 100% / 4000);`;
-  }}
+  width: ${({ percentage }) => `${percentage}%`};
 `;
 
 const ProgressTextConatiner = styled.div`
@@ -58,10 +56,12 @@ export default function P2PProgressBar({ totalPrice }: P2PHeldContentProps) {
           }}
         />
         <BarContainer>
-          <ProgressStatus status={totalPrice} />
+          <ProgressStatus percentage={(totalPrice / 40000000) * 100} />
         </BarContainer>
         <ProgressTextConatiner>
-          <div>0 만원</div>
+          <div>
+            {totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} 원
+          </div>
           <div>4000 만원</div>
         </ProgressTextConatiner>
       </ProgressBar>

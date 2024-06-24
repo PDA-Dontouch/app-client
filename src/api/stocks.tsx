@@ -1,4 +1,4 @@
-import { stockInstance } from './api';
+import { authInstance, socketInstance, stockInstance } from './api';
 import {
   PromiseAxiosRes,
   WithToken,
@@ -12,6 +12,17 @@ import {
   StockCombiType,
   GetHoldingStockType,
   RequestCombiDistribute,
+  StocksLikeTypes,
+  PostCombiData,
+} from '../types/stocks_product';
+
+import {
+  KrChartPost,
+  UsChartPost,
+  UsYearChartPost,
+} from '../types/individual_stock';
+
+import {
   UsStockSocketType,
   HoldingUsStockSocketResponseType,
   HoldingKrStockSocketResponseType,
@@ -21,9 +32,7 @@ import axios, { AxiosResponse } from 'axios';
 
 interface RequestBodyType {
   searchWord: string | null;
-  safeScore: number;
-  dividendScore: number;
-  growthScore: number;
+  userId: number;
   dividendMonth: number | null;
   page: number;
   size: number;
@@ -35,9 +44,7 @@ interface RequestStockDetail {
 }
 
 interface RequestCombiCreate {
-  safeScore: number;
-  growthScore: number;
-  dividendScore: number;
+  userId: number;
   investmentAmount: number;
 }
 
@@ -72,10 +79,9 @@ export const stocksData = async (
   }
 };
 
-export const stocksLike = async (data: StockDataResultType) => {
-  const baseUrl = `/like`;
+export const stocksChartKr = async (data: KrChartPost) => {
   try {
-    const response = await stockInstance.post(baseUrl, data);
+    const response = await socketInstance.post('/graph/graphDataKr', data);
     return response;
   } catch (err) {
     console.error(err);
@@ -83,10 +89,22 @@ export const stocksLike = async (data: StockDataResultType) => {
   }
 };
 
-export const stocksDisLike = async (data: StockDataResultType) => {
-  const baseUrl = `/like`;
+export const stocksChartUs = async (data: UsChartPost) => {
   try {
-    const response = await stockInstance.delete(baseUrl, { data: data });
+    const response = await socketInstance.post('/graph/graphDataUs', data);
+    return response;
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
+};
+
+export const stocksDetail = async (exchange: string, stockId: number) => {
+  try {
+    const response = await stockInstance.post('/detail', {
+      exchange: exchange,
+      stockId: stockId,
+    });
     return response;
   } catch (err) {
     console.error(err);
@@ -179,6 +197,38 @@ export const getLikeStocks = async ({
   }
 };
 
+export const getStocksLike = async (userId: number) => {
+  try {
+    const response = await authInstance.get(`/like/stocks?userId=${userId}`);
+    return response;
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
+};
+
+export const stocksLike = async (data: StocksLikeTypes) => {
+  try {
+    const response = await authInstance.post('/like/stocks', data);
+    return response;
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
+};
+
+export const stocksDisLike = async (data: StocksLikeTypes) => {
+  try {
+    const response = await authInstance.delete('/like/stocks', {
+      data: data,
+    });
+    return response;
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
+};
+
 export const getKRStockPrice = async ({
   stockList,
 }: {
@@ -186,7 +236,7 @@ export const getKRStockPrice = async ({
 }): Promise<string[]> => {
   try {
     const response = await axios
-      .post(`/api/myPage/krStock`, { stockList })
+      .post(`/api/trading/myPage/krStock`, { stockList })
       .then((data: AxiosResponse<HoldingKrStockSocketResponseType[]>) => {
         return data.data.map((items) => {
           return items.price;
@@ -207,7 +257,7 @@ export const getUSStockPrice = async ({
 }): Promise<number[]> => {
   try {
     const response = await axios
-      .post(`/api/myPage/usStock`, { stockList })
+      .post(`/api/trading/myPage/usStock`, { stockList })
       .then((data: AxiosResponse<HoldingUsStockSocketResponseType[]>) => {
         return data.data.map((items) => {
           return items.price;
@@ -223,15 +273,30 @@ export const getUSStockPrice = async ({
 
 export const getCombinationPurchased = async ({
   userId,
-  token,
-}: WithToken & WithUserId): PromiseAxiosRes<CombinationPurchasedType[]> => {
+  page,
+  size,
+}): PromiseAxiosRes<CombinationPurchasedType[]> => {
   try {
     const response = await stockInstance.get(`/combination/purchased`, {
       params: {
         userId: userId,
-        token: token,
+        page: page,
+        size: size,
       },
     });
+    return response;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+
+export const purchaseCombination = async (data: PostCombiData) => {
+  try {
+    const response = await socketInstance.post(
+      `/pendingOrder/buyCombinationStock`,
+      data,
+    );
     return response;
   } catch (err) {
     console.error(err);

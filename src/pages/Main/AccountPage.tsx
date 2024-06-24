@@ -21,7 +21,7 @@ type LogProps = {
 };
 
 const AccountPageContainer = styled.div`
-  ${tw`flex flex-col gap-8 px-5 py-18 w-full h-full`}
+  ${tw`flex flex-col gap-8 px-5 pt-22 w-full`}
   box-sizing: border-box;
   overflow: hidden;
 `;
@@ -49,7 +49,7 @@ const Logs = styled.div`
 `;
 
 const Log = styled.div`
-  ${tw`flex flex-row justify-between p-3`}
+  ${tw`flex flex-row justify-between py-3 px-2`}
 `;
 
 const LogDateContainer = styled.div`
@@ -59,7 +59,7 @@ const LogDateContainer = styled.div`
 const LogTypeComponent = styled.div<LogProps>`
   ${tw`text-sm`}
   ${({ log }) => {
-    return log === 1 ? tw`text-red` : tw`text-blue`;
+    return log === 1 ? tw`text-red` : tw`text-green`;
   }}
 `;
 

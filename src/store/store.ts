@@ -5,14 +5,29 @@ import logger from 'redux-logger';
 import energyReducer from './reducers/energy/energy';
 import stocksReducer from './reducers/stocks/stocks';
 import estatesReducer from './reducers/estates/estates';
+import individualStockReducer from './reducers/stocks/individualStock';
+import tradingReducer from './reducers/stocks/trading';
 import userReducer from './reducers/auth/auth';
 import holdingEstatesReducer from './reducers/estates/holding';
 import holdingEnergyReducer from './reducers/energy/holding';
+import holdingStocksReducer from './reducers/stocks/holding';
+
+const StockPersistConfig = {
+  key: 'individualStock',
+  storage: storage,
+  whiteList: ['detail'],
+};
+
+const TradingPersistConfig = {
+  key: 'trading',
+  storage: storage,
+  whiteList: ['selectExchange', 'selectCode'],
+};
 
 const rootPersistConfig = {
   key: 'root',
   storage: storage,
-  whitelist: ['estates'],
+  whitelist: ['estates', 'user'],
 };
 
 const myMiddlewares = [logger];
@@ -21,9 +36,12 @@ const rootReducer = combineReducers({
   user: userReducer,
   energy: energyReducer,
   estates: estatesReducer,
+  individualStock: persistReducer(StockPersistConfig, individualStockReducer),
+  trading: persistReducer(TradingPersistConfig, tradingReducer),
   stocks: stocksReducer,
   holdingEstates: holdingEstatesReducer,
   holdingEnergy: holdingEnergyReducer,
+  holdingStocks: holdingStocksReducer,
 });
 
 const persistedReducer = persistReducer(rootPersistConfig, rootReducer);

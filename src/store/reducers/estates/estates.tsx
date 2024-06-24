@@ -6,6 +6,7 @@ import {
   estatesDisLike,
   estatesLike,
   estatesSell,
+  getEstatesLike,
 } from '../../../api/estates';
 import {
   EstatesList,
@@ -37,9 +38,9 @@ const initialState: EstatesState = {
   clickEstates: clickEstates,
 };
 
-export type EstatesTypes = {
-  token: string;
-  estates_id: number;
+export type EstatesLikeTypes = {
+  userId: number;
+  estateFundId: number;
 };
 
 export const getEstatesDatas = createAsyncThunk(
@@ -58,9 +59,17 @@ export const getEstatesData = createAsyncThunk(
   },
 );
 
+export const getLikeEstates = createAsyncThunk(
+  'estates/getLike',
+  async (data: number) => {
+    const response = await getEstatesLike(data);
+    return response;
+  },
+);
+
 export const addLikeEstates = createAsyncThunk(
   'estates/like',
-  async (data: EstatesTypes) => {
+  async (data: EstatesLikeTypes) => {
     const response = await estatesLike(data);
     return response;
   },
@@ -68,7 +77,7 @@ export const addLikeEstates = createAsyncThunk(
 
 export const delLikeEstates = createAsyncThunk(
   'estates/dislike',
-  async (data: EstatesTypes) => {
+  async (data: EstatesLikeTypes) => {
     const response = await estatesDisLike(data);
     return response;
   },
@@ -94,16 +103,19 @@ const estatesSlice = createSlice({
   name: 'estates',
   initialState,
   reducers: {
-    setEstatesLike: (state, action: PayloadAction<number>) => {
-      state.estatesLike.push(action.payload);
-    },
-    delEstatesLike: (state, action: PayloadAction<number>) => {
-      state.estatesLike = state.estatesLike.filter(
-        (el) => el !== action.payload,
-      );
-    },
     setClickEstates: (state, action: PayloadAction<EstatesList>) => {
       state.clickEstates = action.payload;
+    },
+    setLikeEstates(state, action: PayloadAction<number[]>) {
+      state.estatesLike = action.payload;
+    },
+    addLikeEstate(state, action: PayloadAction<number>) {
+      state.estatesLike.push(action.payload);
+    },
+    removeLikeEstate(state, action: PayloadAction<number>) {
+      state.estatesLike = state.estatesLike.filter(
+        (id) => id !== action.payload,
+      );
     },
   },
   extraReducers: (builder) => {
@@ -120,10 +132,20 @@ const estatesSlice = createSlice({
         state.detail = action.payload.data.response;
       },
     );
+    builder.addCase(
+      getLikeEstates.fulfilled,
+      (state, action: PayloadAction<ActionPayload<[]>>) => {
+        state.estatesLike = action.payload.data.response;
+      },
+    );
   },
 });
 
-export const { setEstatesLike, delEstatesLike, setClickEstates } =
-  estatesSlice.actions;
+export const {
+  setClickEstates,
+  setLikeEstates,
+  addLikeEstate,
+  removeLikeEstate,
+} = estatesSlice.actions;
 
 export default estatesSlice.reducer;

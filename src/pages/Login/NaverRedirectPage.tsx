@@ -13,27 +13,13 @@ const NaverRedirectPage = () => {
     const dispatch = useDispatch<AppDispatch>();
     const user = useSelector((state: RootState) => state.user);
 
-    const whereNavigate = () =>{
-        console.log(user.user.safeScore," ",user.user.growthScore);
-
-        if(user.user.growthScore === 0 && user.user.safeScore===0){
-            navigate('/typetest',{ state: { nav: false } });
-        }
-        else
-            navigate('/');
-    }
-
     
     const handleOAuthNaver = async (getCode:string) => {
         try {
             const snsType = 'naver';
             const code = getCode;
-            //카카오로부터 받아온 code를 서버에 전달하여 카카오로 회원가입 & 로그인한다
-            await dispatch(postLogin({ snsType, code })).unwrap();
-            
-            //const loginUser = response.data; // 응답 데이터 -> user data 들어와야함
-            
-            whereNavigate();
+            //네이버로부터 받아온 code를 서버에 전달하여 네이버로 회원가입 & 로그인한다
+            return await dispatch(postLogin({ snsType, code })).unwrap();
         } catch (err) {
             navigate("/fail");
         }
@@ -43,7 +29,9 @@ const NaverRedirectPage = () => {
         const searchParams = new URLSearchParams(location.search);
         const code = searchParams.get('code');  // 카카오는 Redirect 시키면서 code를 쿼리 스트링으로 준다.
         if (code) {
-            handleOAuthNaver(code);
+            handleOAuthNaver(code).then(()=>{
+                navigate('/typetest',{ state: { nav: false } });
+            });
         }
     }, [location]);
 

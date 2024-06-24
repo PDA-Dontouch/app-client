@@ -5,7 +5,6 @@ import Button from "../Button";
 
 interface ModalProps {
   type: number;
-  retry: boolean;
   onClick: () => void;
 }
 
@@ -50,10 +49,9 @@ const typeDescriptions: { [key: number]: string } = {
   5: '공격투자형',
 };
 
-const BasicModal = ({ retry,type, onClick }: ModalProps) => {
+const BasicModal = ({ type, onClick }: ModalProps) => {
 
   const typeName = typeDescriptions[type] || '알 수 없음';
-  const buttonText = retry ? "메인페이지로" : "내 계좌 연동하기";
 
   return (
     <>
@@ -72,7 +70,7 @@ const BasicModal = ({ retry,type, onClick }: ModalProps) => {
             {typeName}인 당신을 위해 어떤 추천이 기다리고 있을지 궁금하시다면 지금 바로!
           </PlainText>
         </TextContainer>
-        <Button name={buttonText} status="active" onClick={onClick} />
+        <Button name="서비스 이용하러 가기" status="active" onClick={onClick} />
       </ModalContainer>
     </>
   );

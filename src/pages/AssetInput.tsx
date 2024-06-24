@@ -96,7 +96,7 @@ const AssetInput = () => {
             position: 'fixed',
           }}
         >
-          <BasicModal type={user.user.investmentType} onClick={() => navigate('/')} retry={false} />
+          <BasicModal type={user.user.investmentType} onClick={() => navigate('/')} />
         </div>
       )}
       <Container>

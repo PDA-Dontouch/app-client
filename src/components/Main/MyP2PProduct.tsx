@@ -119,7 +119,7 @@ export default function MyP2PProduct(
               <P2PName>{data.title}</P2PName>
 
               <P2POpenDate>
-                {'titleImageUrl' in data ? data.investment_period : data.length}
+                {'titleImageUrl' in data ? data.investmentPeriod : data.length}
                 개월
               </P2POpenDate>
             </P2PDetail>

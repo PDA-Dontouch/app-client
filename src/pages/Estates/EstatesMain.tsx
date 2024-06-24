@@ -24,6 +24,7 @@ import { getHoldingEstates } from '../../store/reducers/estates/holding';
 import Question from '../../assets/question.svg';
 import BasicModal2 from '../../components/common/Modal/BasicModal2';
 import InvestmentDescription from '../../components/common/InvestmentDescription';
+import EmptyEstate from '../../assets/empty-estate.svg';
 
 const Container = styled.div`
   ${tw`w-[calc(100% - 56px)] mt-14 mb-16 px-7 py-8 flex flex-col gap-5`}
@@ -56,6 +57,14 @@ const ItemContainer = styled.div`
 
 const SelectContainer = styled.div`
   ${tw`flex gap-3`}
+`;
+
+const Empty = styled.div`
+  ${tw`w-full h-[18rem] flex flex-col gap-4 justify-center items-center`}
+`;
+
+const EmptyImg = styled.img`
+  ${tw`w-[60px] h-[60px]`}
 `;
 
 const EstatesMain = () => {
@@ -175,15 +184,29 @@ const EstatesMain = () => {
               모집 완료
             </SubText>
           </SelectContainer>
-          {isLoading
-            ? [...Array(5)].map((_, index) => (
-                <div key={index}>
-                  <ProductSkeleton />
-                </div>
-              ))
-            : isSelect === 0
-              ? renderProducts(ongoingInvestments)
-              : renderProducts(completedInvestments)}
+          {isLoading ? (
+            [...Array(5)].map((_, index) => (
+              <div key={index}>
+                <ProductSkeleton />
+              </div>
+            ))
+          ) : isSelect === 0 ? (
+            ongoingInvestments.length === 0 ? (
+              <Empty>
+                <EmptyImg src={EmptyEstate} />
+                모집 중인 상품이 없습니다.
+              </Empty>
+            ) : (
+              renderProducts(ongoingInvestments)
+            )
+          ) : completedInvestments.length === 0 ? (
+            <Empty>
+              <EmptyImg src={EmptyEstate} />
+              모집 중인 상품이 없습니다.
+            </Empty>
+          ) : (
+            renderProducts(completedInvestments)
+          )}
         </ItemContainer>
       </Container>
       <Footer />

@@ -95,9 +95,7 @@ export default function AddStockModal({ setModal }: ProductsHeldPageProps) {
   function getSearchResult(searchTerm: string) {
     stocksDatas({
       searchWord: searchTerm,
-      safeScore: user.user.safeScore,
-      dividendScore: user.user.dividendScore,
-      growthScore: user.user.growthScore,
+      userId: user.user.id,
       dividendMonth: null,
       page: page,
       size: 10,
@@ -110,9 +108,7 @@ export default function AddStockModal({ setModal }: ProductsHeldPageProps) {
   function search(searchTerm: string) {
     stocksDatas({
       searchWord: searchTerm,
-      safeScore: user.user.safeScore,
-      dividendScore: user.user.dividendScore,
-      growthScore: user.user.growthScore,
+      userId: user.user.id,
       dividendMonth: null,
       page: 0,
       size: 10,

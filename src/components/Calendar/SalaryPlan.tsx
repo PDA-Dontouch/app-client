@@ -26,7 +26,7 @@ const Today = styled.div`
 `;
 
 const Plans = styled.div`
-  ${tw`w-full flex flex-col gap-3 p-2`}
+  ${tw`w-full flex flex-col gap-3 py-2`}
   overflow: scroll;
   height: 260px;
   box-sizing: border-box;
@@ -34,7 +34,7 @@ const Plans = styled.div`
 
 const Plan = styled.div`
   ${tw`w-full flex flex-row gap-3 px-3 py-4 bg-[white] text-sm`}
-  box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.1);
+  box-shadow: 1px 1px 2px 0px rgba(0, 0, 0, 0.05);
   border-radius: 8px;
   box-sizing: border-box;
 `;

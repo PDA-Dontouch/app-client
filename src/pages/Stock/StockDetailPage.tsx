@@ -56,11 +56,16 @@ const StockDetailPage: React.FC = () => {
 
   const combiStocks = useSelector((state: RootState) => state.stocks);
 
-  const currentCombination = `combination${currentMonth + 1}` as "combination1" | "combination2" | "combination3";
+  const currentCombination = `combination${currentMonth + 1}` as
+    | 'combination1'
+    | 'combination2'
+    | 'combination3';
   const selectedStocks = combiStocks[currentCombination];
-  
+
   const handleRemoveStock = (stockSymbol: string) => {
-    dispatch(removeCombiStocks({ combination: currentCombination, stockSymbol }));
+    dispatch(
+      removeCombiStocks({ combination: currentCombination, stockSymbol }),
+    );
   };
 
   const handleOpenModal = () => {
@@ -82,16 +87,22 @@ const StockDetailPage: React.FC = () => {
     }
   };
   const handleBuyBtn = () => {
-    navigate('/stocks/buy')
+    navigate('/stocks/buy');
   };
 
   return (
     <>
-      <Navbar name="" type="close" onClick={() => {navigate('/stocks')}} />
+      <Navbar
+        name=""
+        type="close"
+        onClick={() => {
+          navigate('/stocks');
+        }}
+      />
       <Container>
         <HeaderText>
-          {currentMonth + 1}·{currentMonth + 3}·{currentMonth + 5}·
-          {currentMonth + 7}월 추천 배당주
+          {currentMonth + 1}·{currentMonth + 4}·{currentMonth + 7}·
+          {currentMonth + 10}월 추천 배당주
         </HeaderText>
         <StockCombination>
           {selectedStocks.stocks.map((stock, idx) => (
@@ -108,7 +119,13 @@ const StockDetailPage: React.FC = () => {
         </StockCombination>
         <AddStock onClick={handleOpenModal}>+ 종목 추가하기</AddStock>
         <Divider />
-        <ExpectedDividend>예상 월 배당금 {selectedStocks.totalDividend}원</ExpectedDividend>
+        <ExpectedDividend>
+          예상 월 배당금{' '}
+          {selectedStocks.totalDividend
+            .toString()
+            .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+          원
+        </ExpectedDividend>
         <Wrapper>
           <ReasonTitle>추천 이유</ReasonTitle>
           <StockRecommend

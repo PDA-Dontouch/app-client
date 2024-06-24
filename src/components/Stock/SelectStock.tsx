@@ -8,7 +8,7 @@ import { RootState } from '../../store/store';
 
 interface StockProps {
   name: string;
-  price: number;
+  price: string;
   amount: number;
   symbol: string;
   onDelete: () => void;

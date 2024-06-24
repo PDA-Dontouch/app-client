@@ -21,7 +21,7 @@ const InputWrapper = styled.div`
 `;
 
 const Input = styled.input`
-  ${tw`w-11/12 py-2 text-3xl focus:outline-none border-b border-black`}
+  ${tw`w-11/12 py-2 text-3xl focus:outline-none border-b border-black text-end`}
   border-top: none;
   border-left: none;
   border-right: none;

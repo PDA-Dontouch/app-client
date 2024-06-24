@@ -11,7 +11,7 @@ import { removeCombiStocks } from '../../store/reducers/stocks/stocks';
 import AlertModal from '../../components/common/Stock/AlertModal';
 
 const Container = styled.div`
-  ${tw`h-[calc(100% - 190px)] mt-14 mb-[84px] px-5 py-6 flex flex-col gap-6`}
+  ${tw`h-[calc(100% - 190px)] mt-14 mb-[84px] px-5 py-6 flex flex-col gap-8`}
 `;
 
 const HeaderText = styled.span`
@@ -27,12 +27,12 @@ const SemiTitle = styled.span`
 `;
 
 const ExpectedDividend = styled.span`
-  ${tw`flex text-sm`}
-  color: rgba(0, 0, 0, 0.4);
+  ${tw`flex text-xs`}
+  color: rgba(0, 0, 0, 0.6);
 `;
 
 const Divider = styled.div`
-  ${tw`w-full h-1 bg-gray-light my-3`}
+  ${tw`w-full h-1 bg-gray-light`}
 `;
 
 const StockCombination = styled.div`
@@ -113,7 +113,11 @@ const StockCombiBuyPage: React.FC = () => {
           <Info>
             <SemiTitle>1·4·7·10월 추천 배당주</SemiTitle>
             <ExpectedDividend>
-              예상 월 배당금 {combiStocks.combination1.totalDividend}원
+              예상 월 배당금{' '}
+              {combiStocks.combination1.totalDividend
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              원
             </ExpectedDividend>
           </Info>
 
@@ -121,7 +125,9 @@ const StockCombiBuyPage: React.FC = () => {
             <div key={idx}>
               <SelectStock
                 name={stock.name}
-                price={stock.price}
+                price={stock.price
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                 amount={stock.quantity}
                 symbol={stock.symbol}
                 onDelete={() => handleRemoveStock(stock.symbol, 1)}
@@ -133,7 +139,11 @@ const StockCombiBuyPage: React.FC = () => {
           <Info>
             <SemiTitle>2·5·8·11월 추천 배당주</SemiTitle>
             <ExpectedDividend>
-              예상 월 배당금 {combiStocks.combination2.totalDividend}원
+              예상 월 배당금{' '}
+              {combiStocks.combination2.totalDividend
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              원
             </ExpectedDividend>
           </Info>
 
@@ -141,7 +151,9 @@ const StockCombiBuyPage: React.FC = () => {
             <div key={idx}>
               <SelectStock
                 name={stock.name}
-                price={stock.price}
+                price={stock.price
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                 amount={stock.quantity}
                 symbol={stock.symbol}
                 onDelete={() => handleRemoveStock(stock.symbol, 2)}
@@ -153,7 +165,11 @@ const StockCombiBuyPage: React.FC = () => {
           <Info>
             <SemiTitle>3·6·9·12월 추천 배당주</SemiTitle>
             <ExpectedDividend>
-              예상 월 배당금 {combiStocks.combination3.totalDividend}원
+              예상 월 배당금{' '}
+              {combiStocks.combination3.totalDividend
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              원
             </ExpectedDividend>
           </Info>
 
@@ -161,7 +177,9 @@ const StockCombiBuyPage: React.FC = () => {
             <div key={idx}>
               <SelectStock
                 name={stock.name}
-                price={stock.price}
+                price={stock.price
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                 amount={stock.quantity}
                 symbol={stock.symbol}
                 onDelete={() => handleRemoveStock(stock.symbol, 3)}
@@ -170,7 +188,9 @@ const StockCombiBuyPage: React.FC = () => {
           ))}
         </StockCombination>
         <Divider />
-        <BuyPrice>총 구매금액 {totalPrice()} 원</BuyPrice>
+        <BuyPrice>
+          총 구매금액 {totalPrice().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} 원
+        </BuyPrice>
       </Container>
       <ButtonContainer>
         <Button name="이전" status="plain" onClick={() => navigate(-1)} />

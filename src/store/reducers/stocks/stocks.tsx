@@ -41,9 +41,7 @@ const initialState: StockCombiType & { totalInvestment: number } & {
 };
 
 interface RequestCombiCreate {
-  safeScore: number;
-  growthScore: number;
-  dividendScore: number;
+  userId: number;
   investmentAmount: number;
 }
 
@@ -67,9 +65,7 @@ export const makeCombiStocks = createAsyncThunk<
   const user = state.user;
 
   const requestData: RequestCombiCreate = {
-    safeScore: user.user.safeScore,
-    growthScore: user.user.growthScore,
-    dividendScore: user.user.dividendScore,
+    userId: user.user.id,
     investmentAmount: investmentAmount,
   };
 

@@ -1,4 +1,4 @@
-import tw, { styled } from 'twin.macro';
+import tw, { css, styled } from 'twin.macro';
 import Calendar from '../components/Calendar/Calendar';
 import { useCallback, useEffect, useState } from 'react';
 import BottomUpModal from '../components/common/Modal/BottomUpModal';
@@ -15,6 +15,7 @@ import {
   getHoldingEnergyCalendar,
   getHoldingEstateCalendar,
 } from '../api/holding';
+import DropDown from '../assets/drop-down.svg';
 
 type ModalType = 'date' | 'plan';
 
@@ -22,9 +23,7 @@ const CalendarPageContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  ${tw`gap-10`};
-  padding-top: 80px;
-  padding-bottom: 80px;
+  ${tw`gap-2 pt-[57px] pb-[68px]`};
 `;
 
 const CalendarTitle = styled.div`
@@ -32,20 +31,12 @@ const CalendarTitle = styled.div`
   flex-direction: row;
   justify-content: space-between;
   width: 100%;
-  ${tw`px-6`};
+  ${tw`px-6 py-10`};
   box-sizing: border-box;
 `;
 
-const GreenBar = styled.div`
-  width: 100%;
-  position: absolute;
-  bottom: 0;
-  ${tw`h-1/2`};
-  background-color: #1aa76e66;
-`;
-
 const YearMonth = styled.div`
-  ${tw`text-3xl`}
+  ${tw`text-3xl flex gap-2 items-center`}
 `;
 
 const SalaryContainer = styled.div`
@@ -53,17 +44,26 @@ const SalaryContainer = styled.div`
   flex-direction: row;
   position: relative;
   align-items: flex-end;
-  ${tw`gap-2`};
 `;
 
 const SalaryText = styled.div`
-  ${tw`text-sm`}
-  ${tw`leading-7`}
+  ${tw`text-sm leading-7`}
+  ${css`
+    box-shadow: inset 0 -10px 0 rgba(82, 147, 208, 0.5);
+    line-height: 26px;
+  `}
 `;
 
 const Salary = styled.div`
-  ${tw`text-xl`}
-  ${tw`leading-7`}
+  ${tw`text-xl leading-7`}
+  ${css`
+    box-shadow: inset 0 -10px 0 rgba(82, 147, 208, 0.5);
+    line-height: 26px;
+  `}
+`;
+
+const Img = styled.img`
+  ${tw``}
 `;
 
 export default function CalendarPage() {
@@ -202,8 +202,8 @@ export default function CalendarPage() {
           }
         />
       )}
+      <Navbar name={user.user.nickname} type="main" onClick={() => {}} />
       <CalendarPageContainer>
-        <Navbar name={user.user.nickname} type="main" onClick={() => {}} />
         <CalendarTitle>
           <YearMonth
             onClick={() => {
@@ -211,10 +211,10 @@ export default function CalendarPage() {
             }}
           >
             {year}.{month + 1 < 10 ? '0' + (month + 1).toString() : month + 1}
+            <Img src={DropDown} />
           </YearMonth>
           <SalaryContainer>
-            <GreenBar></GreenBar>
-            <SalaryText>이번달 월급</SalaryText>
+            <SalaryText>이번달 월급 &nbsp;</SalaryText>
             <Salary>{Math.floor(totalSalary).toLocaleString()} 원</Salary>
           </SalaryContainer>
         </CalendarTitle>
@@ -232,8 +232,8 @@ export default function CalendarPage() {
             onOpenModal('plan');
           }}
         />
-        <Footer />
       </CalendarPageContainer>
+      <Footer />
     </>
   );
 }

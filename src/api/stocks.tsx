@@ -31,9 +31,7 @@ import axios, { AxiosResponse } from 'axios';
 
 interface RequestBodyType {
   searchWord: string | null;
-  safeScore: number;
-  dividendScore: number;
-  growthScore: number;
+  userId: number;
   dividendMonth: number | null;
   page: number;
   size: number;
@@ -45,9 +43,7 @@ interface RequestStockDetail {
 }
 
 interface RequestCombiCreate {
-  safeScore: number;
-  growthScore: number;
-  dividendScore: number;
+  userId: number;
   investmentAmount: number;
 }
 

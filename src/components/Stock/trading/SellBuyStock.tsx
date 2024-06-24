@@ -10,6 +10,7 @@ import {
   sellLimitOrder,
   sellMarketOrder,
   sellMarketOrderUs,
+  setSelectedPrice,
 } from '../../../store/reducers/stocks/trading';
 import { useNavigate } from 'react-router-dom';
 import { leaveRoom } from '../../../store/webSocket/nowPrice';
@@ -138,15 +139,14 @@ const SellBuyStock = ({ isSell, isKorea, totalAccount }: SellBuyProps) => {
           setError('가격과 수량을 입력해주세요.');
         } else if (price === 0) {
           setError('가격을 입력해주세요.');
-        }
-      } else if (amount === 0) {
-        setError('수량을 입력해주세요.');
-      } else if (
-        amount > krHolding.find((stock) => stock.symbol === selectCode).quantity
-      ) {
-        setError('보유 수량을 초과하였습니다.');
-      } else {
-        if (isSelect === 0) {
+        } else if (amount === 0) {
+          setError('수량을 입력해주세요.');
+        } else if (
+          amount >
+          krHolding.find((stock) => stock.symbol === selectCode).quantity
+        ) {
+          setError('보유 수량을 초과하였습니다.');
+        } else {
           const data = {
             stockName: detail.basic_info.name,
             stockCode: detail.basic_info.symbol,
@@ -157,7 +157,17 @@ const SellBuyStock = ({ isSell, isKorea, totalAccount }: SellBuyProps) => {
           dispatch(sellLimitOrder(data)).then(() => {
             navigate('/result/sell');
             leaveRoom(selectCode);
+            dispatch(setSelectedPrice('0'));
           });
+        }
+      } else {
+        if (amount === 0) {
+          setError('수량을 입력해주세요.');
+        } else if (
+          amount >
+          krHolding.find((stock) => stock.symbol === selectCode).quantity
+        ) {
+          setError('보유 수량을 초과하였습니다.');
         } else {
           // 시장가
           const data = {
@@ -169,6 +179,7 @@ const SellBuyStock = ({ isSell, isKorea, totalAccount }: SellBuyProps) => {
           dispatch(sellMarketOrder(data)).then(() => {
             navigate('/result/sell');
             leaveRoom(selectCode);
+            dispatch(setSelectedPrice('0'));
           });
         }
       }
@@ -185,10 +196,11 @@ const SellBuyStock = ({ isSell, isKorea, totalAccount }: SellBuyProps) => {
           stockCode: detail.basic_info.symbol,
           userId: userId,
           amount: amount,
-          marketType: detail.basic_info.exchange,
+          marketType: detail.basic_info.exchange === 'NASDAQ' ? 'BAQ' : 'BAY',
         };
         dispatch(sellMarketOrderUs(data)).then(() => {
           navigate('/result/sell');
+          dispatch(setSelectedPrice('0'));
         });
       }
     }
@@ -201,13 +213,11 @@ const SellBuyStock = ({ isSell, isKorea, totalAccount }: SellBuyProps) => {
           setError('가격과 수량을 입력해주세요.');
         } else if (price === 0) {
           setError('가격을 입력해주세요.');
-        }
-      } else if (amount === 0) {
-        setError('수량을 입력해주세요.');
-      } else if (price * amount > totalAccount) {
-        setError('총자산을 초과한 금액입니다.');
-      } else {
-        if (isSelect === 0) {
+        } else if (amount === 0) {
+          setError('수량을 입력해주세요.');
+        } else if (price * amount > totalAccount) {
+          setError('총자산을 초과한 금액입니다.');
+        } else {
           const data = {
             stockName: detail.basic_info.name,
             stockCode: detail.basic_info.symbol,
@@ -218,7 +228,14 @@ const SellBuyStock = ({ isSell, isKorea, totalAccount }: SellBuyProps) => {
           dispatch(buyLimitOrder(data)).then(() => {
             navigate('/result/pending');
             leaveRoom(selectCode);
+            dispatch(setSelectedPrice('0'));
           });
+        }
+      } else {
+        if (amount === 0) {
+          setError('수량을 입력해주세요.');
+        } else if (price * amount > totalAccount) {
+          setError('총자산을 초과한 금액입니다.');
         } else {
           // 시장가
           const data = {
@@ -230,22 +247,26 @@ const SellBuyStock = ({ isSell, isKorea, totalAccount }: SellBuyProps) => {
           dispatch(buyMarketOrder(data)).then(() => {
             navigate('/result/buy');
             leaveRoom(selectCode);
+            dispatch(setSelectedPrice('0'));
           });
         }
       }
     } else {
       if (amount === 0) {
         setError('수량을 입력해주세요.');
+      } else if (price * amount > totalAccount) {
+        setError('총자산을 초과한 금액입니다.');
       } else {
         const data = {
           stockName: detail.basic_info.name,
           stockCode: detail.basic_info.symbol,
           userId: userId,
           amount: amount,
-          marketType: detail.basic_info.exchange,
+          marketType: detail.basic_info.exchange === 'NASDAQ' ? 'BAQ' : 'BAY',
         };
         dispatch(buyMarketOrderUs(data)).then(() => {
           navigate('/result/buy');
+          dispatch(setSelectedPrice('0'));
         });
       }
     }

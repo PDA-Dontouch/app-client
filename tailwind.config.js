@@ -5,9 +5,9 @@ export default {
     extend: {
       colors: {
         // green
-        green: '#1AA76E',
-        'green-dark': '#0F6643',
-        green40: '#9DD6BF',
+        green: '#457BC3',
+        'green-dark': '#0C39B0',
+        green40: '#0D43D1',
 
         // black
         black: '#000000',
@@ -33,11 +33,11 @@ export default {
         gray70: '#E2E2E2',
 
         // blue
-        blue: '#5293D0',
-        'blue-light': '#90C0EC',
+        blue: '#1AA76E',
+        'blue-light': 'rgba(26, 167, 110, 0.3)',
         'blue-down': '#4F7CEF',
-        blue20: 'rgba(82, 147, 208, 0.2)',
-        blue50: 'rgba(82, 147, 208, 0.5)',
+        blue20: 'rgba(26, 167, 110, 0.2)',
+        blue50: 'rgba(26, 167, 110, 0.5)',
 
         // yellow
         yellow: '#E6B637',

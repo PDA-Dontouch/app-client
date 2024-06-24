@@ -44,7 +44,7 @@ const ContentContainer = styled.div`
 `;
 
 const SectionHeader = styled.div`
-  ${tw`flex gap-4 my-4 pl-2 mt-6`}
+  ${tw`flex gap-4 pl-2 mt-6 mb-4`}
 `;
 
 const MainTab = styled.span`
@@ -57,7 +57,7 @@ const SubTab = styled(MainTab)`
 `;
 
 const CombiBoxContainer = styled.div`
-  ${tw`mt-3 p-2`}
+  ${tw`mt-2 p-2`}
 `;
 
 const ItemContainer = styled.div`
@@ -96,9 +96,7 @@ const StockMainPage: React.FC = () => {
   useEffect(() => {
     stocksDatas({
       searchWord: searchTerm,
-      safeScore: user.user.safeScore,
-      dividendScore: user.user.dividendScore,
-      growthScore: user.user.growthScore,
+      userId: user.user.id,
       dividendMonth: null,
       page: page,
       size: 24,
@@ -106,7 +104,7 @@ const StockMainPage: React.FC = () => {
       setStockList(response.data.response);
     });
     dispatch(getLikeStocks(userId));
-  }, []);
+  }, [searchTerm]);
 
   const handleTabClick = (tab: 'recommend' | 'individual') => {
     setActiveTab(tab);

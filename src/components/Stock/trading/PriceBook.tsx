@@ -20,7 +20,7 @@ interface PriceBookProps {
 
 const Container = styled.div<{ isKorea: boolean }>`
   ${tw`overflow-y-auto`}
-  ${({ isKorea }) => (!isKorea ? tw`h-[100vh]` : '')}
+  ${({ isKorea }) => (isKorea ? tw`` : tw`h-[100vh]`)}
 `;
 
 const FlexColumn = styled.div<{ isOpen: boolean }>`
@@ -61,14 +61,17 @@ const PriceBook = ({ nowPrice, askPrice, isKorea }: PriceBookProps) => {
   const handlePriceSelect = (price: string) => {
     dispatch(setSelectedPrice(price));
   };
+  console.log(isKorea);
 
   return (
     <Container
       ref={containerRef}
       onScroll={handleScroll}
       isKorea={
-        askPrice?.message?.sellPrice.length > 0 &&
-        askPrice?.message?.buyPrice.length > 0
+        isKorea
+          ? askPrice?.message?.sellPrice.length > 0 &&
+            askPrice?.message?.buyPrice.length > 0
+          : false
       }
     >
       {isKorea ? (

@@ -31,7 +31,7 @@ const StockLogo = styled.img`
 `;
 
 const ItemContainer = styled.div`
-  ${tw`flex flex-row ml-1 justify-between`}
+  ${tw`flex flex-row ml-1 justify-between items-center`}
 `;
 
 const MainText = styled.span`

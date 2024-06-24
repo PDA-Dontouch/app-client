@@ -1,4 +1,4 @@
-import tw, { styled } from 'twin.macro';
+import tw, { css, styled } from 'twin.macro';
 import arrowImg from '../../assets/arrow.svg';
 import Calendar from '../../components/Calendar/Calendar';
 import BottomUpModal from '../../components/common/Modal/BottomUpModal';
@@ -38,7 +38,7 @@ type AssetDetailCommonProps = {
 };
 
 const MyPageContainer = styled.div`
-  ${tw`flex flex-col gap-8 px-5 pt-18 pb-22 w-full`}
+  ${tw`flex flex-col gap-8 px-5 pt-22 pb-22 w-full`}
   box-sizing: border-box;
 `;
 
@@ -54,14 +54,10 @@ const TitleName = styled.div<TitleNameProps>`
 
 const TitleInvestmentType = styled.div`
   ${tw`text-xl`}
-  position: relative;
-`;
-
-const GreenBar = styled.div`
-  position: absolute;
-  bottom: 0;
-  ${tw`h-1/2 w-full`};
-  background-color: #1aa76e66;
+  ${css`
+    box-shadow: inset 0 -10px 0 rgba(82, 147, 208, 0.5);
+    line-height: 26px;
+  `}
 `;
 
 const ThisMonthSalaryContainer = styled.div`
@@ -81,7 +77,7 @@ const ThisMonthSalaryNumber = styled.div`
 `;
 
 const CalendarContainer = styled.div`
-  ${tw`gap-3 w-full flex flex-col `}
+  ${tw`gap-3 w-full flex flex-col px-1 box-border`}
 `;
 
 const CalendarGoToThisMonth = styled.div`
@@ -97,7 +93,7 @@ const TotalAssetSection = styled.div`
 `;
 
 const TotalAssetTitle = styled.div`
-  ${tw`flex flex-row items-center gap-3`}
+  ${tw`flex flex-row items-end gap-2 ps-2`}
 `;
 
 const TotalAssetTitleText = styled.div`
@@ -105,7 +101,7 @@ const TotalAssetTitleText = styled.div`
 `;
 
 const TotalAssetTitleNumber = styled.div`
-  ${tw`text-3xl`}
+  ${tw`text-2xl`}
   font-weight: 500;
 `;
 
@@ -116,7 +112,7 @@ const AssetDetailSection = styled.div`
 const AssetDetail = styled.div`
   ${tw`flex flex-row justify-between items-center px-3 py-4 bg-gray-light`}
   border-radius : 12px;
-  box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.15);
+  box-shadow: 1px 1px 2px 0px rgba(0, 0, 0, 0.05);
 `;
 
 const AssetDetailInfo = styled.div`
@@ -133,7 +129,8 @@ const AdditionalFunctionContainer = styled.div`
 
 const AdditionalFunction = styled.div`
   ${tw`flex flex-col gap-1 p-3 w-full items-center`}
-  box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.15);
+  background-color: rgba(0, 0, 0, 0.013);
+  box-shadow: 2px 2px 2px 0px rgba(0, 0, 0, 0.04);
   border-radius: 12px;
 `;
 
@@ -145,12 +142,16 @@ const AdditionalFunctionText = styled.div`
   ${tw`text-xs`}
 `;
 
+const AdditionalFont = styled.span`
+  ${tw`text-[0.9rem]`}
+`;
+
 function AssetDetailCommon({ type, price, onClick }: AssetDetailCommonProps) {
   return (
     <AssetDetail onClick={onClick}>
       <AssetDetailInfo>
-        <div>{type}</div>
-        <div>{price.toLocaleString()} 원</div>
+        <AdditionalFont>{type}</AdditionalFont>
+        <AdditionalFont>{price.toLocaleString()} 원</AdditionalFont>
       </AssetDetailInfo>
       <AssetDetailArrow src={arrowImg} />
     </AssetDetail>
@@ -329,8 +330,7 @@ export default function MainPage() {
         <TitleNameContainer>
           <TitleName type="name">{user.user.nickname}</TitleName>
           <TitleInvestmentType>
-            <GreenBar></GreenBar>(
-            {investmentTypeToString(user.user.investmentType)})
+            ({investmentTypeToString(user.user.investmentType)})
           </TitleInvestmentType>
           <TitleName type="nim">님</TitleName>
         </TitleNameContainer>

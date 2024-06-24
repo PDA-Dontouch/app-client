@@ -23,6 +23,7 @@ import { getHoldingEnergy } from '../../store/reducers/energy/holding';
 import Question from '../../assets/question.svg';
 import BasicModal2 from '../../components/common/Modal/BasicModal2';
 import InvestmentDescription from '../../components/common/InvestmentDescription';
+import EmptyEnergy from '../../assets/empty-energy.svg';
 
 const Container = styled.div`
   ${tw`w-[calc(100% - 56px)] mt-14 mb-16 px-7 py-8 flex flex-col gap-5`}
@@ -39,7 +40,7 @@ const BtnContainer = styled.div`
 const MainText = styled.div`
   ${tw`w-fit text-xl`}
   ${css`
-    box-shadow: inset 0 -10px 0 rgba(82, 147, 208, 0.5);
+    box-shadow: inset 0 -10px 0 rgba(26, 167, 110, 0.4);
     line-height: 26px;
   `} // ${tw`w-full bg-blue50 mt-14 px-4 pt-[120px] pb-8 text-white font-semibold text-xl`}
 `;
@@ -55,6 +56,14 @@ const ItemContainer = styled.div`
 
 const SelectContainer = styled.div`
   ${tw`flex gap-3`}
+`;
+
+const Empty = styled.div`
+  ${tw`w-full h-[18rem] flex flex-col gap-4 justify-center items-center`}
+`;
+
+const EmptyImg = styled.img`
+  ${tw`w-[60px] h-[60px]`}
 `;
 
 const EnergyMain = () => {
@@ -163,15 +172,29 @@ const EnergyMain = () => {
               모집 완료
             </SubText>
           </SelectContainer>
-          {isLoading
-            ? [...Array(5)].map((_, index) => (
-                <div key={index}>
-                  <ProductSkeleton />
-                </div>
-              ))
-            : isSelect === 0
-              ? renderProducts(ongoingInvestments)
-              : renderProducts(completedInvestments)}
+          {isLoading ? (
+            [...Array(5)].map((_, index) => (
+              <div key={index}>
+                <ProductSkeleton />
+              </div>
+            ))
+          ) : isSelect === 0 ? (
+            ongoingInvestments.length === 0 ? (
+              <Empty>
+                <EmptyImg src={EmptyEnergy} />
+                모집 중인 상품이 없습니다.
+              </Empty>
+            ) : (
+              renderProducts(ongoingInvestments)
+            )
+          ) : completedInvestments.length === 0 ? (
+            <Empty>
+              <EmptyImg src={EmptyEnergy} />
+              모집 중인 상품이 없습니다.
+            </Empty>
+          ) : (
+            renderProducts(completedInvestments)
+          )}
         </ItemContainer>
       </Container>
       <Footer />

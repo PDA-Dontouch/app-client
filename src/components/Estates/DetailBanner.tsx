@@ -18,7 +18,7 @@ const Container = styled.div<{ isEstates: boolean }>`
           background-image: linear-gradient(#f1cd6d, #e6b637);
         `
       : css`
-          background-image: linear-gradient(#90c0ec, #5293d0);
+          background-image: linear-gradient(#a0d8c1, #1aa76e);
         `}
 `;
 

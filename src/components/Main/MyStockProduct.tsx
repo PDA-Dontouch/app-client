@@ -77,6 +77,7 @@ export default function MyStockProduct({
   return (
     <MyStockProductContainer
       onClick={() => {
+        dispatch(setSelectCode(code));
         dispatch(setSelectExchange(exchange));
         navigate(`/stocks/${id}`);
       }}

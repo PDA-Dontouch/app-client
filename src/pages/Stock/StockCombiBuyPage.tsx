@@ -56,6 +56,10 @@ const BuyPrice = styled.span`
   ${tw`text-[1rem] text-right`}
 `;
 
+const ErrorText = styled.span`
+  ${tw`text-[0.9rem] text-red text-end`}
+`;
+
 const StockCombiBuyPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
@@ -63,6 +67,10 @@ const StockCombiBuyPage: React.FC = () => {
   const combiStocks = useSelector((state: RootState) => state.stocks);
   const [alertOpen, setAlertOpen] = useState(false);
   const user = useSelector((state: RootState) => state.user.user);
+  const wantInvestmentPrice = useSelector(
+    (state: RootState) => state.stocks.totalInvestment,
+  );
+  const [error, setError] = useState<boolean>(false);
 
   const handleRemoveStock = (
     stockSymbol: string,
@@ -91,6 +99,7 @@ const StockCombiBuyPage: React.FC = () => {
 
   const handleAlertClose = () => {
     setAlertOpen(false);
+    setError(false);
   };
 
   const totalPrice = () => {
@@ -105,46 +114,67 @@ const StockCombiBuyPage: React.FC = () => {
       sum = sum + stock.price * stock.quantity;
     });
 
-    return sum.toLocaleString();
+    return sum;
   };
 
   console.log(combiStocks);
   const submitCombi = () => {
-    const stockList = [];
-    combiStocks.combination1.stocks.map((item, idx) =>
-      stockList.push({
-        stockName: item.name,
-        stockCode: item.symbol,
-        amount: item.quantity,
-        marketType: item.exchange,
-      }),
-    );
-    combiStocks.combination2.stocks.map((item, idx) =>
-      stockList.push({
-        stockName: item.name,
-        stockCode: item.symbol,
-        amount: item.quantity,
-        marketType: item.exchange,
-      }),
-    );
-    combiStocks.combination3.stocks.map((item, idx) =>
-      stockList.push({
-        stockName: item.name,
-        stockCode: item.symbol,
-        amount: item.quantity,
-        marketType: item.exchange,
-      }),
-    );
+    console.log(wantInvestmentPrice);
+    if (totalPrice() > wantInvestmentPrice) {
+      setError(true);
+    } else {
+      const stockList = [];
+      combiStocks.combination1.stocks.map((item, idx) =>
+        stockList.push({
+          stockName: item.name,
+          stockCode: item.symbol,
+          amount: item.quantity,
+          marketType:
+            item.exchange === 'KSC'
+              ? 'KSC'
+              : item.exchange === 'NASDAQ'
+                ? 'BAQ'
+                : 'BAY',
+        }),
+      );
+      combiStocks.combination2.stocks.map((item, idx) =>
+        stockList.push({
+          stockName: item.name,
+          stockCode: item.symbol,
+          amount: item.quantity,
+          marketType:
+            item.exchange === 'KSC'
+              ? 'KSC'
+              : item.exchange === 'NASDAQ'
+                ? 'BAQ'
+                : 'BAY',
+        }),
+      );
+      combiStocks.combination3.stocks.map((item, idx) =>
+        stockList.push({
+          stockName: item.name,
+          stockCode: item.symbol,
+          amount: item.quantity,
+          marketType:
+            item.exchange === 'KSC'
+              ? 'KSC'
+              : item.exchange === 'NASDAQ'
+                ? 'BAQ'
+                : 'BAY',
+        }),
+      );
 
-    const data = {
-      userId: user.id,
-      stockList: stockList,
-    };
-    dispatch(purchasedCombination(data)).then((res) => {
-      if ((res.payload as ResponsePayload).data.success) {
-        navigate('/result/buy');
-      }
-    });
+      const data = {
+        userId: user.id,
+        stockList: stockList,
+      };
+      console.log(data);
+      dispatch(purchasedCombination(data)).then((res) => {
+        if ((res.payload as ResponsePayload).data.success) {
+          navigate('/result/buy');
+        }
+      });
+    }
   };
 
   return (
@@ -238,7 +268,11 @@ const StockCombiBuyPage: React.FC = () => {
         </StockCombination>
         <Divider />
         <BuyPrice>
-          총 구매 금액 {totalPrice().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} 원
+          총 구매 금액{' '}
+          {totalPrice()
+            .toString()
+            .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{' '}
+          원
         </BuyPrice>
       </Container>
       <ButtonContainer>
@@ -250,6 +284,13 @@ const StockCombiBuyPage: React.FC = () => {
           type="full"
           onClose={handleAlertClose}
           message="적어도 한 종목은 조합에 있어야 합니다."
+        ></AlertModal>
+      )}
+      {error && (
+        <AlertModal
+          type="full"
+          onClose={handleAlertClose}
+          message="투자 가능 금액을 초과했습니다."
         ></AlertModal>
       )}
     </>

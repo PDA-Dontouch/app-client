@@ -34,7 +34,6 @@ import {
   removeLikeStock,
 } from '../../store/reducers/stocks/stocks';
 import ScrollToTop from '../../hooks/ScrollToTop';
-// import { insertStock, removeStock } from '../../store/reducers/stocks/stocks';
 
 const MainContainer = styled.div`
   ${tw`flex flex-col min-h-screen`}

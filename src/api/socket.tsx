@@ -5,12 +5,10 @@ import {
 } from '../types/socket';
 import { socketInstance } from './api';
 
-export const socket_url = `/api`;
-
 export const buyLimitPrice = async (data: postOrderData) => {
   try {
     const response = await socketInstance.post(
-      socket_url + '/pendingOrder/buyPendingOrder',
+      '/pendingOrder/buyPendingOrder',
       data,
     );
     return response;
@@ -23,7 +21,7 @@ export const buyLimitPrice = async (data: postOrderData) => {
 export const buyMarketPrice = async (data: postMarketData) => {
   try {
     const response = await socketInstance.post(
-      socket_url + '/pendingOrder/buyMarketPlaceOrder',
+      '/pendingOrder/buyMarketPlaceOrder',
       data,
     );
     return response;
@@ -36,7 +34,7 @@ export const buyMarketPrice = async (data: postMarketData) => {
 export const buyMarketPriceUs = async (data: postMarketDataUs) => {
   try {
     const response = await socketInstance.post(
-      socket_url + '/pendingOrder/buyMarketPlaceOrderUs',
+      '/pendingOrder/buyMarketPlaceOrderUs',
       data,
     );
     return response;
@@ -49,7 +47,7 @@ export const buyMarketPriceUs = async (data: postMarketDataUs) => {
 export const sellLimitPrice = async (data: postOrderData) => {
   try {
     const response = await socketInstance.post(
-      socket_url + '/pendingOrder/sellPendingOrder',
+      '/pendingOrder/sellPendingOrder',
       data,
     );
     return response;
@@ -62,7 +60,7 @@ export const sellLimitPrice = async (data: postOrderData) => {
 export const sellMarketPrice = async (data: postMarketData) => {
   try {
     const response = await socketInstance.post(
-      socket_url + '/pendingOrder/sellMarketPlaceOrder',
+      '/pendingOrder/sellMarketPlaceOrder',
       data,
     );
     return response;
@@ -75,7 +73,7 @@ export const sellMarketPrice = async (data: postMarketData) => {
 export const sellMarketPriceUs = async (data: postMarketDataUs) => {
   try {
     const response = await socketInstance.post(
-      socket_url + '/pendingOrder/sellMarketPlaceOrderUs',
+      '/pendingOrder/sellMarketPlaceOrderUs',
       data,
     );
     return response;

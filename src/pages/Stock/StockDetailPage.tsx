@@ -61,6 +61,7 @@ const StockDetailPage: React.FC = () => {
     | 'combination2'
     | 'combination3';
   const selectedStocks = combiStocks[currentCombination];
+  console.log('getCombi', combiStocks);
 
   const handleRemoveStock = (stockSymbol: string) => {
     dispatch(

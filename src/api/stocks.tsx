@@ -81,7 +81,7 @@ export const stocksData = async (
 
 export const stocksChartKr = async (data: KrChartPost) => {
   try {
-    const response = await socketInstance.post('/api/graph/graphDataKr', data);
+    const response = await socketInstance.post('/graph/graphDataKr', data);
     return response;
   } catch (err) {
     console.error(err);
@@ -91,7 +91,7 @@ export const stocksChartKr = async (data: KrChartPost) => {
 
 export const stocksChartUs = async (data: UsChartPost) => {
   try {
-    const response = await socketInstance.post('/api/graph/graphDataUs', data);
+    const response = await socketInstance.post('/graph/graphDataUs', data);
     return response;
   } catch (err) {
     console.error(err);
@@ -236,7 +236,7 @@ export const getKRStockPrice = async ({
 }): Promise<string[]> => {
   try {
     const response = await axios
-      .post(`/api/myPage/krStock`, { stockList })
+      .post(`/api/trading/myPage/krStock`, { stockList })
       .then((data: AxiosResponse<HoldingKrStockSocketResponseType[]>) => {
         return data.data.map((items) => {
           return items.price;
@@ -257,7 +257,7 @@ export const getUSStockPrice = async ({
 }): Promise<number[]> => {
   try {
     const response = await axios
-      .post(`/api/myPage/usStock`, { stockList })
+      .post(`/api/trading/myPage/usStock`, { stockList })
       .then((data: AxiosResponse<HoldingUsStockSocketResponseType[]>) => {
         return data.data.map((items) => {
           return items.price;
@@ -294,7 +294,7 @@ export const getCombinationPurchased = async ({
 export const purchaseCombination = async (data: PostCombiData) => {
   try {
     const response = await socketInstance.post(
-      `/api/pendingOrder/buyCombinationStock`,
+      `/pendingOrder/buyCombinationStock`,
       data,
     );
     return response;

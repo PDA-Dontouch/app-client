@@ -91,12 +91,12 @@ const MarketInfo = ({ nowPrice, setIsDescription }: InfoProps) => {
   const [close, setClose] = useState(0);
 
   useEffect(() => {
-    setUpDown(fixedData[0].close - fixedData[1].close);
+    setUpDown(fixedData[0]?.close - fixedData[1]?.close);
     setStockRate(
-      ((fixedData[0].close - fixedData[1].close) / fixedData[1].close) * 100,
+      ((fixedData[0]?.close - fixedData[1]?.close) / fixedData[1]?.close) * 100,
     );
     setClose(
-      fixedData[0].close.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+      fixedData[0]?.close?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','),
     );
   }, [detail.basic_info.symbol]);
 

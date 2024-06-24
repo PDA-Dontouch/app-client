@@ -77,10 +77,11 @@ export const makeCombiStocks = createAsyncThunk<
 });
 
 const determineExchange = (stock: InsertCombiStock): TransformedStock => {
-  const isKRStock = /^[0-9]+$/.test(stock.symbol);
+  const isKr = stock.exchange === 'KSC';
+  console.log(stock.name, isKr);
   return {
     stockId: stock.stockId,
-    exchange: isKRStock ? 'KSC' : 'OTHER',
+    exchange: isKr ? 'KSC' : 'OTHER',
   };
 };
 
@@ -118,7 +119,7 @@ export const addCombiStocks = createAsyncThunk<
       investmentAmount: state.stocks.totalInvestment,
     };
     newCombi[combination].push({ stockId, exchange });
-
+    console.log(newCombi);
     const response = await combinationDistribute(newCombi);
     console.log('here', response.data);
     return response as ActionPayloadCombi;

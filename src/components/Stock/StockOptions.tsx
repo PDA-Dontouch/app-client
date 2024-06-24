@@ -98,7 +98,7 @@ const StockOptions: React.FC<StockOptionsProps> = ({
         addCombiStocks({
           combination: currentCombination,
           stockId: stockId,
-          exchange: exchange,
+          exchange: exchange === 'KSC' ? 'KSC' : 'OTHER',
         }),
       );
     }

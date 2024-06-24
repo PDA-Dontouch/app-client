@@ -44,10 +44,9 @@ export default defineConfig(({ mode }) => {
           target: env.VITE_APP_ENERGY_BASE_URL,
           changeOrigin: true,
         },
-        '/api/socket': {
+        '/api/trading': {
           target: env.VITE_APP_SOCKET_BASE_URL,
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api\/socket/, ''),
         },
         '/api/holding': {
           target: env.VITE_APP_HOLDING_BASE_URL,

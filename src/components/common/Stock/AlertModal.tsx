@@ -13,11 +13,11 @@ const BackGround = styled.div<{ round?: boolean }>`
 `;
 
 const Modal = styled.div`
-  ${tw`bg-white p-5 rounded-20 shadow-lg flex flex-col items-center`}
+  ${tw`bg-white px-8 py-6 rounded-12 shadow-lg flex flex-col items-center gap-4`}
 `;
 
 const Btn = styled.button`
-  ${tw`mt-3 px-4 py-2 rounded-full text-white`}
+  ${tw`px-4 py-2 rounded-full text-white`}
   background-color: #457BC3;
   border: none;
 `;

@@ -49,7 +49,7 @@ const SectionHeader = styled.div`
 `;
 
 const MainTab = styled.span`
-  ${tw` text-lg cursor-pointer`}
+  ${tw` text-[1rem] cursor-pointer`}
 `;
 const SubTab = styled(MainTab)`
   ${css`

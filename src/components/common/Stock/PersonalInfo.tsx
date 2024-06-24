@@ -39,7 +39,7 @@ const Title = styled.span`
 `;
 
 const PersonData = styled.span`
-  ${tw`text-xl`}
+  ${tw`text-[1.2rem]`}
 `;
 
 const Img = styled.img`

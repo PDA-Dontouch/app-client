@@ -34,11 +34,11 @@ const Grade = styled.div`
 `;
 
 const MidItem = styled.div`
-  ${tw`flex flex-col gap-10`}
+  ${tw`flex flex-col gap-6`}
 `;
 
 const MainText = styled.span`
-  ${tw`text-xl font-semibold text-white`}
+  ${tw`text-[1.2rem] font-semibold text-white`}
 `;
 
 const MiniText = styled.span`

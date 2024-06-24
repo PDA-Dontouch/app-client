@@ -15,7 +15,7 @@ const Wrapper = styled.div`
 `;
 
 const MainText = styled.span`
-  ${tw`text-white text-xl`}
+  ${tw`text-white text-[1.2rem]`}
 `;
 
 const SubText = styled.span`

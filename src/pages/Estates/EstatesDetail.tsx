@@ -51,7 +51,7 @@ const Container = styled.div`
 `;
 
 const BtnContainer = styled.div`
-  ${tw`w-[100%] h-[56px] flex gap-4 px-6 fixed bottom-7 box-border z-[99]`}
+  ${tw`w-[100%] h-[56px] flex gap-4 px-6 fixed bottom-4 box-border z-[99]`}
 `;
 
 const Hr = styled.div`

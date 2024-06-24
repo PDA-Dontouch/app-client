@@ -37,7 +37,7 @@ const CalendarTitle = styled.div`
 `;
 
 const YearMonth = styled.div`
-  ${tw`text-[1.4rem] flex gap-2 items-center`}
+  ${tw`text-[1.3rem] flex gap-2 items-center`}
 `;
 
 const SalaryContainer = styled.div`
@@ -48,7 +48,7 @@ const SalaryContainer = styled.div`
 `;
 
 const SalaryText = styled.div`
-  ${tw`text-[0.8rem]`}
+  ${tw`text-[0.9rem]`}
   ${css`
     box-shadow: inset 0 -10px 0 rgba(82, 147, 208, 0.5);
     line-height: 26px;
@@ -56,7 +56,7 @@ const SalaryText = styled.div`
 `;
 
 const Salary = styled.div`
-  ${tw`text-xl leading-7`}
+  ${tw`text-[1.2rem] leading-7`}
   ${css`
     box-shadow: inset 0 -10px 0 rgba(82, 147, 208, 0.5);
     line-height: 26px;

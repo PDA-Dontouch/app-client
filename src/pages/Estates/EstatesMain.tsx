@@ -151,7 +151,7 @@ const EstatesMain = () => {
 
   return (
     <>
-      <Navbar name={user.nickname} type="main" onClick={() => {}} />
+      <Navbar name={user.nickname} type="main" onClick={() => navigate('/')} />
       <ScrollToTop />
       <Container>
         <TopContainer>

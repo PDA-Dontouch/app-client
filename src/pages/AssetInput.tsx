@@ -3,6 +3,9 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import tw, { styled } from 'twin.macro';
 import Button from '../components/common/Button';
 import BasicModal from '../components/common/Modal/BasicModal';
+import { postType } from '../store/reducers/auth/auth';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../store/store';
 
 const Container = styled.div`
   ${tw`h-[100%] px-7 py-40 box-border`}
@@ -48,6 +51,9 @@ const AssetInput = () => {
   const [totalAsset, setTotalAsset] = useState<string>('');
   const [showModal, setShowModal] = useState(false);
 
+  const user = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch<AppDispatch>();
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/,/g, '');
 
@@ -64,6 +70,20 @@ const AssetInput = () => {
   };
 
   const handleSubmit = () => {
+    // dispatch(postType({
+    //     token: user.token,
+    //     userId: user.user.id,
+    //     totalScore: totalScore,
+    //   }),
+    // ).catch((err: unknown) => {
+    //   console.error(err);
+    // });
+    dispatch(postType({
+      token: user.token,
+      userId: user.user.id,
+      totalScore: totalScore,
+    }),
+  ).unwrap();
     setShowModal(true);
   };
 
@@ -76,7 +96,7 @@ const AssetInput = () => {
             position: 'fixed',
           }}
         >
-          <BasicModal type="안전추구" onClick={() => navigate('/')} />
+          <BasicModal type={user.user.investmentType} onClick={() => navigate('/')} />
         </div>
       )}
       <Container>

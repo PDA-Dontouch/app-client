@@ -1,3 +1,4 @@
+import axios from 'axios';
 import {
   PageSizeType,
   PromiseAxiosRes,
@@ -14,11 +15,11 @@ import {
 import { authInstance } from './api';
 
 export const tryLogin = async (
-  sns: string,
+  type: string,
   code: string,
 ): PromiseAxiosRes<LoginedUser> => {
   try {
-    const response = await authInstance.get(`oauth/login/${sns}?code=${code}`);
+    const response = await authInstance.get(`/oauth/login/${type}?code=${code}`);
     return response;
   } catch (err) {
     console.error(err);
@@ -76,7 +77,7 @@ export const getUserAccountAmount = async ({
 
 export const updateInvestmentType = async ({
   userId,
-  token,
+  // token,
   totalScore,
 }: WithToken &
   WithUserId & { totalScore: number }): PromiseAxiosRes<UserDetail> => {
@@ -87,11 +88,11 @@ export const updateInvestmentType = async ({
         userId: userId,
         totalScore: totalScore,
       },
-      {
-        params: {
-          token: token,
-        },
-      },
+      // {
+      //   params: {
+      //     token: token,
+      //   },
+      // },
     );
     return response;
   } catch (err) {

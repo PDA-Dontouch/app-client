@@ -1,13 +1,9 @@
 import tw, { styled } from "twin.macro";
-import { useDispatch } from "react-redux";
-import { postLogin } from "../store/reducers/auth/auth";
 import SocialLogin from "../components/Login/SocialLogin";
 
 import Logo from '../assets/logo.svg';
 import Kakao from '../assets/kakao.svg';
 import Naver from '../assets/naver.svg';
-import Google from '../assets/google.svg';
-import { AppDispatch } from "../store/store";
 
 
 const Container = styled.div`
@@ -30,7 +26,7 @@ const LoginPage = () => {
 
   const onLogin = (e: React.MouseEvent<HTMLElement, MouseEvent>, url: string) => {
     e.preventDefault();
-    //dispatch(postLogin(data));
+    console.log(url);
     window.location.href = url;
   };
 
@@ -41,7 +37,6 @@ const LoginPage = () => {
       <ItemContainer>
         <SocialLogin url={Kakao} name="Kakao" onClick={(e: React.MouseEvent<HTMLElement, MouseEvent>) => onLogin(e, kakaoAuthUrl)} />
         <SocialLogin url={Naver} name="Naver" onClick={(e: React.MouseEvent<HTMLElement, MouseEvent>) => onLogin(e,naverAuthUrl)} />
-        <SocialLogin url={Google} name="Google" onClick={(e: React.MouseEvent<HTMLElement, MouseEvent>) => onLogin(e,googleAuthUrl)} />
       </ItemContainer>
     </Container>
   );

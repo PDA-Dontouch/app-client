@@ -1,8 +1,9 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { getUser, updateInvestmentType } from '../../../api/auth';
+import { getUser, tryLogin, updateInvestmentType } from '../../../api/auth';
 import {
   UserDetail,
   initialUserDetail,
+  LoginedUser,
   InvestmentType,
 } from '../../../types/user_product';
 import { WithToken, WithUserId } from '../../../types/response_product';
@@ -21,11 +22,14 @@ type ActionPayload = {
   };
 };
 
-export const postLogin = createAsyncThunk<ActionPayload, string>(
+
+export const postLogin = createAsyncThunk<LoginedUser, { snsType: string, code: string }>(
   'user/login',
-  async (data: string) => {
-    const response = await getUser(data);
-    return response as ActionPayload;
+  async ({ snsType, code }) => {
+    const response = await tryLogin(snsType, code);
+    const loginUser = response.data.response;
+    console.log(loginUser);
+    return loginUser as LoginedUser;
   },
 );
 
@@ -44,9 +48,9 @@ const userSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(
       postLogin.fulfilled,
-      (state, action: PayloadAction<ActionPayload>) => {
-        state.user = action.payload.data.response.user;
-        state.token = action.payload.data.response.token;
+      (state, action: PayloadAction<LoginedUser>) => {
+        state.user = action.payload.user;
+        state.token = action.payload.token;
       },
     );
     builder.addCase(postType.fulfilled, (state, action) => {

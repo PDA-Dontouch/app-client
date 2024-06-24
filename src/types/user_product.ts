@@ -22,9 +22,8 @@ export type DepositWithDrawalResultType = {
 };
 
 export type LoginedUser = {
-  nickname: string;
-  email: string;
-  snsType: number;
+  user: UserDetail;
+  token: string;
 };
 
 export type AccountLogType = {

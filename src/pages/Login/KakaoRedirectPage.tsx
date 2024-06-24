@@ -1,35 +1,46 @@
-import {useEffect} from 'react';
-import {useLocation} from 'react-router-dom';
+import React, {useEffect} from 'react';
+import {useLocation, useNavigate} from 'react-router-dom';
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { postLogin } from '../../store/reducers/auth/auth';
+import { AppDispatch } from '../../store/store';
 
-const KakaoRedirectedPage = () => {
+const KakaoRedirectPage = () => {
     const location = useLocation();
-  
-    useEffect(() => {
-      const fetchToken = async () => {
-        const urlParams = new URLSearchParams(location.search);
-        const code = urlParams.get('code');
-  
-        if (code) {
-          try {
-            const response = await axios.get(`http://8081/api/oauth/kakao/callback?code=${code}`);
-            const token = response.data.data; // ApiUtils.success(token)로 반환된 토큰
-            console.log(token);
-            //localStorage.setItem('jwtToken', token);
-  
-            // Redirect to the desired page after login
-            window.location.href = '/';
-          } catch (error) {
-            console.error('로그인 실패:', error);
-            // 로그인 실패 처리
-          }
+    const navigate = useNavigate();
+    const dispatch = useDispatch<AppDispatch>();
+
+    const handleOAuthKakao = async (getCode:string) => {
+        try {
+            const snsType = 'kakao';
+            const code = getCode;
+            //카카오로부터 받아온 code를 서버에 전달하여 카카오로 회원가입 & 로그인한다
+            await dispatch(postLogin({ snsType, code }));
+            
+            //const loginUser = response.data; // 응답 데이터 -> user data 들어와야함
+    
+            navigate("/");
+        } catch (err) {
+            if(axios.isAxiosError(err) && err.response && err.response.status === 500)
+                navigate("/");
+            else
+                navigate("/fail");
         }
-      };
-  
-      fetchToken();
+    };
+
+    useEffect(() => {
+        const searchParams = new URLSearchParams(location.search);
+        const code = searchParams.get('code');  // 카카오는 Redirect 시키면서 code를 쿼리 스트링으로 준다.
+        if (code) {
+            handleOAuthKakao(code);
+        }
     }, [location]);
-  
-    return <div>로그인 중...</div>;
+
+    return (
+        <div>
+            <div>Processing...</div>
+        </div>
+    );
 };
 
-export default KakaoRedirectedPage;
+export default KakaoRedirectPage;

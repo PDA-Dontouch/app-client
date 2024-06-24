@@ -9,7 +9,6 @@ const NaverRedirectPage = () => {
 
     const handleOAuthNaver = async (code:string) => {
         try {
-            //카카오로부터 받아온 code를 서버에 전달하여 카카오로 회원가입 & 로그인한다
             const response = await tryLogin('naver', code);
             const loginUser = response.data; // 응답 데이터 -> user data 들어와야함
             console.log(loginUser);
@@ -24,9 +23,8 @@ const NaverRedirectPage = () => {
 
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
-        const code = searchParams.get('code');
+        const code = searchParams.get('code');  // 카카오는 Redirect 시키면서 code를 쿼리 스트링으로 준다.
         if (code) {
-            console.log(code)
             handleOAuthNaver(code);
         }
     }, [location]);

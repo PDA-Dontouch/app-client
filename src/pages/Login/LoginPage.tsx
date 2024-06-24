@@ -23,7 +23,7 @@ const LoginPage = () => {
   //const dispatch = useDispatch<AppDispatch>();
   //const googleAuthUrl = import.meta.env.VITE_GOOGLE_AUTH_URL as string;
   const naverAuthUrl = import.meta.env.VITE_NAVER_AUTH_URL as string;
-  const kakaoAuthUrl = import.meta.env.KAKAO_AUTH_URL as string;
+  const kakaoAuthUrl = import.meta.env.VITE_KAKAO_AUTH_URL as string;
   
   
   const onLogin = (e: React.MouseEvent<HTMLElement, MouseEvent>, url: string) => {

@@ -72,7 +72,6 @@ const UnitSelect = ({
       }
     }
   };
-  console.log(num);
 
   return (
     <Container>

@@ -12,6 +12,7 @@ interface ProductProps {
   data: EstatesList | EnergyList;
   isLike: boolean;
   setIsLike: () => void;
+  navigateDetail: () => void;
 }
 
 const Container = styled.div`
@@ -51,7 +52,13 @@ const MiniText = styled.span`
   ${tw`text-[0.7rem]`}
 `;
 
-const Product = ({ isEstates, data, isLike, setIsLike }: ProductProps) => {
+const Product = ({
+  isEstates,
+  data,
+  isLike,
+  setIsLike,
+  navigateDetail,
+}: ProductProps) => {
   const navigate = useNavigate();
   const percentage = (): number => {
     if (isEstates) {
@@ -69,15 +76,15 @@ const Product = ({ isEstates, data, isLike, setIsLike }: ProductProps) => {
     }
   };
 
-  const navigateDetail = () => {
-    if (isEstates) {
-      const estatesData = data as EstatesList;
-      navigate(`/estates/${estatesData.id}`);
-    } else {
-      const energyData = data as EnergyList;
-      navigate(`/energy/${energyData.energyId}`);
-    }
-  };
+  // const navigateDetail = () => {
+  //   if (isEstates) {
+  //     const estatesData = data as EstatesList;
+  //     navigate(`/estates/${estatesData.id}`);
+  //   } else {
+  //     const energyData = data as EnergyList;
+  //     navigate(`/energy/${energyData.energyId}`);
+  //   }
+  // };
 
   return (
     <Container>

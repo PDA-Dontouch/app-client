@@ -26,6 +26,7 @@ import {
   getUserTotalEstate,
 } from '../../api/holding';
 import { CalendarP2PType } from '../../types/energy_product';
+import ScrollToTop from '../../hooks/ScrollToTop';
 
 type TitleNameProps = {
   type: 'name' | 'nim';
@@ -325,6 +326,7 @@ export default function MainPage() {
           }
         ></BottomUpModal>
       )}
+      <ScrollToTop />
       <MyPageContainer>
         <TitleNameContainer>
           <TitleName type="name">{user.user.nickname}</TitleName>

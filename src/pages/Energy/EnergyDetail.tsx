@@ -34,6 +34,7 @@ import {
   energyDetail,
 } from '../../types/energy_product';
 import { getHoldingEnergy } from '../../store/reducers/energy/holding';
+import ScrollToTop from '../../hooks/ScrollToTop';
 
 interface BuyEnergyResponse {
   data: {
@@ -156,6 +157,7 @@ const EnergyDetail = () => {
   return (
     <>
       <Navbar name="back" type="" onClick={() => window.history.back()} />
+      <ScrollToTop />
       <Container ref={scrollRef}>
         <DetailBanner isEstates={false} data={detail} />
         <Dropdown isEstates={false} profit_rate={detail.earningRate} />

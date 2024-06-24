@@ -33,6 +33,7 @@ import {
   clickEstates,
 } from '../../types/estates_product';
 import CollateralStability from '../../components/Estates/CollateralStability';
+import ScrollToTop from '../../hooks/ScrollToTop';
 
 interface BuyEstatesResponse {
   data: {
@@ -152,6 +153,7 @@ const EstatesDetail = () => {
   return (
     <>
       <Navbar name="back" type="" onClick={() => window.history.back()} />
+      <ScrollToTop />
       <Container>
         <DetailBanner isEstates={true} data={detail} />
         <Dropdown isEstates={true} profit_rate={clickData.earningRate} />

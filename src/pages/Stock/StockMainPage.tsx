@@ -33,6 +33,7 @@ import {
   getLikeStocks,
   removeLikeStock,
 } from '../../store/reducers/stocks/stocks';
+import ScrollToTop from '../../hooks/ScrollToTop';
 // import { insertStock, removeStock } from '../../store/reducers/stocks/stocks';
 
 const MainContainer = styled.div`
@@ -136,6 +137,7 @@ const StockMainPage: React.FC = () => {
   return (
     <MainContainer>
       <Navbar name={user.user.nickname} type="main" onClick={() => {}} />
+      <ScrollToTop />
       <ContentContainer>
         <PersonalInfo />
         {activeTab === 'recommend' ? (

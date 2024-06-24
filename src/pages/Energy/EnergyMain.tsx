@@ -24,6 +24,7 @@ import Question from '../../assets/question.svg';
 import BasicModal2 from '../../components/common/Modal/BasicModal2';
 import InvestmentDescription from '../../components/common/InvestmentDescription';
 import EmptyEnergy from '../../assets/empty-energy.svg';
+import ScrollToTop from '../../hooks/ScrollToTop';
 
 const Container = styled.div`
   ${tw`w-[calc(100% - 56px)] mt-14 mb-16 px-7 py-8 flex flex-col gap-5`}
@@ -122,6 +123,7 @@ const EnergyMain = () => {
           data={item}
           isLike={likeArr.includes(item.energyId)}
           setIsLike={() => handleLikeToggle(item)}
+          navigateDetail={() => navigate(`/energy/${item.energyId}`)}
         />
       </div>
     ));
@@ -138,6 +140,7 @@ const EnergyMain = () => {
   return (
     <>
       <Navbar name={user.nickname} type="main" onClick={() => {}} />
+      <ScrollToTop />
       <Container>
         <TopContainer>
           <MainText>신재생에너지</MainText>

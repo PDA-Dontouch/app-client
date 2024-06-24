@@ -95,18 +95,6 @@ video {
 html,
 body,
 button,
-#root {
-  width: 100%;
-  height: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
-
-  /* background-color: #acabab; */
-}
-
-html,
-body,
-button,
 input {
   font-family: Pretendard;
 }

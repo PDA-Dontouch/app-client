@@ -25,6 +25,7 @@ import Question from '../../assets/question.svg';
 import BasicModal2 from '../../components/common/Modal/BasicModal2';
 import InvestmentDescription from '../../components/common/InvestmentDescription';
 import EmptyEstate from '../../assets/empty-estate.svg';
+import ScrollToTop from '../../hooks/ScrollToTop';
 
 const Container = styled.div`
   ${tw`w-[calc(100% - 56px)] mt-14 mb-16 px-7 py-8 flex flex-col gap-5`}
@@ -134,6 +135,7 @@ const EstatesMain = () => {
           data={item}
           isLike={likeArr.includes(item.id)}
           setIsLike={() => handleLikeToggle(item)}
+          navigateDetail={() => navigate(`/estates/${item.id}`)}
         />
       </div>
     ));
@@ -150,6 +152,7 @@ const EstatesMain = () => {
   return (
     <>
       <Navbar name={user.nickname} type="main" onClick={() => {}} />
+      <ScrollToTop />
       <Container>
         <TopContainer>
           <MainText>부동산·법인·SCF</MainText>

@@ -16,6 +16,7 @@ import {
   getHoldingEstateCalendar,
 } from '../api/holding';
 import DropDown from '../assets/drop-down.svg';
+import ScrollToTop from '../hooks/ScrollToTop';
 
 type ModalType = 'date' | 'plan';
 
@@ -203,6 +204,7 @@ export default function CalendarPage() {
         />
       )}
       <Navbar name={user.user.nickname} type="main" onClick={() => {}} />
+      <ScrollToTop />
       <CalendarPageContainer>
         <CalendarTitle>
           <YearMonth

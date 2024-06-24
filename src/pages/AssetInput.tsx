@@ -6,6 +6,8 @@ import BasicModal from '../components/common/Modal/BasicModal';
 import { postType } from '../store/reducers/auth/auth';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
+import { save } from 'react-cookies';
+import { saveAsset } from '../api/auth';
 
 const Container = styled.div`
   ${tw`h-[100%] px-7 py-40 box-border`}
@@ -62,28 +64,22 @@ const AssetInput = () => {
         value.charAt(value.length - 1) <= '9') ||
       value.length === 0
     ) {
-      setTotalAssetNum(Number(totalAsset));
+      setTotalAssetNum(Number(value));
       const formattedValue = Number(value).toLocaleString();
-
+ 
       setTotalAsset(formattedValue);
     }
   };
 
   const handleSubmit = () => {
-    // dispatch(postType({
-    //     token: user.token,
-    //     userId: user.user.id,
-    //     totalScore: totalScore,
-    //   }),
-    // ).catch((err: unknown) => {
-    //   console.error(err);
-    // });
     dispatch(postType({
       token: user.token,
       userId: user.user.id,
       totalScore: totalScore,
     }),
-  ).unwrap();
+    ).unwrap();
+
+    saveAsset({userId:user.user.id, cash: totalAssetNum, token:user.token});
     setShowModal(true);
   };
 

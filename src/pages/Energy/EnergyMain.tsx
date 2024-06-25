@@ -139,7 +139,7 @@ const EnergyMain = () => {
 
   return (
     <>
-      <Navbar name={user.nickname} type="main" onClick={() => navigate('/')} />
+      <Navbar name={user.nickname} type="main" onClick={() => navigate('/main')} />
       <ScrollToTop />
       <Container>
         <TopContainer>

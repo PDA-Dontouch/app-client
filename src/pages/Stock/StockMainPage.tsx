@@ -190,7 +190,7 @@ const StockMainPage: React.FC = () => {
       <Navbar
         name={user.user.nickname}
         type="main"
-        onClick={() => navigate('/')}
+        onClick={() => navigate('/main')}
       />
       <ScrollToTop />
 

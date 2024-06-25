@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { AppDispatch, RootState } from '../../store/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -37,7 +37,7 @@ import {
 import ScrollToTop from '../../hooks/ScrollToTop';
 
 const MainContainer = styled.div`
-  ${tw`flex flex-col min-h-screen`}
+  ${tw`flex flex-col min-h-screen overflow-hidden`}
 `;
 
 const ContentContainer = styled.div`
@@ -62,7 +62,8 @@ const CombiBoxContainer = styled.div`
 `;
 
 const ItemContainer = styled.div`
-  ${tw`flex flex-col gap-3`}
+  ${tw`flex-col gap-3 overflow-scroll`}
+  height: calc(100vh - 470px);
 `;
 
 const SortType = styled.span`
@@ -79,10 +80,12 @@ const StockMainPage: React.FC = () => {
     'recommend',
   );
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState<number>(0);
   const [stockList, setStockList] = useState<StockDataResultType[]>([]);
   const userId = useSelector((state: RootState) => state.user.user.id);
   const likeArr = useSelector((state: RootState) => state.stocks.stocksLike);
+  const ref = useRef<HTMLDivElement>(null);
+  const stdRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -99,18 +102,42 @@ const StockMainPage: React.FC = () => {
       searchWord: searchTerm,
       userId: user.user.id,
       dividendMonth: null,
-      page: page,
-      size: 24,
+      page: 0,
+      size: 10,
     }).then((response) => {
+      setPage(page+1);
       setStockList(response.data.response);
     });
     dispatch(getLikeStocks(userId));
   }, [searchTerm]);
 
+  
+
   const handleTabClick = (tab: 'recommend' | 'individual') => {
     setActiveTab(tab);
     navigate(`?tab=${tab}`);
   };
+
+  const handleOnScroll = async ()=>{
+    if(ref.current && stdRef.current){
+      const item = ref.current.getBoundingClientRect();
+      const container = stdRef.current.getBoundingClientRect();
+
+      if(item.bottom-180<=container.bottom){
+        stocksDatas({
+          searchWord: searchTerm,
+          userId: user.user.id,
+          dividendMonth: null,
+          page: page,
+          size: 10,
+        }).then((response) => {
+          setPage(page+1);
+          setStockList([...stockList,...response.data.response]);
+        });
+      }
+    }
+  }
+  
 
   const handleLikeToggle = async (item: StockDataResultType) => {
     const data = {
@@ -174,7 +201,7 @@ const StockMainPage: React.FC = () => {
             </SectionHeader>
             <SearchBar setSearchTerm={setSearchTerm} modal={false} />
             <SortType>추천 종목순</SortType>
-            <ItemContainer>
+            <ItemContainer ref={stdRef} onScroll={handleOnScroll}>
               {stockList.map((item, idx) => (
                 <div
                   key={idx}
@@ -194,6 +221,7 @@ const StockMainPage: React.FC = () => {
                   />
                 </div>
               ))}
+              <div ref={ref}></div>
             </ItemContainer>
           </div>
         )}
@@ -204,3 +232,4 @@ const StockMainPage: React.FC = () => {
 };
 
 export default StockMainPage;
+

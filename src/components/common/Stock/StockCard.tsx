@@ -13,6 +13,7 @@ type StockType = {
   exchange: string;
   dividendMonth: number;
   dividendYieldTtm: number;
+  closePrice:number;
 };
 
 interface StockProps {
@@ -36,10 +37,15 @@ const ItemContainer = styled.div`
 
 const MainText = styled.span`
   ${tw`text-sm`}
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
 `;
 
 const InfoContainer = styled.div`
   ${tw`flex flex-col content-between ml-3`}
+  width:7rem
 `;
 
 const SubContainer = styled.div`
@@ -95,9 +101,7 @@ const StockCard = ({ data, isLike, setIsLike }: StockProps) => {
 
       <PriceContainer>
         <PriceText>
-          {isKRStock(data.symbol)
-            ? `${data.dividendMonth.toFixed(2)} 원`
-            : `$${data.dividendMonth.toFixed(2)}`}
+          {data.closePrice.toLocaleString()} 원
           ({data.dividendYieldTtm.toFixed(2)}%)
         </PriceText>
         <Heart src={isLike ? Fill : Empty} onClick={handleHeartClick} />

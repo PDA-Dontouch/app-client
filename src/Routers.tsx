@@ -25,7 +25,7 @@ import PrivateRoute from './components/Login/PrivateRoute';
 export default function Routers() {
   return (
     <Routes>
-      <Route path="/login" element={<LoginPage />} />
+      <Route path="/" element={<LoginPage />} />
       <Route
         path="/login/oauth2/code/kakao"
         element={<KakaoRedirectPage />}
@@ -47,7 +47,7 @@ export default function Routers() {
       <Route path="/result/:type" element={<TransactionResult />} />
       <Route path="/asset-input" element={<AssetInput />} />
       <Route path="/asset/reset" element={<ChangeMoney />} />
-      <Route path="/" element={<MainPage/>} />
+      <Route path="/main" element={<MainPage/>} />
       <Route path="/account" element={<AccountPage />} />
       <Route path="/products/held" element={<ProductsHeldPage />} />
       <Route path="/products/like" element={<ProductsLikePage />} />

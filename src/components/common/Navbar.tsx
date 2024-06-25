@@ -43,7 +43,7 @@ const Navbar = ({ name, type, onClick }: NavbarProps) => {
     <NavbarDiv>
       {type === 'main' ? (
         <>
-          <Img src={Logo} onClick={() => navigate('/')} />
+          <Img src={Logo} onClick={() => navigate('/main')} />
           <Item>
             <ChatbotBtn />
             <Img

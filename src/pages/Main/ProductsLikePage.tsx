@@ -69,7 +69,7 @@ export default function ProductsLikePage() {
         type="back"
         name="back"
         onClick={() => {
-          navigate('/');
+          navigate('/main');
         }}
       />
       <ProductsLikePageContainer>

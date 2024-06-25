@@ -13,14 +13,14 @@ const GoogleRedirectPage = () => {
       const response = await tryLogin('google', code);
       const loginUser = response.data; // 응답 데이터 -> user data 들어와야함
       console.log(loginUser);
-      navigate('/');
+      navigate('/main');
     } catch (err) {
       if (
         axios.isAxiosError(err) &&
         err.response &&
         err.response.status === 500
       )
-        navigate('/');
+        navigate('/main');
       else navigate('/fail');
     }
   };

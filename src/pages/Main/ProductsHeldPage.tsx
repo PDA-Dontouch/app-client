@@ -207,7 +207,7 @@ export default function ProductsHeldPage() {
         type="back"
         name="back"
         onClick={() => {
-          navigate('/');
+          navigate('/main');
         }}
       />
 

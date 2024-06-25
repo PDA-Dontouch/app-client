@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-export const BASE_URL = '/';
 export const USER_BASE_URL = '/api/user';
 export const STOCKS_BASE_URL = '/api/stocks';
 export const ESTATES_BASE_URL = '/api/estates';

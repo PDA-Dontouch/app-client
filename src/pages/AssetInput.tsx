@@ -94,7 +94,7 @@ const AssetInput = () => {
         >
           <BasicModal
             type={user.user.investmentType}
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/main')}
             isOpen={showModal}
           />
         </div>

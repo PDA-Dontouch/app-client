@@ -114,14 +114,7 @@ const StockCard = ({ data, isLike, setIsLike }: StockProps) => {
 
       <PriceContainer>
         <PriceItem>
-          <PriceText>
-            {isKRStock(data.symbol)
-              ? `${data.closePrice
-                  .toFixed(0)
-                  .toString()
-                  .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} 원`
-              : `$${data.dividendMonth.toFixed(2)}`}
-          </PriceText>
+          <PriceText>{data.closePrice.toLocaleString()}원</PriceText>
           <PriceText>({data.dividendYieldTtm.toFixed(4)}%)</PriceText>
         </PriceItem>
         <Heart src={isLike ? Fill : Empty} onClick={handleHeartClick} />

@@ -266,13 +266,31 @@ const stocksSlice = createSlice({
       }
     },
     addCombi1Stock(state, action: PayloadAction<InsertCombiStock>) {
-      state.combination1.stocks.push(action.payload);
+      const stockId = action.payload.stockId;
+      const exists = state.combination1.stocks.some(
+        (stock) => stock.stockId === stockId,
+      );
+      if (!exists) {
+        state.combination1.stocks.push(action.payload);
+      }
     },
     addCombi2Stock(state, action: PayloadAction<InsertCombiStock>) {
-      state.combination2.stocks.push(action.payload);
+      const stockId = action.payload.stockId;
+      const exists = state.combination2.stocks.some(
+        (stock) => stock.stockId === stockId,
+      );
+      if (!exists) {
+        state.combination2.stocks.push(action.payload);
+      }
     },
     addCombi3Stock(state, action: PayloadAction<InsertCombiStock>) {
-      state.combination3.stocks.push(action.payload);
+      const stockId = action.payload.stockId;
+      const exists = state.combination3.stocks.some(
+        (stock) => stock.stockId === stockId,
+      );
+      if (!exists) {
+        state.combination3.stocks.push(action.payload);
+      }
     },
     removeCombi1Stock(state, action: PayloadAction<InsertCombiStock>) {
       state.combination1.stocks = state.combination1.stocks.filter(

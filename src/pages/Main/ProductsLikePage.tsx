@@ -61,6 +61,7 @@ export default function ProductsLikePage() {
     getStockData();
     getEnergyData();
     getEstateData();
+    console.log('like페이지');
   }, []);
 
   return (

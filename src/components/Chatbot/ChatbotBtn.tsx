@@ -130,6 +130,7 @@ export default function ChatbotBtn() {
 
         getSTT({ base64Sound, userId: user.user.id })
           .then((data) => {
+            console.log(data.data);
             const routing = chatbotRouting({ text: data.data });
             navigate(routing.url, { state: { initialActive: routing.state } });
           })

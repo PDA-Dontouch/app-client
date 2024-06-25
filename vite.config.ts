@@ -21,7 +21,7 @@ export default defineConfig(({ mode }) => {
             estateBaseURL: env.VITE_APP_ESTATE_BASE_URL,
             energyBaseURL: env.VITE_APP_ENERGY_BASE_URL,
             holdingBaseURL: env.VITE_APP_HOLDING_BASE_URL,
-            socketURL: env.VITE_APP_SOCKET_PRICE,
+            socketURL: env.VITE_APP_SOCKET_BASE_URL,
           },
         },
       }),
@@ -52,7 +52,7 @@ export default defineConfig(({ mode }) => {
           target: env.VITE_APP_HOLDING_BASE_URL,
           changeOrigin: true,
         },
-        '/api/myPage': {
+        '/api/trading/myPage': {
           target: env.VITE_APP_SOCKET_BASE_URL,
           changeOrigin: true,
         },

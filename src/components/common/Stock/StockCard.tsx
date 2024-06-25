@@ -23,7 +23,7 @@ interface StockProps {
 }
 
 const Container = styled.div`
-  ${tw`w-full flex items-center px-3 py-4 border rounded-lg shadow-md mb-1 justify-between box-border`}
+  ${tw`w-full flex items-center px-3 py-5 border mb-1 justify-between box-border`}
 `;
 
 const StockLogo = styled.img`

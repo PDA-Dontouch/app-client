@@ -1,9 +1,9 @@
-import React, {useEffect} from 'react';
+import {useEffect} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
-import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { postLogin } from '../../store/reducers/auth/auth';
 import { AppDispatch } from '../../store/store';
+import StockSkeleton from '../../components/Skeleton/StockSkeleton';
 
 const KakaoRedirectPage = () => {
     const location = useLocation();
@@ -25,15 +25,18 @@ const KakaoRedirectPage = () => {
         const searchParams = new URLSearchParams(location.search);
         const code = searchParams.get('code');  // 카카오는 Redirect 시키면서 code를 쿼리 스트링으로 준다.
         if (code) {
-            handleOAuthKakao(code).then(()=>{
-                navigate('/typetest',{ state: { nav: false } });
+            handleOAuthKakao(code).then((loginUser)=>{
+                if(loginUser.user.safeScore===0)
+                    navigate('/typetest',{ state: { nav: false } });
+                else
+                    navigate('/');
             });
         }
     }, [location]);
 
     return (
         <div>
-            <div>Processing...</div>
+            <StockSkeleton/>
         </div>
     );
 };

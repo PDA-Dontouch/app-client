@@ -64,16 +64,6 @@ const InvestTypeTest = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [showModal, setShowModal] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (
-      user.user.growthScore === 0 &&
-      user.user.safeScore === 0 &&
-      user.user.dividendScore === 0
-    ) {
-      return;
-    } else navigate('/');
-  }, []);
-
   const handleAnswerSelect = (index: number) => {
     const newAnswers = [...answers];
     newAnswers[currentQuestion] = index;

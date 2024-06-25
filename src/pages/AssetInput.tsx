@@ -6,7 +6,6 @@ import BasicModal from '../components/common/Modal/BasicModal';
 import { postType } from '../store/reducers/auth/auth';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
-import { save } from 'react-cookies';
 import { saveAsset } from '../api/auth';
 
 const Container = styled.div`

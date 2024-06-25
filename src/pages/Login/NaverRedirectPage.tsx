@@ -1,17 +1,15 @@
-import React, {useEffect} from 'react';
+import {useEffect} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
-import { tryLogin } from '../../api/auth';
-import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
 import { postLogin } from '../../store/reducers/auth/auth';
+import StockSkeleton from '../../components/Skeleton/StockSkeleton';
 
 const NaverRedirectPage = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
     const dispatch = useDispatch<AppDispatch>();
-    const user = useSelector((state: RootState) => state.user);
 
     
     const handleOAuthNaver = async (getCode:string) => {
@@ -29,15 +27,18 @@ const NaverRedirectPage = () => {
         const searchParams = new URLSearchParams(location.search);
         const code = searchParams.get('code');  // 카카오는 Redirect 시키면서 code를 쿼리 스트링으로 준다.
         if (code) {
-            handleOAuthNaver(code).then(()=>{
-                navigate('/typetest',{ state: { nav: false } });
+            handleOAuthNaver(code).then((loginUser)=>{
+                if(loginUser.user.safeScore===0)
+                    navigate('/typetest',{ state: { nav: false } });
+                else
+                    navigate('/');
             });
         }
     }, [location]);
 
     return (
         <div>
-            <div>Processing...</div>
+            <StockSkeleton/>
         </div>
     );
 };

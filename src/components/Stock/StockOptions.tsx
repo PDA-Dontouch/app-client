@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { AppDispatch, RootState } from '../../store/store';
 import { useDispatch, useSelector } from 'react-redux';
 import tw, { styled } from 'twin.macro';
@@ -82,18 +82,56 @@ const StockOptions: React.FC<StockOptionsProps> = ({
   const [stockList, setStockList] = useState<StockDataResultType[]>([]);
 
   const [alertOpen, setAlertOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const stdRef = useRef<HTMLDivElement>(null);
+
 
   useEffect(() => {
+    setPage(0);
+    setStockList([]);
+    fetchStocks(0);
+  }, [searchTerm]);
+
+  useEffect(() => {
+    const handleOnScroll = () => {
+      if (ref.current && stdRef.current) {
+        const item = ref.current.getBoundingClientRect();
+        const container = stdRef.current.getBoundingClientRect();
+
+        if (item.bottom - 180 <= container.bottom) {
+          fetchStocks(page);
+        }
+      }
+    };
+
+    const scrollElement = stdRef.current;
+    if (scrollElement) {
+      scrollElement.addEventListener('scroll', handleOnScroll);
+    }
+
+    return () => {
+      if (scrollElement) {
+        scrollElement.removeEventListener('scroll', handleOnScroll);
+      }
+    };
+  }, [page, searchTerm]);
+
+  const fetchStocks = (pageNum: number) => {
     stocksDatas({
       searchWord: searchTerm,
       userId: user.user.id,
-      dividendMonth: dividendMonth,
-      page: page,
-      size: 24,
+      dividendMonth: null,
+      page: pageNum,
+      size: 10,
     }).then((response) => {
-      setStockList(response.data.response);
+      const newStocks = response.data.response;
+      const uniqueStocks = Array.from(new Set([...stockList, ...newStocks].map(stock => stock.id)))
+        .map(id => [...stockList, ...newStocks].find(stock => stock.id === id)!);
+
+      setPage(pageNum + 1);
+      setStockList(uniqueStocks);
     });
-  }, [page, searchTerm]);
+  };
 
   const handleUpdateCombination = (stock: StockDataResultType) => {
     const data = {
@@ -131,7 +169,7 @@ const StockOptions: React.FC<StockOptionsProps> = ({
   return (
     <Container>
       <SearchBar setSearchTerm={setSearchTerm} modal={false} />
-      <StockItems>
+      <StockItems ref={stdRef}>
         {stockList.map((stock) => {
           return (
             <StockInfo
@@ -154,6 +192,7 @@ const StockOptions: React.FC<StockOptionsProps> = ({
                     <SubText>{stock.exchange}</SubText>
                   </SubContainer>
                 </InfoContainer>
+                <div ref={ref}></div>
               </ItemContainer>
               <PriceContainer>
                 <PriceText>

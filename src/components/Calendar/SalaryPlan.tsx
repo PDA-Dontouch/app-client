@@ -128,10 +128,7 @@ export default function SalaryPlan({ date }: SalaryPlanProps) {
                     <PlanName>{plan.name}</PlanName>
                     <PlanPrice>
                       {Math.floor(
-                        'A' <= plan.symbol.charAt(0) &&
-                          plan.symbol.charAt(0) <= 'Z'
-                          ? plan.dividend * exchangeRate
-                          : plan.dividend,
+                        plan.dividend,
                       ).toLocaleString()}
                       원
                     </PlanPrice>
@@ -171,14 +168,8 @@ export default function SalaryPlan({ date }: SalaryPlanProps) {
           {'총 '}
           {Math.floor(
             stockPlans.reduce((accumulator, stock) => {
-              if (
-                'A' <= stock.symbol.charAt(0) &&
-                stock.symbol.charAt(0) <= 'Z'
-              ) {
-                return accumulator + stock.dividend * exchangeRate;
-              } else {
                 return accumulator + stock.dividend;
-              }
+              
             }, 0) +
               energyPlans.reduce((accumulator, stock) => {
                 return accumulator + stock.dividendPrice;

@@ -113,6 +113,7 @@ export default function AddStockModal({ setModal }: ProductsHeldPageProps) {
       page: 0,
       size: 10,
     }).then((data) => {
+      setPage(0);
       setSearchResult(data.data.response);
     });
   }

@@ -288,6 +288,9 @@ export default function MainPage() {
   }
 
   useEffect(() => {
+    if(user.user===null)
+      navigate('/login');
+    
     calendarStockPlans({
       userId: user.user.id,
       token: user.token,

@@ -1,6 +1,6 @@
 import io from 'socket.io-client';
 import { PriceType, SocketType } from '../../types/socket';
-const SERVER_URL = 'http://localhost:3000';
+const SERVER_URL = '/';
 
 const socket = io(SERVER_URL);
 

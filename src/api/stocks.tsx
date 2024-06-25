@@ -303,3 +303,22 @@ export const purchaseCombination = async (data: PostCombiData) => {
     throw err;
   }
 };
+
+export const getSTT = async ({
+  base64Sound,
+  userId,
+}: {
+  base64Sound: string;
+  userId: number;
+}): Promise<AxiosResponse<string>> => {
+  try {
+    const response = await axios.post(`/api/myPage/stt`, {
+      base64Sound,
+      userId,
+    });
+    return response;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};

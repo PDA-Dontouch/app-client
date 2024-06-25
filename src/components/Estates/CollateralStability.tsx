@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import tw, { styled } from 'twin.macro';
 import { EstatesDetail } from '../../types/estates_product';
 import { useSelector } from 'react-redux';
@@ -11,7 +11,7 @@ interface DetailProps {
 }
 
 const Container = styled.div`
-  ${tw`flex flex-col px-5 py-8 gap-4`}
+  ${tw`relative flex flex-col px-5 py-8 gap-4`}
 `;
 
 const MainText = styled.span`
@@ -43,6 +43,14 @@ const MiniText = styled.span`
   ${tw`text-base`}
 `;
 
+const ChartContainer = styled.div`
+  ${tw`relative w-full`}
+`;
+
+const CenterLabel = styled.div`
+  ${tw`absolute inset-0 flex flex-col items-center justify-center gap-2`}
+`;
+
 export function formatNumberToKoreanCurrency(num: number): string {
   const man = 10000;
   const uk = man * 10000;
@@ -71,10 +79,12 @@ export function formatNumberToKoreanCurrency(num: number): string {
 }
 
 const CollateralStability = ({ data }: DetailProps) => {
-  const clickEstates = useSelector(
-    (state: RootState) => state.estates.clickEstates,
-  );
-  const margin = (clickEstates.loanAmountBaseLtv * data.appraisedValue) / 100;
+  const rate = data.sellingPointsTitle2
+    ? data.sellingPointsTitle2.match(/\d+(\.\d+)?/)?.[0]
+    : '0';
+  const margin = ((100 - parseFloat(rate || '')) * data.appraisedValue) / 100;
+  const leftPriority =
+    data.appraisedValue - data.etcAmount - data.amount - margin;
 
   const chartData = {
     series: [data.priorityAmount, data.amount, margin],
@@ -82,43 +92,22 @@ const CollateralStability = ({ data }: DetailProps) => {
       chart: {
         type: 'donut',
       },
-      labels: ['선순위 대출 잔액', '8퍼센트 대출금', '담보 여유금'],
+      labels: [],
       colors: ['#d3d3d3', '#a9a9a9', '#4F7CEF'],
       dataLabels: {
         enabled: false,
       },
       legend: {
-        position: 'bottom',
+        show: false,
+      },
+      tooltip: {
+        enabled: false,
       },
       plotOptions: {
         pie: {
           donut: {
             labels: {
-              show: true,
-              name: {
-                show: true,
-                fontSize: '14px',
-                color: '#000',
-                offsetY: -12,
-              },
-              value: {
-                show: true,
-                fontSize: '20px',
-                fontFamily: 'Pretendard',
-                color: '#000',
-                offsetY: 0,
-                formatter: () =>
-                  formatNumberToKoreanCurrency(data.appraisedValue),
-              },
-              total: {
-                show: true,
-                label: '감정가',
-                fontSize: '14px',
-                fontFamily: 'Pretendard',
-                color: '#000',
-                formatter: () =>
-                  formatNumberToKoreanCurrency(data.appraisedValue),
-              },
+              show: false,
             },
           },
         },
@@ -129,20 +118,25 @@ const CollateralStability = ({ data }: DetailProps) => {
   return (
     <Container>
       <MainText>담보 안정성</MainText>
-      <Chart
-        options={chartData.options}
-        series={chartData.series}
-        type="donut"
-        width="100%"
-      />
+      <ChartContainer>
+        <Chart
+          options={chartData.options}
+          series={chartData.series}
+          type="donut"
+          width="100%"
+          height="260px"
+        />
+        <CenterLabel>
+          <span>감정가</span>
+          <SubText>{formatNumberToKoreanCurrency(data.appraisedValue)}</SubText>
+        </CenterLabel>
+      </ChartContainer>
       <ItemContainer>
         <RowContainer>
           <Box bgColor="#d3d3d3" />
           <TextContainer>
             <MiniText>선순위 대출 잔액</MiniText>
-            <SubText>
-              {formatNumberToKoreanCurrency(data.priorityAmount)}
-            </SubText>
+            <SubText>{formatNumberToKoreanCurrency(leftPriority)}</SubText>
           </TextContainer>
         </RowContainer>
         <RowContainer>

@@ -55,6 +55,7 @@ export type InsertCombiStock = {
   price: number;
   quantity: number;
   dividend: number;
+  exchange: string;
 };
 
 export type CombiStockReq = {
@@ -150,6 +151,17 @@ export type GetHoldingStockType = {
   totalPurchase: number;
 };
 
+export type StocksLikeTypes = {
+  userId: number;
+  exchange: string;
+  stockId: number;
+};
+
+export type StockLike = {
+  exchange: string;
+  stockId: number;
+};
+
 export type UsStockSocketType = {
   stockCode: string;
   marketType: string;
@@ -177,4 +189,14 @@ export type CombinationPurchasedType = {
   combination1: CombinationPurChasedProductType[];
   combination2: CombinationPurChasedProductType[];
   combination3: CombinationPurChasedProductType[];
+};
+
+export type PostCombiData = {
+  userId: number;
+  stockList: {
+    stockName: string;
+    stockCode: string;
+    amount: number;
+    marketType: string;
+  }[];
 };

@@ -17,26 +17,26 @@ const CalendarIcon = ({ isSelect }: CalendarIconProps) => {
         width="22.5"
         height="18.75"
         rx="2"
-        stroke={isSelect ? '#1aa76e' : '#222222'}
+        stroke={isSelect ? '#457BC3' : '#222222'}
       />
       <path
         d="M3.75 14.25L26.25 14.25"
-        stroke={isSelect ? '#1aa76e' : '#222222'}
+        stroke={isSelect ? '#457BC3' : '#222222'}
         strokeLinecap="round"
       />
       <path
         d="M11.25 20.5H18.75"
-        stroke={isSelect ? '#1aa76e' : '#222222'}
+        stroke={isSelect ? '#457BC3' : '#222222'}
         strokeLinecap="round"
       />
       <path
         d="M10 4.25L10 9.25"
-        stroke={isSelect ? '#1aa76e' : '#222222'}
+        stroke={isSelect ? '#457BC3' : '#222222'}
         strokeLinecap="round"
       />
       <path
         d="M20 4.25L20 9.25"
-        stroke={isSelect ? '#1aa76e' : '#222222'}
+        stroke={isSelect ? '#457BC3' : '#222222'}
         strokeLinecap="round"
       />
     </svg>

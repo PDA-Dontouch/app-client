@@ -1,13 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import tw, { styled } from 'twin.macro';
 
-import useLike from '../../hooks/useLike';
 import { AppDispatch, RootState } from '../../store/store';
 import {
+  addLikeEnergy,
+  addLikeEnergys,
   buyEnergy,
+  delLikeEnergys,
   getEnergyData,
+  getLikeEnergys,
+  removeLikeEnergy,
   sellEnergy,
 } from '../../store/reducers/energy/energy';
 
@@ -24,8 +28,13 @@ import BusinessInfo from '../../components/Energy/BusinessInfo';
 import ProtectInvestor from '../../components/Energy/ProtectInvestor';
 import Repayment from '../../components/Energy/Repayment';
 import BasicInfo from '../../components/Energy/BasicInfo';
-import { EnergyBuyType } from '../../types/energy_product';
+import {
+  EnergyBuyType,
+  EnergyList,
+  energyDetail,
+} from '../../types/energy_product';
 import { getHoldingEnergy } from '../../store/reducers/energy/holding';
+import ScrollToTop from '../../hooks/ScrollToTop';
 
 interface BuyEnergyResponse {
   data: {
@@ -39,11 +48,11 @@ interface BuyEnergyResponse {
 }
 
 const Container = styled.div`
-  ${tw`mt-14 pb-20 h-full overflow-y-scroll`}
+  ${tw`w-full pt-14 pb-20`}
 `;
 
 const BtnContainer = styled.div`
-  ${tw`w-[100%] h-[56px] flex gap-4 px-6 fixed bottom-7 box-border z-[99]`}
+  ${tw`w-[100%] h-[56px] flex gap-4 px-6 fixed bottom-4 box-border z-[99]`}
 `;
 
 const Hr = styled.div`
@@ -58,16 +67,30 @@ const EnergyDetail = () => {
   const holdingEnergy = useSelector(
     (state: RootState) => state.holdingEnergy.datas,
   );
-  const { EnergyLikeArr, setLikeEnergy } = useLike({ fundId: detail.energyId });
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const userId = useSelector((state: RootState) => state.user.user.id);
   const [value, setValue] = useState<number>(0);
   const [error, setError] = useState<string | undefined>(undefined);
+  const likeArr = useSelector((state: RootState) => state.energy.energyLike);
 
   useEffect(() => {
     dispatch(getEnergyData(params.energy_id!));
     dispatch(getHoldingEnergy(userId));
+    dispatch(getLikeEnergys(userId));
   }, [dispatch, params.energy_id]);
+
+  let isEnergyHeld = false;
+  let matchingEnergy = null;
+
+  if (holdingEnergy && holdingEnergy.length > 0) {
+    isEnergyHeld = holdingEnergy.some(
+      (energy) => energy.energyId === detail.energyId,
+    );
+
+    matchingEnergy = holdingEnergy.find(
+      (energy) => energy.energyId === detail.energyId,
+    );
+  }
 
   const clickBuyBtn = () => {
     if (value < 5000) {
@@ -108,23 +131,34 @@ const EnergyDetail = () => {
     });
   };
 
-  let isEnergyHeld = false;
-  let matchingEnergy = null;
+  const handleLikeToggle = async (item: energyDetail) => {
+    const data = {
+      userId: userId,
+      energyFundId: item.energyId,
+    };
 
-  if (holdingEnergy && holdingEnergy.length > 0) {
-    isEnergyHeld = holdingEnergy.some(
-      (energy) => energy.energyId === detail.energyId,
-    );
+    const isLiked = likeArr.includes(item.energyId);
 
-    matchingEnergy = holdingEnergy.find(
-      (energy) => energy.energyId === detail.energyId,
-    );
-  }
+    if (isLiked) {
+      dispatch(removeLikeEnergy(item.energyId));
+      await dispatch(delLikeEnergys(data));
+    } else {
+      dispatch(addLikeEnergy(item.energyId));
+      await dispatch(addLikeEnergys(data));
+    }
+  };
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+  }, []);
 
   return (
     <>
-      <Navbar name="back" type="" onClick={() => navigate(-1)} />
-      <Container>
+      <Navbar name="back" type="" onClick={() => window.history.back()} />
+      <ScrollToTop />
+      <Container ref={scrollRef}>
         <DetailBanner isEstates={false} data={detail} />
         <Dropdown isEstates={false} profit_rate={detail.earningRate} />
         <Hr />
@@ -140,8 +174,8 @@ const EnergyDetail = () => {
       </Container>
       <BtnContainer>
         <LikeBtn
-          isLike={EnergyLikeArr.includes(detail.energyId)}
-          setIsLike={() => {}}
+          isLike={likeArr.includes(detail.energyId)}
+          setIsLike={() => handleLikeToggle(detail)}
         />
         <Button
           name={

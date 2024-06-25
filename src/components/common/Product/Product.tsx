@@ -12,14 +12,15 @@ interface ProductProps {
   data: EstatesList | EnergyList;
   isLike: boolean;
   setIsLike: () => void;
+  navigateDetail: () => void;
 }
 
 const Container = styled.div`
-  ${tw`flex gap-4 items-center`}
+  ${tw`flex gap-4 items-center box-border`}
 `;
 
 const ImgContainer = styled.div`
-  ${tw`relative w-fit h-[100px]`}
+  ${tw`relative w-fit`}
 `;
 
 const Img = styled.img`
@@ -31,11 +32,11 @@ const Heart = styled.img`
 `;
 
 const ItemContainer = styled.div`
-  ${tw`min-w-[234px] w-full flex flex-col gap-2`}
+  ${tw`flex flex-col gap-2 box-border w-full`}
 `;
 
 const MainText = styled.span`
-  ${tw`text-base`}
+  ${tw`text-[0.9rem]`}
 `;
 
 const SubContainer = styled.div`
@@ -43,15 +44,21 @@ const SubContainer = styled.div`
 `;
 
 const SubText = styled.span<{ isGrade: boolean }>`
-  ${tw`text-base`}
+  ${tw`text-[1rem]`}
   ${({ isGrade }) => (isGrade ? tw`text-[#DE8705]` : tw``)}
 `;
 
 const MiniText = styled.span`
-  ${tw`text-xs`}
+  ${tw`text-[0.7rem]`}
 `;
 
-const Product = ({ isEstates, data, isLike, setIsLike }: ProductProps) => {
+const Product = ({
+  isEstates,
+  data,
+  isLike,
+  setIsLike,
+  navigateDetail,
+}: ProductProps) => {
   const navigate = useNavigate();
   const percentage = (): number => {
     if (isEstates) {
@@ -69,15 +76,15 @@ const Product = ({ isEstates, data, isLike, setIsLike }: ProductProps) => {
     }
   };
 
-  const navigateDetail = () => {
-    if (isEstates) {
-      const estatesData = data as EstatesList;
-      navigate(`/estates/${estatesData.id}`);
-    } else {
-      const energyData = data as EnergyList;
-      navigate(`/energy/${energyData.energyId}`);
-    }
-  };
+  // const navigateDetail = () => {
+  //   if (isEstates) {
+  //     const estatesData = data as EstatesList;
+  //     navigate(`/estates/${estatesData.id}`);
+  //   } else {
+  //     const energyData = data as EnergyList;
+  //     navigate(`/energy/${energyData.energyId}`);
+  //   }
+  // };
 
   return (
     <Container>
@@ -102,7 +109,7 @@ const Product = ({ isEstates, data, isLike, setIsLike }: ProductProps) => {
           <SubText isGrade={false}>
             {isEstates
               ? (data as EstatesList).length
-              : (data as EnergyList).investment_period}
+              : (data as EnergyList).investmentPeriod}
             개월
           </SubText>
           <SubText isGrade={true}>

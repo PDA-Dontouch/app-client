@@ -36,10 +36,10 @@ export type AccountLogType = {
 };
 
 export const initialUserDetail = {
-  id: 1001,
-  email: 'gkstmf616@naver.com',
-  sns_type: 1,
-  nickname: '이한슬',
+  id: 0,
+  email: '',
+  sns_type: 0,
+  nickname: '',
   investmentType: 1 as InvestmentType,
   safeScore: 0,
   dividendScore: 0,
@@ -56,4 +56,9 @@ export type PostStockType = {
   stockCode: string;
   stockPrice: number;
   stockAmount: number;
+};
+
+export type getHoldingType = {
+  userId: number;
+  getPrice: boolean;
 };

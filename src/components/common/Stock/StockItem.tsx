@@ -12,11 +12,14 @@ const StockLogo = styled.img`
 `;
 
 const Container = styled.div`
-  ${tw`flex justify-center items-center gap-2`}
+  ${tw`flex justify-center items-center gap-2 w-full box-border`}
 `;
 
 const Item = styled.div`
-  ${tw`flex flex-col items-center gap-[2px]`}
+  ${tw`flex flex-col gap-[2px]`}
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `;
 
 const MainText = styled.span`
@@ -30,7 +33,6 @@ const SubText = styled.span`
 const Sub = styled.div`
   ${tw`flex flex-row gap-1`}
 `;
-
 
 const StockItem = ({ name, amount, symbol }: ItemProps) => {
   const isKr = !isNaN(Number(symbol));

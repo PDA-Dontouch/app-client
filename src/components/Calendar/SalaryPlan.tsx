@@ -26,7 +26,7 @@ const Today = styled.div`
 `;
 
 const Plans = styled.div`
-  ${tw`w-full flex flex-col gap-3 p-2`}
+  ${tw`w-full flex flex-col gap-3 py-2`}
   overflow: scroll;
   height: 260px;
   box-sizing: border-box;
@@ -34,7 +34,7 @@ const Plans = styled.div`
 
 const Plan = styled.div`
   ${tw`w-full flex flex-row gap-3 px-3 py-4 bg-[white] text-sm`}
-  box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.1);
+  box-shadow: 1px 1px 2px 0px rgba(0, 0, 0, 0.05);
   border-radius: 8px;
   box-sizing: border-box;
 `;
@@ -128,10 +128,7 @@ export default function SalaryPlan({ date }: SalaryPlanProps) {
                     <PlanName>{plan.name}</PlanName>
                     <PlanPrice>
                       {Math.floor(
-                        'A' <= plan.symbol.charAt(0) &&
-                          plan.symbol.charAt(0) <= 'Z'
-                          ? plan.dividend * exchangeRate
-                          : plan.dividend,
+                        plan.dividend,
                       ).toLocaleString()}
                       원
                     </PlanPrice>
@@ -171,14 +168,8 @@ export default function SalaryPlan({ date }: SalaryPlanProps) {
           {'총 '}
           {Math.floor(
             stockPlans.reduce((accumulator, stock) => {
-              if (
-                'A' <= stock.symbol.charAt(0) &&
-                stock.symbol.charAt(0) <= 'Z'
-              ) {
-                return accumulator + stock.dividend * exchangeRate;
-              } else {
                 return accumulator + stock.dividend;
-              }
+              
             }, 0) +
               energyPlans.reduce((accumulator, stock) => {
                 return accumulator + stock.dividendPrice;

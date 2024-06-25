@@ -22,13 +22,13 @@ type CancelConfirmBtnProps = {
 };
 
 const AddStockModalContainer = styled.div`
-  ${tw`flex flex-col w-full gap-7 p-5`}
+  ${tw`flex flex-col w-full gap-7 py-2`}
   box-sizing: border-box;
 `;
 
 const SearchResult = styled.div`
   ${tw`flex flex-col w-full gap-3 px-1`}
-  height:250px;
+  height:280px;
   overflow-y: scroll;
   box-sizing: border-box;
 `;
@@ -95,9 +95,7 @@ export default function AddStockModal({ setModal }: ProductsHeldPageProps) {
   function getSearchResult(searchTerm: string) {
     stocksDatas({
       searchWord: searchTerm,
-      safeScore: user.user.safeScore,
-      dividendScore: user.user.dividendScore,
-      growthScore: user.user.growthScore,
+      userId: user.user.id,
       dividendMonth: null,
       page: page,
       size: 10,
@@ -110,9 +108,7 @@ export default function AddStockModal({ setModal }: ProductsHeldPageProps) {
   function search(searchTerm: string) {
     stocksDatas({
       searchWord: searchTerm,
-      safeScore: user.user.safeScore,
-      dividendScore: user.user.dividendScore,
-      growthScore: user.user.growthScore,
+      userId: user.user.id,
       dividendMonth: null,
       page: 0,
       size: 10,

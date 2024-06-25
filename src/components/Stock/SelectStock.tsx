@@ -1,14 +1,14 @@
-import tw, { styled } from "twin.macro";
+import tw, { styled } from 'twin.macro';
 import logoImg from '../../assets/logo.svg';
 import Delete from '../../assets/delete.svg';
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setTotalInvestment } from "../../store/reducers/stocks/stocks";
-import { RootState } from "../../store/store";
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setTotalInvestment } from '../../store/reducers/stocks/stocks';
+import { RootState } from '../../store/store';
 
 interface StockProps {
   name: string;
-  price: number;
+  price: string;
   amount: number;
   symbol: string;
   onDelete: () => void;
@@ -31,15 +31,15 @@ const ItemContainer = styled.div`
 `;
 
 const Item = styled.div`
-  ${tw`flex gap-3 items-center`}
+  ${tw`flex gap-3 items-center text-[1rem]`}
 `;
 
 const SubItem = styled.div`
   ${tw`flex flex-col gap-2`}
 `;
 
-const Input = styled.input`
-  ${tw`w-[50px] bg-gray-light border-0 border-solid border-b border-gray-dark focus:outline-none text-sm text-end`}
+const Input = styled.div`
+  ${tw`w-[50px] bg-gray-light border-0 focus:outline-none text-end`}
 `;
 
 const Img = styled.img`
@@ -47,27 +47,20 @@ const Img = styled.img`
 `;
 
 const MainText = styled.span`
-  ${tw`text-sm`}
+  ${tw`text-[0.9rem]`}
 `;
 
-const SubText = styled.span`${tw`text-xs`}`;
+const SubText = styled.span`
+  ${tw`text-[0.8rem]`}
+`;
 
 const SelectStock = ({ name, price, amount, symbol, onDelete }: StockProps) => {
-
   const [newAmount, setNewAmount] = useState<number>(0);
   const isKr = !isNaN(Number(symbol));
 
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(e.target.value);
-    if (!isNaN(value)) {
-      setNewAmount(value);
-    }
-  };
-
   useEffect(() => {
     setNewAmount(amount);
-  }, [amount])
-
+  }, [amount]);
 
   return (
     <Wrapper>
@@ -75,17 +68,24 @@ const SelectStock = ({ name, price, amount, symbol, onDelete }: StockProps) => {
       <Container>
         <ItemContainer>
           <Item>
-            <Img src={`https://file.alphasquare.co.kr/media/images/stock_logo/${isKr ? 'kr' : 'us'}/${symbol}.png`}
-                  onError={(e) => {
-                    e.currentTarget.src = logoImg;
-                  }} />
+            <Img
+              src={`https://file.alphasquare.co.kr/media/images/stock_logo/${isKr ? 'kr' : 'us'}/${symbol}.png`}
+              onError={(e) => {
+                e.currentTarget.src = logoImg;
+              }}
+            />
             <SubItem>
               <MainText>{name}</MainText>
-              <SubText>{price}원</SubText>
+              <SubText>
+                {price
+                  .toString()
+                  .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
+                원
+              </SubText>
             </SubItem>
           </Item>
           <Item>
-            <Input value={newAmount} onChange={handleAmountChange}/>
+            <Input>{newAmount}</Input>
             <MainText>주</MainText>
           </Item>
         </ItemContainer>

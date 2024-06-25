@@ -114,7 +114,7 @@ const StockCard = ({ data, isLike, setIsLike }: StockProps) => {
 
       <PriceContainer>
         <PriceItem>
-          <PriceText>{data.closePrice.toLocaleString()} + '원'</PriceText>
+          <PriceText>{data.closePrice.toLocaleString()}원</PriceText>
           <PriceText>({data.dividendYieldTtm.toFixed(4)}%)</PriceText>
         </PriceItem>
         <Heart src={isLike ? Fill : Empty} onClick={handleHeartClick} />

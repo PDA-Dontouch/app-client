@@ -36,6 +36,7 @@ const StockCandleChart = ({ nowPrice }: ChartProps) => {
   const chartData = useSelector(
     (state: RootState) => state.individualStock.chartData,
   );
+  console.log(chartData[0]);
 
   useEffect(() => {
     const today = new Date();
@@ -162,7 +163,7 @@ const StockCandleChart = ({ nowPrice }: ChartProps) => {
     };
   }
 
-  return chartData?.length > 0 ? (
+  return chartData?.length > 0 && chartData[0].code !== 'MBNKP' ? (
     <>
       <ChartCanvas
         height={height}

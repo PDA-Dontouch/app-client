@@ -63,6 +63,7 @@ const IndividualStock = () => {
   const detail = ['일', '주', '월', '년'];
   const usDetail = ['일', '주', '월'];
   const [num, setNum] = useState<number>(0);
+  console.log(selectCode);
 
   const today = new Date();
   const year = today.getFullYear();

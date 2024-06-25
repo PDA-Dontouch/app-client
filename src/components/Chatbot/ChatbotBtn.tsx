@@ -160,7 +160,6 @@ export default function ChatbotBtn() {
     const canRecord = VoiceRecorder.canDeviceVoiceRecord();
     canRecord.then((data: GenericResponse) => {
       if (!data.value) {
-        alert('녹음을 할 수 없는 기기입니다.');
         setIsRunning(false);
       } else {
         VoiceRecorder.hasAudioRecordingPermission().then(
@@ -169,7 +168,6 @@ export default function ChatbotBtn() {
               VoiceRecorder.requestAudioRecordingPermission().then(
                 (request) => {
                   if (!request.value) {
-                    alert('녹음을 허용해주세요.');
                     setIsRunning(false);
                   }
                 },

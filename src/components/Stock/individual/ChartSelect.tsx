@@ -42,6 +42,9 @@ const ChartSelect = ({
   const selectExchange = useSelector(
     (state: RootState) => state.trading.selectExchange,
   );
+  const chartData = useSelector(
+    (state: RootState) => state.individualStock.chartData,
+  );
 
   const today = new Date();
   const year = today.getFullYear();
@@ -89,26 +92,30 @@ const ChartSelect = ({
   };
 
   return (
-    <Container>
-      <Item>
-        <Img
-          src={isCandle ? Candle : CandleDisable}
-          isCandle={isCandle}
-          onClick={() => {
-            setIsCandle(true);
-            newCandleData();
-          }}
-        />
-        <Img
-          src={isCandle ? LineDisable : Line}
-          isCandle={!isCandle}
-          onClick={() => {
-            setIsCandle(false);
-            newLineData();
-          }}
-        />
-      </Item>
-    </Container>
+    <>
+      {chartData.length > 0 && (
+        <Container>
+          <Item>
+            <Img
+              src={isCandle ? Candle : CandleDisable}
+              isCandle={isCandle}
+              onClick={() => {
+                setIsCandle(true);
+                newCandleData();
+              }}
+            />
+            <Img
+              src={isCandle ? LineDisable : Line}
+              isCandle={!isCandle}
+              onClick={() => {
+                setIsCandle(false);
+                newLineData();
+              }}
+            />
+          </Item>
+        </Container>
+      )}
+    </>
   );
 };
 

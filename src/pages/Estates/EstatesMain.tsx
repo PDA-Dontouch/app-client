@@ -205,7 +205,7 @@ const EstatesMain = () => {
           ) : completedInvestments.length === 0 ? (
             <Empty>
               <EmptyImg src={EmptyEstate} />
-              모집 중인 상품이 없습니다.
+              모집 완료된 상품이 없습니다.
             </Empty>
           ) : (
             renderProducts(completedInvestments)
@@ -217,6 +217,7 @@ const EstatesMain = () => {
         <BasicModal2
           content={<InvestmentDescription isEstates={true} />}
           onClose={() => setIsOpen(false)}
+          isOpen={isOpen}
         />
       )}
     </>

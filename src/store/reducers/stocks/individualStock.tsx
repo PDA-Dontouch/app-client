@@ -27,6 +27,7 @@ const initialState = {
       dividendMonth: 0,
       dividendYieldTtm: 0,
       personalizedScore: null,
+      closePrice: 0,
     },
     detail_info: {
       stockId: 0,
@@ -120,8 +121,8 @@ const individualStockSlice = createSlice({
       state.fixedChart = action.payload;
     },
     setLiveData(state, action: ActionType) {
-      state.chartData.push(action.payload.data.response);
       state.chartData.pop();
+      state.chartData.push(action.payload.data.response);
     },
     setUpDown(state, action) {
       state.upDown = action.payload;

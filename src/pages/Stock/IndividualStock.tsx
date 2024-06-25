@@ -219,12 +219,14 @@ const IndividualStock = () => {
           nowPrice={nowPrice}
           askPrice={askPrice}
           selectExchange={selectExchange}
+          isOpen={isOpen}
         />
       )}
       {isDescription && (
         <BasicModal2
           content={<StockDescription />}
           onClose={() => setIsDescription(false)}
+          isOpen={isDescription}
         />
       )}
     </>

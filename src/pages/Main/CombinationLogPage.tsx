@@ -16,7 +16,7 @@ const CombinationLogContainer = styled.div`
 `;
 
 const CombinationContainer = styled.div`
-  ${tw`flex flex-col gap-7 px-2`}
+  ${tw`flex flex-col gap-7 p-2`}
   height: 600px;
   overflow-y: scroll;
   box-sizing: border-box;
@@ -28,7 +28,7 @@ const Combination = styled.div`
 `;
 
 const PurchaseDate = styled.div`
-  ${tw`text-black40 text-xs`}
+  ${tw`text-black40 text-xs ms-2`}
 `;
 
 export default function CombinationLogPage() {
@@ -39,39 +39,55 @@ export default function CombinationLogPage() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const scrollStdRef = useRef<HTMLDivElement>(null);
   const [page, setPage] = useState<number>(0);
+  const [isFetching, setIsFetching] = useState<boolean>(false);
+  const [hasMore, setHasMore] = useState<boolean>(true); // 데이터를 더 불러올 수 있는지 확인하는 상태
 
   useEffect(() => {
+    setIsFetching(true);
     getCombinationPurchased({ userId: user.user.id, page: 0, size: 2 }).then(
       (data) => {
         if (data.data.success) {
-          data.data.response.sort((a, b) => {
-            return new Date(b.date) < new Date(a.date) ? -1 : 1;
-          });
-          setStockComb(data.data.response);
+          const sortedData = data.data.response;
+          const uniqueData = removeDuplicateDates(sortedData);
+          setStockComb(uniqueData);
+          setPage(1);
+          setHasMore(uniqueData.length > 0);
         }
+        setIsFetching(false);
       },
     );
   }, [user.user.id]);
 
   function getCombi(page: number) {
+    setIsFetching(true);
     getCombinationPurchased({ userId: user.user.id, page: page, size: 2 }).then(
       (data) => {
         if (data.data.success) {
-          data.data.response.sort((a, b) => {
-            return new Date(b.date) < new Date(a.date) ? -1 : 1;
-          });
-          setStockComb((prev) => [...prev, ...data.data.response]);
+          const newCombinations = data.data.response;
+          const combinedData = [...stockComb, ...newCombinations];
+          const uniqueData = removeDuplicateDates(combinedData);
+          setStockComb(uniqueData);
           setPage(page + 1);
+          setHasMore(newCombinations.length > 0);
         }
+        setIsFetching(false);
       },
     );
   }
 
+  function removeDuplicateDates(data: CombinationPurchasedType[]) {
+    const uniqueData = data.filter(
+      (item, index, self) =>
+        index === self.findIndex((t) => t.date === item.date),
+    );
+    return uniqueData;
+  }
+
   function onScrollHandler() {
-    if (scrollRef.current && scrollStdRef.current) {
+    if (scrollRef.current && scrollStdRef.current && !isFetching && hasMore) {
       const stdRef = scrollStdRef.current.getBoundingClientRect();
       const sRef = scrollRef.current.getBoundingClientRect();
-      if (stdRef.bottom >= sRef.bottom - 1) {
+      if (stdRef.bottom >= sRef.bottom - 10) {
         getCombi(page);
       }
     }
@@ -92,12 +108,7 @@ export default function CombinationLogPage() {
           {stockComb.map((data, idx) => {
             return (
               <Combination key={idx}>
-                <PurchaseDate>
-                  {new Date(new Date(data.date).getTime() - offset)
-                    .toISOString()
-                    .replace('T', ' ')
-                    .replace('.000Z', '')}
-                </PurchaseDate>
+                <PurchaseDate>{data.date.toString()}</PurchaseDate>
                 <MainCombiBox {...data} />
               </Combination>
             );

@@ -17,6 +17,7 @@ interface TradingProps {
   nowPrice: PriceType;
   askPrice: SocketType;
   selectExchange: string;
+  isOpen: boolean;
 }
 
 const Container = styled.div`
@@ -60,6 +61,7 @@ const TradingStock = ({
   nowPrice,
   askPrice,
   selectExchange,
+  isOpen,
 }: TradingProps) => {
   const [clickPrice, setClickPrice] = useState<string>('');
   const handlePriceSelect = (price: string) => {
@@ -82,72 +84,48 @@ const TradingStock = ({
     );
   }, []);
 
-  const getUserTotalEnergyPrice = useCallback(() => {
-    getUserTotalEnergy({ userId: user.user.id, token: user.token }).then(
-      (data) => {
-        if (data.data.success && data.data.response) {
-          setEnergyTotalAmount(data.data.response);
-        }
-      },
-    );
-  }, []);
-
-  const getUserTotalEstatePrice = useCallback(() => {
-    getUserTotalEstate({ userId: user.user.id, token: user.token }).then(
-      (data) => {
-        if (data.data.success && data.data.response) {
-          setEstateTotalAmount(data.data.response);
-        }
-      },
-    );
-  }, []);
-
-  function getStocksDataProps() {
-    getHoldingStocks({ userId: user.user.id, token: user.token }).then(
-      (data) => {
-        if (data.data.success) {
-          setKoreaStockTotalPrice(data.data.response.krTotalPurchase);
-          setUsaStockTotalPrice(data.data.response.usTotalPurchase);
-        }
-      },
-    );
-  }
-
   useEffect(() => {
     getAccountAmount();
-    getUserTotalEnergyPrice();
-    getUserTotalEstatePrice();
-    getStocksDataProps();
   }, []);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
 
   return (
     <>
-      <BackDrop />
-      <ModalContainer>
-        <ItemContainer>
-          <img src={Close} onClick={onClose} />
-        </ItemContainer>
-        <Container>
-          <ItemBox>
-            <PriceBook
-              nowPrice={nowPrice}
-              askPrice={askPrice}
-              isKorea={selectExchange === 'KSC'}
-            />
-          </ItemBox>
-          <SellBuyStock
-            isSell={isSell}
-            isKorea={selectExchange === 'KSC'}
-            totalAccount={
-              accountAmount +
-              usaStockTotalPrice +
-              koreaStockTotalPrice +
-              energyTotalAmount +
-              estateTotalAmount
-            }
-          />
-        </Container>
-      </ModalContainer>
+      {isOpen && (
+        <>
+          <BackDrop />
+          <ModalContainer>
+            <ItemContainer>
+              <img src={Close} onClick={onClose} />
+            </ItemContainer>
+            <Container>
+              <ItemBox>
+                <PriceBook
+                  nowPrice={nowPrice}
+                  askPrice={askPrice}
+                  isKorea={selectExchange === 'KSC'}
+                />
+              </ItemBox>
+              <SellBuyStock
+                isSell={isSell}
+                isKorea={selectExchange === 'KSC'}
+                totalAccount={accountAmount}
+              />
+            </Container>
+          </ModalContainer>
+        </>
+      )}
     </>
   );
 };

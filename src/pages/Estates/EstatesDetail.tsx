@@ -193,6 +193,7 @@ const EstatesDetail = () => {
       </BtnContainer>
       {isOpen && (
         <BottomUpModal
+          isOpen={isOpen}
           onClose={() => setIsOpen(false)}
           content={
             isEstateHeld ? (

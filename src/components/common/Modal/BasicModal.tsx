@@ -2,10 +2,12 @@ import tw, { css, styled } from 'twin.macro';
 
 import Graph from '../../../assets/graph.svg';
 import Button from '../Button';
+import { useEffect } from 'react';
 
 interface ModalProps {
   type: number;
   onClick: () => void;
+  isOpen: boolean;
 }
 
 const BackDrop = styled.div`
@@ -53,29 +55,49 @@ const typeDescriptions: { [key: number]: string } = {
   5: '공격투자형',
 };
 
-const BasicModal = ({ type, onClick }: ModalProps) => {
+const BasicModal = ({ type, onClick, isOpen }: ModalProps) => {
   const typeName = typeDescriptions[type] || '알 수 없음';
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
 
   return (
     <>
-      <BackDrop />
-      <ModalContainer>
-        <ItemContainer>
-          <img src={Graph} />
-        </ItemContainer>
-        <TextContainer>
-          <MainText>당신은</MainText>
-          <BoldText>{typeName}</BoldText>
-          <MainText>투자자!</MainText>
-        </TextContainer>
-        <TextContainer>
-          <PlainText>
-            {typeName}인 당신을 위해 어떤 추천이 기다리고 있을지 궁금하시다면
-            지금 바로!
-          </PlainText>
-        </TextContainer>
-        <Button name="서비스 이용하러 가기" status="active" onClick={onClick} />
-      </ModalContainer>
+      {isOpen && (
+        <>
+          <BackDrop />
+          <ModalContainer>
+            <ItemContainer>
+              <img src={Graph} />
+            </ItemContainer>
+            <TextContainer>
+              <MainText>당신은</MainText>
+              <BoldText>{typeName}</BoldText>
+              <MainText>투자자!</MainText>
+            </TextContainer>
+            <TextContainer>
+              <PlainText>
+                {typeName}인 당신을 위해 어떤 추천이 기다리고 있을지
+                궁금하시다면 지금 바로!
+              </PlainText>
+            </TextContainer>
+            <Button
+              name="서비스 이용하러 가기"
+              status="active"
+              onClick={onClick}
+            />
+          </ModalContainer>
+        </>
+      )}
     </>
   );
 };

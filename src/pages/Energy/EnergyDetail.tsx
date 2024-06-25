@@ -97,7 +97,7 @@ const EnergyDetail = () => {
       setError('최소 투자 금액은 5천원입니다.');
     } else {
       const data: EnergyBuyType = {
-        userId: 1001,
+        userId: userId,
         energyFundId: detail.energyId,
         inputCash: value,
         energyName: detail.title,
@@ -108,8 +108,7 @@ const EnergyDetail = () => {
         if ((res.payload as BuyEnergyResponse).data.success) {
           navigate('/result/energy');
         } else {
-          // 임시 에러 처리
-          alert((res.payload as BuyEnergyResponse).data.error?.errorMessage);
+          setError((res.payload as BuyEnergyResponse).data.error?.errorMessage);
         }
       });
     }
@@ -197,6 +196,7 @@ const EnergyDetail = () => {
       </BtnContainer>
       {isOpen && (
         <BottomUpModal
+          isOpen={isOpen}
           onClose={() => setIsOpen(false)}
           content={
             isEnergyHeld ? (

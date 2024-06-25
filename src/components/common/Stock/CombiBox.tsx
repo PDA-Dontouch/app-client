@@ -4,7 +4,8 @@ import { RootState } from '../../../store/store';
 import { useSelector } from 'react-redux';
 
 const Wrapper = styled.div`
-  ${tw`bg-gray-light px-5 py-5 rounded-16 shadow-[2px_2px_4px_0_rgba(0,0,0,0.05)]`}
+  ${tw`px-5 py-5 rounded-16 shadow-[2px_2px_4px_0_rgba(0, 0, 0, 0.05)]`}
+  border: 0.8px solid rgba(0, 0, 0, 0.05)
 `;
 
 const Container = styled.div`
@@ -12,7 +13,7 @@ const Container = styled.div`
 `;
 
 const ItemContainer = styled.div`
-  ${tw`flex flex-col gap-5`}
+  ${tw`flex flex-col gap-6`}
 `;
 
 const MainText = styled.span`

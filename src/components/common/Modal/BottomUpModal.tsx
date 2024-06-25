@@ -1,4 +1,4 @@
-import { ReactElement } from 'react';
+import { ReactElement, useEffect } from 'react';
 import tw, { css, styled } from 'twin.macro';
 
 import Close from '../../../assets/close.svg';
@@ -6,9 +6,10 @@ import Close from '../../../assets/close.svg';
 interface ModalProps {
   content: ReactElement;
   onClose: () => void;
+  isOpen: boolean;
 }
 
-const BackDrop = styled.div`
+const BackDrop = styled.div<{ isOpen: boolean }>`
   ${tw`z-[100] w-[100%] h-[100%] bg-black40 fixed left-0 top-0`}
 `;
 
@@ -35,16 +36,32 @@ const ItemContainer = styled.div`
   ${tw`w-full flex justify-end`}
 `;
 
-const BottomUpModal = ({ onClose, content }: ModalProps) => {
+const BottomUpModal = ({ onClose, content, isOpen }: ModalProps) => {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
   return (
     <>
-      <BackDrop />
-      <ModalContainer>
-        <ItemContainer>
-          <img src={Close} onClick={onClose} />
-        </ItemContainer>
-        <ItemContainer>{content}</ItemContainer>
-      </ModalContainer>
+      {isOpen && (
+        <>
+          <BackDrop isOpen={isOpen} onClick={onClose} />
+          <ModalContainer>
+            <ItemContainer>
+              <img src={Close} onClick={onClose} />
+            </ItemContainer>
+            <ItemContainer>{content}</ItemContainer>
+          </ModalContainer>
+        </>
+      )}
     </>
   );
 };

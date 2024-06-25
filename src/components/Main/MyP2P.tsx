@@ -2,11 +2,23 @@ import tw, { styled } from 'twin.macro';
 import MyP2PProduct from './MyP2PProduct';
 import {
   EnergyList,
+  HeldEnergyList,
   MyP2PProductType,
   WithEnergyId,
 } from '../../types/energy_product';
 import Nothing from './Nothing';
-import { EstatesList, WithEstateId } from '../../types/estates_product';
+import {
+  EstatesList,
+  HeldEstatesList,
+  WithEstateId,
+} from '../../types/estates_product';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../store/store';
+import {
+  getEstatesDatas,
+  setClickEstates,
+} from '../../store/reducers/estates/estates';
+import { useEffect, useState } from 'react';
 
 type MyP2PProps = {
   energyData: (MyP2PProductType & WithEnergyId)[] | EnergyList[];
@@ -26,6 +38,18 @@ const P2PType = styled.div`
 `;
 
 export default function MyP2P({ energyData, estateData }: MyP2PProps) {
+  const dispatch = useDispatch<AppDispatch>();
+  const EstatesData = useSelector((state: RootState) => state.estates.datas);
+
+  useEffect(() => {
+    dispatch(getEstatesDatas());
+  }, []);
+
+  const handleEstateClick = (estate: MyP2PProductType & WithEstateId) => {
+    const select = EstatesData.filter((item) => item.id === estate.estateId)[0];
+    dispatch(setClickEstates(select));
+  };
+
   return (
     <MyP2PContainer>
       <P2P>
@@ -33,8 +57,8 @@ export default function MyP2P({ energyData, estateData }: MyP2PProps) {
         {estateData.length > 0 ? (
           estateData.map((estate, idx) => {
             return (
-              <div key={idx}>
-                <MyP2PProduct {...estate} />
+              <div key={idx} onClick={() => handleEstateClick(estate)}>
+                <MyP2PProduct data={estate} isEstates={true} />
               </div>
             );
           })
@@ -48,7 +72,7 @@ export default function MyP2P({ energyData, estateData }: MyP2PProps) {
           energyData.map((energy, idx) => {
             return (
               <div key={idx}>
-                <MyP2PProduct {...energy} />
+                <MyP2PProduct data={energy} isEstates={false} />
               </div>
             );
           })

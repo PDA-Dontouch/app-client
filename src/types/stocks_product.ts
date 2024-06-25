@@ -17,7 +17,7 @@ export type StockDataResultType = {
   dividendMonth: number;
   dividendYieldTtm: number;
   personalizedScore: number;
-  closePrice:number;
+  closePrice: number;
 };
 
 export type BasicInfoType = {
@@ -57,6 +57,7 @@ export type InsertCombiStock = {
   quantity: number;
   dividend: number;
   exchange: string;
+  dividendYieldTtm: number;
 };
 
 export type CombiStockReq = {
@@ -75,6 +76,11 @@ export type RequestCombiDistribute = {
   combination2: CombiStockReq[];
   combination3: CombiStockReq[];
   investmentAmount: number;
+};
+
+export type IndividualCombi = {
+  stocks: InsertCombiStock[];
+  totalDividend: number;
 };
 
 export type StockCombiType = {

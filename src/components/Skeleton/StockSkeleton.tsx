@@ -2,7 +2,7 @@ import tw, { styled } from 'twin.macro';
 import ClipLoader from 'react-spinners/ClipLoader';
 
 const Container = styled.div`
-  ${tw`h-full flex items-center justify-center`}
+  ${tw`h-[100vh] box-border flex items-center justify-center`}
 `;
 
 const StockSkeleton = () => {

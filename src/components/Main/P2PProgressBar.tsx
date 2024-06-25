@@ -42,6 +42,7 @@ export default function P2PProgressBar({ totalPrice }: P2PHeldContentProps) {
     <>
       {modal && (
         <BottomUpModal
+          isOpen={modal}
           onClose={() => {
             setModal(false);
           }}

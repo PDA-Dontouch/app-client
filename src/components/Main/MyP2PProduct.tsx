@@ -1,11 +1,28 @@
 import tw, { styled } from 'twin.macro';
-import { EnergyList, MyP2PProductType } from '../../types/energy_product';
+import {
+  EnergyList,
+  HeldEnergyList,
+  MyP2PProductType,
+} from '../../types/energy_product';
 import { WithEnergyId } from '../../types/energy_product';
-import { EstatesList, WithEstateId } from '../../types/estates_product';
+import {
+  EstatesList,
+  HeldEstatesList,
+  WithEstateId,
+} from '../../types/estates_product';
 import { useNavigate } from 'react-router-dom';
 
 type P2PImgProps = {
   img: string;
+};
+
+type P2PProps = {
+  data:
+    | (MyP2PProductType & WithEstateId)
+    | (MyP2PProductType & WithEnergyId)
+    | EstatesList
+    | EnergyList;
+  isEstates: boolean;
 };
 
 const MyP2PProductContainer = styled.div`
@@ -57,13 +74,7 @@ const AnnualRate = styled.div`
   ${tw`text-xxs`}
 `;
 
-export default function MyP2PProduct(
-  data:
-    | (MyP2PProductType & WithEnergyId)
-    | (MyP2PProductType & WithEstateId)
-    | EnergyList
-    | EstatesList,
-) {
+export default function MyP2PProduct({ data, isEstates }: P2PProps) {
   const navigate = useNavigate();
 
   return (
@@ -71,9 +82,15 @@ export default function MyP2PProduct(
       {'startPeriod' in data ? (
         <MyP2PProductContainer
           onClick={() => {
-            navigate(
-              `/energy/${'energyId' in data ? data.energyId : data.estateId}`,
-            );
+            if (isEstates) {
+              navigate(
+                `/estates/${(data as MyP2PProductType & WithEstateId).estateId}`,
+              );
+            } else {
+              navigate(
+                `/energy/${(data as MyP2PProductType & WithEnergyId).energyId}`,
+              );
+            }
           }}
         >
           <LeftSection>
@@ -104,7 +121,11 @@ export default function MyP2PProduct(
       ) : (
         <MyP2PProductContainer
           onClick={() => {
-            navigate(`/energy/${'energyId' in data ? data.energyId : data.id}`);
+            if (isEstates) {
+              navigate(`/estates/${(data as EstatesList).id}`);
+            } else {
+              navigate(`/energy/${(data as EnergyList).energyId}`);
+            }
           }}
         >
           <LeftSection>

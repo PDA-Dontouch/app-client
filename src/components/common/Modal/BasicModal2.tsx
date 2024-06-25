@@ -1,4 +1,4 @@
-import { ReactElement } from 'react';
+import { ReactElement, useEffect } from 'react';
 import tw, { css, styled } from 'twin.macro';
 
 import Close from '../../../assets/close.svg';
@@ -7,6 +7,7 @@ import Button from '../Button';
 interface ModalProps {
   content: ReactElement;
   onClose: () => void;
+  isOpen: boolean;
 }
 
 const BackDrop = styled.div`
@@ -30,16 +31,32 @@ const TextContainer = styled.div`
   ${tw`w-full flex justify-center items-end gap-1`}
 `;
 
-const BasicModal2 = ({ content, onClose }: ModalProps) => {
+const BasicModal2 = ({ content, onClose, isOpen }: ModalProps) => {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
   return (
     <>
-      <BackDrop />
-      <ModalContainer>
-        <ItemContainer>
-          <img src={Close} onClick={onClose} />
-        </ItemContainer>
-        <TextContainer>{content}</TextContainer>
-      </ModalContainer>
+      {isOpen && (
+        <>
+          <BackDrop />
+          <ModalContainer>
+            <ItemContainer>
+              <img src={Close} onClick={onClose} />
+            </ItemContainer>
+            <TextContainer>{content}</TextContainer>
+          </ModalContainer>
+        </>
+      )}
     </>
   );
 };

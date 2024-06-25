@@ -35,6 +35,7 @@ import {
   removeLikeStock,
 } from '../../store/reducers/stocks/stocks';
 import ScrollToTop from '../../hooks/ScrollToTop';
+import Loading from '../../assets/loading.gif';
 
 const MainContainer = styled.div`
   ${tw`flex flex-col min-h-screen overflow-hidden`}
@@ -62,12 +63,23 @@ const CombiBoxContainer = styled.div`
 `;
 
 const ItemContainer = styled.div`
-  ${tw`flex-col gap-3 overflow-scroll`}
-  height: calc(100vh - 470px);
+  ${tw`w-full box-border flex-col gap-3 overflow-scroll h-[calc(100vh-400px)]`}// height: calc(100vh - 470px);
 `;
 
 const SortType = styled.span`
   ${tw`text-sm my-5 mx-2 text-right block`}
+`;
+
+const LoadingContainer = styled.div`
+  ${tw`flex flex-col h-[100vh] w-full items-center justify-center`}
+`;
+
+const LoadingImg = styled.img`
+  ${tw`h-[5.6rem]`}
+`;
+
+const LoadingText = styled.span`
+  ${tw`text-[1.1rem]`}
 `;
 
 const StockMainPage: React.FC = () => {
@@ -84,8 +96,18 @@ const StockMainPage: React.FC = () => {
   const [stockList, setStockList] = useState<StockDataResultType[]>([]);
   const userId = useSelector((state: RootState) => state.user.user.id);
   const likeArr = useSelector((state: RootState) => state.stocks.stocksLike);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [time, setTime] = useState<boolean>(false);
   const ref = useRef<HTMLDivElement>(null);
   const stdRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -105,25 +127,23 @@ const StockMainPage: React.FC = () => {
       page: 0,
       size: 10,
     }).then((response) => {
-      setPage(page+1);
+      setPage(page + 1);
       setStockList(response.data.response);
     });
     dispatch(getLikeStocks(userId));
   }, [searchTerm]);
-
-  
 
   const handleTabClick = (tab: 'recommend' | 'individual') => {
     setActiveTab(tab);
     navigate(`?tab=${tab}`);
   };
 
-  const handleOnScroll = async ()=>{
-    if(ref.current && stdRef.current){
+  const handleOnScroll = async () => {
+    if (ref.current && stdRef.current) {
       const item = ref.current.getBoundingClientRect();
       const container = stdRef.current.getBoundingClientRect();
 
-      if(item.bottom-180<=container.bottom){
+      if (item.bottom - 180 <= container.bottom) {
         stocksDatas({
           searchWord: searchTerm,
           userId: user.user.id,
@@ -131,13 +151,12 @@ const StockMainPage: React.FC = () => {
           page: page,
           size: 10,
         }).then((response) => {
-          setPage(page+1);
-          setStockList([...stockList,...response.data.response]);
+          setPage(page + 1);
+          setStockList([...stockList, ...response.data.response]);
         });
       }
     }
-  }
-  
+  };
 
   const handleLikeToggle = async (item: StockDataResultType) => {
     const data = {
@@ -161,10 +180,20 @@ const StockMainPage: React.FC = () => {
     }
   };
 
-  return (
+  return loading && activeTab === 'recommend' && time === false ? (
+    <LoadingContainer>
+      <LoadingImg src={Loading} alt="Loading" />
+      <LoadingText>추천 조합 생성 중</LoadingText>
+    </LoadingContainer>
+  ) : (
     <MainContainer>
-      <Navbar name={user.user.nickname} type="main" onClick={() => {}} />
+      <Navbar
+        name={user.user.nickname}
+        type="main"
+        onClick={() => navigate('/')}
+      />
       <ScrollToTop />
+
       <ContentContainer>
         <PersonalInfo />
         {activeTab === 'recommend' ? (
@@ -179,11 +208,15 @@ const StockMainPage: React.FC = () => {
             </SectionHeader>
             <NextBtn
               content="바로 구매하기"
-              onClick={() => navigate('/stocks/buy')}
+              onClick={() => {
+                navigate('/stocks/buy');
+                setTime(true);
+              }}
             />
             <CombiBoxContainer
               onClick={() => {
                 navigate('/stocks/detail');
+                setTime(true);
               }}
             >
               <CombiBox />
@@ -232,4 +265,3 @@ const StockMainPage: React.FC = () => {
 };
 
 export default StockMainPage;
-

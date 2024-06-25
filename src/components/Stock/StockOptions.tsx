@@ -6,7 +6,12 @@ import SearchBar from '../common/Stock/SearchBar';
 import { stocksDatas } from '../../api/stocks';
 import logoImg from '../../assets/logo.svg';
 import { StockDataResultType } from '../../types/stocks_product';
-import { addCombiStocks } from '../../store/reducers/stocks/stocks';
+import {
+  addCombi1Stock,
+  addCombi2Stock,
+  addCombi3Stock,
+  addCombiStocks,
+} from '../../store/reducers/stocks/stocks';
 import AlertModal from '../common/Stock/AlertModal';
 
 const Container = styled.div`
@@ -128,22 +133,27 @@ const StockOptions: React.FC<StockOptionsProps> = ({
     });
   };
 
-  const handleUpdateCombination = (stockId: number, exchange: string): void => {
-    if (combiStocks[currentCombination].stocks.length >= 2) {
-      setAlertOpen(true);
+  const handleUpdateCombination = (stock: StockDataResultType) => {
+    const data = {
+      stockId: stock.id,
+      name: stock.name,
+      symbol: stock.symbol,
+      price: stock.closePrice,
+      quantity: 1,
+      dividend: stock.dividendMonth,
+      exchange: stock.exchange,
+      dividendYieldTtm: stock.dividendYieldTtm,
+    };
+    if (dividendMonth === 1) {
+      dispatch(addCombi1Stock(data));
+      onClose();
+    } else if (dividendMonth === 2) {
+      dispatch(addCombi2Stock(data));
+      onClose();
     } else {
-      dispatch(
-        addCombiStocks({
-          combination: currentCombination,
-          stockId: stockId,
-          exchange: exchange === 'KSC' ? 'KSC' : 'OTHER',
-        }),
-      );
+      dispatch(addCombi3Stock(data));
+      onClose();
     }
-  };
-
-  const handleAlertClose = () => {
-    setAlertOpen(false);
   };
 
   const isKRStock = (symbol: string): boolean => {
@@ -165,7 +175,7 @@ const StockOptions: React.FC<StockOptionsProps> = ({
             <StockInfo
               key={stock.id}
               onClick={() => {
-                handleUpdateCombination(stock.id, stock.exchange);
+                handleUpdateCombination(stock);
               }}
             >
               <ItemContainer>
@@ -193,13 +203,6 @@ const StockOptions: React.FC<StockOptionsProps> = ({
           );
         })}
       </StockItems>
-      {alertOpen && (
-        <AlertModal
-          type="modal"
-          onClose={handleAlertClose}
-          message="최대 2개의 종목을 추가할 수 있습니다."
-        />
-      )}
     </Container>
   );
 };

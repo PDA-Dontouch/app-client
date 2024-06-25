@@ -5,13 +5,18 @@ import MyStock from './MyStock';
 import MyP2P from './MyP2P';
 import {
   EnergyList,
+  HeldEnergyList,
   MyP2PProductType,
   WithEnergyId,
 } from '../../types/energy_product';
 import StocksHeldContent from './StocksHeldContent';
 import { useNavigate } from 'react-router-dom';
 import P2PHeldContent from './P2PHeldContent';
-import { EstatesList, WithEstateId } from '../../types/estates_product';
+import {
+  EstatesList,
+  HeldEstatesList,
+  WithEstateId,
+} from '../../types/estates_product';
 import {
   HoldingStockType,
   StockDataResultType,

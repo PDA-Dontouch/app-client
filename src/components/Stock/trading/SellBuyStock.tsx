@@ -22,15 +22,15 @@ interface SellBuyProps {
 }
 
 const Container = styled.div`
-  ${tw`w-full flex flex-col px-4 justify-between`}
+  ${tw`w-[100%] flex flex-col px-4 justify-between box-border`}
 `;
 
 const ItemContainer = styled.div`
-  ${tw`flex flex-col gap-4`}
+  ${tw`flex flex-col gap-4 w-[100%]`}
 `;
 
 const Item = styled.div`
-  ${tw`flex flex-col gap-2`}
+  ${tw`flex flex-col gap-2 w-full`}
 `;
 
 const TagText = styled.span`
@@ -58,11 +58,11 @@ const BtnContainer = styled.div`
 `;
 
 const SubBtnContainer = styled.div`
-  ${tw`flex`}
+  ${tw`flex w-full`}
 `;
 
 const Btn = styled.button<{ isSelect: boolean; isLeft: boolean }>`
-  ${tw`bg-white border-none py-2`}
+  ${tw`bg-white border-none py-2 w-full`}
   ${({ isSelect }) => (isSelect ? tw`bg-[#FFE3D7]` : tw``)}
   ${({ isLeft }) => (isLeft ? tw`rounded-l-8` : tw`rounded-r-8`)}
 `;

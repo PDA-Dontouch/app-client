@@ -2,11 +2,19 @@ import tw, { styled } from 'twin.macro';
 import MyP2PProduct from './MyP2PProduct';
 import {
   EnergyList,
+  HeldEnergyList,
   MyP2PProductType,
   WithEnergyId,
 } from '../../types/energy_product';
 import Nothing from './Nothing';
-import { EstatesList, WithEstateId } from '../../types/estates_product';
+import {
+  EstatesList,
+  HeldEstatesList,
+  WithEstateId,
+} from '../../types/estates_product';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../store/store';
+import { setClickEstates } from '../../store/reducers/estates/estates';
 
 type MyP2PProps = {
   energyData: (MyP2PProductType & WithEnergyId)[] | EnergyList[];
@@ -26,6 +34,11 @@ const P2PType = styled.div`
 `;
 
 export default function MyP2P({ energyData, estateData }: MyP2PProps) {
+  const dispatch = useDispatch<AppDispatch>();
+
+  console.log(energyData);
+  console.log(estateData);
+
   return (
     <MyP2PContainer>
       <P2P>
@@ -34,7 +47,7 @@ export default function MyP2P({ energyData, estateData }: MyP2PProps) {
           estateData.map((estate, idx) => {
             return (
               <div key={idx}>
-                <MyP2PProduct {...estate} />
+                <MyP2PProduct data={estate} isEstates={true} />
               </div>
             );
           })
@@ -48,7 +61,7 @@ export default function MyP2P({ energyData, estateData }: MyP2PProps) {
           energyData.map((energy, idx) => {
             return (
               <div key={idx}>
-                <MyP2PProduct {...energy} />
+                <MyP2PProduct data={energy} isEstates={false} />
               </div>
             );
           })

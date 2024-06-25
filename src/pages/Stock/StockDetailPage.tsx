@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import tw, { styled } from 'twin.macro';
 import SelectStock from '../../components/Stock/SelectStock';
 import StockRecommend from '../../components/common/Stock/StockRecommend';
@@ -10,14 +10,24 @@ import { useNavigate } from 'react-router-dom';
 import { RootState } from '../../store/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../../store/store';
-import { removeCombiStocks } from '../../store/reducers/stocks/stocks';
+import {
+  removeCombi1Stock,
+  removeCombi2Stock,
+  removeCombi3Stock,
+  removeCombiStocks,
+  setTotalDividend1,
+  setTotalDividend2,
+  setTotalDividend3,
+} from '../../store/reducers/stocks/stocks';
+import { InsertCombiStock } from '../../types/stocks_product';
+import { getUserAccountAmount } from '../../api/auth';
 
 const Container = styled.div`
-  ${tw`h-[calc(100% - 206px)] mt-14 mb-[84px] px-5 py-8 flex flex-col gap-3`}
+  ${tw`h-[100vh] px-5 py-22 flex flex-col gap-3 box-border`}
 `;
 
 const Wrapper = styled.div`
-  ${tw`w-full gap-4 overflow-y-auto`}
+  ${tw`flex flex-col justify-between`}
 `;
 
 const HeaderText = styled.span`
@@ -29,15 +39,15 @@ const AddStock = styled.div`
 `;
 
 const ExpectedDividend = styled.div`
-  ${tw`text-right text-[0.9rem] mb-2`}
+  ${tw`text-right text-[1rem] mb-2 text-green-dark`}
+`;
+
+const MyAccount = styled.div`
+  ${tw`text-right text-[0.86rem] mb-2`}
 `;
 
 const Divider = styled.div`
   ${tw`w-full h-1 bg-gray-light my-3`}
-`;
-
-const ReasonTitle = styled.span`
-  ${tw`text-lg ml-2 mb-2`}
 `;
 
 const StockCombination = styled.div`
@@ -55,18 +65,23 @@ const StockDetailPage: React.FC = () => {
   const [isModalOpen, setModalOpen] = useState(false);
 
   const combiStocks = useSelector((state: RootState) => state.stocks);
+  const [accountAmount, setAccountAmount] = useState<number>(0);
+  const user = useSelector((state: RootState) => state.user);
 
   const currentCombination = `combination${currentMonth + 1}` as
     | 'combination1'
     | 'combination2'
     | 'combination3';
   const selectedStocks = combiStocks[currentCombination];
-  console.log('getCombi', combiStocks);
 
-  const handleRemoveStock = (stockSymbol: string) => {
-    dispatch(
-      removeCombiStocks({ combination: currentCombination, stockSymbol }),
-    );
+  const handleRemoveStock = (stock: InsertCombiStock) => {
+    if (currentMonth === 0) {
+      dispatch(removeCombi1Stock(stock));
+    } else if (currentMonth === 1) {
+      dispatch(removeCombi2Stock(stock));
+    } else {
+      dispatch(removeCombi3Stock(stock));
+    }
   };
 
   const handleOpenModal = () => {
@@ -91,6 +106,33 @@ const StockDetailPage: React.FC = () => {
     navigate('/stocks/buy');
   };
 
+  const getAccountAmount = useCallback(() => {
+    getUserAccountAmount({ userId: user.user.id, token: user.token }).then(
+      (data) => {
+        if (data.data.success && data.data.response.cash) {
+          setAccountAmount(data.data.response.cash);
+        }
+      },
+    );
+  }, []);
+
+  useEffect(() => {
+    getAccountAmount();
+  }, []);
+
+  useEffect(() => {
+    const data = selectedStocks.stocks.reduce((total, item) => {
+      return total + (item.price * item.quantity * item.dividendYieldTtm) / 4;
+    }, 0);
+    if (currentMonth === 0) {
+      dispatch(setTotalDividend1(data));
+    } else if (currentMonth === 1) {
+      dispatch(setTotalDividend2(data));
+    } else {
+      dispatch(setTotalDividend3(data));
+    }
+  }, [selectedStocks, currentMonth, dispatch]);
+
   return (
     <>
       <Navbar
@@ -113,7 +155,9 @@ const StockDetailPage: React.FC = () => {
                 price={stock.price.toString()}
                 amount={stock.quantity}
                 symbol={stock.symbol}
-                onDelete={() => handleRemoveStock(stock.symbol)}
+                onDelete={() => handleRemoveStock(stock)}
+                stock={stock}
+                combiType={currentMonth + 1}
               />
             </div>
           ))}
@@ -121,14 +165,20 @@ const StockDetailPage: React.FC = () => {
         <AddStock onClick={handleOpenModal}>+ 종목 추가하기</AddStock>
         <Divider />
         <ExpectedDividend>
-          예상 월 배당금{' '}
+          예상 월 배당금 🪙
           {selectedStocks.totalDividend
+            .toFixed(0)
             .toString()
             .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
           원
         </ExpectedDividend>
+        <MyAccount>
+          * 현재 나의 자산은{' '}
+          {accountAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원
+        </MyAccount>
         {isModalOpen && (
           <BottomUpModal
+            isOpen={isModalOpen}
             onClose={handleCloseModal}
             content={
               <StockOptions

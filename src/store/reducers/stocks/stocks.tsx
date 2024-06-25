@@ -14,12 +14,14 @@ import {
   StocksLikeTypes,
   StockLike,
   PostCombiData,
+  IndividualCombi,
 } from '../../../types/stocks_product';
 import { AppDispatch, RootState } from '../../store';
 
 type ActionPayloadCombi = {
   data: {
     response: StockCombiType;
+    success: boolean;
   };
 };
 
@@ -226,16 +228,84 @@ const stocksSlice = createSlice({
         (el) => el.stockId !== action.payload.stockId,
       );
     },
+    setTotalDividend1(state, action: PayloadAction<number>) {
+      state.combination1.totalDividend = action.payload;
+    },
+    setTotalDividend2(state, action: PayloadAction<number>) {
+      state.combination2.totalDividend = action.payload;
+    },
+    setTotalDividend3(state, action: PayloadAction<number>) {
+      state.combination3.totalDividend = action.payload;
+    },
+    setQuantity(
+      state,
+      action: PayloadAction<{ data: InsertCombiStock; combiType: number }>,
+    ) {
+      const { data, combiType } = action.payload;
+      if (combiType === 1) {
+        const stock = state.combination1.stocks.find(
+          (stock) => stock.stockId === data.stockId,
+        );
+        if (stock) {
+          stock.quantity = data.quantity;
+        }
+      } else if (combiType === 2) {
+        const stock = state.combination2.stocks.find(
+          (stock) => stock.stockId === data.stockId,
+        );
+        if (stock) {
+          stock.quantity = data.quantity;
+        }
+      } else {
+        const stock = state.combination3.stocks.find(
+          (stock) => stock.stockId === data.stockId,
+        );
+        if (stock) {
+          stock.quantity = data.quantity;
+        }
+      }
+    },
+    addCombi1Stock(state, action: PayloadAction<InsertCombiStock>) {
+      state.combination1.stocks.push(action.payload);
+    },
+    addCombi2Stock(state, action: PayloadAction<InsertCombiStock>) {
+      state.combination2.stocks.push(action.payload);
+    },
+    addCombi3Stock(state, action: PayloadAction<InsertCombiStock>) {
+      state.combination3.stocks.push(action.payload);
+    },
+    removeCombi1Stock(state, action: PayloadAction<InsertCombiStock>) {
+      state.combination1.stocks = state.combination1.stocks.filter(
+        (el) => el.stockId !== action.payload.stockId,
+      );
+    },
+    removeCombi2Stock(state, action: PayloadAction<InsertCombiStock>) {
+      state.combination2.stocks = state.combination2.stocks.filter(
+        (el) => el.stockId !== action.payload.stockId,
+      );
+    },
+    removeCombi3Stock(state, action: PayloadAction<InsertCombiStock>) {
+      state.combination3.stocks = state.combination3.stocks.filter(
+        (el) => el.stockId !== action.payload.stockId,
+      );
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(makeCombiStocks.pending, (state, action) => {
       state.loading = true;
     });
     builder.addCase(makeCombiStocks.fulfilled, (state, action) => {
-      state.combination1 = action.payload.data.response.combination1;
-      state.combination2 = action.payload.data.response.combination2;
-      state.combination3 = action.payload.data.response.combination3;
-      state.loading = false;
+      if (action.payload.data.success) {
+        state.combination1 = action.payload.data.response.combination1;
+        state.combination2 = action.payload.data.response.combination2;
+        state.combination3 = action.payload.data.response.combination3;
+        state.loading = false;
+      } else {
+        state.combination1.stocks = [];
+        state.combination2.stocks = [];
+        state.combination3.stocks = [];
+        state.loading = false;
+      }
     });
     builder.addCase(addCombiStocks.fulfilled, (state, action) => {
       state.combination1 = action.payload.data.response.combination1;
@@ -261,6 +331,16 @@ export const {
   setLikeStocks,
   addLikeStock,
   removeLikeStock,
+  setQuantity,
+  setTotalDividend1,
+  setTotalDividend2,
+  setTotalDividend3,
+  addCombi1Stock,
+  addCombi2Stock,
+  addCombi3Stock,
+  removeCombi1Stock,
+  removeCombi2Stock,
+  removeCombi3Stock,
 } = stocksSlice.actions;
 
 export default stocksSlice.reducer;

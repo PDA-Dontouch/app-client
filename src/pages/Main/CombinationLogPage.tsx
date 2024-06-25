@@ -16,7 +16,7 @@ const CombinationLogContainer = styled.div`
 `;
 
 const CombinationContainer = styled.div`
-  ${tw`flex flex-col gap-7 px-2`}
+  ${tw`flex flex-col gap-7 p-2`}
   height: 600px;
   overflow-y: scroll;
   box-sizing: border-box;
@@ -28,7 +28,7 @@ const Combination = styled.div`
 `;
 
 const PurchaseDate = styled.div`
-  ${tw`text-black40 text-xs`}
+  ${tw`text-black40 text-xs ms-2`}
 `;
 
 export default function CombinationLogPage() {
@@ -53,29 +53,29 @@ export default function CombinationLogPage() {
     );
   }, [user.user.id]);
 
-  function getCombi(page: number) {
-    getCombinationPurchased({ userId: user.user.id, page: page, size: 2 }).then(
-      (data) => {
-        if (data.data.success) {
-          data.data.response.sort((a, b) => {
-            return new Date(b.date) < new Date(a.date) ? -1 : 1;
-          });
-          setStockComb((prev) => [...prev, ...data.data.response]);
-          setPage(page + 1);
-        }
-      },
-    );
-  }
+  // function getCombi(page: number) {
+  //   getCombinationPurchased({ userId: user.user.id, page: page, size: 2 }).then(
+  //     (data) => {
+  //       if (data.data.success) {
+  //         data.data.response.sort((a, b) => {
+  //           return new Date(b.date) < new Date(a.date) ? -1 : 1;
+  //         });
+  //         setStockComb((prev) => [...prev, ...data.data.response]);
+  //         setPage(page + 1);
+  //       }
+  //     },
+  //   );
+  // }
 
-  function onScrollHandler() {
-    if (scrollRef.current && scrollStdRef.current) {
-      const stdRef = scrollStdRef.current.getBoundingClientRect();
-      const sRef = scrollRef.current.getBoundingClientRect();
-      if (stdRef.bottom >= sRef.bottom - 1) {
-        getCombi(page);
-      }
-    }
-  }
+  // function onScrollHandler() {
+  //   if (scrollRef.current && scrollStdRef.current) {
+  //     const stdRef = scrollStdRef.current.getBoundingClientRect();
+  //     const sRef = scrollRef.current.getBoundingClientRect();
+  //     if (stdRef.bottom >= sRef.bottom - 1) {
+  //       getCombi(page);
+  //     }
+  //   }
+  // }
 
   return (
     <>
@@ -87,22 +87,31 @@ export default function CombinationLogPage() {
         }}
       ></Navbar>
       <CombinationLogContainer>
-        <CombinationContainer ref={scrollStdRef} onScroll={onScrollHandler}>
+        <CombinationContainer>
+          {/* <CombinationContainer ref={scrollStdRef} onScroll={onScrollHandler}> */}
           <GreenBarTitle text="구매 조합 내역" />
           {stockComb.map((data, idx) => {
             return (
               <Combination key={idx}>
                 <PurchaseDate>
                   {new Date(new Date(data.date).getTime() - offset)
-                    .toISOString()
-                    .replace('T', ' ')
-                    .replace('.000Z', '')}
+                    .toLocaleString('ko-KR', {
+                      year: 'numeric',
+                      month: '2-digit',
+                      day: '2-digit',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      second: '2-digit',
+                      hour12: false,
+                    })
+                    .replace(/\. /g, '-')
+                    .replace(', ', '')}
                 </PurchaseDate>
                 <MainCombiBox {...data} />
               </Combination>
             );
           })}
-          <div ref={scrollRef}></div>
+          {/* <div ref={scrollRef}></div> */}
         </CombinationContainer>
       </CombinationLogContainer>
       <Footer />

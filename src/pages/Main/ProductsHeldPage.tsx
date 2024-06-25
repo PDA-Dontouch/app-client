@@ -2,7 +2,11 @@ import tw, { styled } from 'twin.macro';
 import GreenBarTitle from '../../components/common/GreenBarTitle';
 import Navbar from '../../components/common/Navbar';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { MyP2PProductType, WithEnergyId } from '../../types/energy_product';
+import {
+  HeldEnergyList,
+  MyP2PProductType,
+  WithEnergyId,
+} from '../../types/energy_product';
 import Footer from '../../components/common/Footer';
 import StockP2P from '../../components/Main/StockP2P';
 import { useCallback, useEffect, useState } from 'react';
@@ -16,7 +20,7 @@ import {
 } from '../../api/holding';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
-import { WithEstateId } from '../../types/estates_product';
+import { HeldEstatesList, WithEstateId } from '../../types/estates_product';
 import {
   HoldingStockType,
   UsStockSocketType,
@@ -192,6 +196,7 @@ export default function ProductsHeldPage() {
     <>
       {modal && (
         <BottomUpModal
+          isOpen={modal}
           content={<AddStockModal setModal={setModal} />}
           onClose={() => {
             setModal(false);

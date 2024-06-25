@@ -96,6 +96,7 @@ const StockMainPage: React.FC = () => {
   const userId = useSelector((state: RootState) => state.user.user.id);
   const likeArr = useSelector((state: RootState) => state.stocks.stocksLike);
   const [loading, setLoading] = useState<boolean>(true);
+  const [time, setTime] = useState<boolean>(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -155,14 +156,18 @@ const StockMainPage: React.FC = () => {
     }
   };
 
-  return loading && activeTab === 'recommend' ? (
+  return loading && activeTab === 'recommend' && time === false ? (
     <LoadingContainer>
       <LoadingImg src={Loading} alt="Loading" />
       <LoadingText>추천 조합 생성 중</LoadingText>
     </LoadingContainer>
   ) : (
     <MainContainer>
-      <Navbar name={user.user.nickname} type="main" onClick={() => {}} />
+      <Navbar
+        name={user.user.nickname}
+        type="main"
+        onClick={() => navigate('/')}
+      />
       <ScrollToTop />
 
       <ContentContainer>
@@ -179,11 +184,15 @@ const StockMainPage: React.FC = () => {
             </SectionHeader>
             <NextBtn
               content="바로 구매하기"
-              onClick={() => navigate('/stocks/buy')}
+              onClick={() => {
+                navigate('/stocks/buy');
+                setTime(true);
+              }}
             />
             <CombiBoxContainer
               onClick={() => {
                 navigate('/stocks/detail');
+                setTime(true);
               }}
             >
               <CombiBox />

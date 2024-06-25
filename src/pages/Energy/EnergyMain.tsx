@@ -193,7 +193,7 @@ const EnergyMain = () => {
           ) : completedInvestments.length === 0 ? (
             <Empty>
               <EmptyImg src={EmptyEnergy} />
-              모집 중인 상품이 없습니다.
+              모집 완료된 상품이 없습니다.
             </Empty>
           ) : (
             renderProducts(completedInvestments)
@@ -205,6 +205,7 @@ const EnergyMain = () => {
         <BasicModal2
           content={<InvestmentDescription isEstates={false} />}
           onClose={() => setIsOpen(false)}
+          isOpen={isOpen}
         />
       )}
     </>

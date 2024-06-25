@@ -121,6 +121,10 @@ const StockCandleChart = ({ nowPrice }: ChartProps) => {
     return data?.close > data?.open ? '#ef5350' : '#26a69a';
   };
 
+  const openCloseColor2 = (data: ChartData) => {
+    return data?.close > data?.open ? '#26a69a' : '#ef5350';
+  };
+
   function tooltipContent() {
     return ({ currentItem, xAccessor }) => {
       return {
@@ -207,7 +211,7 @@ const StockCandleChart = ({ nowPrice }: ChartProps) => {
           <EdgeIndicator
             itemType="last"
             rectWidth={margin.right}
-            fill={openCloseColor}
+            fill={openCloseColor2}
             lineStroke={openCloseColor}
             displayFormat={pricesDisplayFormat}
             yAccessor={yEdgeIndicator}

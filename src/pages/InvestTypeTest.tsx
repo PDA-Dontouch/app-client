@@ -140,6 +140,7 @@ const InvestTypeTest = () => {
           <BasicModal
             type={user.user.investmentType}
             onClick={() => navigate('/')}
+            isOpen={showModal}
           />
         </div>
       )}

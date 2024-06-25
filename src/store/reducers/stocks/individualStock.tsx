@@ -120,8 +120,8 @@ const individualStockSlice = createSlice({
       state.fixedChart = action.payload;
     },
     setLiveData(state, action: ActionType) {
-      state.chartData.push(action.payload.data.response);
       state.chartData.pop();
+      state.chartData.push(action.payload.data.response);
     },
     setUpDown(state, action) {
       state.upDown = action.payload;

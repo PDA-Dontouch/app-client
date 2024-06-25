@@ -318,6 +318,7 @@ export default function MainPage() {
       <Navbar name={user.user.nickname} type="main" onClick={() => {}}></Navbar>
       {modal && (
         <BottomUpModal
+          isOpen={modal}
           onClose={() => setModal(false)}
           content={
             <SalaryPlan

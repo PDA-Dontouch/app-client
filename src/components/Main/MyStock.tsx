@@ -32,7 +32,7 @@ export default function MyStock({
   realTimeKoreaPrice,
   realTimeUsPrice,
 }: MyStockProps) {
-  console.log(koreaData);
+  console.log(realTimeUsPrice);
   return (
     <>
       <Stocks>

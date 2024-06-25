@@ -28,11 +28,11 @@ const MessageContainer = styled.div`
 `;
 
 const Image = styled.img`
-  ${tw`mb-1`}
+  ${tw`mb-1 w-[6rem]`}
 `;
 
 const Text = styled.p`
-  ${tw`text-xl text-black`}
+  ${tw`text-[1.2rem]`}
 `;
 
 const ResultMessage: React.FC<ResultMessageProps> = ({ type }) => {

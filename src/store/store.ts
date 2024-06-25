@@ -18,6 +18,12 @@ const StockPersistConfig = {
   whiteList: ['detail'],
 };
 
+const StocksPersistConfig = {
+  key: 'stocks',
+  storage: storage,
+  whiteList: ['combination1', 'combination2', 'combination3'],
+};
+
 const TradingPersistConfig = {
   key: 'trading',
   storage: storage,
@@ -38,7 +44,7 @@ const rootReducer = combineReducers({
   estates: estatesReducer,
   individualStock: persistReducer(StockPersistConfig, individualStockReducer),
   trading: persistReducer(TradingPersistConfig, tradingReducer),
-  stocks: stocksReducer,
+  stocks: persistReducer(StocksPersistConfig, stocksReducer),
   holdingEstates: holdingEstatesReducer,
   holdingEnergy: holdingEnergyReducer,
   holdingStocks: holdingStocksReducer,

@@ -31,7 +31,7 @@ const Input = styled.input`
   border-radius: 0;
 
   &:focus {
-    ${tw`border-green40`}
+    ${tw`border-green-dark`}
   }
 `;
 
@@ -98,7 +98,7 @@ const AssetInput = () => {
       <Container>
         <ItemContainer>
           <Wrapper>
-            <Title>투자금액 변경하기</Title>
+            <Title>투자 금액 변경하기</Title>
             <InputWrapper>
               <Input
                 type="text"

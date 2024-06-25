@@ -187,6 +187,7 @@ export default function CalendarPage() {
     <>
       {modal && (
         <BottomUpModal
+          isOpen={modal}
           onClose={() => setModal(false)}
           content={
             modalType === 'date' ? (

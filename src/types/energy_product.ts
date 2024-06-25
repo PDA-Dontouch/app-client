@@ -9,6 +9,20 @@ export interface EnergyList {
   creditRating: string;
 }
 
+export interface HeldEnergyList {
+  id: number;
+  userId: number;
+  energyId: string;
+  titleImageUrl: string;
+  title: string;
+  earningRate: number;
+  investmentPeriod: number;
+  inputCash: number;
+  startPeriod: Date;
+  createdAt: Date;
+  isEstates: boolean;
+}
+
 export type CalendarP2PType = {
   id: string;
   title: string;

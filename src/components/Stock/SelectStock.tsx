@@ -3,8 +3,9 @@ import logoImg from '../../assets/logo.svg';
 import Delete from '../../assets/delete.svg';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setTotalInvestment } from '../../store/reducers/stocks/stocks';
-import { RootState } from '../../store/store';
+import { setQuantity } from '../../store/reducers/stocks/stocks';
+import { AppDispatch, RootState } from '../../store/store';
+import { InsertCombiStock } from '../../types/stocks_product';
 
 interface StockProps {
   name: string;
@@ -12,6 +13,8 @@ interface StockProps {
   amount: number;
   symbol: string;
   onDelete: () => void;
+  stock: InsertCombiStock;
+  combiType: number;
 }
 
 const Wrapper = styled.div`
@@ -31,19 +34,19 @@ const ItemContainer = styled.div`
 `;
 
 const Item = styled.div`
-  ${tw`flex gap-3 items-center text-[1rem]`}
+  ${tw`flex gap-3 items-center`}
 `;
 
 const SubItem = styled.div`
-  ${tw`flex flex-col gap-2`}
+  ${tw`flex flex-col gap-1`}
 `;
 
-const Input = styled.div`
-  ${tw`w-[50px] bg-gray-light border-0 focus:outline-none text-end`}
+const Input = styled.input`
+  ${tw`w-[50px] bg-gray-light border-0 border-solid border-b border-gray-dark focus:outline-none text-base text-end`}
 `;
 
 const Img = styled.img`
-  ${tw`w-10 h-10 rounded-full`}
+  ${tw`object-contain w-9 rounded-full`}
 `;
 
 const MainText = styled.span`
@@ -54,13 +57,54 @@ const SubText = styled.span`
   ${tw`text-[0.8rem]`}
 `;
 
-const SelectStock = ({ name, price, amount, symbol, onDelete }: StockProps) => {
-  const [newAmount, setNewAmount] = useState<number>(0);
+const SelectStock = ({
+  name,
+  price,
+  amount,
+  symbol,
+  onDelete,
+  stock,
+  combiType,
+}: StockProps) => {
+  const [newAmount, setNewAmount] = useState<number>(amount);
   const isKr = !isNaN(Number(symbol));
+  const [newStock, setNewStock] = useState<InsertCombiStock>(stock);
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     setNewAmount(amount);
   }, [amount]);
+
+  useEffect(() => {
+    if (newStock) {
+      dispatch(setQuantity({ data: newStock, combiType }));
+    }
+  }, [newStock, dispatch]);
+
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const numericValue = Number(value);
+    if (!isNaN(numericValue)) {
+      setNewAmount(numericValue);
+    } else {
+      setNewAmount(0);
+    }
+  };
+
+  const handleBlur = () => {
+    if (newAmount < 1) {
+      setNewAmount(1);
+      setNewStock({
+        ...stock,
+        quantity: 1,
+      });
+    } else {
+      setNewStock({
+        ...stock,
+        quantity: newAmount,
+      });
+    }
+  };
 
   return (
     <Wrapper>
@@ -85,7 +129,13 @@ const SelectStock = ({ name, price, amount, symbol, onDelete }: StockProps) => {
             </SubItem>
           </Item>
           <Item>
-            <Input>{newAmount}</Input>
+            <Input
+              type="number"
+              value={newAmount === 0 ? '' : newAmount}
+              onChange={handleAmountChange}
+              onBlur={handleBlur}
+              placeholder="0"
+            />
             <MainText>주</MainText>
           </Item>
         </ItemContainer>

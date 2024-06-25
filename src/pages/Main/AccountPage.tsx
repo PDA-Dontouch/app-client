@@ -157,6 +157,7 @@ export default function AccountPage() {
     <>
       {modal && (
         <BottomUpModal
+          isOpen={modal}
           onClose={() => setModal(false)}
           content={<WithdrawDeposit type={modalType} setModal={setModal} />}
         />

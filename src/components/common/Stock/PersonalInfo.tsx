@@ -17,7 +17,7 @@ const PersonalContainer = styled.div`
 `;
 
 const ColContainer = styled.div`
-  ${tw`flex flex-col gap-4`}
+  ${tw`flex flex-col gap-5`}
 `;
 
 const TypeContainer = styled.div`
@@ -25,21 +25,25 @@ const TypeContainer = styled.div`
 `;
 
 const MoneyContainer = styled.div`
-  ${tw`flex gap-2 items-end`}
+  ${tw`flex gap-2 items-end px-1`}
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 `;
 
 const Title = styled.span`
-  ${tw`text-[0.9rem] flex gap-1 items-end`}
+  ${tw`text-[1rem] flex gap-1 items-end`}
   ${css`
     color: rgba(0, 0, 0, 0.8);
   `}
 `;
 
 const PersonData = styled.span`
-  ${tw`text-[1.3rem] text-green font-semibold`}
+  ${tw`text-[1.3rem] px-1`}
+  ${css`
+    box-shadow: inset 0 -10px 0 rgba(82, 147, 208, 0.5);
+    line-height: 28px;
+  `}
 `;
 
 const Icon = styled.img`

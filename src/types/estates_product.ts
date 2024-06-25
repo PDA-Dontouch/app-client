@@ -11,6 +11,20 @@ export interface EstatesList {
   currentInvest: number;
 }
 
+export interface HeldEstatesList {
+  id: number;
+  userId: number;
+  estateId: number;
+  titleImageUrl: string;
+  title: string;
+  earningRate: number;
+  investmentPeriod: number;
+  inputCash: number;
+  startPeriod: Date;
+  createdAt: Date;
+  isEstates: boolean;
+}
+
 export type EstatesDetail = {
   id: number;
   estateId: number;

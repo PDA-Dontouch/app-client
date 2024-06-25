@@ -21,10 +21,15 @@ import { PriceType } from '../../../types/socket';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../../store/store';
 import { setLiveData } from '../../../store/reducers/stocks/individualStock';
+import tw, { styled } from 'twin.macro';
 
 interface ChartProps {
   nowPrice: PriceType;
 }
+
+const Div = styled.div`
+  ${tw`w-full h-[30vh] box-border flex justify-center items-center text-gray-dark`}
+`;
 
 const StockCandleChart = ({ nowPrice }: ChartProps) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -242,7 +247,9 @@ const StockCandleChart = ({ nowPrice }: ChartProps) => {
         <CrossHairCursor />
       </ChartCanvas>
     </>
-  ) : null;
+  ) : (
+    <Div>차트 정보가 없습니다.</Div>
+  );
 };
 
 export default StockCandleChart;

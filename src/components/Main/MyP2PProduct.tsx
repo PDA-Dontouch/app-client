@@ -76,7 +76,7 @@ const AnnualRate = styled.div`
 
 export default function MyP2PProduct({ data, isEstates }: P2PProps) {
   const navigate = useNavigate();
-  console.log(data);
+
   return (
     <>
       {'startPeriod' in data ? (

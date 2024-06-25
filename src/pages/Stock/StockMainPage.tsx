@@ -74,11 +74,11 @@ const LoadingContainer = styled.div`
 `;
 
 const LoadingImg = styled.img`
-  ${tw`h-[6rem]`}
+  ${tw`h-[5.6rem]`}
 `;
 
 const LoadingText = styled.span`
-  ${tw`text-xl`}
+  ${tw`text-[1.1rem]`}
 `;
 
 const StockMainPage: React.FC = () => {

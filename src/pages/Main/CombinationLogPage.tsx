@@ -39,43 +39,59 @@ export default function CombinationLogPage() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const scrollStdRef = useRef<HTMLDivElement>(null);
   const [page, setPage] = useState<number>(0);
+  const [isFetching, setIsFetching] = useState<boolean>(false);
+  const [hasMore, setHasMore] = useState<boolean>(true); // 데이터를 더 불러올 수 있는지 확인하는 상태
 
   useEffect(() => {
+    setIsFetching(true);
     getCombinationPurchased({ userId: user.user.id, page: 0, size: 2 }).then(
       (data) => {
         if (data.data.success) {
-          data.data.response.sort((a, b) => {
-            return new Date(b.date) < new Date(a.date) ? -1 : 1;
-          });
-          setStockComb(data.data.response);
+          const sortedData = data.data.response;
+          const uniqueData = removeDuplicateDates(sortedData);
+          setStockComb(uniqueData);
+          setPage(1);
+          setHasMore(uniqueData.length > 0);
         }
+        setIsFetching(false);
       },
     );
   }, [user.user.id]);
 
-  // function getCombi(page: number) {
-  //   getCombinationPurchased({ userId: user.user.id, page: page, size: 2 }).then(
-  //     (data) => {
-  //       if (data.data.success) {
-  //         data.data.response.sort((a, b) => {
-  //           return new Date(b.date) < new Date(a.date) ? -1 : 1;
-  //         });
-  //         setStockComb((prev) => [...prev, ...data.data.response]);
-  //         setPage(page + 1);
-  //       }
-  //     },
-  //   );
-  // }
+  function getCombi(page: number) {
+    setIsFetching(true);
+    getCombinationPurchased({ userId: user.user.id, page: page, size: 2 }).then(
+      (data) => {
+        if (data.data.success) {
+          const newCombinations = data.data.response;
+          const combinedData = [...stockComb, ...newCombinations];
+          const uniqueData = removeDuplicateDates(combinedData);
+          setStockComb(uniqueData);
+          setPage(page + 1);
+          setHasMore(newCombinations.length > 0);
+        }
+        setIsFetching(false);
+      },
+    );
+  }
 
-  // function onScrollHandler() {
-  //   if (scrollRef.current && scrollStdRef.current) {
-  //     const stdRef = scrollStdRef.current.getBoundingClientRect();
-  //     const sRef = scrollRef.current.getBoundingClientRect();
-  //     if (stdRef.bottom >= sRef.bottom - 1) {
-  //       getCombi(page);
-  //     }
-  //   }
-  // }
+  function removeDuplicateDates(data: CombinationPurchasedType[]) {
+    const uniqueData = data.filter(
+      (item, index, self) =>
+        index === self.findIndex((t) => t.date === item.date),
+    );
+    return uniqueData;
+  }
+
+  function onScrollHandler() {
+    if (scrollRef.current && scrollStdRef.current && !isFetching && hasMore) {
+      const stdRef = scrollStdRef.current.getBoundingClientRect();
+      const sRef = scrollRef.current.getBoundingClientRect();
+      if (stdRef.bottom >= sRef.bottom - 10) {
+        getCombi(page);
+      }
+    }
+  }
 
   return (
     <>
@@ -87,31 +103,17 @@ export default function CombinationLogPage() {
         }}
       ></Navbar>
       <CombinationLogContainer>
-        <CombinationContainer>
-          {/* <CombinationContainer ref={scrollStdRef} onScroll={onScrollHandler}> */}
+        <CombinationContainer ref={scrollStdRef} onScroll={onScrollHandler}>
           <GreenBarTitle text="구매 조합 내역" />
           {stockComb.map((data, idx) => {
             return (
               <Combination key={idx}>
-                <PurchaseDate>
-                  {new Date(new Date(data.date).getTime() - offset)
-                    .toLocaleString('ko-KR', {
-                      year: 'numeric',
-                      month: '2-digit',
-                      day: '2-digit',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                      second: '2-digit',
-                      hour12: false,
-                    })
-                    .replace(/\. /g, '-')
-                    .replace(', ', '')}
-                </PurchaseDate>
+                <PurchaseDate>{data.date.toString()}</PurchaseDate>
                 <MainCombiBox {...data} />
               </Combination>
             );
           })}
-          {/* <div ref={scrollRef}></div> */}
+          <div ref={scrollRef}></div>
         </CombinationContainer>
       </CombinationLogContainer>
       <Footer />

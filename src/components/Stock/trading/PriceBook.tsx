@@ -61,7 +61,6 @@ const PriceBook = ({ nowPrice, askPrice, isKorea }: PriceBookProps) => {
   const handlePriceSelect = (price: string) => {
     dispatch(setSelectedPrice(price));
   };
-  console.log(isKorea);
 
   return (
     <Container

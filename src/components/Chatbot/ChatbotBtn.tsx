@@ -18,7 +18,7 @@ import { chatbotRouting } from '../../utils/chatbotRouting';
 import { useNavigate } from 'react-router-dom';
 
 const ChatBotContainer = styled.img`
-  ${tw`flex items-center justify-center h-20`}
+  ${tw`flex items-center justify-center h-16`}
   position: fixed;
   bottom: 90px;
   right: 10px;

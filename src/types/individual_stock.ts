@@ -26,6 +26,7 @@ export type GetDetail = {
     dividendMonth: number;
     dividendYieldTtm: number;
     personalizedScore: null;
+    closePrice: number;
   };
   detail_info: {
     id: number;

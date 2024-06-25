@@ -15,7 +15,7 @@ const Box = styled.div`
 `;
 
 const Text = styled.span`
-  ${tw`text-[0.9rem] text-gray-dark py-2`}
+  ${tw`text-[0.9rem] text-gray-dark py-5`}
 `;
 
 const StockContainer = ({ stocks }: StockContainerProps) => {

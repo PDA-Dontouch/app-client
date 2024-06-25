@@ -13,6 +13,7 @@ type StockType = {
   exchange: string;
   dividendMonth: number;
   dividendYieldTtm: number;
+  closePrice: number;
 };
 
 interface StockProps {
@@ -31,27 +32,46 @@ const StockLogo = styled.img`
 `;
 
 const ItemContainer = styled.div`
-  ${tw`flex flex-row ml-1 justify-between items-center`}
+  ${tw`w-[60%] flex flex-row ml-1 items-center`}
+  overflow: hidden;
 `;
 
 const MainText = styled.span`
   ${tw`text-sm`}
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `;
 
 const InfoContainer = styled.div`
   ${tw`flex flex-col content-between ml-3`}
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `;
 
 const SubContainer = styled.div`
   ${tw`flex flex-row text-xs`}
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `;
+
 const SubText = styled.span`
   ${tw`mt-1 mr-1`}
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `;
 
 const PriceContainer = styled.div`
   ${tw`flex items-center`}
 `;
+
+const PriceItem = styled.div`
+  ${tw`flex flex-col gap-1 items-end`}
+`;
+
 const PriceText = styled.span`
   ${tw`text-sm`}
 `;
@@ -94,12 +114,17 @@ const StockCard = ({ data, isLike, setIsLike }: StockProps) => {
       </ItemContainer>
 
       <PriceContainer>
-        <PriceText>
-          {isKRStock(data.symbol)
-            ? `${data.dividendMonth.toFixed(2)} 원`
-            : `$${data.dividendMonth.toFixed(2)}`}
-          ({data.dividendYieldTtm.toFixed(2)}%)
-        </PriceText>
+        <PriceItem>
+          <PriceText>
+            {isKRStock(data.symbol)
+              ? `${data.closePrice
+                  .toFixed(0)
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} 원`
+              : `$${data.dividendMonth.toFixed(2)}`}
+          </PriceText>
+          <PriceText>({data.dividendYieldTtm.toFixed(4)}%)</PriceText>
+        </PriceItem>
         <Heart src={isLike ? Fill : Empty} onClick={handleHeartClick} />
       </PriceContainer>
     </Container>

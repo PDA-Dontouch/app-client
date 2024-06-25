@@ -38,6 +38,9 @@ const UnitSelect = ({
   const selectExchange = useSelector(
     (state: RootState) => state.trading.selectExchange,
   );
+  const chartData = useSelector(
+    (state: RootState) => state.individualStock.chartData,
+  );
 
   const today = new Date();
   const year = today.getFullYear();
@@ -74,20 +77,24 @@ const UnitSelect = ({
   };
 
   return (
-    <Container>
-      {selects.map((text, idx) => (
-        <Button
-          isSelect={idx === num}
-          key={idx}
-          onClick={() => {
-            setNum(idx);
-            getNewData(idx);
-          }}
-        >
-          {text}
-        </Button>
-      ))}
-    </Container>
+    <>
+      {chartData.length > 0 && (
+        <Container>
+          {selects.map((text, idx) => (
+            <Button
+              isSelect={idx === num}
+              key={idx}
+              onClick={() => {
+                setNum(idx);
+                getNewData(idx);
+              }}
+            >
+              {text}
+            </Button>
+          ))}
+        </Container>
+      )}
+    </>
   );
 };
 

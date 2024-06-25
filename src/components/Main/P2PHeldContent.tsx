@@ -6,7 +6,6 @@ type P2PHeldContentProps = {
 };
 
 export default function P2PHeldContent({ totalPrice }: P2PHeldContentProps) {
-  console.log(totalPrice);
   return (
     <>
       <P2PProgressBar totalPrice={totalPrice} />

@@ -95,12 +95,7 @@ const StockOptions: React.FC<StockOptionsProps> = ({
     });
   }, [page, searchTerm]);
 
-  useEffect(() => {
-    console.log(stockList);
-  }, [stockList]);
-
   const handleUpdateCombination = (stock: StockDataResultType) => {
-    console.log(stock);
     const data = {
       stockId: stock.id,
       name: stock.name,

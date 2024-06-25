@@ -27,6 +27,7 @@ const initialState = {
       dividendMonth: 0,
       dividendYieldTtm: 0,
       personalizedScore: null,
+      closePrice: 0,
     },
     detail_info: {
       stockId: 0,

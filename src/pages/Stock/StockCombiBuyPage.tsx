@@ -87,7 +87,7 @@ const StockCombiBuyPage: React.FC = () => {
   const wantInvestmentPrice = useSelector(
     (state: RootState) => state.stocks.totalInvestment,
   );
-  const [error, setError] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
   const [accountAmount, setAccountAmount] = useState<number>(0);
   const user = useSelector((state: RootState) => state.user);
 
@@ -160,7 +160,7 @@ const StockCombiBuyPage: React.FC = () => {
 
   const handleAlertClose = () => {
     setAlertOpen(false);
-    setError(false);
+    setError('');
   };
 
   const totalPrice = () => {
@@ -194,7 +194,9 @@ const StockCombiBuyPage: React.FC = () => {
 
   const submitCombi = () => {
     if (totalPrice() > accountAmount) {
-      setError(true);
+      setError('투자 가능 금액을 초과했습니다.');
+    } else if (totalPrice() === 0) {
+      setError('구매할 종목을 선택하세요.');
     } else {
       const stockList = [];
       combiStocks.combination1.stocks.map((item, idx) =>
@@ -387,7 +389,7 @@ const StockCombiBuyPage: React.FC = () => {
         <AlertModal
           type="full"
           onClose={handleAlertClose}
-          message="투자 가능 금액을 초과했습니다."
+          message={error}
         ></AlertModal>
       )}
     </>

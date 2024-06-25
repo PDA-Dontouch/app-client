@@ -109,14 +109,9 @@ export default function CalendarPage() {
       if (data.data.success) {
         total = data.data.response.reduce((accumulator, stock) => {
           if (new Date(stock.dividendDate).getMonth() === month) {
-            if (
-              'A' <= stock.symbol.charAt(0) &&
-              stock.symbol.charAt(0) <= 'Z'
-            ) {
-              return accumulator + stock.dividend * exchangeRate;
-            } else {
+            
               return accumulator + stock.dividend;
-            }
+          
           } else {
             return accumulator;
           }

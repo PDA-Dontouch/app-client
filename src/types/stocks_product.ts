@@ -17,6 +17,7 @@ export type StockDataResultType = {
   dividendMonth: number;
   dividendYieldTtm: number;
   personalizedScore: number;
+  closePrice:number;
 };
 
 export type BasicInfoType = {

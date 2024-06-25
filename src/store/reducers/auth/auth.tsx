@@ -41,6 +41,15 @@ export const postType = createAsyncThunk(
   },
 );
 
+
+export const updateUser = createAsyncThunk(
+  'user/update',
+  async (data: WithToken & { email: string }) => {
+    const response = await getUser(data.email);
+    return response.data.response as UserDetail;
+  },
+);
+
 const userSlice = createSlice({
   name: 'user',
   initialState: initialState,
@@ -54,6 +63,9 @@ const userSlice = createSlice({
       },
     );
     builder.addCase(postType.fulfilled, (state, action) => {
+      state.user = action.payload;
+    });
+    builder.addCase(updateUser.fulfilled, (state, action) => {
       state.user = action.payload;
     });
   },

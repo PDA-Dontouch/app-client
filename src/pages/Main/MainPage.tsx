@@ -8,8 +8,8 @@ import Navbar from '../../components/common/Navbar';
 import Footer from '../../components/common/Footer';
 import darkRedHeartImg from '../../assets/dark-red-heart.svg';
 import testBlueImg from '../../assets/test-blue.svg';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../store/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../store/store';
 import { CalendarStockPlanType } from '../../types/stocks_product';
 import SalaryPlan from '../../components/Calendar/SalaryPlan';
 import {
@@ -27,6 +27,7 @@ import {
 } from '../../api/holding';
 import { CalendarP2PType } from '../../types/energy_product';
 import ScrollToTop from '../../hooks/ScrollToTop';
+import { updateUser } from '../../store/reducers/auth/auth';
 
 type TitleNameProps = {
   type: 'name' | 'nim';
@@ -175,6 +176,7 @@ export default function MainPage() {
   const user = useSelector((state: RootState) => state.user);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
 
   const startDate = today.getDate() - today.getDay();
 
@@ -189,8 +191,7 @@ export default function MainPage() {
       if (data.data.success) {
         total = data.data.response.reduce((accumulator, stock) => {
           if (new Date(stock.dividendDate).getMonth() === today.getMonth()) {
-           
-              return accumulator + stock.dividend;
+            return accumulator + stock.dividend;
           } else {
             return accumulator;
           }
@@ -288,26 +289,35 @@ export default function MainPage() {
   }
 
   useEffect(() => {
-    if(user.user===null)
-      navigate('/login');
-    
-    calendarStockPlans({
-      userId: user.user.id,
-      token: user.token,
-      startDate: new Date(today.getFullYear(), today.getMonth(), startDate + 1),
-      endDate: new Date(today.getFullYear(), today.getMonth(), startDate + 8),
-    }).then((data) => {
-      if (data.data.success) setStockPlans(data.data.response);
-    });
+    dispatch(updateUser({ email: user.user.email, token: user.token })).then(
+      () => {
+        calendarStockPlans({
+          userId: user.user.id,
+          token: user.token,
+          startDate: new Date(
+            today.getFullYear(),
+            today.getMonth(),
+            startDate + 1,
+          ),
+          endDate: new Date(
+            today.getFullYear(),
+            today.getMonth(),
+            startDate + 8,
+          ),
+        }).then((data) => {
+          if (data.data.success) setStockPlans(data.data.response);
+        });
 
-    getAccountAmount();
-    getPlans();
-    getExchangeRate().then((data) => {
-      setExchangeRate(data.data.response.selling);
-    });
-    getUserTotalEnergyPrice();
-    getUserTotalEstatePrice();
-    getStocksDataProps();
+        getAccountAmount();
+        getPlans();
+        getExchangeRate().then((data) => {
+          setExchangeRate(data.data.response.selling);
+        });
+        getUserTotalEnergyPrice();
+        getUserTotalEstatePrice();
+        getStocksDataProps();
+      },
+    );
   }, [exchangeRate]);
 
   return (

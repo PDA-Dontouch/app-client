@@ -27,9 +27,9 @@ export const tryLogin = async (
   }
 };
 
-export const getUser = async (userId: string) => {
+export const getUser = async (email: string):PromiseAxiosRes<UserDetail> => {
   try {
-    const response = await authInstance.get(`/${userId}`);
+    const response = await authInstance.get(`/${email}`);
     return response;
   } catch (err) {
     console.error(err);
@@ -77,12 +77,14 @@ export const getUserAccountAmount = async ({
 
 export const updateInvestmentType = async ({
   token,
+  userId,
   totalScore,
-}: WithToken & { totalScore: number }): PromiseAxiosRes<UserDetail> => {
+}: WithToken & WithUserId & { userId: number, totalScore: number }): PromiseAxiosRes<UserDetail> => {
   try {
     const response = await authInstance.post(
       '/type',
       {
+        userId: userId,
         totalScore: totalScore,
       },
       {

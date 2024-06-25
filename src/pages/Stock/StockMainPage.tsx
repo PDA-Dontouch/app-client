@@ -63,8 +63,7 @@ const CombiBoxContainer = styled.div`
 `;
 
 const ItemContainer = styled.div`
-  ${tw`flex-col gap-3 overflow-scroll`}
-  height: calc(100vh - 470px);
+  ${tw`w-full box-border flex-col gap-3 overflow-scroll h-[calc(100vh-400px)]`}// height: calc(100vh - 470px);
 `;
 
 const SortType = styled.span`

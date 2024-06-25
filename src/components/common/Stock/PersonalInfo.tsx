@@ -17,7 +17,7 @@ const PersonalContainer = styled.div`
 `;
 
 const ColContainer = styled.div`
-  ${tw`flex flex-col gap-5`}
+  ${tw`flex flex-col gap-4`}
 `;
 
 const TypeContainer = styled.div`

@@ -7,6 +7,7 @@
 # Ionic Capacitor
 
 Download **Android APK** file by using **Ionic Capacitor**
+
 Ionic Capacitor 이용해서 Android APK 파일 다운로드
 
 1.  Clone build/android branch and Move to the directory
@@ -34,7 +35,7 @@ npx cap add android
 5.  Build project
 
 ```
-npm run buile
+npm run build
 ```
 
 6.  Sync Android

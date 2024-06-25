@@ -18,7 +18,7 @@ const NaverRedirectPage = () => {
       //네이버로부터 받아온 code를 서버에 전달하여 네이버로 회원가입 & 로그인한다
       return await dispatch(postLogin({ snsType, code })).unwrap();
     } catch (err) {
-      navigate('/fail');
+      navigate('/');
     }
   };
 
@@ -29,7 +29,7 @@ const NaverRedirectPage = () => {
       handleOAuthNaver(code).then((loginUser) => {
         if (loginUser.user.safeScore === 0)
           navigate('/typetest', { state: { nav: false } });
-        else navigate('/');
+        else navigate('/main');
       });
     }
   }, [location]);

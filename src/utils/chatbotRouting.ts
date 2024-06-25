@@ -18,7 +18,7 @@ export function chatbotRouting(data: ChatbotRoutingType): ChatbotReturnType {
     url = '/calendar';
     where = '캘린더';
   } else if (data.text.includes('메인')) {
-    url = '/';
+    url = '/main';
     where = '메인';
   } else if (data.text.includes('부동산')) {
     url = '/estates';

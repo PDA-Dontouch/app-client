@@ -166,7 +166,7 @@ export default function AccountPage() {
         type="back"
         name="back"
         onClick={() => {
-          navigate('/');
+          navigate('/main');
         }}
       />
       <AccountPageContainer>

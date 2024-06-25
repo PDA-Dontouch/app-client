@@ -33,7 +33,7 @@ const Footer = () => {
   const tabData = [
     { path: '/calendar', icon: Calendar, label: '캘린더' },
     { path: '/stocks', icon: Stock, label: '배당' },
-    { path: '/', icon: Main, label: '메인' },
+    { path: '/main', icon: Main, label: '메인' },
     { path: '/estates', icon: House, label: '부동산' },
     { path: '/energy', icon: Energy, label: '에너지' },
   ];

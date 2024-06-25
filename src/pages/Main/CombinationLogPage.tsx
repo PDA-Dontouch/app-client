@@ -9,6 +9,7 @@ import { CombinationPurchasedType } from '../../types/stocks_product';
 import { getCombinationPurchased } from '../../api/stocks';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
+import Nothing from '../../components/Main/Nothing';
 
 const CombinationLogContainer = styled.div`
   ${tw`flex flex-col px-5 py-22 gap-8 w-full h-[100vh]`}
@@ -105,14 +106,18 @@ export default function CombinationLogPage() {
       <CombinationLogContainer>
         <CombinationContainer ref={scrollStdRef} onScroll={onScrollHandler}>
           <GreenBarTitle text="구매 조합 내역" />
-          {stockComb.map((data, idx) => {
-            return (
-              <Combination key={idx}>
-                <PurchaseDate>{data.date.toString()}</PurchaseDate>
-                <MainCombiBox {...data} />
-              </Combination>
-            );
-          })}
+          {stockComb.length > 0 ? (
+            stockComb.map((data, idx) => {
+              return (
+                <Combination key={idx}>
+                  <PurchaseDate>{data.date.toString()}</PurchaseDate>
+                  <MainCombiBox {...data} />
+                </Combination>
+              );
+            })
+          ) : (
+            <Nothing text="구매 조합 내역이 없습니다." />
+          )}
           <div ref={scrollRef}></div>
         </CombinationContainer>
       </CombinationLogContainer>

@@ -312,7 +312,7 @@ export const getSTT = async ({
   userId: number;
 }): Promise<AxiosResponse<string>> => {
   try {
-    const response = await axios.post(`/api/myPage/stt`, {
+    const response = await axios.post(`/api/trading/myPage/stt`, {
       base64Sound,
       userId,
     });

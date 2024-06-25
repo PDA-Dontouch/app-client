@@ -156,7 +156,11 @@ const MarketInfo = ({ nowPrice, setIsDescription }: InfoProps) => {
             ) : (
               <>
                 <StockFont num={upDown}>
-                  {detail.basic_info.exchange === 'KSC' ? close : '$' + close}
+                  {detail.basic_info.exchange === 'KSC'
+                    ? close
+                    : close === undefined
+                      ? '$0'
+                      : '$' + close}
                 </StockFont>
                 <StockDiv>
                   {upDown > 0 ? (
@@ -167,14 +171,18 @@ const MarketInfo = ({ nowPrice, setIsDescription }: InfoProps) => {
                   <StockFont2 num={upDown}>
                     {detail.basic_info.exchange === 'KSC'
                       ? upDown.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                      : '$' + upDown.toFixed(2)}
+                      : isNaN(upDown)
+                        ? '$0'
+                        : '$' + upDown.toFixed(2)}
                   </StockFont2>
                   <StockFont2 num={stockRate}>(</StockFont2>
                   {stockRate > 0 && <StockFont2 num={stockRate}>+</StockFont2>}
                   <StockFont2 num={stockRate}>
                     {detail.basic_info.exchange === 'KSC'
                       ? stockRate.toFixed(2) + '%)'
-                      : stockRate.toFixed(2) + '%)'}
+                      : isNaN(stockRate)
+                        ? '0%)'
+                        : stockRate.toFixed(2) + '%)'}
                   </StockFont2>
                 </StockDiv>
               </>

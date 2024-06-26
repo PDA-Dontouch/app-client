@@ -206,7 +206,7 @@ export default function ChatbotBtn() {
           <ExitBtn src={exitImg} onClick={onExitHandler} />
         </ChatContainer>
       ) : (
-        <ChatBotContainer onClick={onBtnClickHandler} src={chatImg} />
+        <></>
       )}
     </>
   );

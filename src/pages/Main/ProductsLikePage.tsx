@@ -32,6 +32,7 @@ export default function ProductsLikePage() {
   const [usaData, setUsaData] = useState<StockDataResultType[]>([]);
   const [energyData, setEnergyData] = useState<EnergyList[]>([]);
   const [estateData, setEstateData] = useState<EstatesList[]>([]);
+
   function getStockData() {
     getLikeStocks({ userId: user.user.id, token: user.token }).then((data) => {
       if (data.data.success) {
@@ -58,9 +59,8 @@ export default function ProductsLikePage() {
   }
 
   useEffect(() => {
-    getStockData();
-    getEnergyData();
-    getEstateData();
+    Promise.all([getStockData(), getEnergyData(), getEstateData()]).then(() => {
+    });
   }, []);
 
   return (

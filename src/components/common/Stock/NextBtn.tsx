@@ -11,7 +11,7 @@ const TextContainer = styled.div`
 `;
 
 const NextText = styled.span`
-  ${tw`text-sm cursor-pointer`}
+  ${tw`text-sm`}
 `;
 
 const NavImage = styled.img`
@@ -20,11 +20,8 @@ const NavImage = styled.img`
 
 const NextBtn = (input: TextProps) => {
   return (
-    <TextContainer>
-      <NextText onClick={(e)=>{
-        e.stopPropagation();
-        input.onClick();
-      }}>{input.content}</NextText>
+    <TextContainer onClick={input.onClick}>
+      <NextText>{input.content}</NextText>
       <NavImage src={NextImg} />
     </TextContainer>
   );

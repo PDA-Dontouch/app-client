@@ -6,11 +6,11 @@ import Kakao from '../../assets/kakao.svg';
 import Naver from '../../assets/naver.svg';
 
 const Container = styled.div`
-  ${tw`w-[100vw] h-[100vh] px-[4rem] py-[9.6em] flex flex-col justify-between items-center box-border`}
+  ${tw`w-[100vw] h-[100vh] px-[4rem] py-[15em] flex flex-col justify-between items-center box-border`}
 `;
 
 const LogoImage = styled.img`
-  ${tw`w-[5.2rem] h-auto`}
+  ${tw`w-[7rem] h-auto`}
 `;
 
 const ItemContainer = styled.div`
@@ -40,13 +40,13 @@ const LoginPage = () => {
             onLogin(e, kakaoAuthUrl)
           }
         />
-        <SocialLogin
+        {/* <SocialLogin
           url={Naver}
           name="Naver"
           onClick={(e: React.MouseEvent<HTMLElement, MouseEvent>) =>
             onLogin(e, naverAuthUrl)
           }
-        />
+        /> */}
       </ItemContainer>
     </Container>
   );

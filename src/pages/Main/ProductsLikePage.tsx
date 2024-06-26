@@ -59,8 +59,9 @@ export default function ProductsLikePage() {
   }
 
   useEffect(() => {
-    Promise.all([getStockData(), getEnergyData(), getEstateData()]).then(() => {
-    });
+    Promise.all([getStockData(), getEnergyData(), getEstateData()]).then(
+      () => {},
+    );
   }, []);
 
   return (

@@ -10,12 +10,18 @@ import darkRedHeartImg from '../../assets/dark-red-heart.svg';
 import testBlueImg from '../../assets/test-blue.svg';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
-import { CalendarStockPlanType } from '../../types/stocks_product';
+import {
+  CalendarStockPlanType,
+  HoldingStockType,
+  UsStockSocketType,
+} from '../../types/stocks_product';
 import SalaryPlan from '../../components/Calendar/SalaryPlan';
 import {
   calendarStockPlans,
   getExchangeRate,
   getHoldingStocks,
+  getKRStockPrice,
+  getUSStockPrice,
 } from '../../api/stocks';
 import { investmentTypeToString } from '../../utils/investmentType';
 import { getUserAccountAmount } from '../../api/auth';
@@ -173,12 +179,85 @@ export default function MainPage() {
   const [estateTotalAmount, setEstateTotalAmount] = useState<number>(0);
   const [koreaStockTotalPrice, setKoreaStockTotalPrice] = useState<number>(0);
   const [usaStockTotalPrice, setUsaStockTotalPrice] = useState<number>(0);
+  const [koreaData, setKoreaData] = useState<HoldingStockType[]>([]);
+  const [usaData, setUsaData] = useState<HoldingStockType[]>([]);
   const user = useSelector((state: RootState) => state.user);
 
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 
   const startDate = today.getDate() - today.getDay();
+
+  const [realTimeKoreaPrice, setRealTimeKoreaPrice] = useState<string[]>([]);
+  const [realTimeUsPrice, setRealTimeUsPrice] = useState<number[]>([]);
+
+  useEffect(() => {
+    calcKoreaTotal();
+    calcUsTotal();
+  }, [koreaData, usaData, realTimeKoreaPrice, realTimeUsPrice, modal]);
+
+  async function getKoreaSocket(korea: HoldingStockType[]) {
+    const koreaRequest = korea.map((stock) => {
+      return stock.stock.symbol;
+    });
+
+    return koreaRequest;
+  }
+
+  async function getUsSocket(us: HoldingStockType[]) {
+    const usaRequest = us.map((stock) => {
+      return {
+        stockCode: stock.stock.symbol,
+        marketType: stock.stock.symbol === 'NYSE' ? 'BAY' : 'BAQ',
+      };
+    });
+
+    return usaRequest as UsStockSocketType[];
+  }
+
+  function sendKoreaSocketAxios(korea: HoldingStockType[]) {
+    getKoreaSocket(korea).then((res) => {
+      getKRStockPrice({ stockList: res }).then((data) => {
+        setRealTimeKoreaPrice(data);
+      });
+    });
+  }
+
+  function sendUsSocketAxios(us: HoldingStockType[]) {
+    getUsSocket(us).then((res) => {
+      getUSStockPrice({ stockList: res }).then((data) => {
+        setRealTimeUsPrice(data);
+      });
+    });
+  }
+
+  const calcKoreaTotal = useCallback(async () => {
+    const res = koreaData.reduce((accumulator, stock, idx) => {
+      return (
+        accumulator +
+        stock.purchaseInfo.quantity * Number(realTimeKoreaPrice[idx])
+      );
+    }, 0);
+    setKoreaStockTotalPrice(res);
+  }, [realTimeKoreaPrice, koreaData]);
+
+  const calcUsTotal = useCallback(async () => {
+    const res = usaData.reduce((accumulator, stock, idx) => {
+      return accumulator + stock.purchaseInfo.quantity * realTimeUsPrice[idx];
+    }, 0);
+    setUsaStockTotalPrice(res);
+  }, [realTimeUsPrice, usaData]);
+
+  function getStocksDataProps() {
+    getHoldingStocks({ userId: user.user.id, token: user.token }).then(
+      async (data) => {
+        if (data.data.success) {
+          setKoreaData(data.data.response.krHoldingStocks);
+          setUsaData(data.data.response.usHoldingStocks);
+        }
+      },
+    );
+  }
 
   const getPlans = useCallback(() => {
     calendarStockPlans({
@@ -277,17 +356,6 @@ export default function MainPage() {
     );
   }, []);
 
-  function getStocksDataProps() {
-    getHoldingStocks({ userId: user.user.id, token: user.token }).then(
-      (data) => {
-        if (data.data.success) {
-          setKoreaStockTotalPrice(data.data.response.krTotalPurchase);
-          setUsaStockTotalPrice(data.data.response.usTotalPurchase);
-        }
-      },
-    );
-  }
-
   useEffect(() => {
     dispatch(updateUser({ email: user.user.email, token: user.token })).then(
       () => {
@@ -320,6 +388,10 @@ export default function MainPage() {
     );
   }, [exchangeRate]);
 
+  useEffect(() => {
+    sendKoreaSocketAxios(koreaData);
+    sendUsSocketAxios(usaData);
+  }, [koreaData, usaData, modal]);
   return (
     <>
       <Navbar name={user.user.nickname} type="main" onClick={() => {}}></Navbar>
@@ -435,4 +507,7 @@ export default function MainPage() {
       <Footer />
     </>
   );
+}
+function getKoreaSocket(korea: HoldingStockType[]) {
+  throw new Error('Function not implemented.');
 }

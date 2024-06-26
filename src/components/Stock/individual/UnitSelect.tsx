@@ -78,7 +78,7 @@ const UnitSelect = ({
 
   return (
     <>
-      {chartData.length > 0 && (
+      {chartData.length > 0 && chartData[0].code !== 'MBNKP' && (
         <Container>
           {selects.map((text, idx) => (
             <Button

@@ -52,10 +52,10 @@ export default defineConfig(({ mode }) => {
           target: env.VITE_APP_HOLDING_BASE_URL,
           changeOrigin: true,
         },
-        '/api/trading/myPage': {
-          target: env.VITE_APP_SOCKET_BASE_URL,
-          changeOrigin: true,
-        },
+        // '/api/trading/myPage': {
+        //   target: env.VITE_APP_SOCKET_BASE_URL,
+        //   changeOrigin: true,
+        // },
       },
     },
   };

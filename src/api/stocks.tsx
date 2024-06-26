@@ -117,7 +117,7 @@ export const calendarStockPlans = async (
 ): PromiseAxiosRes<CalendarStockPlanType[]> => {
   try {
     const response = await stockInstance.post('/calendar', data, {
-      params: { token: data.token }, // 에러
+      params: { token: data.token },
     });
     return response;
   } catch (err: unknown) {
